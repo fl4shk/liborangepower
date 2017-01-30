@@ -21,3 +21,6 @@ disassembly*.armasm
 *.gdb_history*
 *.swp
 *.swo
+test_assembler*
+*/tags
+*/types_*.taghl
