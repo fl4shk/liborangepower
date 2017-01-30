@@ -1,2 +1,2 @@
 # Lib Orange Power
-Tiny, generic library consisting of mainly C++ headers 
+Tiny, generic C++ library consisting of mainly header files
