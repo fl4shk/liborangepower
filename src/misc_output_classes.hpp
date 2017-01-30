@@ -17,8 +17,8 @@
 // <http://www.gnu.org/licenses/>.
 
 
-#ifndef misc_output_classes_hpp
-#define misc_output_classes_hpp
+#ifndef liborangepower_misc_output_classes_hpp
+#define liborangepower_misc_output_classes_hpp
 
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
@@ -82,4 +82,4 @@ inline void show_misc_error( arg_types&&... args )
 }
 
 
-#endif		// misc_output_classes_hpp
+#endif		// liborangepower_misc_output_classes_hpp

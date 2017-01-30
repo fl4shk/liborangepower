@@ -17,8 +17,8 @@
 // <http://www.gnu.org/licenses/>.
 
 
-#ifndef misc_includes_hpp
-#define misc_includes_hpp
+#ifndef liborangepower_misc_includes_hpp
+#define liborangepower_misc_includes_hpp
 
 #include <iostream>
 #include <vector>
@@ -44,5 +44,4 @@ using std::endl;
 using std::string;
 
 
-
-#endif		// misc_includes_hpp
+#endif		// liborangepower_misc_includes_hpp

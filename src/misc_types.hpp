@@ -17,8 +17,8 @@
 // <http://www.gnu.org/licenses/>.
 
 
-#ifndef misc_types_hpp
-#define misc_types_hpp
+#ifndef liborangepower_misc_types_hpp
+#define liborangepower_misc_types_hpp
 
 #include <cstdint>
 
@@ -36,4 +36,4 @@ typedef unsigned int uint;
 	asm volatile( "@ ---" stuff " ---" )
 
 
-#endif		// misc_types_hpp
+#endif		// liborangepower_misc_types_hpp

@@ -17,8 +17,8 @@
 // <http://www.gnu.org/licenses/>.
 
 
-#ifndef time_stuff_hpp
-#define time_stuff_hpp
+#ifndef liborangepower_time_stuff_hpp
+#define liborangepower_time_stuff_hpp
 
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
@@ -122,4 +122,4 @@ public:		// functions
 
 
 
-#endif		// time_stuff_hpp
+#endif		// liborangepower_time_stuff_hpp
