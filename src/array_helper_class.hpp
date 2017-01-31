@@ -15,14 +15,14 @@ public:			// variables
 	type* the_array = NULL;
 	
 protected:		// variables
-	u32 size = 0;
+	size_t size = 0;
 	
 public:			// functions
 	array_helper()
 	{
 	}
 	
-	array_helper( type* s_the_array, u32 s_size )
+	array_helper( type* s_the_array, size_t s_size )
 		: the_array(s_the_array), size(s_size)
 	{
 	}
@@ -32,7 +32,7 @@ public:			// functions
 	{
 	}
 	
-	void init( type* s_the_array, u32 s_size )
+	void init( type* s_the_array, size_t s_size )
 	{
 		the_array = s_the_array;
 		size = s_size;
@@ -53,16 +53,16 @@ public:			// functions
 		return the_array;
 	}
 	
-	u32 get_size() const
+	size_t get_size() const
 	{
 		return size;
 	}
 	
-	type& at( u32 offset )
+	type& at( size_t offset )
 	{
 		return the_array[offset];
 	}
-	const type& at( u32 offset ) const
+	const type& at( size_t offset ) const
 	{
 		return the_array[offset];
 	}

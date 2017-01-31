@@ -11,8 +11,8 @@ template< typename type >
 class array_2d_helper
 {
 protected:		// variables
-	vec2_u32 size_2d = { 0, 0 };
-	u32 size = 0;
+	vec2<size_t> size_2d = { 0, 0 };
+	size_t size = 0;
 	
 public:			// variables
 	type* the_array = NULL;
@@ -24,13 +24,13 @@ public:			// functions
 	inline array_2d_helper()
 	{
 	}
-	inline array_2d_helper( type* s_the_array, const vec2_u32& s_size_2d )
+	inline array_2d_helper( type* s_the_array, const vec2<size_t>& s_size_2d )
 		: size_2d(s_size_2d), size( s_size_2d.x * s_size_2d.y ),
 		the_array(s_the_array)
 	{
 	}
 	
-	void init( type* s_the_array, const vec2_u32& s_size_2d )
+	void init( type* s_the_array, const vec2<size_t>& s_size_2d )
 	{
 		size_2d = s_size_2d;
 		size = size_2d.x * size_2d.y;
@@ -53,29 +53,29 @@ public:			// functions
 		return the_array;
 	}
 	
-	u32 width() const
+	size_t width() const
 	{
 		return size_2d.x;
 	}
-	u32 height() const
+	size_t height() const
 	{
 		return size_2d.y;
 	}
 	
-	const vec2_u32& get_size_2d() const
+	const vec2<size_t>& get_size_2d() const
 	{
 		return size_2d;
 	}
-	u32 get_size() const
+	size_t get_size() const
 	{
 		return size;
 	}
 	
-	type& at( u32 x, u32 y )
+	type& at( size_t x, size_t y )
 	{
 		return the_array[ y * size_2d.x + x ];
 	}
-	type& at( const vec2_u32& offset_2d )
+	type& at( const vec2<size_t>& offset_2d )
 	{
 		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
 	}
@@ -85,11 +85,11 @@ public:			// functions
 	}
 	
 	
-	const type& at( u32 x, u32 y ) const
+	const type& at( size_t x, size_t y ) const
 	{
 		return the_array[ y * size_2d.x + x ];
 	}
-	const type& at( const vec2_u32& offset_2d ) const
+	const type& at( const vec2<size_t>& offset_2d ) const
 	{
 		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
 	}
