@@ -8,6 +8,20 @@ objs_debug/*
 objs_dis_debug/*
 asmouts_debug/*
 preprocs_debug/*
+liborangepower
+liborangepower_debug
+testing/deps/*
+testing/objs/*
+testing/objs_dis/*
+testing/asmouts/*
+testing/preprocs/*
+testing/deps_debug/*
+testing/objs_debug/*
+testing/objs_dis_debug/*
+testing/asmouts_debug/*
+testing/preprocs_debug/*
+testing/testing
+testing/testing_debug
 small_code_testing_things/*
 *.elf
 *.gba
@@ -21,6 +35,5 @@ disassembly*.armasm
 *.gdb_history*
 *.swp
 *.swo
-test_assembler*
 */tags
 */types_*.taghl

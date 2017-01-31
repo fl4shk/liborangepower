@@ -10,11 +10,5 @@ typedef uint64_t u64; typedef int64_t s64;
 typedef unsigned int uint;
 
 
-#define _align4 aligned(4)
-#define alignas_regular alignas(4)
-
-#define asm_comment( stuff ) \
-	asm volatile( "@ ---" stuff " ---" )
-
 
 #endif		// liborangepower_misc_types_hpp

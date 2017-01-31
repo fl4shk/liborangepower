@@ -14,7 +14,7 @@ protected:		// functions
 	{
 	}
 	template< typename first_type, typename... rem_types >
-	static inline void show_misc_output_backend
+	static void show_misc_output_backend
 		( const first_type& first_val, rem_types&&... rem_args )
 	{
 		cout << first_val;
@@ -27,7 +27,7 @@ protected:		// functions
 
 
 template< typename... arg_types >
-inline void show_misc_output( arg_types&&... args )
+void show_misc_output( arg_types&&... args )
 {
 	misc_output::show_misc_output_backend(args...);
 }
@@ -35,7 +35,7 @@ inline void show_misc_output( arg_types&&... args )
 
 
 template< typename... arg_types >
-inline void show_misc_error( arg_types&&... args );
+void show_misc_error( arg_types&&... args );
 
 class misc_error
 {
@@ -44,7 +44,7 @@ protected:		// functions
 	{
 	}
 	template< typename first_type, typename... rem_types >
-	static inline void show_misc_error_backend
+	static void show_misc_error_backend
 		( const first_type& first_val, rem_types&&... rem_args )
 	{
 		cerr << first_val;
@@ -57,7 +57,7 @@ protected:		// functions
 
 
 template< typename... arg_types >
-inline void show_misc_error( arg_types&&... args )
+void show_misc_error( arg_types&&... args )
 {
 	misc_error::show_misc_error_backend(args...);
 }

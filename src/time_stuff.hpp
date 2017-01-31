@@ -1,6 +1,7 @@
 #ifndef liborangepower_time_stuff_hpp
 #define liborangepower_time_stuff_hpp
 
+#include "misc_defines.hpp"
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
 
