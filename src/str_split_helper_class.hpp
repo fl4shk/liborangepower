@@ -13,7 +13,7 @@ class str_split_helper
 {
 protected:		// variables
 	str_type internal_to_split;
-	size_t internal_line_num = 0;
+	size_t internal_line_num = 1;
 	
 protected:		// functions
 	// This function should be overrided by derived classes
