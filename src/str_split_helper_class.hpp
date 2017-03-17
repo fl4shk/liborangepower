@@ -17,11 +17,12 @@ protected:		// variables
 	
 protected:		// functions
 	// This function should be overrided by derived classes
-	virtual bool to_split_at_is_special_char( size_t i ) const
-	{
-		//return ( to_split().at(i) == ',' );
-		return false;
-	}
+	virtual bool to_split_at_is_special_char( size_t i ) const = 0;
+	//{
+	//	//return ( to_split().at(i) == ',' );
+	//	return false;
+	//}
+	
 	
 public:		// functions
 	inline str_split_helper( const str_type& s_to_split )
@@ -87,6 +88,12 @@ public:		// functions
 			|| ( to_split().at(i) == '"' ) );
 	}
 	
+	static inline size_t get_substr_size( const size_t start, 
+		const size_t pos_after_end )
+	{
+		return ( pos_after_end - start );
+	}
+	
 	// A "word" is either a sequence of non-quote (") characters, or a
 	// sequence of any non-quote (") characters enclosed within two quote
 	// characters, INCLUDING the two quote characters.
@@ -114,16 +121,13 @@ public:		// functions
 			// Handle special characters
 			if ( to_split_at_is_special_char(i) )
 			{
-				//++i;
 				increment_i(i);
 			}
 			else if ( to_split().at(i) == '"' )
 			{
-				//++i;
 				increment_i(i);
 				while ( index_in_to_split(i) && to_split().at(i) != '"' )
 				{
-					//++i;
 					increment_i(i);
 				}
 				
@@ -132,13 +136,11 @@ public:		// functions
 				// are considered part of the so-called "word"
 				if ( index_in_to_split(i) )
 				{
-					//++i;
 					increment_i(i);
 				}
 			}
 			else
 			{
-				//++i;
 				increment_i(i);
 				
 				
