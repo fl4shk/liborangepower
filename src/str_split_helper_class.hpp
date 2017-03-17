@@ -13,7 +13,7 @@ class str_split_helper
 {
 protected:		// variables
 	str_type internal_to_split;
-	
+	size_t internal_line_num = 0;
 	
 protected:		// functions
 	// This function should be overrided by derived classes
@@ -30,46 +30,61 @@ protected:		// functions
 			|| ( to_split().at(i) == '"' ) );
 	}
 	
+	inline void increment_i( size_t& i )
+	{
+		if ( to_split().at(i++) == '\n' )
+		{
+			++internal_line_num;
+		}
+	}
+	
 public:		// functions
-	str_split_helper( const str_type& s_to_split )
+	inline str_split_helper( const str_type& s_to_split )
 		: internal_to_split(s_to_split)
 	{
 	}
-	str_split_helper( str_type&& s_to_split )
+	inline str_split_helper( str_type&& s_to_split )
 		: internal_to_split(std::move(s_to_split))
 	{
 	}
 	
-	str_split_helper( const str_split_helper& to_copy )
+	inline str_split_helper( const str_split_helper& to_copy )
 	{
 		*this = to_copy;
 	}
-	str_split_helper( str_split_helper&& to_move )
+	inline str_split_helper( str_split_helper&& to_move )
 	{
 		*this = std::move(to_move);
 	}
 	
-	str_split_helper& operator = ( const str_split_helper& to_copy )
+	inline str_split_helper& operator = ( const str_split_helper& to_copy )
 	{
 		internal_to_split = to_copy.internal_to_split;
+		internal_line_num = to_copy.internal_line_num;
 		
 		return *this;
 	}
-	str_split_helper& operator = ( str_split_helper&& to_move )
+	inline str_split_helper& operator = ( str_split_helper&& to_move )
 	{
 		internal_to_split = std::move(to_move.internal_to_split);
+		internal_line_num = std::move(to_move.internal_line_num);
 		
 		return *this;
 	}
 	
-	bool index_in_to_split( size_t i ) const
+	inline bool index_in_to_split( size_t i ) const
 	{
 		return ( i < to_split().size() );
 	}
 	
-	const str_type& to_split() const
+	inline const str_type& to_split() const
 	{
 		return internal_to_split;
+	}
+	
+	inline size_t line_num() const
+	{
+		return internal_line_num;
 	}
 	
 	size_t find_start_of_word( size_t& i )
@@ -77,7 +92,8 @@ public:		// functions
 		// Eat white space (nom)
 		while ( index_in_to_split(i) && isspace(to_split().at(i)) )
 		{
-			++i;
+			//++i;
+			increment_i(i);
 		}
 		return i;
 	}
@@ -89,14 +105,17 @@ public:		// functions
 			// Handle special characters
 			if ( to_split_at_is_special_char(i) )
 			{
-				++i;
+				//++i;
+				increment_i(i);
 			}
 			else if ( to_split().at(i) == '"' )
 			{
-				++i;
+				//++i;
+				increment_i(i);
 				while ( index_in_to_split(i) && to_split().at(i) != '"' )
 				{
-					++i;
+					//++i;
+					increment_i(i);
 				}
 				
 				// The pos after end needs to be after the quote character
@@ -104,16 +123,21 @@ public:		// functions
 				// are considered part of the so-called "word"
 				if ( index_in_to_split(i) )
 				{
-					++i;
+					//++i;
+					increment_i(i);
 				}
 			}
 			else
 			{
-				++i;
+				//++i;
+				increment_i(i);
+				
+				
 				while ( index_in_to_split(i) && !isspace(to_split().at(i))
 					&& !to_split_at_is_end_of_word(i) )
 				{
-					++i;
+					//++i;
+					increment_i(i);
 				}
 			}
 		}
