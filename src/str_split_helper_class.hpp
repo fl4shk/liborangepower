@@ -30,13 +30,6 @@ protected:		// functions
 			|| ( to_split().at(i) == '"' ) );
 	}
 	
-	inline void increment_i( size_t& i )
-	{
-		if ( to_split().at(i++) == '\n' )
-		{
-			++internal_line_num;
-		}
-	}
 	
 public:		// functions
 	inline str_split_helper( const str_type& s_to_split )
@@ -85,6 +78,14 @@ public:		// functions
 	inline size_t line_num() const
 	{
 		return internal_line_num;
+	}
+	
+	inline void increment_i( size_t& i )
+	{
+		if ( to_split().at(i++) == '\n' )
+		{
+			++internal_line_num;
+		}
 	}
 	
 	// A "word" is either a sequence of non-quote (") characters, or a
