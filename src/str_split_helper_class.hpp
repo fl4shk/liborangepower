@@ -87,6 +87,15 @@ public:		// functions
 		return internal_line_num;
 	}
 	
+	// A "word" is either a sequence of non-quote (") characters, or a
+	// sequence of any non-quote (") characters enclosed within two quote
+	// characters, INCLUDING the two quote characters.
+	// 
+	// example A, with four words:  asdf nice tutorial "asdf nice tutorial"
+	// 
+	// example B, with one word:  "asdf nice tutorial"
+	// 
+	// There is no escape character.
 	size_t find_start_of_word( size_t& i )
 	{
 		// Eat white space (nom)
