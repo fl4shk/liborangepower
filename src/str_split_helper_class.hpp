@@ -23,14 +23,6 @@ protected:		// functions
 		return false;
 	}
 	
-	// This function is NOT meant to be overrided by derived classes
-	bool to_split_at_is_end_of_word( size_t i ) const
-	{
-		return ( to_split_at_is_special_char(i)
-			|| ( to_split().at(i) == '"' ) );
-	}
-	
-	
 public:		// functions
 	inline str_split_helper( const str_type& s_to_split )
 		: internal_to_split(s_to_split)
@@ -86,6 +78,13 @@ public:		// functions
 		{
 			++internal_line_num;
 		}
+	}
+	
+	// This function is NOT meant to be overrided by derived classes
+	bool to_split_at_is_end_of_word( size_t i ) const
+	{
+		return ( to_split_at_is_special_char(i)
+			|| ( to_split().at(i) == '"' ) );
 	}
 	
 	// A "word" is either a sequence of non-quote (") characters, or a
