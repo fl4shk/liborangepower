@@ -32,10 +32,9 @@ protected:		// functions
 			std::move(u) );
 	}
 	
-	// This function should be overrided by derived classes
-	// 
-	// Special characters are those that are NOT pairs, but just individual
-	// characters that should become their own words.
+	// This function should be overrided by derived classes.  It specifies
+	// if an individual character is a whole word (regardless of whether
+	// it's surrounded by spaces)
 	virtual bool to_split_at_is_indiv_word( size_t i ) const = 0;
 	//{
 	//	//return ( to_split().at(i) == ',' );
