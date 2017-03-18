@@ -5,6 +5,9 @@
 #include "misc_defines.hpp"
 #include "misc_includes.hpp"
 
+
+// Note that this does NOT handle quotation marks within quotation marks
+
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
@@ -47,13 +50,12 @@ protected:		// functions
 	virtual const std::vector<val_typ_pair>
 		list_of_special_endpoint_pairs() const
 	{
-		std::vector<val_typ_pair> ret;
-		
-		ret.push_back(make_vt_pair( '"', '"' ));
-		
-		//// Example of something that might be helpful for derived
-		////classes:
-		//ret.push_back(make_vt_pair( '[', ']' ));
+		static const std::vector<val_typ_pair> ret
+			( make_vt_pair( '"', '"' ), 
+			
+			//// Example of something that might be helpful for derived
+			////classes:
+			make_vt_pair( '[', ']' ) );
 		
 		return ret;
 	}
