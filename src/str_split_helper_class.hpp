@@ -51,11 +51,11 @@ protected:		// functions
 		list_of_special_endpoint_pairs() const
 	{
 		static const std::vector<val_typ_pair> ret
-			( make_vt_pair( '"', '"' ), 
+			( { make_vt_pair( '"', '"' ) } );
 			
 			//// Example of something that might be helpful for derived
 			////classes:
-			make_vt_pair( '[', ']' ) );
+			//make_vt_pair( '[', ']' ) } );
 		
 		return ret;
 	}
