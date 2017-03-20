@@ -1,5 +1,5 @@
-#ifndef liborangepower_array_helper_class_hpp
-#define liborangepower_array_helper_class_hpp
+#ifndef liborangepower_array_helper_classes_hpp
+#define liborangepower_array_helper_classes_hpp
 
 
 
@@ -133,4 +133,4 @@ public:			// functions
 } __attribute__((_align4));
 
 
-#endif		// liborangepower_array_helper_class_hpp
+#endif		// liborangepower_array_helper_classes_hpp

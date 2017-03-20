@@ -1,18 +1,18 @@
-#ifndef liborangepower_str_split_helper_class_hpp
-#define liborangepower_str_split_helper_class_hpp
+#ifndef liborangepower_str_split_helper_no_escapes_class_hpp
+#define liborangepower_str_split_helper_no_escapes_class_hpp
 
 #include "misc_types.hpp"
 #include "misc_defines.hpp"
 #include "misc_includes.hpp"
 
 
-// Note that this does NOT handle quotation marks within quotation marks
-
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
+//
+// Note that this does NOT handle quotation marks within quotation marks
 template< typename str_type >
-class str_split_helper
+class str_split_helper_no_escapes
 {
 public:		// typedefs
 	typedef typename str_type::value_type value_type;
@@ -55,7 +55,7 @@ protected:		// functions
 			
 			//// Example of something that might be helpful for derived
 			////classes:
-			//make_vt_pair( '[', ']' ) } );
+			//make_vt_pair( '[', ']' )
 		
 		return ret;
 	}
@@ -110,32 +110,36 @@ protected:		// functions
 	
 	
 public:		// functions
-	inline str_split_helper( const str_type& s_to_split )
+	inline str_split_helper_no_escapes( const str_type& s_to_split )
 		: internal_to_split(s_to_split)
 	{
 	}
-	inline str_split_helper( str_type&& s_to_split )
+	inline str_split_helper_no_escapes( str_type&& s_to_split )
 		: internal_to_split(std::move(s_to_split))
 	{
 	}
 	
-	inline str_split_helper( const str_split_helper& to_copy )
+	inline str_split_helper_no_escapes
+		( const str_split_helper_no_escapes& to_copy )
 	{
 		*this = to_copy;
 	}
-	inline str_split_helper( str_split_helper&& to_move )
+	inline str_split_helper_no_escapes
+		( str_split_helper_no_escapes&& to_move )
 	{
 		*this = std::move(to_move);
 	}
 	
-	inline str_split_helper& operator = ( const str_split_helper& to_copy )
+	inline str_split_helper_no_escapes& operator = 
+		( const str_split_helper_no_escapes& to_copy )
 	{
 		internal_to_split = to_copy.internal_to_split;
 		internal_line_num = to_copy.internal_line_num;
 		
 		return *this;
 	}
-	inline str_split_helper& operator = ( str_split_helper&& to_move )
+	inline str_split_helper_no_escapes& operator = 
+		( str_split_helper_no_escapes&& to_move )
 	{
 		internal_to_split = std::move(to_move.internal_to_split);
 		internal_line_num = std::move(to_move.internal_line_num);
@@ -262,4 +266,4 @@ public:		// functions
 };
 
 
-#endif		// liborangepower_str_split_helper_class_hpp
+#endif		// liborangepower_str_split_helper_no_escapes_class_hpp
