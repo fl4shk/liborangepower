@@ -1,16 +1,13 @@
-#ifndef liborangepower_str_split_helper_no_escapes_class_hpp
-#define liborangepower_str_split_helper_no_escapes_class_hpp
+#ifndef liborangepower_str_split_helper_class_hpp
+#define liborangepower_str_split_helper_class_hpp
 
 #include "misc_types.hpp"
 #include "misc_defines.hpp"
 #include "misc_includes.hpp"
 
-
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
-//
-// Note that this does NOT handle quotation marks within quotation marks
 template< typename str_type >
 class str_split_helper_no_escapes
 {
@@ -35,9 +32,10 @@ protected:		// functions
 			std::move(u) );
 	}
 	
-	// This function should be overrided by derived classes.  It specifies
-	// if an individual character is a whole word (regardless of whether
-	// it's surrounded by spaces)
+	// This function should be overrided by derived classes
+	// 
+	// Special characters are those that are NOT pairs, but just individual
+	// characters that should become their own words.
 	virtual bool to_split_at_is_indiv_word( size_t i ) const = 0;
 	//{
 	//	//return ( to_split().at(i) == ',' );
@@ -50,12 +48,13 @@ protected:		// functions
 	virtual const std::vector<val_typ_pair>
 		list_of_special_endpoint_pairs() const
 	{
-		static const std::vector<val_typ_pair> ret
-			( { make_vt_pair( '"', '"' ) } );
-			
-			//// Example of something that might be helpful for derived
-			////classes:
-			//make_vt_pair( '[', ']' )
+		std::vector<val_typ_pair> ret;
+		
+		ret.push_back(make_vt_pair( '"', '"' ));
+		
+		//// Example of something that might be helpful for derived
+		////classes:
+		//ret.push_back(make_vt_pair( '[', ']' ));
 		
 		return ret;
 	}
@@ -69,6 +68,7 @@ protected:		// functions
 		{
 			if ( to_split().at(i) == iter.first )
 			{
+				which = iter;
 				return true;
 			}
 		}
@@ -85,6 +85,7 @@ protected:		// functions
 		{
 			if ( to_split().at(i) == iter.second )
 			{
+				which = iter;
 				return true;
 			}
 		}
@@ -266,4 +267,4 @@ public:		// functions
 };
 
 
-#endif		// liborangepower_str_split_helper_no_escapes_class_hpp
+#endif		// liborangepower_str_split_helper_class_hpp
