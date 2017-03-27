@@ -481,16 +481,16 @@ public:		// functions
 				this->increment_i(i);
 				
 				
-				if ( ( which.first != '"' ) || ( which.second != '"' ) )
-				{
-					while ( this->index_in_to_split(i) 
-						&& ( this->to_split().at(i) != which.second ) )
-					{
-						this->increment_i(i);
-					}
-				}
-				else // if ( ( which.first == '"') 
-					// && ( which.second == '"' ) )
+				//if ( ( which.first != '"' ) || ( which.second != '"' ) )
+				//{
+				//	while ( this->index_in_to_split(i) 
+				//		&& ( this->to_split().at(i) != which.second ) )
+				//	{
+				//		this->increment_i(i);
+				//	}
+				//}
+				//else // if ( ( which.first == '"') 
+				//	// && ( which.second == '"' ) )
 				{
 					while ( this->index_in_to_split(i) )
 					{
