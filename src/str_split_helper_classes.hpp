@@ -343,6 +343,7 @@ public:		// functions
 			else if ( to_split_at_is_special_first_endpoint( i, which ) )
 			{
 				increment_i(i);
+				
 				while ( index_in_to_split(i) 
 					&& ( to_split().at(i) != which.second ) )
 				{
@@ -479,15 +480,29 @@ public:		// functions
 			{
 				this->increment_i(i);
 				
-				while ( this->index_in_to_split(i) )
+				
+				if ( ( which.first != '"' ) || ( which.second != '"' ) )
 				{
-					if ( ( this->to_split().at(i) == which.second )
-						&& ( this->num_consec_backslashes() % 2 ) == 0 )
+					while ( this->index_in_to_split(i) 
+						&& ( this->to_split().at(i) != which.second ) )
 					{
-						break;
+						this->increment_i(i);
 					}
-					
-					this->increment_i(i);
+				}
+				else // if ( ( which.first == '"') 
+					// && ( which.second == '"' ) )
+				{
+					while ( this->index_in_to_split(i) )
+					{
+						if ( ( this->to_split().at(i) == which.second )
+							&& ( ( this->num_consec_backslashes() % 2 ) 
+							== 0 ) )
+						{
+							break;
+						}
+						
+						this->increment_i(i);
+					}
 				}
 				
 				// The pos after end needs to be after the quote character
