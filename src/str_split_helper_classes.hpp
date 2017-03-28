@@ -8,11 +8,12 @@
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
-template< typename str_type >
+template< typename some_str_type >
 class str_split_helper_base
 {
 public:		// typedefs
 	typedef typename str_type::value_type value_type;
+	typedef some_str_type str_type;
 	typedef std::pair< value_type, value_type > val_typ_pair;
 	//using decay_t = typename std::decay<value_type&&>::type;
 	
@@ -151,13 +152,18 @@ protected:		// functions
 	}
 	
 //public:		// functions
-	inline str_split_helper_base( const str_type& s_to_split )
-		: internal_to_split(s_to_split)
+	inline str_split_helper_base()
 	{
 	}
-	inline str_split_helper_base( str_type&& s_to_split )
-		: internal_to_split(std::move(s_to_split))
+	inline str_split_helper_base( const str_type& s_to_split )
+		//: internal_to_split(s_to_split)
 	{
+		init(s_to_split);
+	}
+	inline str_split_helper_base( str_type&& s_to_split )
+		//: internal_to_split(std::move(s_to_split))
+	{
+		init(std::move(s_to_split));
 	}
 	
 	inline str_split_helper_base
@@ -176,6 +182,9 @@ protected:		// functions
 	{
 		internal_to_split = to_copy.internal_to_split;
 		internal_line_num = to_copy.internal_line_num;
+		internal_num_consec_backslashes 
+			= to_copy.internal_num_consec_backslashes;
+		internal_prev_i = to_copy.internal_prev_i;
 		
 		return *this;
 	}
@@ -184,20 +193,35 @@ protected:		// functions
 	{
 		internal_to_split = std::move(to_move.internal_to_split);
 		internal_line_num = std::move(to_move.internal_line_num);
+		internal_num_consec_backslashes 
+			= std::move(to_move.internal_num_consec_backslashes);
+		internal_prev_i = std::move(to_move.internal_prev_i);
 		
 		return *this;
 	}
 	
 public:		// functions
 	
-	inline bool index_in_to_split( size_t i ) const
+	inline void init( const str_type& n_to_split )
 	{
-		return ( i < to_split().size() );
+		internal_to_split = n_to_split;
+		internal_line_num = 1;
+		internal_num_consec_backslashes = 0;
 	}
-	
+	inline void init( str_type&& n_to_split )
+	{
+		internal_to_split = std::move(n_to_split);
+		internal_line_num = 1;
+		internal_num_consec_backslashes = 0;
+	}
 	inline const str_type& to_split() const
 	{
 		return internal_to_split;
+	}
+	
+	inline bool index_in_to_split( size_t i ) const
+	{
+		return ( i < to_split().size() );
 	}
 	
 	inline size_t line_num() const
@@ -384,6 +408,9 @@ public:		// typedefs
 	typedef typename base::value_type value_type;
 	
 public:		// functions
+	inline str_split_helper_no_escapes()
+	{
+	}
 	inline str_split_helper_no_escapes( const str_type& s_to_split )
 		: base(s_to_split)
 	{
@@ -431,6 +458,9 @@ public:		// typedefs
 	typedef typename base::val_typ_pair val_typ_pair;
 	
 public:		// functions
+	inline str_split_helper_with_escapes()
+	{
+	}
 	inline str_split_helper_with_escapes( const str_type& s_to_split )
 		: base(s_to_split)
 	{
