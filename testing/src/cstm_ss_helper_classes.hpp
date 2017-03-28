@@ -1,7 +1,7 @@
-#ifndef cstm_str_split_helper_classes_hpp
-#define cstm_str_split_helper_classes_hpp
+#ifndef cstm_ss_helper_classes_hpp
+#define cstm_ss_helper_classes_hpp
 
-#include "../liborangepower_src/str_split_helper_classes.hpp"
+#include "liborangepower_src/str_split_helper_classes.hpp"
 
 #include <experimental/string_view>
 typedef std::experimental::string_view string_view;
@@ -106,4 +106,4 @@ public:		// functions
 };
 
 
-#endif		// cstm_str_split_helper_classes_hpp
+#endif		// cstm_ss_helper_classes_hpp

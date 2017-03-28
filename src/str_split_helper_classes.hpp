@@ -12,8 +12,8 @@ template< typename some_str_type >
 class str_split_helper_base
 {
 public:		// typedefs
-	typedef typename str_type::value_type value_type;
 	typedef some_str_type str_type;
+	typedef typename str_type::value_type value_type;
 	typedef std::pair< value_type, value_type > val_typ_pair;
 	//using decay_t = typename std::decay<value_type&&>::type;
 	
@@ -399,6 +399,7 @@ public:		// functions
 	}
 	
 };
+
 
 template< typename str_type >
 class str_split_helper_no_escapes : public str_split_helper_base<str_type>
