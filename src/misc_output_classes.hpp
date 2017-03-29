@@ -7,18 +7,18 @@
 template< typename... arg_types >
 inline void printout( arg_types&&... args );
 
-class misc_output
+class printout_backend
 {
-protected:		// functions
-	static inline void printout_backend()
+private:		// functions
+	static inline void func()
 	{
 	}
 	template< typename first_type, typename... rem_types >
-	static void printout_backend
+	static void func
 		( const first_type& first_val, rem_types&&... rem_args )
 	{
 		cout << first_val;
-		printout_backend(rem_args...);
+		func(rem_args...);
 	}
 	
 	template< typename... arg_types >
@@ -29,7 +29,7 @@ protected:		// functions
 template< typename... arg_types >
 void printout( arg_types&&... args )
 {
-	misc_output::printout_backend(args...);
+	printout_backend::func(args...);
 }
 
 
@@ -37,18 +37,18 @@ void printout( arg_types&&... args )
 template< typename... arg_types >
 void printerr( arg_types&&... args );
 
-class misc_error
+class printerr_backend
 {
-protected:		// functions
-	static inline void printerr_backend()
+private:		// functions
+	static inline void func()
 	{
 	}
 	template< typename first_type, typename... rem_types >
-	static void printerr_backend
+	static void func
 		( const first_type& first_val, rem_types&&... rem_args )
 	{
 		cerr << first_val;
-		printerr_backend(rem_args...);
+		func(rem_args...);
 	}
 	
 	template< typename... arg_types >
@@ -59,7 +59,7 @@ protected:		// functions
 template< typename... arg_types >
 void printerr( arg_types&&... args )
 {
-	misc_error::printerr_backend(args...);
+	printerr_backend::func(args...);
 }
 
 
