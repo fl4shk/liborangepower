@@ -12,19 +12,19 @@ void test_cstm_ss_helper_ne( const string_view& to_test )
 			const size_t pos_after_end 
 				= ss_helper.find_pos_after_end_of_word(i);
 			
-			//prntout( to_test.substr( start, 
+			//printout( to_test.substr( start, 
 			//	ss_helper.get_substr_size( start, pos_after_end ) ),
 			//	"\t\t" );
-			prntout( start, " ", pos_after_end, "\t\t", 
+			printout( start, " ", pos_after_end, "\t\t", 
 				to_test.substr( start, ss_helper.get_substr_size( start, 
 				pos_after_end ) ), "\n" );
-			//prntout( to_test.substr( start, 
+			//printout( to_test.substr( start, 
 			//	ss_helper.get_substr_size( start, pos_after_end ) ), 
 			//	"\n" );
 		}
 	}
 	
-	prntout("\n");
+	printout("\n");
 	
 }
 
@@ -41,18 +41,18 @@ void test_cstm_ss_helper_we( const string_view& to_test )
 			const size_t pos_after_end 
 				= ss_helper.find_pos_after_end_of_word(i);
 			
-			//prntout( to_test.substr( start, 
+			//printout( to_test.substr( start, 
 			//	ss_helper.get_substr_size( start, pos_after_end ) ),
 			//	"\t\t" );
-			prntout( start, " ", pos_after_end, "\t\t", 
+			printout( start, " ", pos_after_end, "\t\t", 
 				to_test.substr( start, ss_helper.get_substr_size( start, 
 				pos_after_end ) ), "\n" );
-			//prntout( to_test.substr( start, 
+			//printout( to_test.substr( start, 
 			//	ss_helper.get_substr_size( start, pos_after_end ) ), 
 			//	"\n" );
 		}
 	}
 	
-	prntout("\n");
+	printout("\n");
 	
 }

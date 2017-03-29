@@ -5,61 +5,61 @@
 #include "misc_includes.hpp"
 
 template< typename... arg_types >
-inline void prntout( arg_types&&... args );
+inline void printout( arg_types&&... args );
 
 class misc_output
 {
 protected:		// functions
-	static inline void prntout_backend()
+	static inline void printout_backend()
 	{
 	}
 	template< typename first_type, typename... rem_types >
-	static void prntout_backend
+	static void printout_backend
 		( const first_type& first_val, rem_types&&... rem_args )
 	{
 		cout << first_val;
-		prntout_backend(rem_args...);
+		printout_backend(rem_args...);
 	}
 	
 	template< typename... arg_types >
-	friend void prntout( arg_types&&... args );
+	friend void printout( arg_types&&... args );
 };
 
 
 template< typename... arg_types >
-void prntout( arg_types&&... args )
+void printout( arg_types&&... args )
 {
-	misc_output::prntout_backend(args...);
+	misc_output::printout_backend(args...);
 }
 
 
 
 template< typename... arg_types >
-void prnterr( arg_types&&... args );
+void printerr( arg_types&&... args );
 
 class misc_error
 {
 protected:		// functions
-	static inline void prnterr_backend()
+	static inline void printerr_backend()
 	{
 	}
 	template< typename first_type, typename... rem_types >
-	static void prnterr_backend
+	static void printerr_backend
 		( const first_type& first_val, rem_types&&... rem_args )
 	{
 		cerr << first_val;
-		prnterr_backend(rem_args...);
+		printerr_backend(rem_args...);
 	}
 	
 	template< typename... arg_types >
-	friend void prnterr( arg_types&&... args );
+	friend void printerr( arg_types&&... args );
 };
 
 
 template< typename... arg_types >
-void prnterr( arg_types&&... args )
+void printerr( arg_types&&... args )
 {
-	misc_error::prnterr_backend(args...);
+	misc_error::printerr_backend(args...);
 }
 
 

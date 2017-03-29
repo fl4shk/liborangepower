@@ -21,7 +21,7 @@ int real_main( const std::vector<std::string>& args_vec )
 {
 	if ( args_vec.size() != 2 )
 	{
-		prnterr( "Usage:  ", args_vec.front(), " <some_str>\n" );
+		printerr( "Usage:  ", args_vec.front(), " <some_str>\n" );
 		return 1;
 	}
 	
