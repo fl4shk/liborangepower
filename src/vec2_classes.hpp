@@ -405,4 +405,5 @@ inline vec2<type> custom_abs( const vec2<type>& val )
 	return vec2<type>( custom_abs(val.x), custom_abs(val.y) );
 }
 
+
 #endif		// liborangepower_vec2_classes_hpp
