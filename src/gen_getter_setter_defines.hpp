@@ -114,6 +114,7 @@ gen_generic_setter_by_rval_ref( internal, suffix )
 
 #ifndef gen_enum_ostm_sl_decl
 #define gen_enum_ostm_sl_decl
+#endif
 
 
 #endif		// liborangepower_gen_getter_setter_defines_hpp
