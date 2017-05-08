@@ -7,7 +7,7 @@
 #ifndef gen_generic_getter_by_val
 // By value
 #define gen_generic_getter_by_val( prefix, suffix ) \
-inline auto suffix() const \
+inline decltype(prefix##_##suffix) suffix() const \
 { \
 	return prefix##_##suffix; \
 }
@@ -24,7 +24,7 @@ gen_generic_getter_by_val( internal, suffix )
 #ifndef gen_generic_getter_by_con_ref
 // By constant reference
 #define gen_generic_getter_by_con_ref( prefix, suffix ) \
-inline const auto& suffix() const \
+inline const decltype(prefix##_##suffix)& suffix() const \
 { \
 	return prefix##_##suffix; \
 }
@@ -41,7 +41,7 @@ gen_generic_getter_by_con_ref( internal, suffix )
 #ifndef gen_generic_getter_by_ref
 // By reference
 #define gen_generic_getter_by_ref( prefix, suffix ) \
-inline auto& suffix() \
+inline decltype(prefix##_##suffix)& suffix() \
 { \
 	return prefix##_##suffix; \
 }
@@ -60,7 +60,7 @@ gen_generic_getter_by_ref( internal, suffix )
 #ifndef gen_generic_setter_by_val
 // By value
 #define gen_generic_setter_by_val( prefix, suffix ) \
-inline auto set_##suffix( decltype(prefix##_##suffix) to_copy ) \
+inline decltype(prefix##_##suffix) set_##suffix( decltype(prefix##_##suffix) to_copy ) \
 { \
 	prefix##_##suffix = to_copy; \
 	return prefix##_##suffix; \
@@ -78,7 +78,7 @@ gen_generic_setter_by_val( internal, suffix )
 #ifndef gen_generic_setter_by_con_ref
 // By const reference
 #define gen_generic_setter_by_con_ref( prefix, suffix ) \
-inline const auto& set_##suffix \
+inline const decltype(prefix##_##suffix)& set_##suffix \
 	( const decltype(prefix##_##suffix)& to_copy ) \
 { \
 	prefix##_##suffix = to_copy; \
@@ -97,7 +97,7 @@ gen_generic_setter_by_con_ref( internal, suffix )
 #ifndef gen_generic_setter_by_rval_ref
 // By rvalue reference
 #define gen_generic_setter_by_rval_ref( prefix, suffix ) \
-inline const auto& set_##suffix \
+inline const decltype(prefix##_##suffix)& set_##suffix \
 	( decltype(prefix##_##suffix)&& to_move ) \
 { \
 	prefix##_##suffix = std::move(to_move); \
