@@ -13,8 +13,8 @@ using liborangepower::printerr;
 #include "cstm_ss_helper_classes.hpp"
 
 
-void test_cstm_ss_helper_ne( const string_view& to_test );
-void test_cstm_ss_helper_we( const string_view& to_test );
+void test_cstm_ss_helper_ne(const string_view& to_test);
+void test_cstm_ss_helper_we(const string_view& to_test);
 
 
 #endif		// cstm_ss_helper_testing_hpp

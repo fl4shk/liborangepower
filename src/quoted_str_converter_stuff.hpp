@@ -10,8 +10,8 @@ namespace liborangepower
 //class lex_std_str_append_functor
 //{
 //public:		// functions
-//	const std::string& operator () ( std::string& s, 
-//		const std::string& to_append ) const
+//	const std::string& operator () (std::string& s, 
+//		const std::string& to_append) const
 //	{
 //		s += to_append;
 //		return s;
@@ -42,32 +42,32 @@ namespace liborangepower
 //	inline lexer()
 //	{
 //	}
-//	inline lexer( const internal_str_type& s_to_split )
+//	inline lexer(const internal_str_type& s_to_split)
 //	{
 //		init(s_to_split);
 //	}
-//	inline lexer( internal_str_type&& s_to_split )
+//	inline lexer(internal_str_type&& s_to_split)
 //	{
 //		init(std::move(s_to_split));
 //	}
 //	
-//	inline lexer& operator = ( const lexer& to_copy )
+//	inline lexer& operator = (const lexer& to_copy)
 //	{
 //		internal_ssplit_helper = to_copy.internal_ssplit_helper;
 //		return *this;
 //	}
-//	inline lexer& operator = ( lexer&& to_move )
+//	inline lexer& operator = (lexer&& to_move)
 //	{
 //		internal_ssplit_helper = std::move(to_move.internal_ssplit_helper);
 //		return *this;
 //	}
 //	
 //	
-//	inline void init( const internal_str_type& s_to_split )
+//	inline void init(const internal_str_type& s_to_split)
 //	{
 //		internal_ssplit_helper = s_to_split;
 //	}
-//	inline void init( internal_str_type&& s_to_split )
+//	inline void init(internal_str_type&& s_to_split)
 //	{
 //		internal_ssplit_helper = std::move(s_to_split);
 //	}

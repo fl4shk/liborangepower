@@ -28,24 +28,24 @@ protected:		// variables
 	size_t internal_prev_i;
 	
 protected:		// functions
-	static inline auto make_vt_pair( const value_type& t, 
-		const value_type& u )
+	static inline auto make_vt_pair(const value_type& t, 
+		const value_type& u)
 	{
-		return std::make_pair< value_type, value_type >( t, u );
+		return std::make_pair< value_type, value_type >(t, u);
 	}
-	static inline  auto make_vt_pair( value_type&& t, value_type&& u )
+	static inline  auto make_vt_pair(value_type&& t, value_type&& u)
 	{
-		return std::make_pair< value_type, value_type >( std::move(t), 
-			std::move(u) );
+		return std::make_pair< value_type, value_type >(std::move(t), 
+			std::move(u));
 	}
 	
 	// This function should be overrided by derived classes
 	// 
 	// Special characters are those that are NOT pairs, but just individual
 	// characters that should become their own words.
-	virtual bool to_split_at_is_indiv_word( size_t i ) const = 0;
+	virtual bool to_split_at_is_indiv_word(size_t i) const = 0;
 	//{
-	//	//return ( to_split().at(i) == ',' );
+	//	//return (to_split().at(i) == ',');
 	//	return false;
 	//}
 	
@@ -56,25 +56,25 @@ protected:		// functions
 		list_of_special_endpoint_pairs() const
 	{
 		static const std::vector<val_typ_pair> ret
-			({ make_vt_pair( '"', '"' ) });
+			({ make_vt_pair('"', '"') });
 		
 		//// Example of something that might be helpful for derived
 		////classes:
-		//ret.push_back(make_vt_pair( '[', ']' ));
+		//ret.push_back(make_vt_pair('[', ']'));
 		
 		return ret;
 	}
 	
 	
 	
-	bool vt_is_special_first_endpoint( const value_type& vt,
-		val_typ_pair& which ) const
+	bool vt_is_special_first_endpoint(const value_type& vt,
+		val_typ_pair& which) const
 	{
 		const auto& temp = list_of_special_endpoint_pairs();
 		
-		for ( auto iter : temp )
+		for (auto iter : temp)
 		{
-			if ( vt == iter.first )
+			if (vt == iter.first)
 			{
 				which = iter;
 				return true;
@@ -83,21 +83,21 @@ protected:		// functions
 		
 		return false;
 	}
-	inline bool vt_is_special_first_endpoint( const value_type& vt ) const
+	inline bool vt_is_special_first_endpoint(const value_type& vt) const
 	{
 		val_typ_pair which;
 		
-		return vt_is_special_first_endpoint( vt, which );
+		return vt_is_special_first_endpoint(vt, which);
 	}
 	
-	bool vt_is_special_second_endpoint( const value_type& vt,
-		val_typ_pair& which ) const
+	bool vt_is_special_second_endpoint(const value_type& vt,
+		val_typ_pair& which) const
 	{
 		const auto& temp = list_of_special_endpoint_pairs();
 		
-		for ( auto iter : temp )
+		for (auto iter : temp)
 		{
-			if ( vt == iter.second )
+			if (vt == iter.second)
 			{
 				which = iter;
 				return true;
@@ -106,20 +106,20 @@ protected:		// functions
 		
 		return false;
 	}
-	inline bool vt_is_special_second_endpoint( const value_type& vt ) const
+	inline bool vt_is_special_second_endpoint(const value_type& vt) const
 	{
 		val_typ_pair which;
 		
-		return vt_is_special_second_endpoint( vt, which );
+		return vt_is_special_second_endpoint(vt, which);
 	}
 	
-	bool vt_is_any_special_endpoint( const value_type& vt ) const
+	bool vt_is_any_special_endpoint(const value_type& vt) const
 	{
 		const auto& temp = list_of_special_endpoint_pairs();
 		
-		for ( auto iter : temp )
+		for (auto iter : temp)
 		{
-			if ( ( vt == iter.first ) || ( vt == iter.second ) )
+			if ((vt == iter.first) || (vt == iter.second))
 			{
 				return true;
 			}
@@ -128,28 +128,28 @@ protected:		// functions
 		return false;
 	}
 	
-	inline bool to_split_at_is_special_first_endpoint( size_t i, 
-		val_typ_pair& which ) const
+	inline bool to_split_at_is_special_first_endpoint(size_t i, 
+		val_typ_pair& which) const
 	{
-		return vt_is_special_first_endpoint( to_split().at(i), which );
+		return vt_is_special_first_endpoint(to_split().at(i), which);
 	}
-	inline bool to_split_at_is_special_first_endpoint( size_t i ) const
+	inline bool to_split_at_is_special_first_endpoint(size_t i) const
 	{
 		return vt_is_special_first_endpoint(to_split().at(i));
 	}
 	
 	
-	inline bool to_split_at_is_special_second_endpoint( size_t i, 
-		val_typ_pair& which ) const
+	inline bool to_split_at_is_special_second_endpoint(size_t i, 
+		val_typ_pair& which) const
 	{
-		return vt_is_special_second_endpoint( to_split().at(i), which );
+		return vt_is_special_second_endpoint(to_split().at(i), which);
 	}
-	inline bool to_split_at_is_special_second_endpoint( size_t i ) const
+	inline bool to_split_at_is_special_second_endpoint(size_t i) const
 	{
 		return vt_is_special_second_endpoint(to_split().at(i));
 	}
 	
-	inline bool to_split_at_is_any_special_endpoint( size_t i ) const
+	inline bool to_split_at_is_any_special_endpoint(size_t i) const
 	{
 		return vt_is_any_special_endpoint(to_split().at(i));
 	}
@@ -158,30 +158,30 @@ protected:		// functions
 	inline StrSplitHelperBase()
 	{
 	}
-	inline StrSplitHelperBase( const str_type& s_to_split )
+	inline StrSplitHelperBase(const str_type& s_to_split)
 		//: internal_to_split(s_to_split)
 	{
 		init(s_to_split);
 	}
-	inline StrSplitHelperBase( str_type&& s_to_split )
+	inline StrSplitHelperBase(str_type&& s_to_split)
 		//: internal_to_split(std::move(s_to_split))
 	{
 		init(std::move(s_to_split));
 	}
 	
 	inline StrSplitHelperBase
-		( const StrSplitHelperBase& to_copy )
+		(const StrSplitHelperBase& to_copy)
 	{
 		*this = to_copy;
 	}
 	inline StrSplitHelperBase
-		( StrSplitHelperBase&& to_move )
+		(StrSplitHelperBase&& to_move)
 	{
 		*this = std::move(to_move);
 	}
 	
 	inline StrSplitHelperBase& operator = 
-		( const StrSplitHelperBase& to_copy )
+		(const StrSplitHelperBase& to_copy)
 	{
 		internal_to_split = to_copy.internal_to_split;
 		internal_line_num = to_copy.internal_line_num;
@@ -192,7 +192,7 @@ protected:		// functions
 		return *this;
 	}
 	inline StrSplitHelperBase& operator = 
-		( StrSplitHelperBase&& to_move )
+		(StrSplitHelperBase&& to_move)
 	{
 		internal_to_split = std::move(to_move.internal_to_split);
 		internal_line_num = std::move(to_move.internal_line_num);
@@ -205,13 +205,13 @@ protected:		// functions
 	
 public:		// functions
 	
-	inline void init( const str_type& n_to_split )
+	inline void init(const str_type& n_to_split)
 	{
 		internal_to_split = n_to_split;
 		internal_line_num = 1;
 		internal_num_consec_backslashes = 0;
 	}
-	inline void init( str_type&& n_to_split )
+	inline void init(str_type&& n_to_split)
 	{
 		internal_to_split = std::move(n_to_split);
 		internal_line_num = 1;
@@ -222,9 +222,9 @@ public:		// functions
 		return internal_to_split;
 	}
 	
-	inline bool index_in_to_split( size_t i ) const
+	inline bool index_in_to_split(size_t i) const
 	{
-		return ( i < to_split().size() );
+		return (i < to_split().size());
 	}
 	
 	inline size_t line_num() const
@@ -247,7 +247,7 @@ public:		// functions
 	}
 	inline const value_type* prev_prev_to_split_at_ptr() const
 	{
-		if ( prev_prev_i() == static_cast<size_t>(-1) )
+		if (prev_prev_i() == static_cast<size_t>(-1))
 		{
 			return NULL;
 		}
@@ -259,7 +259,7 @@ public:		// functions
 	}
 	inline const value_type* prev_to_split_at_ptr() const
 	{
-		if ( prev_i() == static_cast<size_t>(-1) )
+		if (prev_i() == static_cast<size_t>(-1))
 		{
 			return NULL;
 		}
@@ -271,20 +271,20 @@ public:		// functions
 	}
 	
 	
-	inline void increment_i( size_t& i )
+	inline void increment_i(size_t& i)
 	{
 		internal_prev_i = i;
 		++i;
 		
-		if ( prev_to_split_at() == '\\' )
+		if (prev_to_split_at() == '\\')
 		{
-			if ( !prev_prev_to_split_at_ptr() 
-				|| ( prev_prev_to_split_at() != '\\' ) )
+			if (!prev_prev_to_split_at_ptr() 
+				|| (prev_prev_to_split_at() != '\\'))
 			{
 				internal_num_consec_backslashes = 1;
 			}
-			else if ( prev_prev_to_split_at_ptr()
-				&& ( prev_prev_to_split_at() == '\\' ) )
+			else if (prev_prev_to_split_at_ptr()
+				&& (prev_prev_to_split_at() == '\\'))
 			{
 				++internal_num_consec_backslashes;
 			}
@@ -293,8 +293,8 @@ public:		// functions
 		{
 			internal_num_consec_backslashes = 0;
 			
-			//if ( to_split().at(i++) == '\n' )
-			if ( prev_to_split_at() == '\n' )
+			//if (to_split().at(i++) == '\n')
+			if (prev_to_split_at() == '\n')
 			{
 				++internal_line_num;
 			}
@@ -303,20 +303,20 @@ public:		// functions
 	}
 	
 	// This function is NOT meant to be overrided by derived classes
-	bool to_split_at_is_end_of_word( size_t i ) const
+	bool to_split_at_is_end_of_word(size_t i) const
 	{
-		//return ( to_split_at_is_indiv_word(i)
-		//	|| ( to_split().at(i) == '"' ) );
-		//return ( to_split_at_is_indiv_word(i)
-		//	|| to_split_at_is_any_special_endpoint(i) );
-		return ( to_split_at_is_indiv_word(i)
-			|| to_split_at_is_special_first_endpoint(i) );
+		//return (to_split_at_is_indiv_word(i)
+		//	|| (to_split().at(i) == '"'));
+		//return (to_split_at_is_indiv_word(i)
+		//	|| to_split_at_is_any_special_endpoint(i));
+		return (to_split_at_is_indiv_word(i)
+			|| to_split_at_is_special_first_endpoint(i));
 	}
 	
-	static inline size_t get_substr_size( const size_t start, 
-		const size_t pos_after_end )
+	static inline size_t get_substr_size(const size_t start, 
+		const size_t pos_after_end)
 	{
-		return ( pos_after_end - start );
+		return (pos_after_end - start);
 	}
 	
 	// A "word" is either a sequence of non-quote (") characters, or a
@@ -326,12 +326,12 @@ public:		// functions
 	// example A, with four words:  asdf nice tutorial "asdf nice tutorial"
 	// 
 	// example B, with one word:  "asdf nice tutorial"
-	size_t find_start_of_word( size_t& i )
+	size_t find_start_of_word(size_t& i)
 	{
 		internal_prev_i = -1;
 		
 		// Eat white space (nom)
-		while ( index_in_to_split(i) && isspace(to_split().at(i)) )
+		while (index_in_to_split(i) && isspace(to_split().at(i)))
 		{
 			increment_i(i);
 		}
@@ -339,22 +339,22 @@ public:		// functions
 		return i;
 	}
 	
-	virtual size_t find_pos_after_end_of_word( size_t& i )
+	virtual size_t find_pos_after_end_of_word(size_t& i)
 	{
-		if ( index_in_to_split(i) )
+		if (index_in_to_split(i))
 		{
-			//show_misc_output( "i:  ", i, "\n" );
+			//show_misc_output("i:  ", i, "\n");
 			
 			val_typ_pair which;
 			
-			if ( to_split_at_is_indiv_word(i) )
+			if (to_split_at_is_indiv_word(i))
 			{
 				increment_i(i);
 			}
-			//else if ( to_split().at(i) == '"' )
+			//else if (to_split().at(i) == '"')
 			//{
 			//	increment_i(i);
-			//	while ( index_in_to_split(i) && to_split().at(i) != '"' )
+			//	while (index_in_to_split(i) && to_split().at(i) != '"')
 			//	{
 			//		increment_i(i);
 			//	}
@@ -362,17 +362,17 @@ public:		// functions
 			//	// The pos after end needs to be after the quote character
 			//	// because both the starting and ending quote characters
 			//	// are considered part of the so-called "word"
-			//	if ( index_in_to_split(i) )
+			//	if (index_in_to_split(i))
 			//	{
 			//		increment_i(i);
 			//	}
 			//}
-			else if ( to_split_at_is_special_first_endpoint( i, which ) )
+			else if (to_split_at_is_special_first_endpoint(i, which))
 			{
 				increment_i(i);
 				
-				while ( index_in_to_split(i) 
-					&& ( to_split().at(i) != which.second ) )
+				while (index_in_to_split(i) 
+					&& (to_split().at(i) != which.second))
 				{
 					increment_i(i);
 				}
@@ -380,7 +380,7 @@ public:		// functions
 				// The pos after end needs to be after the quote character
 				// because both the starting and ending quote characters
 				// are considered part of the so-called "word"
-				if ( index_in_to_split(i) )
+				if (index_in_to_split(i))
 				{
 					increment_i(i);
 				}
@@ -390,8 +390,8 @@ public:		// functions
 				increment_i(i);
 				
 				
-				while ( index_in_to_split(i) && !isspace(to_split().at(i))
-					&& !to_split_at_is_end_of_word(i) )
+				while (index_in_to_split(i) && !isspace(to_split().at(i))
+					&& !to_split_at_is_end_of_word(i))
 				{
 					increment_i(i);
 				}
@@ -415,34 +415,34 @@ public:		// functions
 	inline StrSplitHelperNoEscapes()
 	{
 	}
-	inline StrSplitHelperNoEscapes( const str_type& s_to_split )
+	inline StrSplitHelperNoEscapes(const str_type& s_to_split)
 		: base(s_to_split)
 	{
 	}
-	inline StrSplitHelperNoEscapes( str_type&& s_to_split )
+	inline StrSplitHelperNoEscapes(str_type&& s_to_split)
 		: base(std::move(s_to_split))
 	{
 	}
 	
 	inline StrSplitHelperNoEscapes
-		( const StrSplitHelperNoEscapes& to_copy )
+		(const StrSplitHelperNoEscapes& to_copy)
 		: base(to_copy)
 	{
 	}
 	inline StrSplitHelperNoEscapes
-		( StrSplitHelperNoEscapes&& to_move )
+		(StrSplitHelperNoEscapes&& to_move)
 		: base(std::move(to_move))
 	{
 	}
 	
 	inline StrSplitHelperNoEscapes& operator = 
-		( const StrSplitHelperNoEscapes& to_copy )
+		(const StrSplitHelperNoEscapes& to_copy)
 	{
 		base::operator = (static_cast<const base&>(to_copy));
 		return *this;
 	}
 	inline StrSplitHelperNoEscapes& operator = 
-		( StrSplitHelperNoEscapes&& to_move )
+		(StrSplitHelperNoEscapes&& to_move)
 	{
 		base::operator = (std::move(static_cast<base&&>(to_move)));
 		return *this;
@@ -464,72 +464,72 @@ public:		// functions
 	inline StrSplitHelperWithEscapes()
 	{
 	}
-	inline StrSplitHelperWithEscapes( const str_type& s_to_split )
+	inline StrSplitHelperWithEscapes(const str_type& s_to_split)
 		: base(s_to_split)
 	{
 	}
-	inline StrSplitHelperWithEscapes( str_type&& s_to_split )
+	inline StrSplitHelperWithEscapes(str_type&& s_to_split)
 		: base(std::move(s_to_split))
 	{
 	}
 	
 	inline StrSplitHelperWithEscapes
-		( const StrSplitHelperWithEscapes& to_copy )
+		(const StrSplitHelperWithEscapes& to_copy)
 		: base(to_copy)
 	{
 	}
 	inline StrSplitHelperWithEscapes
-		( StrSplitHelperWithEscapes&& to_move )
+		(StrSplitHelperWithEscapes&& to_move)
 		: base(std::move(to_move))
 	{
 	}
 	
 	inline StrSplitHelperWithEscapes& operator = 
-		( const StrSplitHelperWithEscapes& to_copy )
+		(const StrSplitHelperWithEscapes& to_copy)
 	{
 		base::operator = (static_cast<const base&>(to_copy));
 		return *this;
 	}
 	inline StrSplitHelperWithEscapes& operator = 
-		( StrSplitHelperWithEscapes&& to_move )
+		(StrSplitHelperWithEscapes&& to_move)
 	{
 		base::operator = (std::move(static_cast<base&&>(to_move)));
 		return *this;
 	}
 	
 	
-	virtual size_t find_pos_after_end_of_word( size_t& i )
+	virtual size_t find_pos_after_end_of_word(size_t& i)
 	{
-		if ( this->index_in_to_split(i) )
+		if (this->index_in_to_split(i))
 		{
 			val_typ_pair which;
 			
-			if ( this->to_split_at_is_indiv_word(i) )
+			if (this->to_split_at_is_indiv_word(i))
 			{
 				this->increment_i(i);
 			}
-			else if ( this->to_split_at_is_special_first_endpoint( i, 
-				which ) )
+			else if (this->to_split_at_is_special_first_endpoint(i, 
+				which))
 			{
 				this->increment_i(i);
 				
 				
-				//if ( ( which.first != '"' ) || ( which.second != '"' ) )
+				//if ((which.first != '"') || (which.second != '"'))
 				//{
-				//	while ( this->index_in_to_split(i) 
-				//		&& ( this->to_split().at(i) != which.second ) )
+				//	while (this->index_in_to_split(i) 
+				//		&& (this->to_split().at(i) != which.second))
 				//	{
 				//		this->increment_i(i);
 				//	}
 				//}
-				//else // if ( ( which.first == '"') 
-				//	// && ( which.second == '"' ) )
+				//else // if ((which.first == '"') 
+				//	// && (which.second == '"'))
 				{
-					while ( this->index_in_to_split(i) )
+					while (this->index_in_to_split(i))
 					{
-						if ( ( this->to_split().at(i) == which.second )
-							&& ( ( this->num_consec_backslashes() % 2 ) 
-							== 0 ) )
+						if ((this->to_split().at(i) == which.second)
+							&& ((this->num_consec_backslashes() % 2) 
+							== 0))
 						{
 							break;
 						}
@@ -541,7 +541,7 @@ public:		// functions
 				// The pos after end needs to be after the quote character
 				// because both the starting and ending quote characters
 				// are considered part of the so-called "word"
-				if ( this->index_in_to_split(i) )
+				if (this->index_in_to_split(i))
 				{
 					this->increment_i(i);
 				}
@@ -551,9 +551,9 @@ public:		// functions
 				this->increment_i(i);
 				
 				
-				while ( this->index_in_to_split(i) 
+				while (this->index_in_to_split(i) 
 					&& !isspace(this->to_split().at(i))
-					&& !this->to_split_at_is_end_of_word(i) )
+					&& !this->to_split_at_is_end_of_word(i))
 				{
 					this->increment_i(i);
 				}

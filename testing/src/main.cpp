@@ -3,11 +3,11 @@
 
 
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
 	std::vector<std::string> args_vec;
 	
-	for ( int i=0; i<argc; ++i )
+	for (int i=0; i<argc; ++i)
 	{
 		args_vec.push_back(argv[i]);
 	}
@@ -16,9 +16,9 @@ int main( int argc, char** argv )
 	//// This tests the str_split_helper stuff
 	//return [&args_vec]() -> int
 	//{
-	//	if ( args_vec.size() != 2 )
+	//	if (args_vec.size() != 2)
 	//	{
-	//		printerr( "Usage:  ", args_vec.front(), " <some_str>\n" );
+	//		printerr("Usage:  ", args_vec.front(), " <some_str>\n");
 	//		return 1;
 	//	}
 	//	

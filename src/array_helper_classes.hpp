@@ -23,23 +23,23 @@ public:			// functions
 	{
 	}
 	
-	ArrayCszHelper( type* s_the_array ) : the_array(s_the_array)
+	ArrayCszHelper(type* s_the_array) : the_array(s_the_array)
 	{
 	}
 	
-	ArrayCszHelper( const ArrayCszHelper<type>& to_copy )
+	ArrayCszHelper(const ArrayCszHelper<type>& to_copy)
 		: the_array(to_copy.the_array)
 	{
 	}
 	
-	void init( type* s_the_array )
+	void init(type* s_the_array)
 	{
 		the_array = s_the_array;
 	}
 	
 	
 	ArrayCszHelper<type>& operator = 
-		( const ArrayCszHelper<type>& to_copy )
+		(const ArrayCszHelper<type>& to_copy)
 	{
 		the_array = to_copy.the_array;
 		
@@ -57,11 +57,11 @@ public:			// functions
 		return size;
 	}
 	
-	type& at( size_t offset )
+	type& at(size_t offset)
 	{
 		return the_array[offset];
 	}
-	const type& at( size_t offset ) const
+	const type& at(size_t offset) const
 	{
 		return the_array[offset];
 	}
@@ -87,24 +87,24 @@ public:			// functions
 	{
 	}
 	
-	ArrayHelper( type* s_the_array, size_t s_size )
+	ArrayHelper(type* s_the_array, size_t s_size)
 		: the_array(s_the_array), size(s_size)
 	{
 	}
 	
-	ArrayHelper( const ArrayHelper<type>& to_copy )
+	ArrayHelper(const ArrayHelper<type>& to_copy)
 		: the_array(to_copy.the_array), size(to_copy.size)
 	{
 	}
 	
-	void init( type* s_the_array, size_t s_size )
+	void init(type* s_the_array, size_t s_size)
 	{
 		the_array = s_the_array;
 		size = s_size;
 	}
 	
 	
-	ArrayHelper<type>& operator = ( const ArrayHelper<type>& to_copy )
+	ArrayHelper<type>& operator = (const ArrayHelper<type>& to_copy)
 	{
 		the_array = to_copy.the_array;
 		size = to_copy.size;
@@ -123,11 +123,11 @@ public:			// functions
 		return size;
 	}
 	
-	type& at( size_t offset )
+	type& at(size_t offset)
 	{
 		return the_array[offset];
 	}
-	const type& at( size_t offset ) const
+	const type& at(size_t offset) const
 	{
 		return the_array[offset];
 	}

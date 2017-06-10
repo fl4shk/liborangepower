@@ -8,7 +8,7 @@ namespace liborangepower
 {
 
 template< typename... arg_types >
-inline void printout( arg_types&&... args );
+inline void printout(arg_types&&... args);
 
 class PrintoutBackend
 {
@@ -18,19 +18,19 @@ private:		// functions
 	}
 	template< typename first_type, typename... rem_types >
 	static void func
-		( const first_type& first_val, rem_types&&... rem_args )
+		(const first_type& first_val, rem_types&&... rem_args)
 	{
 		cout << first_val;
 		func(rem_args...);
 	}
 	
 	template< typename... arg_types >
-	friend void printout( arg_types&&... args );
+	friend void printout(arg_types&&... args);
 };
 
 
 template< typename... arg_types >
-void printout( arg_types&&... args )
+void printout(arg_types&&... args)
 {
 	PrintoutBackend::func(args...);
 }
@@ -38,7 +38,7 @@ void printout( arg_types&&... args )
 
 
 template< typename... arg_types >
-void printerr( arg_types&&... args );
+void printerr(arg_types&&... args);
 
 class PrinterrBackend
 {
@@ -48,19 +48,19 @@ private:		// functions
 	}
 	template< typename first_type, typename... rem_types >
 	static void func
-		( const first_type& first_val, rem_types&&... rem_args )
+		(const first_type& first_val, rem_types&&... rem_args)
 	{
 		cerr << first_val;
 		func(rem_args...);
 	}
 	
 	template< typename... arg_types >
-	friend void printerr( arg_types&&... args );
+	friend void printerr(arg_types&&... args);
 };
 
 
 template< typename... arg_types >
-void printerr( arg_types&&... args )
+void printerr(arg_types&&... args)
 {
 	PrinterrBackend::func(args...);
 }

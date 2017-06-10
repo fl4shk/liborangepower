@@ -18,38 +18,38 @@ public:		// typedefs
 	
 protected:		// functions
 	
-	virtual bool to_split_at_is_indiv_word( size_t i ) const
+	virtual bool to_split_at_is_indiv_word(size_t i) const
 	{
-		return ( this->to_split().at(i) == ',' );
+		return (this->to_split().at(i) == ',');
 	}
 	
 public:		// functions
-	inline CstmSSHelperNE( const string_view& s_to_split )
+	inline CstmSSHelperNE(const string_view& s_to_split)
 		: base(s_to_split)
 	{
 	}
-	inline CstmSSHelperNE( string_view&& s_to_split )
+	inline CstmSSHelperNE(string_view&& s_to_split)
 		: base(std::move(s_to_split))
 	{
 	}
 	
-	inline CstmSSHelperNE( const CstmSSHelperNE& to_copy )
+	inline CstmSSHelperNE(const CstmSSHelperNE& to_copy)
 		: base(to_copy)
 	{
 	}
-	inline CstmSSHelperNE( CstmSSHelperNE&& to_move )
+	inline CstmSSHelperNE(CstmSSHelperNE&& to_move)
 		: base(std::move(to_move))
 	{
 	}
 	
 	inline CstmSSHelperNE& operator = 
-		( const CstmSSHelperNE& to_copy )
+		(const CstmSSHelperNE& to_copy)
 	{
 		base::operator = (to_copy);
 		return *this;
 	}
 	inline CstmSSHelperNE& operator = 
-		( CstmSSHelperNE&& to_move )
+		(CstmSSHelperNE&& to_move)
 	{
 		base::operator = (std::move(to_move));
 		return *this;
@@ -67,38 +67,38 @@ public:		// typedefs
 	
 protected:		// functions
 	
-	virtual bool to_split_at_is_indiv_word( size_t i ) const
+	virtual bool to_split_at_is_indiv_word(size_t i) const
 	{
-		return ( base::to_split().at(i) == ',' );
+		return (base::to_split().at(i) == ',');
 	}
 	
 public:		// functions
-	inline CstmSSHelperWE( const string_view& s_to_split )
+	inline CstmSSHelperWE(const string_view& s_to_split)
 		: base(s_to_split)
 	{
 	}
-	inline CstmSSHelperWE( string_view&& s_to_split )
+	inline CstmSSHelperWE(string_view&& s_to_split)
 		: base(std::move(s_to_split))
 	{
 	}
 	
-	inline CstmSSHelperWE( const CstmSSHelperWE& to_copy )
+	inline CstmSSHelperWE(const CstmSSHelperWE& to_copy)
 		: base(to_copy)
 	{
 	}
-	inline CstmSSHelperWE( CstmSSHelperWE&& to_move )
+	inline CstmSSHelperWE(CstmSSHelperWE&& to_move)
 		: base(std::move(to_move))
 	{
 	}
 	
 	inline CstmSSHelperWE& operator = 
-		( const CstmSSHelperWE& to_copy )
+		(const CstmSSHelperWE& to_copy)
 	{
 		base::operator = (to_copy);
 		return *this;
 	}
 	inline CstmSSHelperWE& operator = 
-		( CstmSSHelperWE&& to_move )
+		(CstmSSHelperWE&& to_move)
 	{
 		base::operator = (std::move(to_move));
 		return *this;

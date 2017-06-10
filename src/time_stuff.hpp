@@ -29,13 +29,13 @@ protected:		// functions
 	inline seed_type get_initial_seed()
 	{
 		// I have no idea how good this is, but it seems to work?
-		return ( std::chrono::high_resolution_clock::now()
-			.time_since_epoch().count() * ( get_param_0() + 1 ) )
+		return (std::chrono::high_resolution_clock::now()
+			.time_since_epoch().count() * (get_param_0() + 1))
 			+ get_param_1();
 	}
 	
 public:		// functions
-	inline Prng( int s_param_0, int s_param_1 ) 
+	inline Prng(int s_param_0, int s_param_1) 
 		: param_0(s_param_0), param_1(s_param_1),
 		instance(get_initial_seed())
 	{
@@ -55,7 +55,7 @@ public:		// functions
 		return instance();
 	}
 	
-	inline auto operator () ( u64 max_val, const bool use_cap=false )
+	inline auto operator () (u64 max_val, const bool use_cap=false)
 	{
 		auto ret = (*this)();
 		
@@ -65,7 +65,7 @@ public:		// functions
 		}
 		else // if (use_cap)
 		{
-			if ( ret > max_val )
+			if (ret > max_val)
 			{
 				ret = max_val;
 			}
