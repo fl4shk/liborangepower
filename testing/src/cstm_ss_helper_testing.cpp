@@ -2,7 +2,7 @@
 
 void test_cstm_ss_helper_ne( const string_view& to_test )
 {
-	cstm_ss_helper_ne ss_helper(to_test);
+	CstmSSHelperNE ss_helper(to_test);
 	
 	for ( size_t i=0; i<to_test.size(); )
 	{
@@ -31,7 +31,7 @@ void test_cstm_ss_helper_ne( const string_view& to_test )
 
 void test_cstm_ss_helper_we( const string_view& to_test )
 {
-	cstm_ss_helper_we ss_helper(to_test);
+	CstmSSHelperWE ss_helper(to_test);
 	
 	for ( size_t i=0; i<to_test.size(); )
 	{

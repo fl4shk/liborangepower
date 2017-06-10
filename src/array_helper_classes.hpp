@@ -6,8 +6,11 @@
 #include "misc_types.hpp"
 #include "misc_defines.hpp"
 
+namespace liborangepower
+{
+
 template< typename type, size_t _size >
-class array_csz_helper
+class ArrayCszHelper
 {
 public:			// variables
 	type* the_array = NULL;
@@ -16,15 +19,15 @@ protected:		// variables
 	static constexpr size_t size = _size;
 	
 public:			// functions
-	array_csz_helper()
+	ArrayCszHelper()
 	{
 	}
 	
-	array_csz_helper( type* s_the_array ) : the_array(s_the_array)
+	ArrayCszHelper( type* s_the_array ) : the_array(s_the_array)
 	{
 	}
 	
-	array_csz_helper( const array_csz_helper<type>& to_copy )
+	ArrayCszHelper( const ArrayCszHelper<type>& to_copy )
 		: the_array(to_copy.the_array)
 	{
 	}
@@ -35,8 +38,8 @@ public:			// functions
 	}
 	
 	
-	array_csz_helper<type>& operator = 
-		( const array_csz_helper<type>& to_copy )
+	ArrayCszHelper<type>& operator = 
+		( const ArrayCszHelper<type>& to_copy )
 	{
 		the_array = to_copy.the_array;
 		
@@ -71,7 +74,7 @@ public:			// functions
 // This is a VERY thin wrapper class for working with 1D arrays of
 // arbitrary sizes
 template< typename type >
-class array_helper
+class ArrayHelper
 {
 public:			// variables
 	type* the_array = NULL;
@@ -80,16 +83,16 @@ protected:		// variables
 	size_t size = 0;
 	
 public:			// functions
-	array_helper()
+	ArrayHelper()
 	{
 	}
 	
-	array_helper( type* s_the_array, size_t s_size )
+	ArrayHelper( type* s_the_array, size_t s_size )
 		: the_array(s_the_array), size(s_size)
 	{
 	}
 	
-	array_helper( const array_helper<type>& to_copy )
+	ArrayHelper( const ArrayHelper<type>& to_copy )
 		: the_array(to_copy.the_array), size(to_copy.size)
 	{
 	}
@@ -101,7 +104,7 @@ public:			// functions
 	}
 	
 	
-	array_helper<type>& operator = ( const array_helper<type>& to_copy )
+	ArrayHelper<type>& operator = ( const ArrayHelper<type>& to_copy )
 	{
 		the_array = to_copy.the_array;
 		size = to_copy.size;
@@ -132,5 +135,6 @@ public:			// functions
 	
 } __attribute__((_align4));
 
+}
 
 #endif		// liborangepower_array_helper_classes_hpp

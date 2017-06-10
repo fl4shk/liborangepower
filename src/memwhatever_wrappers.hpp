@@ -8,6 +8,8 @@
 #include "misc_types.hpp"
 
 
+namespace liborangepower
+{
 
 template< typename type >
 inline void* arr_memcpy( type* dst, const void* src, u32 num_elems )
@@ -37,6 +39,8 @@ template< typename type, size_t size >
 inline void* arr_memset( std::array< type, size >& dst, u32 src )
 {
 	return arr_memset<type>( dst.data(), src, size );
+}
+
 }
 
 

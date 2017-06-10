@@ -5,6 +5,9 @@
 #include "misc_defines.hpp"
 
 
+namespace liborangepower
+{
+
 template< typename type >
 inline void clear_bits( type& to_clear, size_t mask )
 {
@@ -52,7 +55,7 @@ inline void clear_and_set_bits_with_range( type& to_change, size_t val,
 		<< bit_pos_range_lo ) );
 }
 
-
+}
 
 
 #endif		// liborangepower_misc_bitwise_funcs_hpp

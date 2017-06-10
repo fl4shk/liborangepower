@@ -4,10 +4,13 @@
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
 
+namespace liborangepower
+{
+
 template< typename... arg_types >
 inline void printout( arg_types&&... args );
 
-class printout_backend
+class PrintoutBackend
 {
 private:		// functions
 	static inline void func()
@@ -29,7 +32,7 @@ private:		// functions
 template< typename... arg_types >
 void printout( arg_types&&... args )
 {
-	printout_backend::func(args...);
+	PrintoutBackend::func(args...);
 }
 
 
@@ -37,7 +40,7 @@ void printout( arg_types&&... args )
 template< typename... arg_types >
 void printerr( arg_types&&... args );
 
-class printerr_backend
+class PrinterrBackend
 {
 private:		// functions
 	static inline void func()
@@ -59,7 +62,9 @@ private:		// functions
 template< typename... arg_types >
 void printerr( arg_types&&... args )
 {
-	printerr_backend::func(args...);
+	PrinterrBackend::func(args...);
+}
+
 }
 
 

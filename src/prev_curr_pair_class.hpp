@@ -6,14 +6,19 @@
 
 #include <utility>
 
+
+namespace liborangepower
+{
+
+
 template< typename type >
-class vec2;
+class Vec2;
 
 // This is a small class for the purposes of holding the states of
 // "previous" and "current" pairs.  It is primarily intended for use with
 // SMALL types, such as vec2's, built-in types, and so on and so forth.
 template< typename type >
-class prev_curr_pair
+class PrevCurrPair
 {
 public:		// variables
 	type prev, curr;
@@ -41,14 +46,16 @@ public:		// functions
 		return ( prev != curr );
 	}
 	
-	inline operator vec2<type>() const
+	inline operator Vec2<type>() const
 	{
-		return vec2<type>( prev, curr );
+		return Vec2<type>( prev, curr );
 	}
 	
 	
 } __attribute__((_align4));
 
+
+}
 
 
 #endif		// liborangepower_prev_curr_pair_class_hpp

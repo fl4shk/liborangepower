@@ -4,6 +4,9 @@
 #include "str_split_helper_classes.hpp"
 
 
+namespace liborangepower
+{
+
 //class lex_std_str_append_functor
 //{
 //public:		// functions
@@ -77,7 +80,7 @@
 //};
 
 
-
+}
 
 
 #endif		// liborangepower_lexer_classes_hpp

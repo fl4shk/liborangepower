@@ -5,11 +5,14 @@
 #include "misc_defines.hpp"
 #include "misc_includes.hpp"
 
+namespace liborangepower
+{
+
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
 template< typename some_str_type >
-class str_split_helper_base
+class StrSplitHelperBase
 {
 public:		// typedefs
 	typedef some_str_type str_type;
@@ -152,33 +155,33 @@ protected:		// functions
 	}
 	
 //public:		// functions
-	inline str_split_helper_base()
+	inline StrSplitHelperBase()
 	{
 	}
-	inline str_split_helper_base( const str_type& s_to_split )
+	inline StrSplitHelperBase( const str_type& s_to_split )
 		//: internal_to_split(s_to_split)
 	{
 		init(s_to_split);
 	}
-	inline str_split_helper_base( str_type&& s_to_split )
+	inline StrSplitHelperBase( str_type&& s_to_split )
 		//: internal_to_split(std::move(s_to_split))
 	{
 		init(std::move(s_to_split));
 	}
 	
-	inline str_split_helper_base
-		( const str_split_helper_base& to_copy )
+	inline StrSplitHelperBase
+		( const StrSplitHelperBase& to_copy )
 	{
 		*this = to_copy;
 	}
-	inline str_split_helper_base
-		( str_split_helper_base&& to_move )
+	inline StrSplitHelperBase
+		( StrSplitHelperBase&& to_move )
 	{
 		*this = std::move(to_move);
 	}
 	
-	inline str_split_helper_base& operator = 
-		( const str_split_helper_base& to_copy )
+	inline StrSplitHelperBase& operator = 
+		( const StrSplitHelperBase& to_copy )
 	{
 		internal_to_split = to_copy.internal_to_split;
 		internal_line_num = to_copy.internal_line_num;
@@ -188,8 +191,8 @@ protected:		// functions
 		
 		return *this;
 	}
-	inline str_split_helper_base& operator = 
-		( str_split_helper_base&& to_move )
+	inline StrSplitHelperBase& operator = 
+		( StrSplitHelperBase&& to_move )
 	{
 		internal_to_split = std::move(to_move.internal_to_split);
 		internal_line_num = std::move(to_move.internal_line_num);
@@ -402,44 +405,44 @@ public:		// functions
 
 
 template< typename str_type >
-class str_split_helper_no_escapes : public str_split_helper_base<str_type>
+class StrSplitHelperNoEscapes : public StrSplitHelperBase<str_type>
 {
 public:		// typedefs
-	typedef str_split_helper_base<str_type> base;
+	typedef StrSplitHelperBase<str_type> base;
 	typedef typename base::value_type value_type;
 	
 public:		// functions
-	inline str_split_helper_no_escapes()
+	inline StrSplitHelperNoEscapes()
 	{
 	}
-	inline str_split_helper_no_escapes( const str_type& s_to_split )
+	inline StrSplitHelperNoEscapes( const str_type& s_to_split )
 		: base(s_to_split)
 	{
 	}
-	inline str_split_helper_no_escapes( str_type&& s_to_split )
+	inline StrSplitHelperNoEscapes( str_type&& s_to_split )
 		: base(std::move(s_to_split))
 	{
 	}
 	
-	inline str_split_helper_no_escapes
-		( const str_split_helper_no_escapes& to_copy )
+	inline StrSplitHelperNoEscapes
+		( const StrSplitHelperNoEscapes& to_copy )
 		: base(to_copy)
 	{
 	}
-	inline str_split_helper_no_escapes
-		( str_split_helper_no_escapes&& to_move )
+	inline StrSplitHelperNoEscapes
+		( StrSplitHelperNoEscapes&& to_move )
 		: base(std::move(to_move))
 	{
 	}
 	
-	inline str_split_helper_no_escapes& operator = 
-		( const str_split_helper_no_escapes& to_copy )
+	inline StrSplitHelperNoEscapes& operator = 
+		( const StrSplitHelperNoEscapes& to_copy )
 	{
 		base::operator = (static_cast<const base&>(to_copy));
 		return *this;
 	}
-	inline str_split_helper_no_escapes& operator = 
-		( str_split_helper_no_escapes&& to_move )
+	inline StrSplitHelperNoEscapes& operator = 
+		( StrSplitHelperNoEscapes&& to_move )
 	{
 		base::operator = (std::move(static_cast<base&&>(to_move)));
 		return *this;
@@ -450,46 +453,45 @@ public:		// functions
 
 
 template< typename str_type >
-class str_split_helper_with_escapes 
-	: public str_split_helper_base<str_type>
+class StrSplitHelperWithEscapes : public StrSplitHelperBase<str_type>
 {
 public:		// typedefs
-	typedef str_split_helper_base<str_type> base;
+	typedef StrSplitHelperBase<str_type> base;
 	typedef typename base::value_type value_type;
 	typedef typename base::val_typ_pair val_typ_pair;
 	
 public:		// functions
-	inline str_split_helper_with_escapes()
+	inline StrSplitHelperWithEscapes()
 	{
 	}
-	inline str_split_helper_with_escapes( const str_type& s_to_split )
+	inline StrSplitHelperWithEscapes( const str_type& s_to_split )
 		: base(s_to_split)
 	{
 	}
-	inline str_split_helper_with_escapes( str_type&& s_to_split )
+	inline StrSplitHelperWithEscapes( str_type&& s_to_split )
 		: base(std::move(s_to_split))
 	{
 	}
 	
-	inline str_split_helper_with_escapes
-		( const str_split_helper_with_escapes& to_copy )
+	inline StrSplitHelperWithEscapes
+		( const StrSplitHelperWithEscapes& to_copy )
 		: base(to_copy)
 	{
 	}
-	inline str_split_helper_with_escapes
-		( str_split_helper_with_escapes&& to_move )
+	inline StrSplitHelperWithEscapes
+		( StrSplitHelperWithEscapes&& to_move )
 		: base(std::move(to_move))
 	{
 	}
 	
-	inline str_split_helper_with_escapes& operator = 
-		( const str_split_helper_with_escapes& to_copy )
+	inline StrSplitHelperWithEscapes& operator = 
+		( const StrSplitHelperWithEscapes& to_copy )
 	{
 		base::operator = (static_cast<const base&>(to_copy));
 		return *this;
 	}
-	inline str_split_helper_with_escapes& operator = 
-		( str_split_helper_with_escapes&& to_move )
+	inline StrSplitHelperWithEscapes& operator = 
+		( StrSplitHelperWithEscapes&& to_move )
 	{
 		base::operator = (std::move(static_cast<base&&>(to_move)));
 		return *this;
@@ -562,5 +564,6 @@ public:		// functions
 	}
 };
 
+}
 
 #endif		// liborangepower_str_split_helper_classes_hpp

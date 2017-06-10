@@ -5,7 +5,11 @@
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
 
-class prng
+
+namespace liborangepower
+{
+
+class Prng
 {
 public:		// typedefs
 	typedef decltype(std::chrono::high_resolution_clock::now()
@@ -31,7 +35,7 @@ protected:		// functions
 	}
 	
 public:		// functions
-	inline prng( int s_param_0, int s_param_1 ) 
+	inline Prng( int s_param_0, int s_param_1 ) 
 		: param_0(s_param_0), param_1(s_param_1),
 		instance(get_initial_seed())
 	{
@@ -73,7 +77,7 @@ public:		// functions
 } __attribute__((_align4));
 
 
-class profiler
+class Profiler
 {
 protected:		// variables
 	std::chrono::high_resolution_clock::time_point start_tp, end_tp;
@@ -101,6 +105,8 @@ public:		// functions
 	
 	
 } __attribute__((_align4));
+
+}
 
 
 

@@ -1,6 +1,9 @@
 #ifndef liborangepower_misc_utility_funcs_hpp
 #define liborangepower_misc_utility_funcs_hpp
 
+namespace liborangepower
+{
+
 template< typename type >
 inline const type& max2( const type& arg_0, const type& arg_1 )
 {
@@ -127,6 +130,6 @@ constexpr inline bool type_is_signed()
 	return ( (type)(-1) < (type)(0) );
 }
 
-
+}
 
 #endif		// liborangepower_misc_utility_funcs_hpp

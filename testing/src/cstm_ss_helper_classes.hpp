@@ -3,14 +3,17 @@
 
 #include "liborangepower_src/str_split_helper_classes.hpp"
 
+using liborangepower::StrSplitHelperNoEscapes;
+using liborangepower::StrSplitHelperWithEscapes;
+
 #include <experimental/string_view>
 typedef std::experimental::string_view string_view;
 
 
-class cstm_ss_helper_ne : public str_split_helper_no_escapes<string_view>
+class CstmSSHelperNE : public StrSplitHelperNoEscapes<string_view>
 {
 public:		// typedefs
-	typedef str_split_helper_no_escapes<string_view> base;
+	typedef StrSplitHelperNoEscapes<string_view> base;
 	
 	
 protected:		// functions
@@ -21,32 +24,32 @@ protected:		// functions
 	}
 	
 public:		// functions
-	inline cstm_ss_helper_ne( const string_view& s_to_split )
+	inline CstmSSHelperNE( const string_view& s_to_split )
 		: base(s_to_split)
 	{
 	}
-	inline cstm_ss_helper_ne( string_view&& s_to_split )
+	inline CstmSSHelperNE( string_view&& s_to_split )
 		: base(std::move(s_to_split))
 	{
 	}
 	
-	inline cstm_ss_helper_ne( const cstm_ss_helper_ne& to_copy )
+	inline CstmSSHelperNE( const CstmSSHelperNE& to_copy )
 		: base(to_copy)
 	{
 	}
-	inline cstm_ss_helper_ne( cstm_ss_helper_ne&& to_move )
+	inline CstmSSHelperNE( CstmSSHelperNE&& to_move )
 		: base(std::move(to_move))
 	{
 	}
 	
-	inline cstm_ss_helper_ne& operator = 
-		( const cstm_ss_helper_ne& to_copy )
+	inline CstmSSHelperNE& operator = 
+		( const CstmSSHelperNE& to_copy )
 	{
 		base::operator = (to_copy);
 		return *this;
 	}
-	inline cstm_ss_helper_ne& operator = 
-		( cstm_ss_helper_ne&& to_move )
+	inline CstmSSHelperNE& operator = 
+		( CstmSSHelperNE&& to_move )
 	{
 		base::operator = (std::move(to_move));
 		return *this;
@@ -56,10 +59,10 @@ public:		// functions
 	
 };
 
-class cstm_ss_helper_we : public str_split_helper_with_escapes<string_view>
+class CstmSSHelperWE : public StrSplitHelperWithEscapes<string_view>
 {
 public:		// typedefs
-	typedef str_split_helper_with_escapes<string_view> base;
+	typedef StrSplitHelperWithEscapes<string_view> base;
 	
 	
 protected:		// functions
@@ -70,32 +73,32 @@ protected:		// functions
 	}
 	
 public:		// functions
-	inline cstm_ss_helper_we( const string_view& s_to_split )
+	inline CstmSSHelperWE( const string_view& s_to_split )
 		: base(s_to_split)
 	{
 	}
-	inline cstm_ss_helper_we( string_view&& s_to_split )
+	inline CstmSSHelperWE( string_view&& s_to_split )
 		: base(std::move(s_to_split))
 	{
 	}
 	
-	inline cstm_ss_helper_we( const cstm_ss_helper_we& to_copy )
+	inline CstmSSHelperWE( const CstmSSHelperWE& to_copy )
 		: base(to_copy)
 	{
 	}
-	inline cstm_ss_helper_we( cstm_ss_helper_we&& to_move )
+	inline CstmSSHelperWE( CstmSSHelperWE&& to_move )
 		: base(std::move(to_move))
 	{
 	}
 	
-	inline cstm_ss_helper_we& operator = 
-		( const cstm_ss_helper_we& to_copy )
+	inline CstmSSHelperWE& operator = 
+		( const CstmSSHelperWE& to_copy )
 	{
 		base::operator = (to_copy);
 		return *this;
 	}
-	inline cstm_ss_helper_we& operator = 
-		( cstm_ss_helper_we&& to_move )
+	inline CstmSSHelperWE& operator = 
+		( CstmSSHelperWE&& to_move )
 	{
 		base::operator = (std::move(to_move));
 		return *this;
