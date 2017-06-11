@@ -16,7 +16,7 @@ inline decltype(prefix##_##suffix) suffix() const \
 #ifndef gen_getter_by_val
 // By value
 #define gen_getter_by_val(suffix) \
-gen_generic_getter_by_val(internal, suffix)
+gen_generic_getter_by_val(_, suffix)
 #endif
 
 
@@ -33,7 +33,7 @@ inline const decltype(prefix##_##suffix)& suffix() const \
 #ifndef gen_getter_by_con_ref
 // By constant reference
 #define gen_getter_by_con_ref(suffix) \
-gen_generic_getter_by_con_ref(internal, suffix)
+gen_generic_getter_by_con_ref(_, suffix)
 #endif
 
 
@@ -50,7 +50,7 @@ inline decltype(prefix##_##suffix)& suffix() \
 #ifndef gen_getter_by_ref
 // By reference
 #define gen_getter_by_ref(suffix) \
-gen_generic_getter_by_ref(internal, suffix)
+gen_generic_getter_by_ref(_, suffix)
 #endif
 
 
@@ -67,7 +67,7 @@ static inline decltype(prefix##_##suffix) suffix() const \
 #ifndef gen_static_getter_by_val
 // By value
 #define gen_static_getter_by_val(suffix) \
-gen_static_generic_getter_by_val(internal, suffix)
+gen_static_generic_getter_by_val(_, suffix)
 #endif
 
 
@@ -84,7 +84,7 @@ static inline const decltype(prefix##_##suffix)& suffix() const \
 #ifndef gen_static_getter_by_con_ref
 // By constant reference
 #define gen_static_getter_by_con_ref(suffix) \
-gen_static_generic_getter_by_con_ref(internal, suffix)
+gen_static_generic_getter_by_con_ref(_, suffix)
 #endif
 
 
@@ -101,7 +101,7 @@ static inline decltype(prefix##_##suffix)& suffix() \
 #ifndef gen_static_getter_by_ref
 // By reference
 #define gen_static_getter_by_ref(suffix) \
-gen_static_generic_getter_by_ref(internal, suffix)
+gen_static_generic_getter_by_ref(_, suffix)
 #endif
 
 
@@ -120,7 +120,7 @@ inline decltype(prefix##_##suffix) set_##suffix(decltype(prefix##_##suffix) to_c
 #ifndef gen_setter_by_val
 // By value
 #define gen_setter_by_val(suffix) \
-gen_generic_setter_by_val(internal, suffix)
+gen_generic_setter_by_val(_, suffix)
 #endif
 
 
@@ -139,7 +139,7 @@ inline const decltype(prefix##_##suffix)& set_##suffix \
 #ifndef gen_setter_by_con_ref
 // By const reference
 #define gen_setter_by_con_ref(suffix) \
-gen_generic_setter_by_con_ref(internal, suffix)
+gen_generic_setter_by_con_ref(_, suffix)
 #endif
 
 
@@ -158,7 +158,7 @@ inline const decltype(prefix##_##suffix)& set_##suffix \
 #ifndef gen_setter_by_rval_ref
 // By rvalue reference
 #define gen_setter_by_rval_ref(suffix) \
-gen_generic_setter_by_rval_ref(internal, suffix)
+gen_generic_setter_by_rval_ref(_, suffix)
 #endif
 
 
@@ -176,7 +176,7 @@ static inline decltype(prefix##_##suffix) set_##suffix(decltype(prefix##_##suffi
 #ifndef gen_static_setter_by_val
 // By value
 #define gen_static_setter_by_val(suffix) \
-gen_static_generic_setter_by_val(internal, suffix)
+gen_static_generic_setter_by_val(_, suffix)
 #endif
 
 
@@ -195,7 +195,7 @@ static inline const decltype(prefix##_##suffix)& set_##suffix \
 #ifndef gen_static_setter_by_con_ref
 // By const reference
 #define gen_static_setter_by_con_ref(suffix) \
-gen_static_generic_setter_by_con_ref(internal, suffix)
+gen_static_generic_setter_by_con_ref(_, suffix)
 #endif
 
 
@@ -214,7 +214,7 @@ static inline const decltype(prefix##_##suffix)& set_##suffix \
 #ifndef gen_static_setter_by_rval_ref
 // By rvalue reference
 #define gen_static_setter_by_rval_ref(suffix) \
-gen_static_generic_setter_by_rval_ref(internal, suffix)
+gen_static_generic_setter_by_rval_ref(_, suffix)
 #endif
 
 #endif		// liborangepower_gen_getter_setter_defines_hpp
