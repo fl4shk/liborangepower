@@ -10,6 +10,9 @@
 namespace liborangepower
 {
 
+namespace containers
+{
+
 static constexpr size_t vec2_index_for_x = 0, vec2_index_for_y = 1;
 
 template< typename type >
@@ -406,6 +409,8 @@ template< typename type >
 inline Vec2<type> custom_abs(const Vec2<type>& val)
 {
 	return Vec2<type>(custom_abs(val.x), custom_abs(val.y));
+}
+
 }
 
 }

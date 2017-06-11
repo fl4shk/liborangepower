@@ -9,6 +9,9 @@
 namespace liborangepower
 {
 
+namespace containers
+{
+
 // This utility class is intended to be used when inherently 2D data, with
 // CONSTANT dimensions, is stored within a 1D array.
 template< typename type, size_t _width, size_t _height >
@@ -195,6 +198,9 @@ public:			// functions
 	
 	
 } __attribute__((_align4));
+
+
+}
 
 
 }

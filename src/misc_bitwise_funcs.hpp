@@ -8,6 +8,9 @@
 namespace liborangepower
 {
 
+namespace bitwise
+{
+
 template< typename type >
 inline void clear_bits(type& to_clear, size_t mask)
 {
@@ -53,6 +56,8 @@ inline void clear_and_set_bits_with_range(type& to_change, size_t val,
 		bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo), 
 		((val & bprange_to_mask(bit_pos_range_hi, bit_pos_range_lo))
 		<< bit_pos_range_lo));
+}
+
 }
 
 }

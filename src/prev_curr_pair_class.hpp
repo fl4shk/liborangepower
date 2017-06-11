@@ -10,9 +10,12 @@
 namespace liborangepower
 {
 
+namespace containers
+{
 
 template< typename type >
 class Vec2;
+
 
 // This is a small class for the purposes of holding the states of
 // "previous" and "current" pairs.  It is primarily intended for use with
@@ -46,14 +49,16 @@ public:		// functions
 		return (prev != curr);
 	}
 	
-	inline operator Vec2<type>() const
+	inline operator vec::Vec2<type>() const
 	{
-		return Vec2<type>(prev, curr);
+		return vec::Vec2<type>(prev, curr);
 	}
 	
 	
 } __attribute__((_align4));
 
+
+}
 
 }
 

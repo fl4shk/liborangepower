@@ -8,6 +8,9 @@
 namespace liborangepower
 {
 
+namespace strings
+{
+
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
@@ -563,6 +566,8 @@ public:		// functions
 		return i;
 	}
 };
+
+}
 
 }
 

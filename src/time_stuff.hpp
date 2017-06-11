@@ -9,6 +9,9 @@
 namespace liborangepower
 {
 
+namespace time
+{
+
 class Prng
 {
 public:		// typedefs
@@ -105,6 +108,8 @@ public:		// functions
 	
 	
 } __attribute__((_align4));
+
+}
 
 }
 

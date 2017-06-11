@@ -4,6 +4,9 @@
 namespace liborangepower
 {
 
+namespace misc_util
+{
+
 template< typename type >
 inline const type& max2(const type& arg_0, const type& arg_1)
 {
@@ -128,6 +131,8 @@ template< typename type >
 constexpr inline bool type_is_signed()
 {
 	return ((type)(-1) < (type)(0));
+}
+
 }
 
 }

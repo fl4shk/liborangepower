@@ -9,6 +9,9 @@
 namespace liborangepower
 {
 
+namespace containers
+{
+
 template< typename type, size_t _size >
 class ArrayCszHelper
 {
@@ -134,6 +137,8 @@ public:			// functions
 	
 	
 } __attribute__((_align4));
+
+}
 
 }
 

@@ -7,6 +7,9 @@
 namespace liborangepower
 {
 
+namespace range
+{
+
 // in_range and vec2_in_range are PRIMARILY intended for use with a range
 // of 0 (inclusive) to size (exclusive)
 template< typename type >
@@ -57,6 +60,8 @@ inline type clamp_to_range(type range_start_inclusive,
 	{
 		return to_clamp;
 	}
+}
+
 }
 
 }

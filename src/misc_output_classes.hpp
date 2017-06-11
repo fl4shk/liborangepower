@@ -7,6 +7,9 @@
 namespace liborangepower
 {
 
+namespace printout_etc
+{
+
 
 template<typename... arg_types>
 void osprintout(std::ostream& os, arg_types&&... args);
@@ -52,6 +55,8 @@ template<typename... arg_types>
 inline void fprintout(std::ostream& out_file, arg_types&&... args)
 {
 	osprintout(out_file, args...);
+}
+
 }
 
 }

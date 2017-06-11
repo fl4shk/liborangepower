@@ -11,6 +11,9 @@
 namespace liborangepower
 {
 
+namespace misc_util
+{
+
 template< typename type >
 inline void* arr_memcpy(type* dst, const void* src, u32 num_elems)
 {
@@ -43,6 +46,7 @@ inline void* arr_memset(std::array< type, size >& dst, u32 src)
 
 }
 
+}
 
 
 #endif		// liborangepower_memwhatever_wrappers_hpp
