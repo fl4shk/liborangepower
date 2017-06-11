@@ -14,7 +14,7 @@ void osprintout(std::ostream& os, arg_types&&... args);
 class AnyPrintoutBackend
 {
 private:		// functions
-	static inline void func()
+	static inline void func(std::ostream& os)
 	{
 	}
 	template<typename first_type, typename... rem_types>
