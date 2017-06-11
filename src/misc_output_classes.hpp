@@ -30,21 +30,28 @@ private:		// functions
 };
 
 template<typename... arg_types>
-void osprintout(std::ostream& os, arg_types&&... args)
+inline void osprintout(std::ostream& os, arg_types&&... args)
 {
 	AnyPrintoutBackend::func(os, args...);
 }
 
 template<typename... arg_types>
-void printout(arg_types&&... args)
+inline void printout(arg_types&&... args)
 {
 	osprintout(cout, args...);
 }
 
 template<typename... arg_types>
-void printerr(arg_types&&... args)
+inline void printerr(arg_types&&... args)
 {
 	osprintout(cerr, args...);
+}
+
+// Alternate name for osprintout
+template<typename... arg_types>
+inline void fprintout(std::ostream& out_file, arg_types&&... args)
+{
+	osprintout(out_file, args...);
 }
 
 }
