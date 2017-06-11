@@ -7,62 +7,44 @@
 namespace liborangepower
 {
 
-template< typename... arg_types >
-inline void printout(arg_types&&... args);
 
-class PrintoutBackend
+template<typename... arg_types>
+void osprintout(std::ostream& os, arg_types&&... args);
+
+class AnyPrintoutBackend
 {
 private:		// functions
 	static inline void func()
 	{
 	}
-	template< typename first_type, typename... rem_types >
-	static void func
-		(const first_type& first_val, rem_types&&... rem_args)
+	template<typename first_type, typename... rem_types>
+	static void func(std::ostream& os, const first_type& first_val, 
+		rem_types&&... rem_args)
 	{
-		cout << first_val;
+		os << first_val;
 		func(rem_args...);
 	}
 	
-	template< typename... arg_types >
-	friend void printout(arg_types&&... args);
+	template<typename... arg_types>
+	friend void osprintout(std::ostream& os, arg_types&&... args);
 };
 
-
-template< typename... arg_types >
-void printout(arg_types&&... args)
+template<typename... arg_types>
+void osprintout(std::ostream& os, arg_types&&... args)
 {
-	PrintoutBackend::func(args...);
+	AnyPrintoutBackend::func(os, args...);
 }
 
-
-
-template< typename... arg_types >
-void printerr(arg_types&&... args);
-
-class PrinterrBackend
+template<typename... arg_types>
+void printout(arg_types&&... args)
 {
-private:		// functions
-	static inline void func()
-	{
-	}
-	template< typename first_type, typename... rem_types >
-	static void func
-		(const first_type& first_val, rem_types&&... rem_args)
-	{
-		cerr << first_val;
-		func(rem_args...);
-	}
-	
-	template< typename... arg_types >
-	friend void printerr(arg_types&&... args);
-};
+	osprintout(cout, args...);
+}
 
-
-template< typename... arg_types >
+template<typename... arg_types>
 void printerr(arg_types&&... args)
 {
-	PrinterrBackend::func(args...);
+	osprintout(cerr, args...);
 }
 
 }
