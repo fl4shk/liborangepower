@@ -14,7 +14,7 @@ namespace containers
 
 // This utility class is intended to be used when inherently 2D data, with
 // CONSTANT dimensions, is stored within a 1D array.
-template< typename type, size_t _width, size_t _height >
+template<typename type, size_t _width, size_t _height>
 class ArrayCsz2dHelper
 {
 protected:		// variables
@@ -38,8 +38,8 @@ public:			// functions
 		the_array = s_the_array;
 	}
 	
-	ArrayCsz2dHelper< type, _width, _height >& operator = 
-		(const ArrayCsz2dHelper< type, _width, _height >& to_copy)
+	ArrayCsz2dHelper<type, _width, _height>& operator = 
+		(const ArrayCsz2dHelper<type, _width, _height>& to_copy)
 	{
 		the_array = to_copy.the_array;
 		
@@ -72,29 +72,29 @@ public:			// functions
 	
 	type& at(size_t x, size_t y)
 	{
-		return the_array[ y * size_2d.x + x ];
+		return the_array[y * size_2d.x + x];
 	}
 	type& at(const Vec2<size_t>& offset_2d)
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	type& at(const Vec2_s32& offset_2d)
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	
 	
 	const type& at(size_t x, size_t y) const
 	{
-		return the_array[ y * size_2d.x + x ];
+		return the_array[y * size_2d.x + x];
 	}
 	const type& at(const Vec2<size_t>& offset_2d) const
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	const type& at(const Vec2_s32& offset_2d) const
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	
 	
@@ -103,7 +103,7 @@ public:			// functions
 
 // This utility class is intended to be used when inherently 2D data is
 // stored within a 1D array.
-template< typename type >
+template<typename type>
 class Array2dHelper
 {
 protected:		// variables
@@ -170,29 +170,29 @@ public:			// functions
 	
 	type& at(size_t x, size_t y)
 	{
-		return the_array[ y * size_2d.x + x ];
+		return the_array[y * size_2d.x + x];
 	}
 	type& at(const Vec2<size_t>& offset_2d)
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	type& at(const Vec2_s32& offset_2d)
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	
 	
 	const type& at(size_t x, size_t y) const
 	{
-		return the_array[ y * size_2d.x + x ];
+		return the_array[y * size_2d.x + x];
 	}
 	const type& at(const Vec2<size_t>& offset_2d) const
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	const type& at(const Vec2_s32& offset_2d) const
 	{
-		return the_array[ offset_2d.y * size_2d.x + offset_2d.x ];
+		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
 	}
 	
 	

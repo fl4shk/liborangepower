@@ -58,7 +58,7 @@ public:		// functions
 		return instance();
 	}
 	
-	inline auto operator () (u64 max_val, const bool use_cap=false)
+	inline auto operator () (integer_types::u64 max_val, const bool use_cap=false)
 	{
 		auto ret = (*this)();
 		

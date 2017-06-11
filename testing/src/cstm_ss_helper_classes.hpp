@@ -3,8 +3,7 @@
 
 #include "liborangepower_src/str_split_helper_classes.hpp"
 
-using liborangepower::StrSplitHelperNoEscapes;
-using liborangepower::StrSplitHelperWithEscapes;
+using namespace liborangepower::strings;
 
 #include <experimental/string_view>
 typedef std::experimental::string_view string_view;

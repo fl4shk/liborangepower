@@ -13,14 +13,14 @@ namespace liborangepower
 namespace containers
 {
 
-template< typename type >
+template<typename type>
 class Vec2;
 
 
 // This is a small class for the purposes of holding the states of
 // "previous" and "current" pairs.  It is primarily intended for use with
 // SMALL types, such as vec2's, built-in types, and so on and so forth.
-template< typename type >
+template<typename type>
 class PrevCurrPair
 {
 public:		// variables

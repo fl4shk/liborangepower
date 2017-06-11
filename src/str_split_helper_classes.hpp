@@ -14,13 +14,13 @@ namespace strings
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
-template< typename some_str_type >
+template<typename some_str_type>
 class StrSplitHelperBase
 {
 public:		// typedefs
 	typedef some_str_type str_type;
 	typedef typename str_type::value_type value_type;
-	typedef std::pair< value_type, value_type > val_typ_pair;
+	typedef std::pair<value_type, value_type> val_typ_pair;
 	//using decay_t = typename std::decay<value_type&&>::type;
 	
 protected:		// variables
@@ -34,11 +34,11 @@ protected:		// functions
 	static inline auto make_vt_pair(const value_type& t, 
 		const value_type& u)
 	{
-		return std::make_pair< value_type, value_type >(t, u);
+		return std::make_pair<value_type, value_type>(t, u);
 	}
 	static inline  auto make_vt_pair(value_type&& t, value_type&& u)
 	{
-		return std::make_pair< value_type, value_type >(std::move(t), 
+		return std::make_pair<value_type, value_type>(std::move(t), 
 			std::move(u));
 	}
 	
@@ -407,7 +407,7 @@ public:		// functions
 };
 
 
-template< typename str_type >
+template<typename str_type>
 class StrSplitHelperNoEscapes : public StrSplitHelperBase<str_type>
 {
 public:		// typedefs
@@ -455,7 +455,7 @@ public:		// functions
 
 
 
-template< typename str_type >
+template<typename str_type>
 class StrSplitHelperWithEscapes : public StrSplitHelperBase<str_type>
 {
 public:		// typedefs

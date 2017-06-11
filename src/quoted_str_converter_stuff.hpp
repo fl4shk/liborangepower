@@ -26,8 +26,8 @@ namespace liborangepower
 //// 
 //// out_str_append_functor_type is a functor of some sort that permits
 //// appending one out_str_type to another out_str_type
-//template< typename ssplit_helper_type, typename out_str_type = std::string, 
-//	typename out_str_append_functor_type = lex_std_str_append_functor >
+//template<typename ssplit_helper_type, typename out_str_type = std::string, 
+//	typename out_str_append_functor_type = lex_std_str_append_functor>
 //class lexer
 //{
 //public:		// typedefs

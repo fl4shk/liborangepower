@@ -12,7 +12,7 @@ namespace liborangepower
 namespace containers
 {
 
-template< typename type, size_t _size >
+template<typename type, size_t _size>
 class ArrayCszHelper
 {
 public:			// variables
@@ -76,7 +76,7 @@ public:			// functions
 
 // This is a VERY thin wrapper class for working with 1D arrays of
 // arbitrary sizes
-template< typename type >
+template<typename type>
 class ArrayHelper
 {
 public:			// variables
