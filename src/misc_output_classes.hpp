@@ -22,7 +22,7 @@ private:		// functions
 		rem_types&&... rem_args)
 	{
 		os << first_val;
-		func(rem_args...);
+		func(os, rem_args...);
 	}
 	
 	template<typename... arg_types>
