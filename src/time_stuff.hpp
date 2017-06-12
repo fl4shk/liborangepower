@@ -5,6 +5,8 @@
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
 
+#include <iomanip>
+
 
 namespace liborangepower
 {
@@ -117,6 +119,36 @@ public:		// functions
 inline std::time_t now_as_time_t()
 {
 	return Profiler::get_hrc_now_time_t();
+}
+
+inline std::tm* now_as_localtime()
+{
+	auto now = now_as_time_t();
+
+	auto ret = std::localtime(&now);
+
+	return ret;
+}
+
+inline std::tm* now_as_gmtime()
+{
+	auto now = now_as_time_t();
+
+	auto ret = std::gmtime(&now);
+
+	return ret;
+}
+
+inline auto put_now_as_localtime()
+{
+	//return std::put_time(now_as_localtime(), "%c");
+	return std::put_time(now_as_localtime(), "%Y-%m-%d %H:%M:%S %Z");
+}
+
+inline auto put_now_as_gmtime()
+{
+	//return std::put_time(now_as_gmtime(), "%c");
+	return std::put_time(now_as_gmtime(), "%Y-%m-%d %H:%M:%S %Z");
 }
 
 

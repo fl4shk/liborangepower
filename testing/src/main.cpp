@@ -1,12 +1,20 @@
 #include "cstm_ss_helper_testing.hpp"
 #include "liborangepower_src/time_stuff.hpp"
 
+#include <iomanip>
+
 
 
 
 int main(int argc, char** argv)
 {
 	//printout(liborangepower::time::now_as_ctime());
+	//printout(*std::localtime(&liborangepower::time::now_as_time_t()));
+	//printout(std::put_time(liborangepower::time::now_as_gmtime(), "%c"),
+	//	"\n");
+
+	printout(liborangepower::time::put_now_as_localtime(), "\n");
+	printout(liborangepower::time::put_now_as_gmtime(), "\n");
 	
 	
 	//std::vector<std::string> args_vec;
