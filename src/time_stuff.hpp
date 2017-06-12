@@ -119,13 +119,6 @@ inline std::time_t now_as_time_t()
 	return Profiler::get_hrc_now_time_t();
 }
 
-inline char* now_as_ctime()
-{
-	auto temp = now_as_time_t();
-	auto ret = std::ctime(&temp);
-
-	return ret;
-}
 
 }
 

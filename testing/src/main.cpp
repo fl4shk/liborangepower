@@ -6,7 +6,9 @@
 
 int main(int argc, char** argv)
 {
-	printout(liborangepower::time::now_as_ctime());
+	//printout(liborangepower::time::now_as_ctime());
+	
+	
 	//std::vector<std::string> args_vec;
 	//
 	//for (int i=0; i<argc; ++i)
