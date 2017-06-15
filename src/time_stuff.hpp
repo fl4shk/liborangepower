@@ -40,7 +40,7 @@ protected:		// functions
 	}
 	
 public:		// functions
-	inline Prng(int s_param_0, int s_param_1) 
+	inline Prng(int s_param_0=0, int s_param_1=0) 
 		: param_0(s_param_0), param_1(s_param_1),
 		instance(get_initial_seed())
 	{
