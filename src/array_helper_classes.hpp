@@ -12,11 +12,11 @@ namespace liborangepower
 namespace containers
 {
 
-template<typename type, size_t _size>
+template<typename Type, size_t _size>
 class ArrayCszHelper
 {
 public:			// variables
-	type* the_array = NULL;
+	Type* the_array = NULL;
 	
 protected:		// variables
 	static constexpr size_t size = _size;
@@ -26,23 +26,23 @@ public:			// functions
 	{
 	}
 	
-	ArrayCszHelper(type* s_the_array) : the_array(s_the_array)
+	ArrayCszHelper(Type* s_the_array) : the_array(s_the_array)
 	{
 	}
 	
-	ArrayCszHelper(const ArrayCszHelper<type>& to_copy)
+	ArrayCszHelper(const ArrayCszHelper<Type>& to_copy)
 		: the_array(to_copy.the_array)
 	{
 	}
 	
-	void init(type* s_the_array)
+	void init(Type* s_the_array)
 	{
 		the_array = s_the_array;
 	}
 	
 	
-	ArrayCszHelper<type>& operator = 
-		(const ArrayCszHelper<type>& to_copy)
+	ArrayCszHelper<Type>& operator = 
+		(const ArrayCszHelper<Type>& to_copy)
 	{
 		the_array = to_copy.the_array;
 		
@@ -50,7 +50,7 @@ public:			// functions
 	}
 	
 	
-	const type* get_the_array() const
+	const Type* get_the_array() const
 	{
 		return the_array;
 	}
@@ -60,11 +60,11 @@ public:			// functions
 		return size;
 	}
 	
-	type& at(size_t offset)
+	Type& at(size_t offset)
 	{
 		return the_array[offset];
 	}
-	const type& at(size_t offset) const
+	const Type& at(size_t offset) const
 	{
 		return the_array[offset];
 	}
@@ -76,11 +76,11 @@ public:			// functions
 
 // This is a VERY thin wrapper class for working with 1D arrays of
 // arbitrary sizes
-template<typename type>
+template<typename Type>
 class ArrayHelper
 {
 public:			// variables
-	type* the_array = NULL;
+	Type* the_array = NULL;
 	
 protected:		// variables
 	size_t size = 0;
@@ -90,24 +90,24 @@ public:			// functions
 	{
 	}
 	
-	ArrayHelper(type* s_the_array, size_t s_size)
+	ArrayHelper(Type* s_the_array, size_t s_size)
 		: the_array(s_the_array), size(s_size)
 	{
 	}
 	
-	ArrayHelper(const ArrayHelper<type>& to_copy)
+	ArrayHelper(const ArrayHelper<Type>& to_copy)
 		: the_array(to_copy.the_array), size(to_copy.size)
 	{
 	}
 	
-	void init(type* s_the_array, size_t s_size)
+	void init(Type* s_the_array, size_t s_size)
 	{
 		the_array = s_the_array;
 		size = s_size;
 	}
 	
 	
-	ArrayHelper<type>& operator = (const ArrayHelper<type>& to_copy)
+	ArrayHelper<Type>& operator = (const ArrayHelper<Type>& to_copy)
 	{
 		the_array = to_copy.the_array;
 		size = to_copy.size;
@@ -116,7 +116,7 @@ public:			// functions
 	}
 	
 	
-	const type* get_the_array() const
+	const Type* get_the_array() const
 	{
 		return the_array;
 	}
@@ -126,11 +126,11 @@ public:			// functions
 		return size;
 	}
 	
-	type& at(size_t offset)
+	Type& at(size_t offset)
 	{
 		return the_array[offset];
 	}
-	const type& at(size_t offset) const
+	const Type& at(size_t offset) const
 	{
 		return the_array[offset];
 	}

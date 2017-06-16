@@ -18,35 +18,35 @@ namespace liborangepower
 //	}
 //};
 //
-//// ssplit_helper_type is a str_split_helper of some sort
+//// SSplitHelperType is a str_split_helper of some sort
 //// 
-//// out_str_type is, for example, std::string (must be some kind of string
+//// OutStrType is, for example, std::string (must be some kind of string
 //// that supports appending to the end of it, which is specified by
 //// providing a functor of type out_str_append_functor_type).
 //// 
 //// out_str_append_functor_type is a functor of some sort that permits
-//// appending one out_str_type to another out_str_type
-//template<typename ssplit_helper_type, typename out_str_type = std::string, 
+//// appending one OutStrType to another OutStrType
+//template<typename SSplitHelperType, typename OutStrType = std::string, 
 //	typename out_str_append_functor_type = lex_std_str_append_functor>
 //class lexer
 //{
 //public:		// typedefs
-//	typedef typename ssplit_helper_type::str_type internal_str_type;
+//	typedef typename SSplitHelperType::str_type InternalStrType;
 //	
 //	
 //protected:		// variables
-//	ssplit_helper_type internal_ssplit_helper;
+//	SSplitHelperType internal_ssplit_helper;
 //	out_str_append_functor_type internal_append_functor;
 //	
 //public:		// functions
 //	inline lexer()
 //	{
 //	}
-//	inline lexer(const internal_str_type& s_to_split)
+//	inline lexer(const InternalStrType& s_to_split)
 //	{
 //		init(s_to_split);
 //	}
-//	inline lexer(internal_str_type&& s_to_split)
+//	inline lexer(InternalStrType&& s_to_split)
 //	{
 //		init(std::move(s_to_split));
 //	}
@@ -63,15 +63,15 @@ namespace liborangepower
 //	}
 //	
 //	
-//	inline void init(const internal_str_type& s_to_split)
+//	inline void init(const InternalStrType& s_to_split)
 //	{
 //		internal_ssplit_helper = s_to_split;
 //	}
-//	inline void init(internal_str_type&& s_to_split)
+//	inline void init(InternalStrType&& s_to_split)
 //	{
 //		internal_ssplit_helper = std::move(s_to_split);
 //	}
-//	inline const ssplit_helper_type& ssplit_helper() const
+//	inline const SSplitHelperType& ssplit_helper() const
 //	{
 //		return internal_ssplit_helper;
 //	}

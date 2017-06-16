@@ -11,8 +11,8 @@ namespace printout_etc
 {
 
 
-template<typename... arg_types>
-void osprintout(std::ostream& os, arg_types&&... args);
+template<typename... ArgTypes>
+void osprintout(std::ostream& os, ArgTypes&&... args);
 
 class AnyPrintoutBackend
 {
@@ -20,42 +20,68 @@ private:		// functions
 	static inline void func(std::ostream& os)
 	{
 	}
-	template<typename first_type, typename... rem_types>
-	static void func(std::ostream& os, const first_type& first_val, 
-		rem_types&&... rem_args)
+	template<typename FirstType, typename... RemArgTypes>
+	static void func(std::ostream& os, const FirstType& first_val, 
+		RemArgTypes&&... rem_args)
 	{
 		os << first_val;
 		func(os, rem_args...);
 	}
 	
-	template<typename... arg_types>
-	friend void osprintout(std::ostream& os, arg_types&&... args);
+	template<typename... ArgTypes>
+	friend void osprintout(std::ostream& os, ArgTypes&&... args);
 };
 
-template<typename... arg_types>
-inline void osprintout(std::ostream& os, arg_types&&... args)
+template<typename... ArgTypes>
+inline void osprintout(std::ostream& os, ArgTypes&&... args)
 {
 	AnyPrintoutBackend::func(os, args...);
 }
 
-template<typename... arg_types>
-inline void printout(arg_types&&... args)
+template<typename... ArgTypes>
+inline void printout(ArgTypes&&... args)
 {
 	osprintout(cout, args...);
 }
 
-template<typename... arg_types>
-inline void printerr(arg_types&&... args)
+template<typename... ArgTypes>
+inline void printerr(ArgTypes&&... args)
 {
 	osprintout(cerr, args...);
 }
 
 // Alternate name for osprintout
-template<typename... arg_types>
-inline void fprintout(std::ostream& out_file, arg_types&&... args)
+template<typename... ArgTypes>
+inline void fprintout(std::ostream& out_file, ArgTypes&&... args)
 {
 	osprintout(out_file, args...);
 }
+
+
+
+template<typename FirstType, typename... RemArgTypes>
+std::string sconcat(const FirstType& first_val, 
+	RemArgTypes&&... rem_args)
+{
+	std::string ret;
+	std::stringstream sstm;
+	
+	osprintout(sstm, first_val, rem_args...);
+
+	while (!sstm.eof())
+	{
+		char c = sstm.get();
+
+		if (!sstm.eof())
+		{
+			ret += c;
+		}
+	}
+
+	return ret;
+}
+
+
 
 }
 

@@ -14,17 +14,17 @@ namespace strings
 // str_type might be an std::string, an std::string_view, etc.  It just
 // needs to support the at() and size() member functions, and the
 // value_type, in the same way that std::string and std::string_view do.
-template<typename some_str_type>
+template<typename SomeStrType>
 class StrSplitHelperBase
 {
 public:		// typedefs
-	typedef some_str_type str_type;
-	typedef typename str_type::value_type value_type;
+	typedef SomeStrType StrType;
+	typedef typename StrType::value_type value_type;
 	typedef std::pair<value_type, value_type> val_typ_pair;
 	//using decay_t = typename std::decay<value_type&&>::type;
 	
 protected:		// variables
-	str_type internal_to_split;
+	StrType internal_to_split;
 	size_t internal_line_num = 1;
 	size_t internal_num_consec_backslashes = 0;
 	
@@ -161,12 +161,12 @@ protected:		// functions
 	inline StrSplitHelperBase()
 	{
 	}
-	inline StrSplitHelperBase(const str_type& s_to_split)
+	inline StrSplitHelperBase(const StrType& s_to_split)
 		//: internal_to_split(s_to_split)
 	{
 		init(s_to_split);
 	}
-	inline StrSplitHelperBase(str_type&& s_to_split)
+	inline StrSplitHelperBase(StrType&& s_to_split)
 		//: internal_to_split(std::move(s_to_split))
 	{
 		init(std::move(s_to_split));
@@ -208,19 +208,19 @@ protected:		// functions
 	
 public:		// functions
 	
-	inline void init(const str_type& n_to_split)
+	inline void init(const StrType& n_to_split)
 	{
 		internal_to_split = n_to_split;
 		internal_line_num = 1;
 		internal_num_consec_backslashes = 0;
 	}
-	inline void init(str_type&& n_to_split)
+	inline void init(StrType&& n_to_split)
 	{
 		internal_to_split = std::move(n_to_split);
 		internal_line_num = 1;
 		internal_num_consec_backslashes = 0;
 	}
-	inline const str_type& to_split() const
+	inline const StrType& to_split() const
 	{
 		return internal_to_split;
 	}
@@ -407,47 +407,47 @@ public:		// functions
 };
 
 
-template<typename str_type>
-class StrSplitHelperNoEscapes : public StrSplitHelperBase<str_type>
+template<typename StrType>
+class StrSplitHelperNoEscapes : public StrSplitHelperBase<StrType>
 {
 public:		// typedefs
-	typedef StrSplitHelperBase<str_type> base;
-	typedef typename base::value_type value_type;
+	typedef StrSplitHelperBase<StrType> Base;
+	typedef typename Base::value_type value_type;
 	
 public:		// functions
 	inline StrSplitHelperNoEscapes()
 	{
 	}
-	inline StrSplitHelperNoEscapes(const str_type& s_to_split)
-		: base(s_to_split)
+	inline StrSplitHelperNoEscapes(const StrType& s_to_split)
+		: Base(s_to_split)
 	{
 	}
-	inline StrSplitHelperNoEscapes(str_type&& s_to_split)
-		: base(std::move(s_to_split))
+	inline StrSplitHelperNoEscapes(StrType&& s_to_split)
+		: Base(std::move(s_to_split))
 	{
 	}
 	
 	inline StrSplitHelperNoEscapes
 		(const StrSplitHelperNoEscapes& to_copy)
-		: base(to_copy)
+		: Base(to_copy)
 	{
 	}
 	inline StrSplitHelperNoEscapes
 		(StrSplitHelperNoEscapes&& to_move)
-		: base(std::move(to_move))
+		: Base(std::move(to_move))
 	{
 	}
 	
 	inline StrSplitHelperNoEscapes& operator = 
 		(const StrSplitHelperNoEscapes& to_copy)
 	{
-		base::operator = (static_cast<const base&>(to_copy));
+		Base::operator = (static_cast<const Base&>(to_copy));
 		return *this;
 	}
 	inline StrSplitHelperNoEscapes& operator = 
 		(StrSplitHelperNoEscapes&& to_move)
 	{
-		base::operator = (std::move(static_cast<base&&>(to_move)));
+		Base::operator = (std::move(static_cast<Base&&>(to_move)));
 		return *this;
 	}
 	
@@ -455,48 +455,48 @@ public:		// functions
 
 
 
-template<typename str_type>
-class StrSplitHelperWithEscapes : public StrSplitHelperBase<str_type>
+template<typename StrType>
+class StrSplitHelperWithEscapes : public StrSplitHelperBase<StrType>
 {
 public:		// typedefs
-	typedef StrSplitHelperBase<str_type> base;
-	typedef typename base::value_type value_type;
-	typedef typename base::val_typ_pair val_typ_pair;
+	typedef StrSplitHelperBase<StrType> Base;
+	typedef typename Base::value_type value_type;
+	typedef typename Base::val_typ_pair val_typ_pair;
 	
 public:		// functions
 	inline StrSplitHelperWithEscapes()
 	{
 	}
-	inline StrSplitHelperWithEscapes(const str_type& s_to_split)
-		: base(s_to_split)
+	inline StrSplitHelperWithEscapes(const StrType& s_to_split)
+		: Base(s_to_split)
 	{
 	}
-	inline StrSplitHelperWithEscapes(str_type&& s_to_split)
-		: base(std::move(s_to_split))
+	inline StrSplitHelperWithEscapes(StrType&& s_to_split)
+		: Base(std::move(s_to_split))
 	{
 	}
 	
 	inline StrSplitHelperWithEscapes
 		(const StrSplitHelperWithEscapes& to_copy)
-		: base(to_copy)
+		: Base(to_copy)
 	{
 	}
 	inline StrSplitHelperWithEscapes
 		(StrSplitHelperWithEscapes&& to_move)
-		: base(std::move(to_move))
+		: Base(std::move(to_move))
 	{
 	}
 	
 	inline StrSplitHelperWithEscapes& operator = 
 		(const StrSplitHelperWithEscapes& to_copy)
 	{
-		base::operator = (static_cast<const base&>(to_copy));
+		Base::operator = (static_cast<const Base&>(to_copy));
 		return *this;
 	}
 	inline StrSplitHelperWithEscapes& operator = 
 		(StrSplitHelperWithEscapes&& to_move)
 	{
-		base::operator = (std::move(static_cast<base&&>(to_move)));
+		Base::operator = (std::move(static_cast<Base&&>(to_move)));
 		return *this;
 	}
 	
