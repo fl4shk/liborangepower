@@ -4,6 +4,7 @@
 #include "misc_defines.hpp"
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
+#include "gen_getter_setter_defines.hpp"
 
 #include <iomanip>
 
@@ -25,9 +26,9 @@ public:		// typedefs
 	typedef std::mt19937_64 InstanceType;
 	
 protected:		// variables
-	int param_0, param_1;
+	int __param_0, __param_1;
 	
-	InstanceType instance;
+	InstanceType __instance;
 	
 	
 protected:		// functions
@@ -41,23 +42,19 @@ protected:		// functions
 	
 public:		// functions
 	inline Prng(int s_param_0=0, int s_param_1=0) 
-		: param_0(s_param_0), param_1(s_param_1),
-		instance(get_initial_seed())
+		: __param_0(s_param_0), __param_1(s_param_1),
+		__instance(get_initial_seed())
 	{
 	}
+
+	gen_getter_by_val(param_0);
+	gen_getter_by_val(param_1);
+	gen_getter_by_con_ref(instance);
 	
-	inline int get_param_0() const
-	{
-		return param_0;
-	}
-	inline int get_param_1() const
-	{
-		return param_1;
-	}
 	
 	inline auto operator () ()
 	{
-		return instance();
+		return __instance();
 	}
 	
 	inline auto operator () (integer_types::u64 max_val, 
