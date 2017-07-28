@@ -36,8 +36,7 @@ protected:		// functions
 	{
 		// I have no idea how good this is, but it seems to work?
 		return (std::chrono::high_resolution_clock::now()
-			.time_since_epoch().count() * (get_param_0() + 1))
-			+ get_param_1();
+			.time_since_epoch().count() * (param_0() + 1)) + param_1();
 	}
 	
 public:		// functions
