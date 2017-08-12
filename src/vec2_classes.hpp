@@ -194,7 +194,7 @@ typedef Vec2<integer_types::u32> Vec2_u32;
 typedef Vec2<integer_types::s32> Vec2_s32;
 typedef Vec2<integer_types::u64> Vec2_u64;
 typedef Vec2<integer_types::s64> Vec2_s64;
-typedef Vec2<size_t> SizeT2D;
+typedef Vec2<size_t> SizeT2d;
 
 
 #define generate_specific_vec2_class_contents(specific_type) \
