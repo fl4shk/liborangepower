@@ -20,7 +20,7 @@ inline void* arr_memcpy(Type* dst, const void* src, size_t num_elems)
 	return memcpy((void*)dst, src, num_elems * sizeof(Type) 
 		/ sizeof(integer_types::u8));
 }
-template<typename Type >
+template<typename Type>
 inline void* arr_memset(Type* dst, int c, size_t num_elems)
 {
 	return memset((void*)dst, c, num_elems * sizeof(Type) 

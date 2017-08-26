@@ -23,12 +23,12 @@ class Vec2
 //	
 public:		// variables
 	Type x, y;
-	
+
 public:		// functions
 	constexpr inline Vec2() : x(Type()), y(Type())
 	{
 	}
-	
+
 	//inline Vec2(const Type& s_x, const Type& s_y) : x(s_x), y(s_y)
 	//{
 	//}
@@ -36,9 +36,9 @@ public:		// functions
 	//inline Vec2(const Vec2<Type>& to_copy) : x(to_copy.x), y(to_copy.y)
 	//{
 	//}
-	
-	
-	
+
+
+
 	template<typename Type1, typename Type2>
 	constexpr inline Vec2(const Type1& s_x, const Type2& s_y)
 		: x(s_x), y(s_y)
@@ -54,14 +54,14 @@ public:		// functions
 		: x(std::move(to_move.x)), y(std::move(to_move.y))
 	{
 	}
-	
-	
+
+
 	template<typename OtherType>
 	inline Vec2<Type>& operator = (const Vec2<OtherType>& to_copy)
 	{
 		x = to_copy.x;
 		y = to_copy.y;
-		
+
 		return *this;
 	}
 	template<typename OtherType>
@@ -69,11 +69,11 @@ public:		// functions
 	{
 		x = std::move(to_move.x);
 		y = std::move(to_move.y);
-		
+
 		return *this;
 	}
-	
-	
+
+
 	template<typename OtherType>
 	inline Vec2<Type> operator + (const Vec2<OtherType>& to_add) const
 	{
@@ -84,20 +84,20 @@ public:		// functions
 	{
 		return Vec2<Type>(x - to_sub.x, y - to_sub.y);
 	}
-	
+
 	template<typename OtherType>
 	inline Vec2<Type> operator * (const OtherType& scale) const
 	{
 		return Vec2<Type>(x * scale, y * scale);
 	}
-	
+
 	// Dot product
 	template<typename OtherType>
 	inline Type dot_prod(const Vec2<OtherType>& to_dot) const
 	{
 		return (x * to_dot.x) + (y * to_dot.y);
 	}
-	
+
 	// Z component of a 3D cross product, which is computed as if *this and
 	// to_zcross have been converted to 3D vectors with Z components of zero
 	template<typename OtherType>
@@ -105,8 +105,8 @@ public:		// functions
 	{
 		return (x * to_zcross.y) - (y * to_zcross.x);
 	}
-	
-	
+
+
 	template<typename OtherType>
 	inline Vec2<Type>& operator += (const Vec2<OtherType>& to_add)
 	{
@@ -121,7 +121,7 @@ public:		// functions
 		y -= to_sub.y;
 		return *this;
 	}
-	
+
 	template<typename OtherType>
 	inline Vec2<Type>& operator *= (const OtherType& scale)
 	{
@@ -129,28 +129,28 @@ public:		// functions
 		y *= scale;
 		return *this;
 	}
-	
-	
+
+
 	// Comparison Operator Overloads
 	template<typename OtherType>
 	inline bool operator == (const Vec2<OtherType>& to_cmp) const
 	{
 		return ((x == to_cmp.x) && (y == to_cmp.y));
 	}
-	
+
 	template<typename OtherType>
 	inline bool operator != (const Vec2<OtherType>& to_cmp) const
 	{
 		return ((x != to_cmp.x) || (y != to_cmp.y));
 	}
-	
-	
+
+
 	template<typename OtherType>
 	inline operator Vec2<OtherType>() const
 	{
 		return Vec2<OtherType>(x, y);
 	}
-	
+
 	inline Type& operator [] (size_t index)
 	{
 		if (index == vec2_index_for_x)
@@ -162,7 +162,7 @@ public:		// functions
 			return y;
 		}
 	}
-	
+
 	inline const Type& operator [] (size_t index) const
 	{
 		if (index == vec2_index_for_x)
@@ -174,7 +174,7 @@ public:		// functions
 			return y;
 		}
 	}
-	
+
 } __attribute__((_align4));
 
 

@@ -25,14 +25,14 @@ class PrevCurrPair
 {
 public:		// variables
 	type prev, curr;
-	
+
 public:		// functions
-	
+
 	inline void back_up()
 	{
 		prev = curr;
 	}
-	
+
 	inline void back_up_and_update(const type& n_curr)
 	{
 		prev = std::move(curr);
@@ -43,18 +43,18 @@ public:		// functions
 		prev = std::move(curr);
 		curr = std::move(n_curr);
 	}
-	
+
 	inline bool has_changed() const
 	{
 		return (prev != curr);
 	}
-	
+
 	inline operator vec::Vec2<type>() const
 	{
 		return vec::Vec2<type>(prev, curr);
 	}
-	
-	
+
+
 } __attribute__((_align4));
 
 

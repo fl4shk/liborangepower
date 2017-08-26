@@ -7,41 +7,9 @@ namespace liborangepower
 namespace misc_util
 {
 
-template<typename Type>
-inline const Type& max2(const Type& arg_0, const Type& arg_1)
-{
-	if (arg_0 >= arg_1)
-	{
-		return arg_0;
-	}
-	else
-	{
-		return arg_1;
-	}
-}
-
-template<typename Type>
-inline const Type& max3(const Type& arg_0, const Type& arg_1, 
-	const Type& arg_2)
-{
-	if (arg_0 >= arg_1 && arg_0 >= arg_2)
-	{
-		return arg_0;
-	}
-	else if (arg_1 >= arg_2)
-	{
-		return arg_1;
-	}
-	else
-	{
-		return arg_2;
-	}
-}
-
-
 // Don't use weird things with this.
-template<typename first_type, typename second_type>
-first_type max_va(const first_type& arg_0, const second_type& arg_1)
+template<typename FirstType, typename SecondType>
+FirstType max_va(const FirstType& arg_0, const SecondType& arg_1)
 {
 	if (arg_0 >= arg_1)
 	{
@@ -53,18 +21,18 @@ first_type max_va(const first_type& arg_0, const second_type& arg_1)
 	}
 }
 
-template<typename first_type, typename second_type, 
-	typename... remaining_types>
-inline first_type max_va(const first_type& arg_0, 
-	const second_type& arg_1, remaining_types... remaining_args )
+template<typename FirstType, typename SecondType, 
+	typename... RemainingTypes>
+inline FirstType max_va(const FirstType& arg_0, 
+	const SecondType& arg_1, RemainingTypes... remaining_args )
 {
 	return max_va(max_va(arg_0, arg_1), remaining_args...);
 }
 
 
-template<typename first_type, typename second_type>
-inline first_type min_va(const first_type& arg_0, 
-	const second_type& arg_1)
+template<typename FirstType, typename SecondType>
+inline FirstType min_va(const FirstType& arg_0, 
+	const SecondType& arg_1)
 {
 	if (arg_0 <= arg_1)
 	{
@@ -76,10 +44,10 @@ inline first_type min_va(const first_type& arg_0,
 	}
 }
 
-template<typename first_type, typename second_type, 
-	typename... remaining_types>
-inline first_type min_va(const first_type& arg_0, 
-	const second_type& arg_1, remaining_types... remaining_args )
+template<typename FirstType, typename SecondType, 
+	typename... RemainingTypes>
+inline FirstType min_va(const FirstType& arg_0, 
+	const SecondType& arg_1, RemainingTypes... remaining_args )
 {
 	return min_va(min_va(arg_0, arg_1), remaining_args...);
 }
@@ -100,28 +68,28 @@ inline Type custom_abs(const Type& val)
 
 
 template<typename Type, size_t index>
-inline void copy_to_array_backend(Type* all_values_arr, 
+inline void init_array_backend(Type* all_values_arr, 
 	const Type& to_copy)
 {
-	//asm_comment("copy_to_array_backend() single value");
+	//asm_comment("init_array_backend() single value");
 	all_values_arr[index] = to_copy;
 }
 
-template<typename Type, size_t index, typename... remaining_types>
-inline void copy_to_array_backend(Type* all_values_arr, 
-	const Type& first_value, const remaining_types&... remaining_values)
+template<typename Type, size_t index, typename... RemainingTypes>
+inline void init_array_backend(Type* all_values_arr, 
+	const Type& first_value, const RemainingTypes&... remaining_values)
 {
-	copy_to_array_backend< Type, index>(all_values_arr, first_value);
-	
-	copy_to_array_backend< Type, index + 1>(all_values_arr, 
+	init_array_backend<Type, index>(all_values_arr, first_value);
+
+	init_array_backend<Type, index + 1>(all_values_arr, 
 		remaining_values...);
 }
 
 template<typename Type, typename... AllTheTypes>
-inline void copy_to_array(Type* all_values_arr, 
+inline void init_array(Type* all_values_arr, 
 	const AllTheTypes&...  all_the_values)
 {
-	copy_to_array_backend< Type, 0>(all_values_arr,
+	init_array_backend<Type, 0>(all_values_arr,
 		all_the_values...);
 }
 

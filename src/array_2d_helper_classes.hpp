@@ -2,7 +2,7 @@
 #define liborangepower_array_2d_helper_classes_hpp
 
 #include "misc_types.hpp"
-#include "Vec2_classes.hpp"
+#include "vec2_classes.hpp"
 
 
 
@@ -18,87 +18,83 @@ template<typename Type, size_t _width, size_t _height>
 class ArrayCsz2dHelper
 {
 protected:		// variables
-	static constexpr Vec2<size_t> size_2d = { _width, _height };
-	static constexpr size_t size = size_2d.x * size_2d.y;
-	
-public:			// variables
-	Type* the_array = NULL;
-	
+	static constexpr Vec2<size_t> __size_2d = {_width, _height};
+	static constexpr size_t __size = __size_2d.x * __size_2d.y;
+
+//public:			// variables
+	Type* __arr = nullptr;
+
 public:			// functions
 	inline ArrayCsz2dHelper()
 	{
 	}
-	inline ArrayCsz2dHelper(Type* s_the_array)
-		: the_array(s_the_array)
+	inline ArrayCsz2dHelper(Type* s___arr)
+		: __arr(s___arr)
 	{
 	}
-	
-	void init(Type* s_the_array)
+	inline ArrayCsz2dHelper(const ArrayCsz2dHelper& to_copy) = default;
+
+	void init(Type* s___arr)
 	{
-		the_array = s_the_array;
+		__arr = s___arr;
 	}
-	
-	ArrayCsz2dHelper<Type, _width, _height>& operator = 
-		(const ArrayCsz2dHelper<Type, _width, _height>& to_copy)
+
+	ArrayCsz2dHelper& operator = (const ArrayCsz2dHelper& to_copy) 
+		= default;
+
+
+	Type* arr() const
 	{
-		the_array = to_copy.the_array;
-		
-		return *this;
+		return __arr;
 	}
-	
-	
-	const Type* get_the_array() const
-	{
-		return the_array;
-	}
-	
+
 	size_t width() const
 	{
-		return size_2d.x;
+		return __size_2d.x;
 	}
 	size_t height() const
 	{
-		return size_2d.y;
+		return __size_2d.y;
 	}
-	
-	const Vec2<size_t>& get_size_2d() const
+
+	const Vec2<size_t>& size_2d() const
 	{
-		return size_2d;
+		return __size_2d;
 	}
-	size_t get_size() const
+	size_t size() const
 	{
-		return size;
+		return __size;
 	}
-	
+
 	Type& at(size_t x, size_t y)
 	{
-		return the_array[y * size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	Type& at(const Vec2<size_t>& offset_2d)
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	Type& at(const Vec2_s32& offset_2d)
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	
-	
+
+
 	const Type& at(size_t x, size_t y) const
 	{
-		return the_array[y * size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	const Type& at(const Vec2<size_t>& offset_2d) const
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	const Type& at(const Vec2_s32& offset_2d) const
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	
-	
-	
+
+
+
 } __attribute__((_align4));
 
 // This utility class is intended to be used when inherently 2D data is
@@ -107,96 +103,89 @@ template<typename Type>
 class Array2dHelper
 {
 protected:		// variables
-	Vec2<size_t> size_2d;
-	size_t size = 0;
-	
-public:			// variables
-	Type* the_array = NULL;
-	
+	Vec2<size_t> __size_2d;
+	size_t __size = 0;
+
+//public:			// variables
+	Type* __arr = nullptr;
+
 public:			// functions
-	//Array2dHelper() : size_2d({ 0, 0 }), size(0), the_array(0)
+	//Array2dHelper() : __size_2d({ 0, 0 }), __size(0), __arr(0)
 	//{
 	//}
 	inline Array2dHelper()
 	{
 	}
-	inline Array2dHelper(Type* s_the_array, 
+	inline Array2dHelper(Type* s___arr, 
 		const Vec2<size_t>& s_size_2d)
-		: size_2d(s_size_2d), size(s_size_2d.x * s_size_2d.y),
-		the_array(s_the_array)
+		: __size_2d(s_size_2d), __size(s_size_2d.x * s_size_2d.y),
+		__arr(s___arr)
 	{
 	}
-	
-	void init(Type* s_the_array, const Vec2<size_t>& s_size_2d)
+	inline Array2dHelper(const Array2dHelper& to_copy) = default;
+
+	void init(Type* s___arr, const Vec2<size_t>& s_size_2d)
 	{
-		size_2d = s_size_2d;
-		size = size_2d.x * size_2d.y;
-		the_array = s_the_array;
+		__size_2d = s_size_2d;
+		__size = __size_2d.x * __size_2d.y;
+		__arr = s___arr;
 	}
-	
-	Array2dHelper<Type>& operator = 
-		(const Array2dHelper<Type>& to_copy)
+
+	Array2dHelper& operator = (const Array2dHelper& to_copy) = default;
+
+
+	Type* arr() const
 	{
-		size_2d = to_copy.size_2d;
-		size = to_copy.size;
-		the_array = to_copy.the_array;
-		
-		return *this;
+		return __arr;
 	}
-	
-	
-	const Type* get_the_array() const
-	{
-		return the_array;
-	}
-	
+
 	size_t width() const
 	{
-		return size_2d.x;
+		return __size_2d.x;
 	}
 	size_t height() const
 	{
-		return size_2d.y;
+		return __size_2d.y;
 	}
-	
-	const Vec2<size_t>& get_size_2d() const
+
+	const Vec2<size_t>& size_2d() const
 	{
-		return size_2d;
+		return __size_2d;
 	}
-	size_t get_size() const
+	size_t size() const
 	{
-		return size;
+		return __size;
 	}
-	
+
 	Type& at(size_t x, size_t y)
 	{
-		return the_array[y * size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	Type& at(const Vec2<size_t>& offset_2d)
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	Type& at(const Vec2_s32& offset_2d)
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	
-	
+
+
 	const Type& at(size_t x, size_t y) const
 	{
-		return the_array[y * size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	const Type& at(const Vec2<size_t>& offset_2d) const
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	const Type& at(const Vec2_s32& offset_2d) const
 	{
-		return the_array[offset_2d.y * size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	
-	
-	
+
+
+
 } __attribute__((_align4));
 
 

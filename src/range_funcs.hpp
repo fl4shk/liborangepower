@@ -54,7 +54,7 @@ inline Type clamp_to_range(Type range_start_inclusive,
 		return range_end_exclusive - (Type)(1);
 		//Type ret = range_end_exclusive;
 		//ret -= (Type)1;
-		
+
 	}
 	else
 	{

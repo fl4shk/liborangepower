@@ -13,15 +13,15 @@ class CstmSSHelperNE : public StrSplitHelperNoEscapes<string_view>
 {
 public:		// typedefs
 	typedef StrSplitHelperNoEscapes<string_view> base;
-	
-	
+
+
 protected:		// functions
-	
+
 	virtual bool to_split_at_is_indiv_word(size_t i) const
 	{
 		return (this->to_split().at(i) == ',');
 	}
-	
+
 public:		// functions
 	inline CstmSSHelperNE(const string_view& s_to_split)
 		: base(s_to_split)
@@ -31,7 +31,7 @@ public:		// functions
 		: base(std::move(s_to_split))
 	{
 	}
-	
+
 	inline CstmSSHelperNE(const CstmSSHelperNE& to_copy)
 		: base(to_copy)
 	{
@@ -40,7 +40,7 @@ public:		// functions
 		: base(std::move(to_move))
 	{
 	}
-	
+
 	inline CstmSSHelperNE& operator = 
 		(const CstmSSHelperNE& to_copy)
 	{
@@ -53,24 +53,24 @@ public:		// functions
 		base::operator = (std::move(to_move));
 		return *this;
 	}
-	
-	
-	
+
+
+
 };
 
 class CstmSSHelperWE : public StrSplitHelperWithEscapes<string_view>
 {
 public:		// typedefs
 	typedef StrSplitHelperWithEscapes<string_view> base;
-	
-	
+
+
 protected:		// functions
-	
+
 	virtual bool to_split_at_is_indiv_word(size_t i) const
 	{
 		return (base::to_split().at(i) == ',');
 	}
-	
+
 public:		// functions
 	inline CstmSSHelperWE(const string_view& s_to_split)
 		: base(s_to_split)
@@ -80,7 +80,7 @@ public:		// functions
 		: base(std::move(s_to_split))
 	{
 	}
-	
+
 	inline CstmSSHelperWE(const CstmSSHelperWE& to_copy)
 		: base(to_copy)
 	{
@@ -89,7 +89,7 @@ public:		// functions
 		: base(std::move(to_move))
 	{
 	}
-	
+
 	inline CstmSSHelperWE& operator = 
 		(const CstmSSHelperWE& to_copy)
 	{
@@ -102,9 +102,9 @@ public:		// functions
 		base::operator = (std::move(to_move));
 		return *this;
 	}
-	
-	
-	
+
+
+
 };
 
 

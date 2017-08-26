@@ -16,60 +16,57 @@ template<typename Type, size_t _size>
 class ArrayCszHelper
 {
 public:			// variables
-	Type* the_array = NULL;
-	
+	Type* __arr = nullptr;
+
 protected:		// variables
-	static constexpr size_t size = _size;
-	
+	static constexpr size_t __size = _size;
+
 public:			// functions
 	ArrayCszHelper()
 	{
 	}
-	
-	ArrayCszHelper(Type* s_the_array) : the_array(s_the_array)
+
+	ArrayCszHelper(Type* s_the_array) : __arr(s_the_array)
 	{
 	}
-	
-	ArrayCszHelper(const ArrayCszHelper<Type>& to_copy)
-		: the_array(to_copy.the_array)
-	{
-	}
-	
+
+	ArrayCszHelper(const ArrayCszHelper& to_copy) = default;
+
 	void init(Type* s_the_array)
 	{
-		the_array = s_the_array;
+		__arr = s_the_array;
 	}
-	
-	
+
+
 	ArrayCszHelper<Type>& operator = 
 		(const ArrayCszHelper<Type>& to_copy)
 	{
-		the_array = to_copy.the_array;
-		
+		__arr = to_copy.__arr;
+
 		return *this;
 	}
-	
-	
-	const Type* get_the_array() const
+
+
+	const Type* arr() const
 	{
-		return the_array;
+		return __arr;
 	}
-	
-	size_t get_size() const
+
+	size_t size() const
 	{
-		return size;
+		return __size;
 	}
-	
+
 	Type& at(size_t offset)
 	{
-		return the_array[offset];
+		return __arr[offset];
 	}
 	const Type& at(size_t offset) const
 	{
-		return the_array[offset];
+		return __arr[offset];
 	}
-	
-	
+
+
 } __attribute__((_align4));
 
 
@@ -79,63 +76,57 @@ public:			// functions
 template<typename Type>
 class ArrayHelper
 {
-public:			// variables
-	Type* the_array = NULL;
-	
+//public:			// variables
 protected:		// variables
-	size_t size = 0;
-	
+	Type* __arr = nullptr;
+
+protected:		// variables
+	size_t __size = 0;
+
 public:			// functions
-	ArrayHelper()
+	inline ArrayHelper()
 	{
 	}
-	
-	ArrayHelper(Type* s_the_array, size_t s_size)
-		: the_array(s_the_array), size(s_size)
+
+	inline ArrayHelper(Type* s_the_array, size_t s_size)
+		: __arr(s_the_array), __size(s_size)
 	{
 	}
-	
-	ArrayHelper(const ArrayHelper<Type>& to_copy)
-		: the_array(to_copy.the_array), size(to_copy.size)
+
+	inline ArrayHelper(const ArrayHelper& to_copy) = default;
 	{
 	}
-	
+
 	void init(Type* s_the_array, size_t s_size)
 	{
-		the_array = s_the_array;
-		size = s_size;
+		__arr = s_the_array;
+		__size = s_size;
 	}
-	
-	
-	ArrayHelper<Type>& operator = (const ArrayHelper<Type>& to_copy)
+
+
+	inline ArrayHelper& operator = (const ArrayHelper& to_copy) = default;
+
+
+	const Type* arr() const
 	{
-		the_array = to_copy.the_array;
-		size = to_copy.size;
-		
-		return *this;
+		return __arr;
 	}
-	
-	
-	const Type* get_the_array() const
+
+	size_t size() const
 	{
-		return the_array;
+		return __size;
 	}
-	
-	size_t get_size() const
-	{
-		return size;
-	}
-	
+
 	Type& at(size_t offset)
 	{
-		return the_array[offset];
+		return __arr[offset];
 	}
 	const Type& at(size_t offset) const
 	{
-		return the_array[offset];
+		return __arr[offset];
 	}
-	
-	
+
+
 } __attribute__((_align4));
 
 }

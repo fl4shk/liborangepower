@@ -27,7 +27,7 @@ private:		// functions
 		os << first_val;
 		func(os, rem_args...);
 	}
-	
+
 	template<typename... ArgTypes>
 	friend void osprintout(std::ostream& os, ArgTypes&&... args);
 };
@@ -65,7 +65,7 @@ std::string sconcat(const FirstType& first_val,
 {
 	std::string ret;
 	std::stringstream sstm;
-	
+
 	osprintout(sstm, first_val, rem_args...);
 
 	while (!sstm.eof())
