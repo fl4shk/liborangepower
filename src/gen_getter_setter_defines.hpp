@@ -217,4 +217,15 @@ static inline const decltype(prefix##_##suffix)& set_##suffix \
 gen_static_generic_setter_by_rval_ref(_, suffix)
 #endif
 
+
+
+#define gen_getter_and_setter_by_con_ref(stuff) \
+	gen_getter_by_con_ref(stuff) \
+	gen_setter_by_con_ref(stuff)
+
+
+#define gen_getter_and_setter_by_val(stuff) \
+	gen_getter_by_val(stuff) \
+	gen_setter_by_val(stuff)
+
 #endif		// liborangepower_gen_getter_setter_defines_hpp
