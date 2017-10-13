@@ -68,20 +68,20 @@ inline Type custom_abs(const Type& val)
 
 
 template<typename Type, size_t index>
-inline void init_array_backend(Type* all_values_arr, 
+inline void __init_array_backend(Type* all_values_arr, 
 	const Type& to_copy)
 {
-	//asm_comment("init_array_backend() single value");
+	//asm_comment("__init_array_backend() single value");
 	all_values_arr[index] = to_copy;
 }
 
 template<typename Type, size_t index, typename... RemainingTypes>
-inline void init_array_backend(Type* all_values_arr, 
+inline void __init_array_backend(Type* all_values_arr, 
 	const Type& first_value, const RemainingTypes&... remaining_values)
 {
-	init_array_backend<Type, index>(all_values_arr, first_value);
+	__init_array_backend<Type, index>(all_values_arr, first_value);
 
-	init_array_backend<Type, index + 1>(all_values_arr, 
+	__init_array_backend<Type, index + 1>(all_values_arr, 
 		remaining_values...);
 }
 
@@ -89,7 +89,7 @@ template<typename Type, typename... AllTheTypes>
 inline void init_array(Type* all_values_arr, 
 	const AllTheTypes&...  all_the_values)
 {
-	init_array_backend<Type, 0>(all_values_arr,
+	__init_array_backend<Type, 0>(all_values_arr,
 		all_the_values...);
 }
 
@@ -100,6 +100,30 @@ constexpr inline bool type_is_signed()
 {
 	return ((Type)(-1) < (Type)(0));
 }
+
+
+template<typename FirstType, typename SecondType>
+bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
+	__attribute__((noinline));
+template<typename FirstType, typename SecondType>
+bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
+{
+	if (size == 0)
+	{
+		return false;
+	}
+
+	for (size_t i=0; i<size; ++i)
+	{
+		if (first_arr[i] != second_arr[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 
 }
 

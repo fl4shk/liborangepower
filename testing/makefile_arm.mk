@@ -25,11 +25,9 @@ PROJ:=$(shell basename $(CURDIR))$(DEBUG_SUFFIX)
 
 
 # This is used for do_asmouts
-VERBOSE_ASM_FLAG:=
 #VERBOSE_ASM_FLAG:=-fverbose-asm
 
 PREFIX:=arm-none-eabi-
-
 
 # Compilers and initial compiler flags
 CXX:=$(PREFIX)g++
@@ -54,17 +52,17 @@ else
 	OPTIMIZATION_LEVEL:=$(REGULAR_OPTIMIZATION_LEVEL)
 endif
 
+
 EXTRA_BASE_FLAGS:=-mcpu=arm7tdmi -mtune=arm7tdmi -mthumb \
 	-mthumb-interwork \
 	-fno-threadsafe-statics -nostartfiles
-#EXTRA_BASE_FLAGS:=-mcpu=arm7tdmi -mtune=arm7tdmi -marm \
-#	-mthumb-interwork \
-#	-fno-threadsafe-statics -nostartfiles
 
-EXTRA_LD_FLAGS:=$(EXTRA_LD_FLAGS) -mthumb --specs=nosys.specs -lm \
-	-lgcc -lc -lstdc++
+EXTRA_LD_FLAGS:=$(EXTRA_LD_FLAGS) -mthumb --specs=nosys.specs \
+	-lm -lgcc -lc -lstdc++ 
 
 DISASSEMBLE_BASE_FLAGS:=-marm7tdmi
+
+
 
 
 

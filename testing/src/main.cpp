@@ -38,6 +38,9 @@ int main(int argc, char** argv)
 
 	//ArrayCsz2dHelper<s32, some_width
 
+	int arr[2] = {2, 7};
+	osprintout(osprint_arr(cout, arr, 2), "\n");
+
 
 }
 

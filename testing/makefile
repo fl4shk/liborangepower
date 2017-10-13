@@ -1,1 +1,1 @@
-makefile_arm.mk
+makefile_regular.mk

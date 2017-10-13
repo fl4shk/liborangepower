@@ -84,6 +84,22 @@ std::string sconcat(const FirstType& first_val,
 }
 
 
+template<typename ArrType>
+std::ostream& osprint_arr(std::ostream& os, ArrType* to_print, size_t size)
+{
+	for (size_t i=0; i<size; ++i)
+	{
+		osprintout(os, to_print[i]);
+		if ((i + 1) < size)
+		{
+			osprintout(os, ", ");
+		}
+	}
+
+	return os;
+}
+
+
 }
 
 }
