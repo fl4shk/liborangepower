@@ -131,8 +131,8 @@ bool anything_matches(const FirstType& first_val)
 	return false;
 }
 
-template<typename FirstType, typename... RemArgTypes>
-bool anything_matches(const FirstType& first_val, const FirstType& next, 
+template<typename FirstType, typename SecondType, typename... RemArgTypes>
+bool anything_matches(const FirstType& first_val, const SecondType& next, 
 	RemArgTypes&&... rem_args)
 {
 	if (sizeof...(rem_args) == 0)
