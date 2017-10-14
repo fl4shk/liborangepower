@@ -145,7 +145,7 @@ bool anything_matches(const FirstType& first_val, const FirstType& next,
 	}
 	else
 	{
-		return anything_matches(op, rem_args...);
+		return anything_matches(first_val, rem_args...);
 	}
 }
 
