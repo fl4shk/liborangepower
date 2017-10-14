@@ -125,6 +125,31 @@ bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
 }
 
 
+template<typename FirstType>
+bool anything_matches(const FirstType& first_val)
+{
+	return false;
+}
+
+template<typename FirstType, typename... RemArgTypes>
+bool anything_matches(const FirstType& first_val, const FirstType& next, 
+	RemArgTypes&&... rem_args)
+{
+	if (sizeof...(rem_args) == 0)
+	{
+		return (first_val == next);
+	}
+	else if (first_val == next)
+	{
+		return true;
+	}
+	else
+	{
+		return anything_matches(op, rem_args...);
+	}
+}
+
+
 }
 
 }
