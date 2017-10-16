@@ -41,16 +41,23 @@ int main(int argc, char** argv)
 	//int arr[2] = {2, 7};
 	//osprintout(osprint_arr(cout, arr, 2), "\n");
 
-	int arr0[2] = {2, 7};
-	int arr1[2] = {6, 8};
 
-	int arr2[2] = {9, 20};
-	int arr3[2] = {9, 20};
 
-	printout(cmpeq_array(arr0, arr1, 2), "\n");
-	printout(cmpeq_array(arr2, arr3, 2), "\n");
-	printout(cmpeq_array(arr2, arr2, 2), "\n");
 
+
+	//int arr0[2] = {2, 7};
+	//int arr1[2] = {6, 8};
+
+	//int arr2[2] = {9, 20};
+	//int arr3[2] = {9, 20};
+
+	//printout(cmpeq_array(arr0, arr1, 2), "\n");
+	//printout(cmpeq_array(arr2, arr3, 2), "\n");
+	//printout(cmpeq_array(arr2, arr2, 2), "\n");
+
+
+	printout(strappcom("aaaa", 5, 6, 9, "9000"), "\n");
+	printout(strappcom2("aaaa", 5, 6, 9, "9000"), "\n");
 
 }
 

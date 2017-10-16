@@ -110,54 +110,25 @@ inline std::string strappcom(const Type& to_concat)
 	return sconcat(to_concat, ", ");
 }
 
-template<typename FirstType, typename SecondType, typename... RemArgTypes>
-inline std::string strappcom(const FirstType& first_val, 
-	const SecondType& second_val, RemArgTypes&&... rem_args)
+template<typename FirstType, typename... RemArgTypes>
+inline std::string strappcom(const FirstType& first_val,
+	RemArgTypes&&... rem_args)
 {
-	//return strappcom(strappcom(first_val), 
-	//	strappcom(second_val, rem_args...));
-
-	std::string ret;
-
-	if (sizeof...(rem_args) > 0)
-	{
-		ret = std::move(strappcom(first_val));
-		ret += std::move(strappcom(second_val));
-		ret += std::move(strappcom(rem_args...));
-	}
-	else
-	{
-		ret = std::move(strappcom(first_val));
-		ret += std::move(strappcom(second_val));
-	}
-
+	std::string ret = std::move(strappcom(first_val));
+	ret += std::move(strappcom(rem_args...));
 	return ret;
 }
 
-template<typename FirstType, typename SecondType, typename... RemArgTypes>
-inline std::string strappcom2(const FirstType& first_val, 
-	const SecondType& second_val, RemArgTypes&&... rem_args)
+template<typename FirstType, typename... RemArgTypes>
+inline std::string strappcom2(const FirstType& first_val,
+	RemArgTypes&&... rem_args)
 {
-	//return strappcom(strappcom(first_val), 
-	//	strappcom(second_val, rem_args...));
+	std::string ret = std::move(strappcom(first_val, rem_args...));
 
-	std::string ret;
-
-	if (sizeof...(rem_args) > 0)
-	{
-		ret = std::move(strappcom(first_val));
-		ret += std::move(strappcom(second_val));
-		ret += std::move(strappcom(rem_args...));
-	}
-	else
-	{
-		ret = std::move(strappcom(first_val));
-		ret += std::move(sconcat(second_val));
-	}
+	ret = std::move(ret.substr(0, ret.size() - std::string(", ").size()));
 
 	return ret;
 }
-
 
 }
 
