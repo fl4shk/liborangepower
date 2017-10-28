@@ -39,12 +39,7 @@ public:			// functions
 
 
 	ArrayCszHelper<Type>& operator = 
-		(const ArrayCszHelper<Type>& to_copy)
-	{
-		__arr = to_copy.__arr;
-
-		return *this;
-	}
+		(const ArrayCszHelper<Type>& to_copy) = default;
 
 
 	const Type* arr() const
@@ -94,8 +89,6 @@ public:			// functions
 	}
 
 	inline ArrayHelper(const ArrayHelper& to_copy) = default;
-	{
-	}
 
 	void init(Type* s_the_array, size_t s_size)
 	{
