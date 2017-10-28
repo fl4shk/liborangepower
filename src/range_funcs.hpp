@@ -30,7 +30,8 @@ inline bool in_range_inclusive(Type range_start_inclusive,
 
 template<typename Type>
 inline bool vec2_in_range(containers::Vec2<Type> range_start_inclusive, 
-	containers::Vec2<Type> range_end_exclusive, containers::Vec2<Type> to_check)
+	containers::Vec2<Type> range_end_exclusive, 
+	containers::Vec2<Type> to_check)
 {
 	return (to_check.x >= range_start_inclusive.x 
 		&& to_check.x < range_end_exclusive.x

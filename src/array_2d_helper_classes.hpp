@@ -74,7 +74,7 @@ public:			// functions
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	Type& at(const Vec2_s32& offset_2d)
+	Type& at(const Vec2S32& offset_2d)
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
@@ -88,7 +88,7 @@ public:			// functions
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	const Type& at(const Vec2_s32& offset_2d) const
+	const Type& at(const Vec2S32& offset_2d) const
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
@@ -165,7 +165,7 @@ public:			// functions
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	Type& at(const Vec2_s32& offset_2d)
+	Type& at(const Vec2S32& offset_2d)
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
@@ -179,7 +179,7 @@ public:			// functions
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
-	const Type& at(const Vec2_s32& offset_2d) const
+	const Type& at(const Vec2S32& offset_2d) const
 	{
 		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}

@@ -38,8 +38,7 @@ public:			// functions
 	}
 
 
-	ArrayCszHelper<Type>& operator = 
-		(const ArrayCszHelper<Type>& to_copy) = default;
+	ArrayCszHelper& operator = (const ArrayCszHelper& to_copy) = default;
 
 
 	const Type* arr() const
