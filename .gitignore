@@ -33,7 +33,7 @@ disassembly*.armasm
 *.sav*
 *.ss*
 *.gdb_history*
-*.swp
-*.swo
+*.sw[po]
 */tags
 */types_*.taghl
+*.txt.ignore
