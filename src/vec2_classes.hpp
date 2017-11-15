@@ -57,7 +57,7 @@ public:		// functions
 
 
 	template<typename OtherType>
-	inline Vec2<Type>& operator = (const Vec2<OtherType>& to_copy)
+	inline Vec2& operator = (const Vec2<OtherType>& to_copy)
 	{
 		x = to_copy.x;
 		y = to_copy.y;
@@ -65,7 +65,7 @@ public:		// functions
 		return *this;
 	}
 	template<typename OtherType>
-	inline Vec2<Type>& operator = (Vec2<OtherType>&& to_move)
+	inline Vec2& operator = (Vec2<OtherType>&& to_move)
 	{
 		x = std::move(to_move.x);
 		y = std::move(to_move.y);
@@ -75,20 +75,20 @@ public:		// functions
 
 
 	template<typename OtherType>
-	inline Vec2<Type> operator + (const Vec2<OtherType>& to_add) const
+	inline Vec2 operator + (const Vec2<OtherType>& to_add) const
 	{
-		return Vec2<Type>(x + to_add.x, y + to_add.y);
+		return Vec2(x + to_add.x, y + to_add.y);
 	}
 	template<typename OtherType>
-	inline Vec2<Type> operator - (const Vec2<OtherType>& to_sub) const
+	inline Vec2 operator - (const Vec2<OtherType>& to_sub) const
 	{
-		return Vec2<Type>(x - to_sub.x, y - to_sub.y);
+		return Vec2(x - to_sub.x, y - to_sub.y);
 	}
 
 	template<typename OtherType>
-	inline Vec2<Type> operator * (const OtherType& scale) const
+	inline Vec2 operator * (const OtherType& scale) const
 	{
-		return Vec2<Type>(x * scale, y * scale);
+		return Vec2(x * scale, y * scale);
 	}
 
 	// Dot product
@@ -108,14 +108,14 @@ public:		// functions
 
 
 	template<typename OtherType>
-	inline Vec2<Type>& operator += (const Vec2<OtherType>& to_add)
+	inline Vec2& operator += (const Vec2<OtherType>& to_add)
 	{
 		x += to_add.x;
 		y += to_add.y;
 		return *this;
 	}
 	template<typename OtherType>
-	inline Vec2<Type>& operator -= (const Vec2<OtherType>& to_sub)
+	inline Vec2& operator -= (const Vec2<OtherType>& to_sub)
 	{
 		x -= to_sub.x;
 		y -= to_sub.y;
@@ -123,7 +123,7 @@ public:		// functions
 	}
 
 	template<typename OtherType>
-	inline Vec2<Type>& operator *= (const OtherType& scale)
+	inline Vec2& operator *= (const OtherType& scale)
 	{
 		x *= scale;
 		y *= scale;
@@ -210,25 +210,25 @@ public:		/* functions */ \
 		const specific_type& s_y) : x(s_x), y(s_y) \
 	{ \
 	} \
-	constexpr inline Vec2(const Vec2<specific_type>& to_copy) \
+	constexpr inline Vec2(const Vec2& to_copy) \
 		: x(to_copy.x), y(to_copy.y) \
 	{ \
 	} \
-	constexpr inline Vec2(Vec2<specific_type>&& to_move) \
+	constexpr inline Vec2(Vec2&& to_move) \
 		: x(std::move(to_move.x)), y(std::move(to_move.y)) \
 	{ \
 	} \
 	\
-	inline Vec2<specific_type>& operator = \
-		(const Vec2<specific_type>& to_copy) \
+	inline Vec2& operator = \
+		(const Vec2& to_copy) \
 	{ \
 		x = to_copy.x; \
 		y = to_copy.y; \
 		\
 		return *this; \
 	} \
-	inline Vec2<specific_type>& operator = \
-		(Vec2<specific_type>&& to_move) \
+	inline Vec2& operator = \
+		(Vec2&& to_move) \
 	{ \
 		x = std::move(to_move.x); \
 		y = std::move(to_move.y); \
@@ -237,23 +237,23 @@ public:		/* functions */ \
 	} \
 	\
 	template<typename OtherType> \
-	inline Vec2<specific_type> operator + \
+	inline Vec2 operator + \
 		(const Vec2<OtherType>& to_add) const \
 	{ \
-		return Vec2<specific_type> (x + to_add.x, y + to_add.y); \
+		return Vec2 (x + to_add.x, y + to_add.y); \
 	} \
 	template<typename OtherType> \
-	inline Vec2<specific_type> operator - \
+	inline Vec2 operator - \
 		(const Vec2<OtherType>& to_sub) const \
 	{ \
-		return Vec2<specific_type> (x - to_sub.x, y - to_sub.y); \
+		return Vec2 (x - to_sub.x, y - to_sub.y); \
 	} \
 	\
 	template<typename OtherType> \
-	inline Vec2<specific_type> operator * (const OtherType& scale) \
+	inline Vec2 operator * (const OtherType& scale) \
 		const \
 	{ \
-		return Vec2<specific_type> (x * scale, y * scale); \
+		return Vec2 (x * scale, y * scale); \
 	} \
 	\
 	/* Dot product */ \
@@ -274,15 +274,15 @@ public:		/* functions */ \
 		return (x * to_zcross.y) - (y * to_zcross.x); \
 	} \
 	\
-	inline Vec2<specific_type>& operator += \
-		(const Vec2<specific_type>& to_add) \
+	inline Vec2& operator += \
+		(const Vec2& to_add) \
 	{ \
 		x += to_add.x; \
 		y += to_add.y; \
 		return *this; \
 	} \
-	inline Vec2<specific_type>& operator -= \
-		(const Vec2<specific_type>& to_sub) \
+	inline Vec2& operator -= \
+		(const Vec2& to_sub) \
 	{ \
 		x -= to_sub.x; \
 		y -= to_sub.y; \
@@ -290,7 +290,7 @@ public:		/* functions */ \
 	} \
 	\
 	template<typename OtherType> \
-	inline Vec2<specific_type>& operator *= (const OtherType& scale) \
+	inline Vec2& operator *= (const OtherType& scale) \
 	{ \
 		x *= scale; \
 		y *= scale; \
@@ -298,12 +298,12 @@ public:		/* functions */ \
 	} \
 	\
 	/* Comparison Operator Overloads */ \
-	inline bool operator == (const Vec2<specific_type>& to_cmp) const \
+	inline bool operator == (const Vec2& to_cmp) const \
 	{ \
 		return ((x == to_cmp.x) && (y == to_cmp.y)); \
 	} \
 	\
-	inline bool operator != (const Vec2<specific_type>& to_cmp) const \
+	inline bool operator != (const Vec2& to_cmp) const \
 	{ \
 		return ((x != to_cmp.x) || (y != to_cmp.y)); \
 	} \
@@ -341,14 +341,14 @@ public:		/* functions */ \
 #define generate_float_pt_vec2_extra_class_contents(specific_type) \
 	/* Division */ \
 	template<typename OtherType> \
-	inline Vec2<specific_type> operator / (const OtherType& scale) \
+	inline Vec2 operator / (const OtherType& scale) \
 		const \
 	{ \
-		return Vec2<specific_type> (x / scale, y / scale); \
+		return Vec2 (x / scale, y / scale); \
 	} \
 	\
 	template<typename OtherType> \
-	inline Vec2<specific_type>& operator /= (const OtherType& scale) \
+	inline Vec2& operator /= (const OtherType& scale) \
 		const \
 	{ \
 		x /= scale; \
@@ -359,7 +359,7 @@ public:		/* functions */ \
 	/* Approximately Equal, using a Tolerance */ \
 	template<typename OtherType> \
 	inline bool almost_equal(const Vec2<OtherType>& to_cmp, \
-		const Vec2<specific_type>& tolerance_vec) const \
+		const Vec2& tolerance_vec) const \
 	{ \
 		return ((misc_util::custom_abs<specific_type>(x - to_cmp.x) \
 			< misc_util::custom_abs<specific_type>(tolerance_vec.x)) \
@@ -370,7 +370,7 @@ public:		/* functions */ \
 	/* Approximately Not Equal, using a Tolerance */ \
 	template<typename OtherType> \
 	inline bool almost_not_equal(const Vec2<OtherType>& to_cmp, \
-		const Vec2<specific_type>& tolerance_vec) const \
+		const Vec2& tolerance_vec) const \
 	{ \
 		return ((misc_util::custom_abs<specific_type>(x - to_cmp.x) \
 			>= misc_util::custom_abs<specific_type>(tolerance_vec.x)) \
@@ -383,7 +383,7 @@ public:		/* functions */ \
 		return sqrt(dot_prod(*this)); \
 	} \
 	/* Unit vector in the direction of *this */ \
-	inline Vec2<specific_type> norm() const \
+	inline Vec2 norm() const \
 	{ \
 		return (*this) / mag(); \
 	}
