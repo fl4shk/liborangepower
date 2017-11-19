@@ -4,9 +4,11 @@
 
 #define width_to_msb_pos(some_width) (some_width - 1)
 #define bprange_to_mask(bit_pos_hi, bit_pos_lo) \
-	((1 << (bit_pos_hi - bit_pos_lo + 1)) - 1)
+	(((size_t)1 << ((size_t)bit_pos_hi - (size_t)bit_pos_lo + (size_t)1)) \
+	- (size_t)1)
 #define bprange_to_shifted_mask(bit_pos_hi, bit_pos_lo) \
-	(((1 << (bit_pos_hi - bit_pos_lo + 1)) - 1) << bit_pos_lo)
+	((((size_t)1 << ((size_t)bit_pos_hi - (size_t)bit_pos_lo \
+	+ (size_t)1)) - (size_t)1) << (size_t)bit_pos_lo)
 
 #define _align4 aligned(4)
 #define _align2 aligned(2)
