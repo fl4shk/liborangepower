@@ -19,7 +19,7 @@ namespace json
 template<typename... arg_types>
 void err(arg_types&&... args)
 {
-	printerr("Error:  ", args..., "\n");
+	printout_etc::printerr("Error:  ", args..., "\n");
 	exit(1);
 }
 

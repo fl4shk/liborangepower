@@ -1,5 +1,6 @@
 #include "json_stuff.hpp"
 
+using namespace liborangepower::printout_etc;
 
 namespace liborangepower
 {
