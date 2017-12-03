@@ -2,6 +2,7 @@
 #define liborangepower_json_stuff_hpp
 
 #include "misc_includes.hpp"
+#include "misc_output_classes.hpp"
 
 // jsoncpp headers
 #include <json/value.h>
