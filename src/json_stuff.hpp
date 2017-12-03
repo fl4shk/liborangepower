@@ -32,12 +32,14 @@ inline std::string get_json_value_type_as_str(Json::Value* iter)
 inline void print_json_value_type(const Json::Value& some_value,
 	std::ostream& os=std::cout)
 {
-	osprintout(os, std::move(get_json_value_type_as_str(some_value)));
+	printout_etc::osprintout(os, 
+		std::move(get_json_value_type_as_str(some_value)));
 }
 inline void print_json_value_type(Json::Value* iter, 
 	std::ostream& os=std::cout)
 {
-	osprintout(os, std::move(get_json_value_type_as_str(iter)));
+	printout_etc::osprintout(os, 
+		std::move(get_json_value_type_as_str(iter)));
 }
 
 bool parse_json(Json::CharReaderBuilder* rbuilder, std::istream& is,
