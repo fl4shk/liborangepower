@@ -83,8 +83,8 @@ inline void write_json(const std::string& output_file_name,
 // comma, even when at the end of an objectValue or arrayValue.
 void debug_print_json(const Json::Value& some_value, 
 	std::ostream& os=std::cout, size_t tabs_level=0);
-inline void debug_print_json(Json::Value* iter, std::ostream& os=std::cout,
-	size_t tabs_level=0)
+inline void debug_print_json(Json::Value* iter, 
+	std::ostream& os=std::cout, size_t tabs_level=0)
 {
 	debug_print_json(*iter, os, tabs_level);
 }
