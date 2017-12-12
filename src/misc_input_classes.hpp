@@ -1,0 +1,37 @@
+#ifndef liborangepower_misc_input_classes_hpp
+#define liborangepower_misc_input_classes_hpp
+
+#include "misc_types.hpp"
+#include "misc_includes.hpp"
+
+namespace liborangepower
+{
+
+namespace misc_input
+{
+
+std::string get_stdin_from_file()
+{
+	std::string ret;
+
+	int c;
+	do
+	{
+		c = cin.get();
+		if (!cin.eof())
+		{
+			ret += c;
+		}
+	} while (!cin.eof());
+
+	return ret;
+}
+
+
+}
+
+}
+
+
+
+#endif		// liborangepower_misc_input_classes_hpp
