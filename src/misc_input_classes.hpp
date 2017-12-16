@@ -10,7 +10,7 @@ namespace liborangepower
 namespace misc_input
 {
 
-inline std::string get_stdin_from_file()
+inline std::string get_stdin_as_str()
 {
 	std::string ret;
 
