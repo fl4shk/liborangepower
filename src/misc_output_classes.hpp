@@ -114,8 +114,10 @@ template<typename FirstType, typename... RemArgTypes>
 inline std::string strappcom(const FirstType& first_val,
 	RemArgTypes&&... rem_args)
 {
-	std::string ret = std::move(strappcom(first_val));
-	ret += std::move(strappcom(rem_args...));
+	//std::string ret = std::move(strappcom(first_val));
+	//ret += std::move(strappcom(rem_args...));
+	std::string ret = strappcom(first_val);
+	ret += strappcom(rem_args...);
 	return ret;
 }
 
@@ -123,9 +125,13 @@ template<typename FirstType, typename... RemArgTypes>
 inline std::string strappcom2(const FirstType& first_val,
 	RemArgTypes&&... rem_args)
 {
-	std::string ret = std::move(strappcom(first_val, rem_args...));
+	//std::string ret = std::move(strappcom(first_val, rem_args...));
 
-	ret = std::move(ret.substr(0, ret.size() - std::string(", ").size()));
+	//ret = std::move(ret.substr(0, ret.size() - std::string(", ").size()));
+
+	std::string ret = strappcom(first_val, rem_args...);
+
+	ret = ret.substr(0, ret.size() - std::string(", ").size());
 
 	return ret;
 }
