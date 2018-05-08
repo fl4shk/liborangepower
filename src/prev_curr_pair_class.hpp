@@ -49,9 +49,9 @@ public:		// functions
 		return (prev != curr);
 	}
 
-	inline operator vec::Vec2<type>() const
+	inline operator Vec2<type>() const
 	{
-		return vec::Vec2<type>(prev, curr);
+		return Vec2<type>(prev, curr);
 	}
 
 
