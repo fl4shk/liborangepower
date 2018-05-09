@@ -1,5 +1,5 @@
-#ifndef misc_includes_hpp
-#define misc_includes_hpp
+#ifndef src__slash__misc_includes_hpp
+#define src__slash__misc_includes_hpp
 
 
 
@@ -19,4 +19,4 @@ using namespace liborangepower::bitwise;
 
 
 
-#endif		// misc_includes_hpp
+#endif		// src__slash__misc_includes_hpp
