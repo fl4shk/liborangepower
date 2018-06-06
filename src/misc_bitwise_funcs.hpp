@@ -49,13 +49,19 @@ inline void clear_and_set_bits(Type& to_change, size_t clear_mask,
 }
 
 template<typename Type>
-inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
+inline void clear_and_set_bits(Type& to_change, size_t val,
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
 	clear_and_set_bits(to_change, 
 		bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo), 
 		((val & bprange_to_mask(bit_pos_range_hi, bit_pos_range_lo))
 		<< bit_pos_range_lo));
+}
+template<typename Type>
+inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
+	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
+{
+	clear_and_set_bits(to_change, val, bit_pos_range_hi, bit_pos_range_lo);
 }
 
 }
