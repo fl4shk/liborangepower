@@ -18,9 +18,25 @@ inline void clear_bits(Type& to_clear, size_t mask)
 }
 
 template<typename Type>
+inline void clear_bits_with_range(Type& to_clear, size_t bit_pos_range_hi,
+	size_t bit_pos_range_lo)
+{
+	clear_bits(to_clear, (bprange_to_mask(bit_pos_range_hi,
+		bit_pos_range_lo) << bit_pos_range_lo));
+}
+
+template<typename Type>
 inline void set_bits(Type& to_set, size_t mask)
 {
 	to_set |= mask;
+}
+
+template<typename Type>
+inline void set_bits_with_range(Type& to_set, size_t val,
+	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
+{
+	set_bits(to_set, ((val & bprange_to_mask(bit_pos_range_hi,
+		bit_pos_range_lo)) << bit_pos_range_lo));
 }
 
 template<typename Type>
