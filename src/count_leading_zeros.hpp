@@ -12,6 +12,19 @@ namespace liborangepower
 namespace bitwise
 {
 
+using liborangepower::integer_types::u8;
+using liborangepower::integer_types::s8;
+
+using liborangepower::integer_types::u16;
+using liborangepower::integer_types::s16;
+
+using liborangepower::integer_types::u32;
+using liborangepower::integer_types::s32;
+
+using liborangepower::integer_types::u64;
+using liborangepower::integer_types::s64;
+
+
 template<typename Type>
 size_t count_leading_zeros(Type x)
 {
