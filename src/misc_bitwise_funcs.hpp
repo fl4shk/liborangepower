@@ -80,9 +80,9 @@ inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
 	clear_and_set_bits(to_change, val, bit_pos_range_hi, bit_pos_range_lo);
 }
 
-}
+} // namespace bitwise
 
-}
+} // namespace liborangepower
 
 
 #endif		// liborangepower_misc_bitwise_funcs_hpp

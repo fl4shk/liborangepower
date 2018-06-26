@@ -121,8 +121,8 @@ public:			// functions
 
 } __attribute__((_align4));
 
-}
+} // namespace containers
 
-}
+} // namespace liborangepower
 
 #endif		// liborangepower_array_helper_classes_hpp

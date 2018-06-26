@@ -187,6 +187,6 @@ void debug_print_json(const Json::Value& some_value, std::ostream& os,
 	}
 }
 
-}
+} // namespace json
 
-}
+} // namespace liborangepower

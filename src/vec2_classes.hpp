@@ -416,8 +416,8 @@ inline Vec2<Type> custom_abs(const Vec2<Type>& val)
 		misc_util::custom_abs(val.y));
 }
 
-}
+} // namespace containers
 
-}
+} // namespace liborangepower
 
 #endif		// liborangepower_vec2_classes_hpp

@@ -567,8 +567,8 @@ public:		// functions
 	}
 };
 
-}
+} // namespace strings
 
-}
+} // namespace liborangepower
 
 #endif		// liborangepower_str_split_helper_classes_hpp

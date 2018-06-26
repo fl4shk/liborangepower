@@ -150,8 +150,8 @@ bool anything_matches(const FirstType& first_val, const SecondType& next,
 }
 
 
-}
+} // namespace misc_util
 
-}
+} // namespace liborangepower
 
 #endif		// liborangepower_misc_utility_funcs_hpp

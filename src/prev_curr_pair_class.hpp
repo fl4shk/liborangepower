@@ -58,9 +58,9 @@ public:		// functions
 } __attribute__((_align4));
 
 
-}
+} // namespace containers
 
-}
+} // namespace liborangepower
 
 
 #endif		// liborangepower_prev_curr_pair_class_hpp

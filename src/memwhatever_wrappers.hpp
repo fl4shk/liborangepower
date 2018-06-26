@@ -46,9 +46,9 @@ inline void* arr_memset(std::array<Type, size>& dst, size_t src)
 	return arr_memset<Type>(dst.data(), src, size);
 }
 
-}
+} // namespace misc_util
 
-}
+} // namespace liborangepower
 
 
 #endif		// liborangepower_memwhatever_wrappers_hpp

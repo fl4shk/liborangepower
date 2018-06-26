@@ -28,9 +28,9 @@ inline std::string get_stdin_as_str()
 }
 
 
-}
+} // namespace misc_input
 
-}
+} // namespace liborangepower
 
 
 

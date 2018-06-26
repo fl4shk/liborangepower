@@ -63,9 +63,9 @@ inline Type clamp_to_range(Type range_start_inclusive,
 	}
 }
 
-}
+} // namespace range
 
-}
+} // namespace liborangepower
 
 
 

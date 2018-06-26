@@ -149,9 +149,9 @@ inline auto put_now_as_gmtime()
 }
 
 
-}
+} // namespace time
 
-}
+} // namespace liborangepower
 
 
 

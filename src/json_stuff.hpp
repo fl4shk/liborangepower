@@ -89,8 +89,8 @@ inline void debug_print_json(Json::Value* iter,
 	debug_print_json(*iter, os, tabs_level);
 }
 
-}
+} // namespace json
 
-}
+} // namespace liborangepower
 
 #endif		// liborangepower_json_stuff_hpp

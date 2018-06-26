@@ -80,7 +80,7 @@ namespace liborangepower
 //};
 
 
-}
+} // namespace liborangepower
 
 
 #endif		// liborangepower_lexer_classes_hpp

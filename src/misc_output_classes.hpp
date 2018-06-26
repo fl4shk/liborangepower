@@ -136,9 +136,9 @@ inline std::string strappcom2(const FirstType& first_val,
 	return ret;
 }
 
-}
+} // namespace printout_etc
 
-}
+} // namespace liborangepower
 
 
 #endif		// liborangepower_misc_output_classes_hpp
