@@ -23,6 +23,9 @@ testing/preprocs_debug/*
 testing/testing
 testing/testing_debug
 small_code_testing_things/*
+*.o
+*.a
+*.d
 *.elf
 *.gba
 disassembly_all_2.armasm
