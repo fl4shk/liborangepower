@@ -248,7 +248,7 @@ protected:		// functions
 
 	inline int raw_init(int& argc, char**& argv) const
 	{
-		MPI_Init(&argc, &argv);
+		return MPI_Init(&argc, &argv);
 	}
 
 	inline int raw_comm_rank(MPI_Comm comm) const
