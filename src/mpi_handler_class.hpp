@@ -2,6 +2,7 @@
 #define liborangepower_mpi_handler_class_hpp
 
 #include "misc_includes.hpp"
+#include "misc_output_classes.hpp"
 #include <mpi.h>
 
 
@@ -227,7 +228,8 @@ protected:		// functions
 		{
 			show_misc_output(args...);
 
-			static constexpr int dummy = 9'001;
+			//static constexpr int dummy = 9'001;
+			static constexpr int dummy = 9001;
 
 			for (int i=root + 1; i<world_size(); ++i)
 			{
