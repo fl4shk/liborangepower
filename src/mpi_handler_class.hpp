@@ -56,8 +56,8 @@ public:		// functions
 
 		if (world_size() < static_cast<int>(min_world_size()))
 		{
-			printout_etc::printerr("World size must be at least ", min_world_size(),
-				" for ", argv()[0], "\n");
+			printout_etc::printerr("World size must be at least ",
+				min_world_size(), " for ", argv()[0], "\n");
 			regular_abort(ErrorCode::TooFewProcs);
 		}
 
