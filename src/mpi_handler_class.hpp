@@ -56,7 +56,7 @@ public:		// functions
 
 		if (world_size() < static_cast<int>(min_world_size()))
 		{
-			printerr("World size must be at least ", min_world_size(),
+			printout_etc::printerr("World size must be at least ", min_world_size(),
 				" for ", argv()[0], "\n");
 			regular_abort(ErrorCode::TooFewProcs);
 		}
@@ -67,11 +67,11 @@ public:		// functions
 		raw_finalize();
 	}
 
-	inline auto argc() const
+	inline int argc() const
 	{
 		return *__argc_ptr;
 	}
-	inline auto argv() const
+	inline char** argv() const
 	{
 		return *__argv_ptr;
 	}
