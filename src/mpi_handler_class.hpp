@@ -43,7 +43,7 @@ protected:		// variables
 
 public:		// functions
 	inline MpiHandler(int& s_argc, char** s_argv,
-		size_t s_num_threads_per_proc=1, size_t s_min_world_size=2)
+		size_t s_num_threads_per_proc=1, size_t s_min_world_size=1)
 		: __argc_ptr(&s_argc), __argv_ptr(&s_argv)
 	{
 		static_assert(root == 0, "root must equal zero");
