@@ -81,13 +81,13 @@ inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
 }
 
 template<typename Type>
-inline size_t width_of_type()
+constexpr inline size_t width_of_type()
 {
 	return (sizeof(Type) * 8);
 }
 
 template<typename Type>
-inline size_t width_of_type(const Type& to_check)
+constexpr inline size_t width_of_type(const Type& to_check)
 {
 	return width_of_type<Type>();
 }
