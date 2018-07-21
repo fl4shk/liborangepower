@@ -80,6 +80,18 @@ inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
 	clear_and_set_bits(to_change, val, bit_pos_range_hi, bit_pos_range_lo);
 }
 
+template<typename Type>
+inline size_t width_of_type()
+{
+	return (sizeof(Type) * 8);
+}
+
+template<typename Type>
+inline size_t width_of_type(const Type& to_check)
+{
+	return width_of_type<Type>();
+}
+
 using liborangepower::integer_types::u8;
 using liborangepower::integer_types::s8;
 
