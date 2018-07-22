@@ -12,6 +12,35 @@ namespace bitwise
 {
 
 template<typename Type>
+inline constexpr size_t width_of_type()
+{
+	return (sizeof(Type) * 8);
+}
+
+template<typename Type>
+inline constexpr size_t width_of_type(const Type& to_check)
+{
+	return width_of_type<Type>();
+}
+
+template<typename Type>
+inline constexpr bool bprange_is_all(size_t bit_pos_range_hi,
+	size_t bit_pos_range_lo)
+{
+	return ((bit_pos_range_hi 
+		== width_to_msb_pos(width_of_type<Type>()))
+		&& (bit_pos_range_lo == 0))
+}
+
+template<typename Type>
+inline constexpr bool bprange_is_all(const Type& to_check, 
+	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
+{
+	return bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo);
+}
+
+
+template<typename Type>
 inline void clear_bits(Type& to_clear, size_t mask)
 {
 	to_clear &= ~mask;
@@ -50,9 +79,16 @@ template<typename Type>
 inline constexpr Type get_bits_with_range(Type to_get_from, 
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
-	return get_bits(to_get_from, 
-		bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo),
-		bit_pos_range_lo);
+	if (bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo))
+	{
+		return to_get_from;
+	}
+	else
+	{
+		return get_bits(to_get_from, 
+			bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo),
+			bit_pos_range_lo);
+	}
 }
 
 
@@ -68,10 +104,17 @@ template<typename Type>
 inline void clear_and_set_bits(Type& to_change, size_t val,
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
-	clear_and_set_bits(to_change, 
-		bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo), 
-		((val & bprange_to_mask(bit_pos_range_hi, bit_pos_range_lo))
-		<< bit_pos_range_lo));
+	if (bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo))
+	{
+		to_change = val;
+	}
+	else
+	{
+		clear_and_set_bits(to_change, 
+			bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo), 
+			((val & bprange_to_mask(bit_pos_range_hi, bit_pos_range_lo))
+			<< bit_pos_range_lo));
+	}
 }
 template<typename Type>
 inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
@@ -80,17 +123,6 @@ inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
 	clear_and_set_bits(to_change, val, bit_pos_range_hi, bit_pos_range_lo);
 }
 
-template<typename Type>
-constexpr inline size_t width_of_type()
-{
-	return (sizeof(Type) * 8);
-}
-
-template<typename Type>
-constexpr inline size_t width_of_type(const Type& to_check)
-{
-	return width_of_type<Type>();
-}
 
 using liborangepower::integer_types::u8;
 using liborangepower::integer_types::s8;
