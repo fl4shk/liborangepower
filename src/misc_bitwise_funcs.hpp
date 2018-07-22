@@ -29,7 +29,7 @@ inline constexpr bool bprange_is_all(size_t bit_pos_range_hi,
 {
 	return ((bit_pos_range_hi 
 		== width_to_msb_pos(width_of_type<Type>()))
-		&& (bit_pos_range_lo == 0))
+		&& (bit_pos_range_lo == 0));
 }
 
 template<typename Type>
