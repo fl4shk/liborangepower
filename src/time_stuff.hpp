@@ -32,7 +32,7 @@ protected:		// variables
 
 
 protected:		// functions
-	inline SeedType get_initial_seed()
+	inline SeedType initial_seed()
 	{
 		// I have no idea how good this is, but it seems to work?
 		return (std::chrono::high_resolution_clock::now()
@@ -42,7 +42,7 @@ protected:		// functions
 public:		// functions
 	inline Prng(int s_param_0=0, int s_param_1=0) 
 		: __param_0(s_param_0), __param_1(s_param_1),
-		__instance(get_initial_seed())
+		__instance(initial_seed())
 	{
 	}
 
