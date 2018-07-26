@@ -57,7 +57,7 @@ public:		// functions
 	}
 
 	template<typename Type>
-	inline auto operator () ()
+	inline auto run()
 	{
 		return static_cast<Type>(__instance());
 	}
