@@ -175,7 +175,7 @@ public:		// functions
 		}
 	}
 
-} __attribute__((_align4));
+};
 
 
 
@@ -393,7 +393,7 @@ class Vec2<float>
 {
 	generate_specific_vec2_class_contents(float);
 	generate_float_pt_vec2_extra_class_contents(float);
-} __attribute__((_align4));
+};
 
 
 template<>
@@ -401,7 +401,7 @@ class Vec2<double>
 {
 	generate_specific_vec2_class_contents(double);
 	generate_float_pt_vec2_extra_class_contents(double);
-} __attribute__((_align4));
+};
 
 
 typedef Vec2<float> Vec2_flt;

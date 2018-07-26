@@ -95,7 +95,7 @@ public:			// functions
 
 
 
-} __attribute__((_align4));
+};
 
 // This utility class is intended to be used when inherently 2D data is
 // stored within a 1D array.
@@ -186,7 +186,7 @@ public:			// functions
 
 
 
-} __attribute__((_align4));
+};
 
 
 } // namespace containers

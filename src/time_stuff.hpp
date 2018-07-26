@@ -56,16 +56,22 @@ public:		// functions
 		return __instance();
 	}
 
+	template<typename Type>
+	inline auto operator () ()
+	{
+		return static_cast<Type>(__instance());
+	}
+
 	inline auto operator () (integer_types::u64 max_val, 
-		const bool use_cap=false)
+		const bool saturate=false)
 	{
 		auto ret = (*this)();
 
-		if (!use_cap)
+		if (!saturate)
 		{
 			ret %= max_val;
 		}
-		else // if (use_cap)
+		else // if (saturate)
 		{
 			if (ret > max_val)
 			{
@@ -76,7 +82,7 @@ public:		// functions
 		return ret;
 	}
 
-} __attribute__((_align4));
+};
 
 
 class Profiler
@@ -111,7 +117,7 @@ public:		// functions
 	}
 
 
-} __attribute__((_align4));
+};
 
 inline std::time_t now_as_time_t()
 {

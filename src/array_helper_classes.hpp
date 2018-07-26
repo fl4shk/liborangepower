@@ -61,7 +61,7 @@ public:			// functions
 	}
 
 
-} __attribute__((_align4));
+};
 
 
 
@@ -119,7 +119,7 @@ public:			// functions
 	}
 
 
-} __attribute__((_align4));
+};
 
 } // namespace containers
 

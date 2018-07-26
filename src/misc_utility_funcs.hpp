@@ -102,9 +102,9 @@ constexpr inline bool type_is_signed()
 }
 
 
-template<typename FirstType, typename SecondType>
-bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
-	__attribute__((noinline));
+//template<typename FirstType, typename SecondType>
+//bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
+//	__attribute__((noinline));
 template<typename FirstType, typename SecondType>
 bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
 {
