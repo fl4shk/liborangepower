@@ -22,7 +22,7 @@ inline std::string get_istream_as_str(std::istream& to_get_from)
 		{
 			ret += c;
 		}
-	} while (!cin.to_get_from());
+	} while (!to_get_from.eof());
 
 	return ret;
 }
