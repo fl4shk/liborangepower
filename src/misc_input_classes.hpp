@@ -10,21 +10,26 @@ namespace liborangepower
 namespace misc_input
 {
 
-inline std::string get_stdin_as_str()
+inline std::string get_istream_as_str(std::istream& to_get_from)
 {
 	std::string ret;
 
 	int c;
 	do
 	{
-		c = cin.get();
-		if (!cin.eof())
+		c = to_get_from.get();
+		if (!to_get_from.eof())
 		{
 			ret += c;
 		}
-	} while (!cin.eof());
+	} while (!cin.to_get_from());
 
 	return ret;
+}
+
+inline std::string get_stdin_as_str()
+{
+	return get_istream_as_str(cin);
 }
 
 
