@@ -28,7 +28,7 @@ inline constexpr bool bprange_is_all(size_t bit_pos_range_hi,
 	size_t bit_pos_range_lo)
 {
 	return ((bit_pos_range_hi 
-		== width_to_msb_pos(width_of_type<Type>()))
+		== WIDTH2MP(width_of_type<Type>()))
 		&& (bit_pos_range_lo == 0));
 }
 
@@ -50,7 +50,7 @@ template<typename Type>
 inline void clear_bits_with_range(Type& to_clear, size_t bit_pos_range_hi,
 	size_t bit_pos_range_lo)
 {
-	clear_bits(to_clear, (bprange_to_mask(bit_pos_range_hi,
+	clear_bits(to_clear, (BPRANGE2MASK(bit_pos_range_hi,
 		bit_pos_range_lo) << bit_pos_range_lo));
 }
 
@@ -64,7 +64,7 @@ template<typename Type>
 inline void set_bits_with_range(Type& to_set, size_t val,
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
-	set_bits(to_set, ((val & bprange_to_mask(bit_pos_range_hi,
+	set_bits(to_set, ((val & BPRANGE2MASK(bit_pos_range_hi,
 		bit_pos_range_lo)) << bit_pos_range_lo));
 }
 
@@ -86,7 +86,7 @@ inline constexpr Type get_bits_with_range(Type to_get_from,
 	else
 	{
 		return get_bits(to_get_from, 
-			bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo),
+			BPRANGE2SHIFTED_MASK(bit_pos_range_hi, bit_pos_range_lo),
 			bit_pos_range_lo);
 	}
 }
@@ -111,8 +111,8 @@ inline void clear_and_set_bits(Type& to_change, size_t val,
 	else
 	{
 		clear_and_set_bits(to_change, 
-			bprange_to_shifted_mask(bit_pos_range_hi, bit_pos_range_lo), 
-			((val & bprange_to_mask(bit_pos_range_hi, bit_pos_range_lo))
+			BPRANGE2SHIFTED_MASK(bit_pos_range_hi, bit_pos_range_lo), 
+			((val & BPRANGE2MASK(bit_pos_range_hi, bit_pos_range_lo))
 			<< bit_pos_range_lo));
 	}
 }

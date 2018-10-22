@@ -2,20 +2,20 @@
 #define liborangepower_misc_defines_hpp
 
 
-#define width_to_msb_pos(some_width) (some_width - 1)
-#define bprange_to_mask(bit_pos_hi, bit_pos_lo) \
+#define WIDTH2MP(some_width) (some_width - 1)
+#define BPRANGE2MASK(bit_pos_hi, bit_pos_lo) \
 	(((size_t)1 << ((size_t)bit_pos_hi - (size_t)bit_pos_lo + (size_t)1)) \
 	- (size_t)1)
-#define bprange_to_shifted_mask(bit_pos_hi, bit_pos_lo) \
+#define BPRANGE2SHIFTED_MASK(bit_pos_hi, bit_pos_lo) \
 	((((size_t)1 << ((size_t)bit_pos_hi - (size_t)bit_pos_lo \
 	+ (size_t)1)) - (size_t)1) << (size_t)bit_pos_lo)
 
-#define _align4 aligned(4)
-#define _align2 aligned(2)
+#define _ALIGN4 aligned(4)
+#define _ALIGN2 aligned(2)
 
-#define alignas_regular alignas(4)
+#define ALIGNAS_REGULAR alignas(4)
 
-#define asm_comment(stuff) \
+#define ASM_COMMENT(stuff) \
 	asm volatile("//@ ---" stuff " ---")
 
 
