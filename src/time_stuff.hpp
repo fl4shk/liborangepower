@@ -26,9 +26,9 @@ public:		// typedefs
 	typedef std::mt19937_64 InstanceType;
 
 protected:		// variables
-	int ___param_0, ___param_1;
+	int __param_0, __param_1;
 
-	InstanceType ___instance;
+	InstanceType __instance;
 
 
 protected:		// functions
@@ -41,8 +41,8 @@ protected:		// functions
 
 public:		// functions
 	inline Prng(int s_param_0=0, int s_param_1=0) 
-		: ___param_0(s_param_0), ___param_1(s_param_1),
-		___instance(initial_seed())
+		: __param_0(s_param_0), __param_1(s_param_1),
+		__instance(initial_seed())
 	{
 	}
 
@@ -53,13 +53,13 @@ public:		// functions
 
 	inline auto operator () ()
 	{
-		return ___instance();
+		return __instance();
 	}
 
 	template<typename Type>
 	inline auto run()
 	{
-		return static_cast<Type>(___instance());
+		return static_cast<Type>(__instance());
 	}
 
 	inline auto operator () (integer_types::u64 max_val, 

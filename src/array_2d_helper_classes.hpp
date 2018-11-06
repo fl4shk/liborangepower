@@ -18,25 +18,25 @@ template<typename Type, size_t _width, size_t _height>
 class ArrayCsz2dHelper
 {
 protected:		// variables
-	static constexpr Vec2<size_t> ___size_2d = {_width, _height};
-	static constexpr size_t ___size = ___size_2d.x * ___size_2d.y;
+	static constexpr Vec2<size_t> __size_2d = {_width, _height};
+	static constexpr size_t __size = __size_2d.x * __size_2d.y;
 
 //public:			// variables
-	Type* ___arr = nullptr;
+	Type* __arr = nullptr;
 
 public:			// functions
 	inline ArrayCsz2dHelper()
 	{
 	}
-	inline ArrayCsz2dHelper(Type* s____arr)
-		: ___arr(s____arr)
+	inline ArrayCsz2dHelper(Type* s__arr)
+		: __arr(s__arr)
 	{
 	}
 	inline ArrayCsz2dHelper(const ArrayCsz2dHelper& to_copy) = default;
 
-	void init(Type* s____arr)
+	void init(Type* s__arr)
 	{
-		___arr = s____arr;
+		__arr = s__arr;
 	}
 
 	ArrayCsz2dHelper& operator = (const ArrayCsz2dHelper& to_copy) 
@@ -45,52 +45,52 @@ public:			// functions
 
 	Type* arr() const
 	{
-		return ___arr;
+		return __arr;
 	}
 
 	size_t width() const
 	{
-		return ___size_2d.x;
+		return __size_2d.x;
 	}
 	size_t height() const
 	{
-		return ___size_2d.y;
+		return __size_2d.y;
 	}
 
 	const Vec2<size_t>& size_2d() const
 	{
-		return ___size_2d;
+		return __size_2d;
 	}
 	size_t size() const
 	{
-		return ___size;
+		return __size;
 	}
 
 	Type& at(size_t x, size_t y)
 	{
-		return ___arr[y * ___size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	Type& at(const Vec2<size_t>& offset_2d)
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	Type& at(const Vec2S32& offset_2d)
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 
 
 	const Type& at(size_t x, size_t y) const
 	{
-		return ___arr[y * ___size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	const Type& at(const Vec2<size_t>& offset_2d) const
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	const Type& at(const Vec2S32& offset_2d) const
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 
 
@@ -103,32 +103,32 @@ template<typename Type>
 class Array2dHelper
 {
 protected:		// variables
-	Vec2<size_t> ___size_2d;
-	size_t ___size = 0;
+	Vec2<size_t> __size_2d;
+	size_t __size = 0;
 
 //public:			// variables
-	Type* ___arr = nullptr;
+	Type* __arr = nullptr;
 
 public:			// functions
-	//Array2dHelper() : ___size_2d({ 0, 0 }), ___size(0), ___arr(0)
+	//Array2dHelper() : __size_2d({ 0, 0 }), __size(0), __arr(0)
 	//{
 	//}
 	inline Array2dHelper()
 	{
 	}
-	inline Array2dHelper(Type* s____arr, 
+	inline Array2dHelper(Type* s__arr, 
 		const Vec2<size_t>& s_size_2d)
-		: ___size_2d(s_size_2d), ___size(s_size_2d.x * s_size_2d.y),
-		___arr(s____arr)
+		: __size_2d(s_size_2d), __size(s_size_2d.x * s_size_2d.y),
+		__arr(s__arr)
 	{
 	}
 	inline Array2dHelper(const Array2dHelper& to_copy) = default;
 
-	void init(Type* s____arr, const Vec2<size_t>& s_size_2d)
+	void init(Type* s__arr, const Vec2<size_t>& s_size_2d)
 	{
-		___size_2d = s_size_2d;
-		___size = ___size_2d.x * ___size_2d.y;
-		___arr = s____arr;
+		__size_2d = s_size_2d;
+		__size = __size_2d.x * __size_2d.y;
+		__arr = s__arr;
 	}
 
 	Array2dHelper& operator = (const Array2dHelper& to_copy) = default;
@@ -136,52 +136,52 @@ public:			// functions
 
 	Type* arr() const
 	{
-		return ___arr;
+		return __arr;
 	}
 
 	size_t width() const
 	{
-		return ___size_2d.x;
+		return __size_2d.x;
 	}
 	size_t height() const
 	{
-		return ___size_2d.y;
+		return __size_2d.y;
 	}
 
 	const Vec2<size_t>& size_2d() const
 	{
-		return ___size_2d;
+		return __size_2d;
 	}
 	size_t size() const
 	{
-		return ___size;
+		return __size;
 	}
 
 	Type& at(size_t x, size_t y)
 	{
-		return ___arr[y * ___size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	Type& at(const Vec2<size_t>& offset_2d)
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	Type& at(const Vec2S32& offset_2d)
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 
 
 	const Type& at(size_t x, size_t y) const
 	{
-		return ___arr[y * ___size_2d.x + x];
+		return __arr[y * __size_2d.x + x];
 	}
 	const Type& at(const Vec2<size_t>& offset_2d) const
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 	const Type& at(const Vec2S32& offset_2d) const
 	{
-		return ___arr[offset_2d.y * ___size_2d.x + offset_2d.x];
+		return __arr[offset_2d.y * __size_2d.x + offset_2d.x];
 	}
 
 
