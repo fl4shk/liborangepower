@@ -16,17 +16,17 @@ template<typename Type, size_t _size>
 class ArrayCszHelper
 {
 public:			// variables
-	Type* __arr = nullptr;
+	Type* ___arr = nullptr;
 
 protected:		// variables
-	static constexpr size_t __size = _size;
+	static constexpr size_t ___size = _size;
 
 public:			// functions
 	ArrayCszHelper()
 	{
 	}
 
-	ArrayCszHelper(Type* s_the_array) : __arr(s_the_array)
+	ArrayCszHelper(Type* s_the_array) : ___arr(s_the_array)
 	{
 	}
 
@@ -34,7 +34,7 @@ public:			// functions
 
 	void init(Type* s_the_array)
 	{
-		__arr = s_the_array;
+		___arr = s_the_array;
 	}
 
 
@@ -43,21 +43,21 @@ public:			// functions
 
 	const Type* arr() const
 	{
-		return __arr;
+		return ___arr;
 	}
 
 	size_t size() const
 	{
-		return __size;
+		return ___size;
 	}
 
 	Type& at(size_t offset)
 	{
-		return __arr[offset];
+		return ___arr[offset];
 	}
 	const Type& at(size_t offset) const
 	{
-		return __arr[offset];
+		return ___arr[offset];
 	}
 
 
@@ -72,10 +72,10 @@ class ArrayHelper
 {
 //public:			// variables
 protected:		// variables
-	Type* __arr = nullptr;
+	Type* ___arr = nullptr;
 
 protected:		// variables
-	size_t __size = 0;
+	size_t ___size = 0;
 
 public:			// functions
 	inline ArrayHelper()
@@ -83,7 +83,7 @@ public:			// functions
 	}
 
 	inline ArrayHelper(Type* s_the_array, size_t s_size)
-		: __arr(s_the_array), __size(s_size)
+		: ___arr(s_the_array), ___size(s_size)
 	{
 	}
 
@@ -91,8 +91,8 @@ public:			// functions
 
 	void init(Type* s_the_array, size_t s_size)
 	{
-		__arr = s_the_array;
-		__size = s_size;
+		___arr = s_the_array;
+		___size = s_size;
 	}
 
 
@@ -101,21 +101,21 @@ public:			// functions
 
 	const Type* arr() const
 	{
-		return __arr;
+		return ___arr;
 	}
 
 	size_t size() const
 	{
-		return __size;
+		return ___size;
 	}
 
 	Type& at(size_t offset)
 	{
-		return __arr[offset];
+		return ___arr[offset];
 	}
 	const Type& at(size_t offset) const
 	{
-		return __arr[offset];
+		return ___arr[offset];
 	}
 
 

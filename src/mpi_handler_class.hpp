@@ -34,21 +34,21 @@ public:		// constants
 	static constexpr int root = 0;
 
 protected:		// variables
-	int* __argc_ptr;
-	char*** __argv_ptr;
+	int* ___argc_ptr;
+	char*** ___argv_ptr;
 
-	int __world_rank, __world_size;
-	size_t __num_threads_per_proc, __min_world_size;
+	int ___world_rank, ___world_size;
+	size_t ___num_threads_per_proc, ___min_world_size;
 
 
 public:		// functions
 	inline MpiHandler(int& s_argc, char** s_argv,
 		size_t s_num_threads_per_proc=1, size_t s_min_world_size=1)
-		: __argc_ptr(&s_argc), __argv_ptr(&s_argv)
+		: ___argc_ptr(&s_argc), ___argv_ptr(&s_argv)
 	{
 		static_assert(root == 0, "root must equal zero");
 
-		raw_init(*__argc_ptr, *__argv_ptr);
+		raw_init(*___argc_ptr, *___argv_ptr);
 
 		set_world_rank(raw_comm_rank(MPI_COMM_WORLD));
 		set_world_size(raw_comm_size(MPI_COMM_WORLD));
@@ -71,11 +71,11 @@ public:		// functions
 
 	inline int argc() const
 	{
-		return *__argc_ptr;
+		return *___argc_ptr;
 	}
 	inline char** argv() const
 	{
-		return *__argv_ptr;
+		return *___argv_ptr;
 	}
 
 
