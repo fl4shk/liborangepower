@@ -34,21 +34,21 @@ public:		// constants
 	static constexpr int root = 0;
 
 protected:		// variables
-	int* __argc_ptr;
-	char*** __argv_ptr;
+	int* _argc_ptr;
+	char*** _argv_ptr;
 
-	int __world_rank, __world_size;
-	size_t __num_threads_per_proc, __min_world_size;
+	int _world_rank, _world_size;
+	size_t _num_threads_per_proc, _min_world_size;
 
 
 public:		// functions
 	inline MpiHandler(int& s_argc, char** s_argv,
 		size_t s_num_threads_per_proc=1, size_t s_min_world_size=1)
-		: __argc_ptr(&s_argc), __argv_ptr(&s_argv)
+		: _argc_ptr(&s_argc), _argv_ptr(&s_argv)
 	{
 		static_assert(root == 0, "root must equal zero");
 
-		raw_init(*__argc_ptr, *__argv_ptr);
+		raw_init(*_argc_ptr, *_argv_ptr);
 
 		set_world_rank(raw_comm_rank(MPI_COMM_WORLD));
 		set_world_size(raw_comm_size(MPI_COMM_WORLD));
@@ -71,11 +71,11 @@ public:		// functions
 
 	inline int argc() const
 	{
-		return *__argc_ptr;
+		return *_argc_ptr;
 	}
 	inline char** argv() const
 	{
-		return *__argv_ptr;
+		return *_argv_ptr;
 	}
 
 
@@ -227,10 +227,10 @@ public:		// functions
 		return world_rank() * num_threads_per_proc();
 	}
 
-	gen_getter_by_val(world_rank)
-	gen_getter_by_val(world_size)
-	gen_getter_by_val(num_threads_per_proc)
-	gen_getter_by_val(min_world_size)
+	GEN_GETTER_BY_VAL(world_rank)
+	GEN_GETTER_BY_VAL(world_size)
+	GEN_GETTER_BY_VAL(num_threads_per_proc)
+	GEN_GETTER_BY_VAL(min_world_size)
 
 protected:		// functions
 	template<typename... arg_types>
@@ -315,10 +315,10 @@ protected:		// functions
 			comm, status);
 	}
 
-	gen_setter_by_val(world_rank)
-	gen_setter_by_val(world_size)
-	gen_setter_by_val(num_threads_per_proc)
-	gen_setter_by_val(min_world_size)
+	GEN_SETTER_BY_VAL(world_rank)
+	GEN_SETTER_BY_VAL(world_size)
+	GEN_SETTER_BY_VAL(num_threads_per_proc)
+	GEN_SETTER_BY_VAL(min_world_size)
 };
 
 #undef MPI_HANDLER_STATIC_ASSERT_0
