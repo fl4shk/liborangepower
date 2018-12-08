@@ -22,6 +22,8 @@ testing/*/asmouts_debug/*
 testing/*/preprocs_debug/*
 testing/*/testing
 testing/*/testing_debug
+testing/*/src/tags
+testing/*/src/types_*.taghl
 small_code_testing_things/*
 *.o
 *.a
