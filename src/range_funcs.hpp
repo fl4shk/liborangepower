@@ -1,7 +1,8 @@
 #ifndef liborangepower_range_funcs_hpp
 #define liborangepower_range_funcs_hpp
 
-#include "vec2_classes.hpp"
+//#include "vec2_classes.hpp"
+#include "misc_includes.hpp"
 
 
 namespace liborangepower
@@ -28,16 +29,16 @@ inline bool in_range_inclusive(Type range_start_inclusive,
 		&& to_check <= range_end_inclusive);
 }
 
-template<typename Type>
-inline bool vec2_in_range(containers::Vec2<Type> range_start_inclusive, 
-	containers::Vec2<Type> range_end_exclusive, 
-	containers::Vec2<Type> to_check)
-{
-	return (to_check.x >= range_start_inclusive.x 
-		&& to_check.x < range_end_exclusive.x
-		&& to_check.y >= range_start_inclusive.y 
-		&& to_check.y < range_end_exclusive.y);
-}
+//template<typename Type>
+//inline bool vec2_in_range(containers::Vec2<Type> range_start_inclusive, 
+//	containers::Vec2<Type> range_end_exclusive, 
+//	containers::Vec2<Type> to_check)
+//{
+//	return (to_check.x >= range_start_inclusive.x 
+//		&& to_check.x < range_end_exclusive.x
+//		&& to_check.y >= range_start_inclusive.y 
+//		&& to_check.y < range_end_exclusive.y);
+//}
 
 
 template<typename Type>
