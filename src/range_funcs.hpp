@@ -70,4 +70,4 @@ inline Type clamp_to_range(Type range_start_inclusive,
 
 
 
-#endif		// liborangepower_range_funcs_hppc
+#endif		// liborangepower_range_funcs_hpp
