@@ -16,7 +16,7 @@
 #define ALIGNAS_REGULAR alignas(4)
 
 #define ASM_COMMENT(stuff) \
-	asm volatile("//@ ---" stuff " ---")
+	asm volatile("//@ --- " stuff " ---")
 
 
 #define INNER_TOKENPASTE1(x) x
