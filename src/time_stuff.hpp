@@ -4,7 +4,7 @@
 #include "misc_defines.hpp"
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
-#include "gen_getter_setter_defines.hpp"
+#include "gen_class_innards_defines.hpp"
 
 #include <iomanip>
 

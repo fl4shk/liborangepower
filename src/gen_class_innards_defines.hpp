@@ -1,6 +1,5 @@
-#ifndef liborangepower_gen_getter_setter_defines_hpp
-#define liborangepower_gen_getter_setter_defines_hpp
-
+#ifndef liborangepower_gen_class_innards_defines_hpp
+#define liborangepower_gen_class_innards_defines_hpp
 
 // Getters
 
@@ -244,4 +243,4 @@ GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF(_, suffix)
 	GEN_GETTER_BY_VAL(stuff) \
 	GEN_SETTER_BY_VAL(stuff)
 
-#endif		// liborangepower_gen_getter_setter_defines_hpp
+#endif		// liborangepower_gen_class_innards_defines_hpp
