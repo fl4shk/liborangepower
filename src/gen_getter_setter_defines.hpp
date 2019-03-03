@@ -16,7 +16,7 @@ inline decltype(prefix##suffix) suffix() const \
 #ifndef GEN_GENERIC_GETTER_AS_POINTER
 // As a pointer
 #define GEN_GENERIC_GETTER_AS_POINTER(prefix, suffix) \
-inline decltype(prefix##suffix)* suffix() const \
+inline decltype(prefix##suffix)* suffix() \
 { \
 	return &prefix##suffix; \
 }
