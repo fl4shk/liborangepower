@@ -13,10 +13,26 @@ inline decltype(prefix##suffix) suffix() const \
 }
 #endif
 
+#ifndef GEN_GENERIC_GETTER_AS_POINTER
+// As a pointer
+#define GEN_GENERIC_GETTER_AS_POINTER(prefix, suffix) \
+inline decltype(prefix##suffix)* suffix() const \
+{ \
+	return &prefix##suffix; \
+}
+#endif
+
 #ifndef GEN_GETTER_BY_VAL
 // By value
 #define GEN_GETTER_BY_VAL(suffix) \
 GEN_GENERIC_GETTER_BY_VAL(_, suffix)
+#endif
+
+
+#ifndef GEN_GETTER_AS_POINTER
+// As a pointer
+#define GEN_GETTER_AS_POINTER(suffix) \
+GEN_GENERIC_GETTER_AS_POINTER(_, suffix)
 #endif
 
 
