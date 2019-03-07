@@ -1,7 +1,6 @@
 #ifndef liborangepower_gen_class_innards_defines_hpp
 #define liborangepower_gen_class_innards_defines_hpp
 
-/*
 #define GEN_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, move_dd) \
 	inline Type(const Type& to_copy) = copy_dd; \
 	inline Type(Type&& to_move) = move_dd; \
@@ -9,6 +8,7 @@
 	inline Type& operator = (Type&& to_move) = move_dd;
 
 
+/*
 #define GEN_COPY_CONSTRUCTOR(Type, dd) \
 	inline Type(const Type& to_copy) = dd;
 #define GEN_MOVE_CONSTRUCTOR(Type, dd) \
