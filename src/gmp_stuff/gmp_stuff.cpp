@@ -6,7 +6,7 @@ namespace liborangepower
 namespace bignum
 {
 
-bool str_is_integer_bignum(const std::string& str, BigNum& ret)
+bool str_is_base_10_sint_bignum(const std::string& str, BigNum& ret)
 {
 	size_t i = 0;
 
@@ -33,7 +33,6 @@ bool str_is_integer_bignum(const std::string& str, BigNum& ret)
 			{
 				return false;
 			}
-			
 		}
 
 		if (negative)
@@ -46,6 +45,7 @@ bool str_is_integer_bignum(const std::string& str, BigNum& ret)
 
 	return false;
 }
+
 
 } // namespace bignum
 

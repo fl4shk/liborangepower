@@ -14,7 +14,7 @@ namespace bignum
 
 typedef mpz_class BigNum;
 
-bool str_is_integer_bignum(const std::string& str, BigNum& ret);
+bool str_is_base_10_sint_bignum(const std::string& str, BigNum& ret);
 
 inline std::string convert_bignum_to_str(const BigNum& in_bignum)
 {
