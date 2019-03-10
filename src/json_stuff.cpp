@@ -13,24 +13,24 @@ std::string get_json_value_type_as_str(const Json::Value& some_value)
 {
 	switch (some_value.type())
 	{
-		case Json::nullValue:
-			return std::string("nullValue");
-		case Json::intValue:
-			return std::string("intValue");
-		case Json::uintValue:
-			return std::string("uintValue");
-		case Json::realValue:
-			return std::string("realValue");
-		case Json::stringValue:
-			return std::string("stringValue");
-		case Json::booleanValue:
-			return std::string("booleanValue");
-		case Json::arrayValue:
-			return std::string("arrayValue");
-		case Json::objectValue:
-			return std::string("objectValue");
-		default:
-			return std::string();
+	case Json::nullValue:
+		return std::string("nullValue");
+	case Json::intValue:
+		return std::string("intValue");
+	case Json::uintValue:
+		return std::string("uintValue");
+	case Json::realValue:
+		return std::string("realValue");
+	case Json::stringValue:
+		return std::string("stringValue");
+	case Json::booleanValue:
+		return std::string("booleanValue");
+	case Json::arrayValue:
+		return std::string("arrayValue");
+	case Json::objectValue:
+		return std::string("objectValue");
+	default:
+		return std::string();
 	}
 }
 
@@ -65,8 +65,8 @@ bool parse_json(Json::CharReaderBuilder* rbuilder,
 
 	if (!infile.is_open())
 	{
-		err("parse_json():  Can't open file called \"", input_file_name, 
-			"\"!");
+		json_err("parse_json():  Can't open file called \"",
+			input_file_name, "\"!");
 	}
 
 	return parse_json(rbuilder, infile, root, errs);
@@ -103,8 +103,8 @@ void write_json(Json::StreamWriterBuilder* wbuilder,
 
 	if (!outfile.is_open())
 	{
-		err("write_json():  Can't open file called \"", output_file_name,
-			"\"!");
+		json_err("write_json():  Can't open file called \"",
+			output_file_name, "\"!");
 	}
 
 	write_json(wbuilder, outfile, root);
@@ -162,28 +162,28 @@ void debug_print_json(const Json::Value& some_value, std::ostream& os,
 	
 	switch (some_value.type())
 	{
-		case Json::nullValue:
-		case Json::intValue:
-		case Json::uintValue:
-		case Json::realValue:
-		case Json::booleanValue:
-			osprintout(os, some_value.asString(), ",\n");
-			break;
-		
-		case Json::stringValue:
-			osprintout(os, "\"", some_value.asString(), "\",\n");
-			break;
+	case Json::nullValue:
+	case Json::intValue:
+	case Json::uintValue:
+	case Json::realValue:
+	case Json::booleanValue:
+		osprintout(os, some_value.asString(), ",\n");
+		break;
+	
+	case Json::stringValue:
+		osprintout(os, "\"", some_value.asString(), "\",\n");
+		break;
 
-		case Json::arrayValue:
-			print_arrayValue();
-			break;
+	case Json::arrayValue:
+		print_arrayValue();
+		break;
 
-		case Json::objectValue:
-			print_objectValue();
-			break;
+	case Json::objectValue:
+		print_objectValue();
+		break;
 
-		default:
-			err("debug_print_json():  Unknown Json::Value type()!");
+	default:
+		json_err("debug_print_json():  Unknown Json::Value type()!");
 	}
 }
 

@@ -17,7 +17,7 @@ namespace json
 {
 
 template<typename... arg_types>
-void err(arg_types&&... args)
+void json_err(arg_types&&... args)
 {
 	printout_etc::printerr("Error:  ", args..., "\n");
 	exit(1);
