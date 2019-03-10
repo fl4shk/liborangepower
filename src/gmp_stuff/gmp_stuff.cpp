@@ -33,6 +33,7 @@ bool str_is_base_10_sint_bignum(const std::string& str, BigNum& ret)
 			{
 				return false;
 			}
+			
 		}
 
 		if (negative)
@@ -45,7 +46,6 @@ bool str_is_base_10_sint_bignum(const std::string& str, BigNum& ret)
 
 	return false;
 }
-
 
 } // namespace bignum
 
