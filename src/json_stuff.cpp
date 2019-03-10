@@ -9,6 +9,13 @@ namespace liborangepower
 namespace json
 {
 
+template<typename... arg_types>
+static void json_err(arg_types&&... args)
+{
+	printout_etc::printerr("Error:  ", args..., "\n");
+	exit(1);
+}
+
 std::string get_json_value_type_as_str(const Json::Value& some_value)
 {
 	switch (some_value.type())
