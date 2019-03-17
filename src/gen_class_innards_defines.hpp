@@ -98,8 +98,8 @@ inline decltype(prefix##suffix)& suffix() \
 GEN_GENERIC_GETTER_BY_REF(_, suffix)
 #endif
 
-#ifndef GEN_GETTER_BY_CON_REF_AND_REF
-#define GEN_GETTER_BY_CON_REF_AND_REF(suffix) \
+#ifndef GEN_GETTERS_BY_CON_REF_AND_REF
+#define GEN_GETTERS_BY_CON_REF_AND_REF(suffix) \
 GEN_GETTER_BY_CON_REF(suffix) \
 GEN_GETTER_BY_REF(suffix)
 #endif
