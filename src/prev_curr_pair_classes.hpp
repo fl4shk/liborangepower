@@ -31,17 +31,17 @@ public:		// functions
 	virtual ~PrevCurrPair() = default;
 
 
-	inline void next()
+	inline void back_up()
 	{
 		_prev = curr;
 	}
 
-	inline void next_and_update(const Type& n_curr)
+	inline void back_up_and_update(const Type& n_curr)
 	{
 		_prev = std::move(curr);
 		_curr = n_curr;
 	}
-	inline void next_and_update(Type&& n_curr)
+	inline void back_up_and_update(Type&& n_curr)
 	{
 		_prev = std::move(_curr);
 		_curr = std::move(n_curr);
@@ -77,13 +77,13 @@ public:		// functions
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(MoveOnlyPrevCurrPair);
 	virtual ~MoveOnlyPrevCurrPair() = default;
 
-	inline void next()
+	inline void back_up()
 	{
 		_prev = std::move(_curr);
 		_curr = Type();
 	}
 
-	inline void next_and_update(Type&& n_curr)
+	inline void back_up_and_update(Type&& n_curr)
 	{
 		_prev = std::move(_curr);
 		_curr = std::move(n_curr);
