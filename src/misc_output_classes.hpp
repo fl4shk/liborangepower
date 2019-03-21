@@ -17,15 +17,17 @@ std::ostream& osprintout(std::ostream& os, ArgTypes&&... args);
 class AnyPrintoutBackend
 {
 private:		// functions
-	static inline void func(std::ostream& os)
-	{
-	}
 	template<typename FirstType, typename... RemArgTypes>
 	static void func(std::ostream& os, const FirstType& first_val, 
 		RemArgTypes&&... rem_args)
 	{
+		static_assert(!std::is_same<std::string*, FirstType>());
 		os << first_val;
-		func(os, rem_args...);
+
+		if constexpr (sizeof...(rem_args) > 0)
+		{
+			func(os, rem_args...);
+		}
 	}
 
 	template<typename... ArgTypes>
