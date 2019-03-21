@@ -24,7 +24,7 @@ private:		// functions
 		typedef typename std::remove_reference<decltype(first_val)>::type
 			Temp0;
 		typedef typename std::remove_const<Temp0>::type Temp1;
-		static_assert(!std::is_same<std::string*, Temp1>());
+		static_assert(!std::is_same<const std::string*, Temp1>(), "test");
 		os << first_val;
 
 		if constexpr (sizeof...(rem_args) > 0)
