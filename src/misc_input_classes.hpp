@@ -15,14 +15,18 @@ inline std::string get_istream_as_str(std::istream& to_get_from)
 	std::string ret;
 
 	int c;
-	do
+	for (;;)
 	{
 		c = to_get_from.get();
 		if (!to_get_from.eof())
 		{
 			ret += c;
 		}
-	} while (!to_get_from.eof());
+		else // if (to_get_from.eof())
+		{
+			break;
+		}
+	}
 
 	return ret;
 }
