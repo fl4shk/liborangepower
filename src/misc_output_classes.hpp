@@ -21,8 +21,9 @@ private:		// functions
 	static void func(std::ostream& os, const FirstType& first_val, 
 		RemArgTypes&&... rem_args)
 	{
-		static_assert(!std::is_same<std::string*, std::remove_reference
-			<std::remove_const<FirstType>::type>::type>());
+		static_assert(!std::is_same<std::string*,
+			std::remove_const<std::remove_reference<FirstType>::type>
+			::type>());
 		os << first_val;
 
 		if constexpr (sizeof...(rem_args) > 0)
