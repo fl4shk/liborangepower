@@ -18,7 +18,7 @@ class AnyPrintoutBackend
 {
 private:		// functions
 	template<typename FirstType, typename... RemArgTypes>
-	static void func(std::ostream& os, const FirstType& first_val, 
+	static void func(std::ostream& os, FirstType&& first_val, 
 		RemArgTypes&&... rem_args)
 	{
 		typedef typename std::remove_reference<FirstType>::type Temp0;
