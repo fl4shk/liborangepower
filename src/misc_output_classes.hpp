@@ -21,8 +21,8 @@ private:		// functions
 	static void func(std::ostream& os, const FirstType& first_val, 
 		RemArgTypes&&... rem_args)
 	{
-		typedef Temp0 std::remove_reference<FirstType>::type;
-		typedef Temp1 std::remove_const<Temp0>::type;
+		typedef std::remove_reference<FirstType>::type Temp0;
+		typedef std::remove_const<Temp0>::type Temp1;
 		static_assert(!std::is_same<std::string*, Temp1>());
 		os << first_val;
 
