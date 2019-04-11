@@ -17,6 +17,8 @@ inline constexpr size_t width_of_type()
 	return (sizeof(Type) * 8);
 }
 
+// This uses the ability of the compiler to deduce what "Type" is from the
+// type of "to_check".
 template<typename Type>
 inline constexpr size_t width_of_type(const Type& to_check)
 {
@@ -32,6 +34,8 @@ inline constexpr bool bprange_is_all(size_t bit_pos_range_hi,
 		&& (bit_pos_range_lo == 0));
 }
 
+// This also uses the ability of the compiler to deduce what "Type" is from
+// the type of "to_check".
 template<typename Type>
 inline constexpr bool bprange_is_all(const Type& to_check, 
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
@@ -79,6 +83,7 @@ template<typename Type>
 inline constexpr Type get_bits_with_range(Type to_get_from, 
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
+	// "BPRANGE2SHIFTED_MASK" didn't work for this case.
 	if (bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo))
 	{
 		return to_get_from;
@@ -96,6 +101,10 @@ template<typename Type>
 inline void clear_and_set_bits(Type& to_change, size_t clear_mask,
 	size_t set_mask)
 {
+	// I don't remember the reason why this doesn't just call
+	// "clear_bits()" followed by "get_bits()", but I do recall it causing
+	// *some* kind of problem.  Oh well.  It doesn't really do any harm to
+	// keep things this way, I guess?
 	to_change &= ~clear_mask;
 	to_change |= set_mask;
 }
@@ -104,6 +113,7 @@ template<typename Type>
 inline void clear_and_set_bits(Type& to_change, size_t val,
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
+	// "BPRANGE2SHIFTED_MASK" didn't work for this case.
 	if (bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo))
 	{
 		to_change = val;
@@ -137,6 +147,7 @@ using liborangepower::integer_types::u64;
 using liborangepower::integer_types::s64;
 
 
+// Can this be made "constexpr"?
 template<typename Type>
 size_t count_leading_zeros(Type x)
 {
