@@ -11,7 +11,7 @@
 	+ (size_t)1)) - (size_t)1) << (size_t)(bit_pos_lo))
 
 #define with(obj) if (obj; true)
-#define nwith(name, val) if(auto obj=val; true)
+#define nwith(name, val) if(auto name=val; true)
 
 #define WITH(obj) with(obj)
 
