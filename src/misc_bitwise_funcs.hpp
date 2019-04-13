@@ -169,6 +169,7 @@ size_t count_leading_zeros(Type x)
 
 	else
 	{
+		static_assert(sizeof(Type()) <= 8);
 		switch (sizeof(Type))
 		{
 			case 8:
@@ -210,66 +211,66 @@ size_t count_leading_zeros(Type x)
 					0);
 				break;
 
-			// 128-bit, eh?  I don't know what else it'd be....
-			default:
-				for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
-				{
-					if (!get_bits_with_range(s, i, i))
-					{
-						++ret;
-					}
-					else
-					{
-						break;
-					}
-				}
-				break;
+			//// 128-bit, eh?  I don't know what else it'd be....
+			//default:
+			//	for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+			//	{
+			//		if (!get_bits_with_range(s, i, i))
+			//		{
+			//			++ret;
+			//		}
+			//		else
+			//		{
+			//			break;
+			//		}
+			//	}
+			//	break;
 		}
 	}
 
 	return ret;
 }
 
-template<typename Type>
-constexpr size_t basic_count_leading_zeros(Type x)
-{
-	static_assert(std::is_integral<Type>());
-	static_assert(CHAR_BIT == 8);
-
-	size_t ret = 0;
-
-	//u64 temp32 = 0, temp16 = 0, temp8 = 0, temp4 = 0, temp2 = 0;
-	u64 s = x;
-
-	if (s == 0)
-	{
-		ret = sizeof(Type) * 8;
-	}
-	else
-	{
-		for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
-		{
-			if (!get_bits_with_range(s, i, i))
-			{
-				++ret;
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
-	return ret;
-}
-
-template<typename Type>
-constexpr size_t basic_ilog2(Type x)
-{
-	static_assert(std::is_integral<Type>());
-	static_assert(CHAR_BIT == 8);
-
-	return (sizeof(Type) * 8 - 1 - basic_count_leading_zeros(x));
-}
+//template<typename Type>
+//constexpr size_t basic_count_leading_zeros(Type x)
+//{
+//	static_assert(std::is_integral<Type>());
+//	static_assert(CHAR_BIT == 8);
+//
+//	size_t ret = 0;
+//
+//	//u64 temp32 = 0, temp16 = 0, temp8 = 0, temp4 = 0, temp2 = 0;
+//	u64 s = x;
+//
+//	if (s == 0)
+//	{
+//		ret = sizeof(Type) * 8;
+//	}
+//	else
+//	{
+//		for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+//		{
+//			if (!get_bits_with_range(s, i, i))
+//			{
+//				++ret;
+//			}
+//			else
+//			{
+//				break;
+//			}
+//		}
+//	}
+//	return ret;
+//}
+//
+//template<typename Type>
+//constexpr size_t basic_ilog2(Type x)
+//{
+//	static_assert(std::is_integral<Type>());
+//	static_assert(CHAR_BIT == 8);
+//
+//	return (sizeof(Type) * 8 - 1 - basic_count_leading_zeros(x));
+//}
 
 
 } // namespace bitwise
