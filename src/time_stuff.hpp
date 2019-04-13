@@ -32,7 +32,7 @@ protected:		// variables
 
 
 protected:		// functions
-	inline SeedType initial_seed()
+	inline SeedType _default_initial_seed()
 	{
 		// I have no idea how good this is, but it seems to work?
 		return (std::chrono::high_resolution_clock::now()
@@ -42,24 +42,21 @@ protected:		// functions
 public:		// functions
 	inline Prng(int s_param_0=0, int s_param_1=0) 
 		: _param_0(s_param_0), _param_1(s_param_1),
-		_instance(initial_seed())
+		_instance(_default_initial_seed())
 	{
 	}
 
-	GEN_GETTER_BY_VAL(param_0);
-	GEN_GETTER_BY_VAL(param_1);
-	GEN_GETTER_BY_CON_REF(instance);
+	inline Prng(SeedType s_seed)
+		: _instance(s_seed)
+	{
+	}
+
+	virtual ~Prng() = default;
 
 
 	inline auto operator () ()
 	{
 		return _instance();
-	}
-
-	template<typename Type>
-	inline auto run()
-	{
-		return static_cast<Type>(_instance());
 	}
 
 	inline auto operator () (integer_types::u64 max_val, 
@@ -82,6 +79,16 @@ public:		// functions
 		return ret;
 	}
 
+	template<typename Type>
+	inline auto run()
+	{
+		return static_cast<Type>(_instance());
+	}
+
+
+	GEN_GETTER_BY_VAL(param_0)
+	GEN_GETTER_BY_VAL(param_1)
+	GEN_GETTER_BY_CON_REF(instance)
 };
 
 
