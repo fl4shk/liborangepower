@@ -231,7 +231,7 @@ size_t count_leading_zeros(Type x)
 }
 
 template<typename Type>
-constexpr size_t compile_time_count_leading_zeros(Type x)
+constexpr size_t basic_count_leading_zeros(Type x)
 {
 	static_assert(std::is_integral<Type>());
 	static_assert(CHAR_BIT == 8);
@@ -263,12 +263,12 @@ constexpr size_t compile_time_count_leading_zeros(Type x)
 }
 
 template<typename Type>
-constexpr size_t compile_time_ilog2(Type x)
+constexpr size_t basic_ilog2(Type x)
 {
 	static_assert(std::is_integral<Type>());
 	static_assert(CHAR_BIT == 8);
 
-	return (sizeof(Type) * 8 - 1 - compile_time_count_leading_zeros(x));
+	return (sizeof(Type) * 8 - 1 - basic_count_leading_zeros(x));
 }
 
 
