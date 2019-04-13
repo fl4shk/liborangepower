@@ -4,6 +4,8 @@
 #include "misc_types.hpp"
 #include "misc_defines.hpp"
 
+#include <limits.h>
+
 
 namespace liborangepower
 {
@@ -14,6 +16,7 @@ namespace bitwise
 template<typename Type>
 inline constexpr size_t width_of_type()
 {
+	static_assert(CHAR_BIT == 8);
 	return (sizeof(Type) * 8);
 }
 
@@ -151,6 +154,9 @@ using liborangepower::integer_types::s64;
 template<typename Type>
 size_t count_leading_zeros(Type x)
 {
+	static_assert(std::is_integral<Type>());
+	static_assert(CHAR_BIT == 8);
+
 	size_t ret = 0;
 
 	//u64 temp32 = 0, temp16 = 0, temp8 = 0, temp4 = 0, temp2 = 0;
@@ -204,23 +210,65 @@ size_t count_leading_zeros(Type x)
 					0);
 				break;
 
-			//default:
-			//	for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
-			//	{
-			//		if (!get_bits_with_range(s, i, i))
-			//		{
-			//			++ret;
-			//		}
-			//		else
-			//		{
-			//			break;
-			//		}
-			//	}
-			//	break;
+			// 128-bit, eh?  I don't know what else it'd be....
+			default:
+				for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+				{
+					if (!get_bits_with_range(s, i, i))
+					{
+						++ret;
+					}
+					else
+					{
+						break;
+					}
+				}
+				break;
 		}
 	}
 
 	return ret;
+}
+
+template<typename Type>
+constexpr size_t compile_time_count_leading_zeros(Type x)
+{
+	static_assert(std::is_integral<Type>());
+	static_assert(CHAR_BIT == 8);
+
+	size_t ret = 0;
+
+	//u64 temp32 = 0, temp16 = 0, temp8 = 0, temp4 = 0, temp2 = 0;
+	u64 s = x;
+
+	if (s == 0)
+	{
+		ret = sizeof(Type) * 8;
+	}
+	else
+	{
+		for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+		{
+			if (!get_bits_with_range(s, i, i))
+			{
+				++ret;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	return ret;
+}
+
+template<typename Type>
+constexpr size_t compile_time_ilog2(Type x)
+{
+	static_assert(std::is_integral<Type>());
+	static_assert(CHAR_BIT == 8);
+
+	return (sizeof(Type) * 8 - 1 - compile_time_count_leading_zeros(x));
 }
 
 
