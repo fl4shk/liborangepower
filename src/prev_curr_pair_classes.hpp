@@ -38,7 +38,7 @@ public:		// functions
 
 	inline void back_up_and_update(const Type& n_curr)
 	{
-		_prev = std::move(curr);
+		_prev = std::move(_curr);
 		_curr = n_curr;
 	}
 	inline void back_up_and_update(Type&& n_curr)
