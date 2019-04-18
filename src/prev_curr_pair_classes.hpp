@@ -33,7 +33,7 @@ public:		// functions
 
 	inline void back_up()
 	{
-		_prev = curr;
+		_prev = _curr;
 	}
 
 	inline void back_up_and_update(const Type& n_curr)
