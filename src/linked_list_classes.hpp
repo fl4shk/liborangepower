@@ -129,31 +129,31 @@ public:		// functions
 		return NodeIterator(&_head);
 	}
 
-	inline void push_front(const Type& to_push)
+	inline NodeIterator push_front(const Type& to_push)
 	{
-		insert_after(&_head, to_push);
+		return insert_after(&_head, to_push);
 	}
-	inline void push_front(Type&& to_push)
+	inline NodeIterator push_front(Type&& to_push)
 	{
-		insert_after(&_head, std::move(to_push));
-	}
-
-	inline void insert_before(Node* where, const Type& to_insert)
-	{
-		_inner_insert_before(where, new Node(to_insert));
-	}
-	inline void insert_before(Node* where, Type&& to_insert)
-	{
-		_inner_insert_before(where, new Node(std::move(to_insert)));
+		return insert_after(&_head, std::move(to_push));
 	}
 
-	inline void insert_after(Node* where, const Type& to_insert)
+	inline NodeIterator insert_before(Node* where, const Type& to_insert)
 	{
-		_inner_insert_after(where, new Node(to_insert));
+		return _inner_insert_before(where, new Node(to_insert));
 	}
-	inline void insert_after(Node* where, Type&& to_insert)
+	inline NodeIterator insert_before(Node* where, Type&& to_insert)
 	{
-		_inner_insert_after(where, new Node(std::move(to_insert)));
+		return _inner_insert_before(where, new Node(std::move(to_insert)));
+	}
+
+	inline NodeIterator insert_after(Node* where, const Type& to_insert)
+	{
+		return _inner_insert_after(where, new Node(to_insert));
+	}
+	inline NodeIterator insert_after(Node* where, Type&& to_insert)
+	{
+		return _inner_insert_after(where, new Node(std::move(to_insert)));
 	}
 
 	inline void remove_before(Node* where)
@@ -179,7 +179,7 @@ public:		// functions
 	}
 
 private:		// functions
-	inline void _inner_insert_before(Node* where, Node* what)
+	inline NodeIterator _inner_insert_before(Node* where, Node* what)
 	{
 		auto old_prev = where->_prev;
 
@@ -188,9 +188,11 @@ private:		// functions
 
 		where->_prev = what;
 		what->_next = where;
+
+		return NodeIterator(what);
 	}
 
-	inline void _inner_insert_after(Node* where, Node* what)
+	inline NodeIterator _inner_insert_after(Node* where, Node* what)
 	{
 		auto old_next = where->_next;
 
@@ -199,6 +201,8 @@ private:		// functions
 
 		where->_next = what;
 		what->_prev = where;
+
+		return NodeIterator(what);
 	}
 };
 
