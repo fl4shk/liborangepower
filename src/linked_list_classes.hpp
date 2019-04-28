@@ -1,0 +1,214 @@
+#ifndef liborangepower_linked_list_classes_hpp
+#define liborangepower_linked_list_classes_hpp
+
+//#include "misc_types.hpp"
+
+#include "gen_class_innards_defines.hpp"
+
+namespace liborangepower
+{
+
+namespace containers
+{
+
+template<typename Type>
+class CircLinkedList
+{
+public:		// types
+	class Node final
+	{
+		friend class CircLinkedList;
+
+	private:		// variables
+		Node * _next = nullptr, * _prev = nullptr;
+
+	public:		// variables
+		Type data;
+
+	public:		// functions
+		Node() = default;
+
+		inline Node(const Type& s_data)
+			: data(s_data)
+		{
+		}
+		inline Node(Type&& s_data)
+			: data(std::move(s_data))
+		{
+		}
+
+		~Node() = default;
+
+		GEN_GETTER_BY_VAL(next)
+		GEN_GETTER_BY_VAL(prev)
+	};
+
+	class NodeIterator final
+	{
+		friend class CircLinkedList;
+
+	private:		// variables
+		Node* _node = nullptr;
+
+	public:		// functions
+		NodeIterator() = default;
+		inline NodeIterator(Node* s_node)
+			: _node(s_node)
+		{
+		}
+
+		GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
+		~NodeIterator() = default;
+
+		inline NodeIterator& operator ++ ()
+		{
+			_node = _node->next();
+			return *this;
+		}
+
+		inline NodeIterator& operator -- ()
+		{
+			_node = _node->prev();
+			return *this;
+		}
+
+		inline Type& operator * () const
+		{
+			return _node->data;
+		}
+		inline const Type& operator * () const
+		{
+			return _node->data;
+		}
+
+		inline Type* operator -> () const
+		{
+			return &_node->data;
+		}
+
+		inline bool operator == (const NodeIterator& other) const
+		{
+			return (_node == other._node);
+		}
+		inline bool operator != (const NodeIterator& other) const
+		{
+			//return (!((*this) == other));
+			return (_node != other._node);
+		}
+	};
+
+private:		// variables
+	Node _head;
+
+public:		// functions
+	inline CircLinkedList()
+	{
+		_head._next = &_head;
+		_head._prev = &_head;
+	}
+
+	GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(CircLinkedList);
+
+	inline ~CircLinkedList()
+	{
+		//for (auto iter=_head.next(); iter!=&_head; )
+		//{
+		//	auto to_delete = iter;
+		//	iter = iter->next;
+		//	delete to_delete;
+		//}
+
+		while (_head._prev != &_head)
+		{
+			remove_after(&_head);
+		}
+	}
+
+	inline NodeIterator begin() const
+	{
+		return NodeIterator(_head->next());
+	}
+	inline NodeIterator end() const
+	{
+		return NodeIterator(&_head);
+	}
+
+	inline void push_front(const Type& to_push)
+	{
+		insert_after(&_head, to_push);
+	}
+	inline void push_front(Type&& to_push)
+	{
+		insert_after(&_head, std::move(to_push));
+	}
+
+	inline void insert_before(Node* where, const Type& to_insert)
+	{
+		_inner_insert_before(where, new Node(to_insert));
+	}
+	inline void insert_before(Node* where, Type&& to_insert)
+	{
+		_inner_insert_before(where, new Node(std::move(to_insert)));
+	}
+
+	inline void insert_after(Node* where, const Type& to_insert)
+	{
+		_inner_insert_after(where, new Node(to_insert));
+	}
+	inline void insert_after(Node* where, Type&& to_insert)
+	{
+		_inner_insert_after(where, new Node(std::move(to_insert)));
+	}
+
+	inline void remove_before(Node* where)
+	{
+		auto old_prev = where->_prev;
+
+		auto old_prev_prev = old_prev->_prev;
+
+		old_prev_prev->_next = where;
+		where->_prev = old_prev_prev;
+
+		delete old_prev;
+	}
+	inline void remove_after(Node* where)
+	{
+		auto old_next = where->_next;
+		auto old_next_next = old_next->next;
+
+		old_next_next->_prev = where;
+		where->_next = old_next_next;
+
+		delete old_next;
+	}
+
+private:		// functions
+	inline void _inner_insert_before(Node* where, Node* what)
+	{
+		auto old_prev = where->_prev;
+
+		old_prev->_next = what;
+		what->_prev = old_prev;
+
+		where->_prev = what;
+		what->_next = where;
+	}
+
+	inline void _inner_insert_after(Node* where, Node* what)
+	{
+		auto old_next = where->_next;
+
+		old_next->_prev = what;
+		what->_next = old_next;
+
+		where->_next = what;
+		what->_prev = where;
+	}
+};
+
+} // namespace containers
+
+} // namespace containers
+
+
+#endif		// liborangepower_linked_list_classes_hpp

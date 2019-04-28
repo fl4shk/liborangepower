@@ -8,12 +8,20 @@
 	inline Type& operator = (Type&& to_move) = move_dd;
 
 
+/*
 #define GEN_COPY_CONSTRUCTOR_AND_ASSIGN(Type) \
 	inline Type(const Type& to_copy) = default; \
 	inline Type& operator = (const Type& to_copy) = default;
+*/
+
+#define GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, delete)
 
 #define GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
 	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, delete, default)
+
+#define GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(Type) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, delete, delete)
 
 #define GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Type) \
 	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, default)
