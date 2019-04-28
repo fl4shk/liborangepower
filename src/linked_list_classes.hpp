@@ -170,7 +170,7 @@ public:		// functions
 	inline void remove_after(Node* where)
 	{
 		auto old_next = where->_next;
-		auto old_next_next = old_next->next;
+		auto old_next_next = old_next->_next;
 
 		old_next_next->_prev = where;
 		where->_next = old_next_next;
