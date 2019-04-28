@@ -76,10 +76,6 @@ public:		// types
 		{
 			return _node->data;
 		}
-		inline const Type& operator * () const
-		{
-			return _node->data;
-		}
 
 		inline Type* operator -> () const
 		{
