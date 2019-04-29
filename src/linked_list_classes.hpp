@@ -198,6 +198,15 @@ public:		// functions
 	{
 		return insert_before(head(), std::move(to_push));
 	}
+	inline void pop_front()
+	{
+		remove_after(head());
+	}
+	inline void pop_back()
+	{
+		remove_before(head());
+	}
+
 
 	inline NodeIterator insert_before(Node* where, const Type& to_insert)
 	{
