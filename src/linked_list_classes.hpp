@@ -190,6 +190,14 @@ public:		// functions
 	{
 		return insert_after(head(), std::move(to_push));
 	}
+	inline NodeIterator push_back(const Type& to_push)
+	{
+		return insert_before(head(), to_push);
+	}
+	inline NodeIterator push_back(Type&& to_push)
+	{
+		return insert_before(head(), std::move(to_push));
+	}
 
 	inline NodeIterator insert_before(Node* where, const Type& to_insert)
 	{
