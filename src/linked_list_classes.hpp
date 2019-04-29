@@ -126,11 +126,11 @@ public:		// functions
 		}
 	}
 
-	inline NodeIterator begin() const
+	inline NodeIterator begin()
 	{
 		return NodeIterator(_head.next());
 	}
-	inline NodeIterator end() const
+	inline NodeIterator end()
 	{
 		return NodeIterator(&_head);
 	}
