@@ -127,7 +127,8 @@ public:		// functions
 		//}
 		while (!empty())
 		{
-			remove(begin());
+			//remove(begin());
+			pop_front();
 		}
 	}
 
