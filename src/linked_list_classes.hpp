@@ -72,6 +72,11 @@ public:		// types
 			return *this;
 		}
 
+		inline operator Node* ()
+		{
+			return _node;
+		}
+
 		//inline Type& operator * () const
 		inline Node& operator * () const
 		{
