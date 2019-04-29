@@ -120,15 +120,24 @@ public:		// functions
 		//	delete to_delete;
 		//}
 
-		while (_head._prev != &_head)
+		//while (_head._prev != &_head)
+		//{
+		//	remove_after(&_head);
+		//}
+		while (!empty())
 		{
-			remove_after(&_head);
+			remove(begin());
 		}
 	}
 
 	inline Node* head()
 	{
 		return &_head;
+	}
+
+	inline bool empty() const
+	{
+		return (_head._next == &_head);
 	}
 
 	inline NodeIterator begin()
