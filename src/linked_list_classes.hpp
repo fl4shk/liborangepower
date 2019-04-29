@@ -128,7 +128,7 @@ public:		// functions
 
 	inline NodeIterator begin() const
 	{
-		return NodeIterator(_head->next());
+		return NodeIterator(_head.next());
 	}
 	inline NodeIterator end() const
 	{
