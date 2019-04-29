@@ -78,12 +78,12 @@ public:		// types
 		}
 
 		//inline Type& operator * () const
-		inline Node& operator * () const
+		inline Node& operator * ()
 		{
 			return *_node;
 		}
 
-		inline Node* operator -> () const
+		inline Node* operator -> ()
 		{
 			return _node;
 		}
