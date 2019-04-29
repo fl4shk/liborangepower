@@ -151,17 +151,17 @@ public:		// functions
 
 	inline NodeIterator cbegin() const
 	{
-		return NodeIterator(head()->next());
+		return NodeIterator(_head._next);
 	}
 	inline NodeIterator cend() const
 	{
-		return NodeIterator(head());
+		return NodeIterator(&_head);
 	}
 
 	bool contains(Node* where) const
 	{
 		//for (auto iter : *this)
-		for (auto iter=cbegin; iter!=cend(); iter)
+		for (auto iter=cbegin(); iter!=cend(); iter)
 		{
 			if (where == iter)
 			{
