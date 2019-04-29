@@ -149,6 +149,15 @@ public:		// functions
 		return NodeIterator(head());
 	}
 
+	inline NodeIterator cbegin() const
+	{
+		return NodeIterator(head()->next());
+	}
+	inline NodeIterator cend() const
+	{
+		return NodeIterator(head());
+	}
+
 	bool contains(Node* where) const
 	{
 		for (auto iter : *this)
