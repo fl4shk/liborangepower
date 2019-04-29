@@ -197,6 +197,16 @@ public:		// functions
 
 		delete old_next;
 	}
+	inline void remove(Node* where)
+	{
+		auto old_next = where->_next;
+		auto old_prev = where->_prev;
+
+		old_next->_prev = old_prev;
+		old_prev->_next = old_next;
+
+		delete where;
+	}
 
 private:		// functions
 	inline NodeIterator _inner_insert_before(Node* where, Node* what)
