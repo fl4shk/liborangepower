@@ -155,7 +155,7 @@ public:		// functions
 	}
 	inline NodeIterator cend() const
 	{
-		return NodeIterator(&_head);
+		return NodeIterator(_head._next->_prev);
 	}
 
 	bool contains(Node* where) const
