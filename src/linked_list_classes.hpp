@@ -161,9 +161,9 @@ public:		// functions
 	bool contains(Node* where) const
 	{
 		//for (auto iter : *this)
-		for (auto iter=cbegin; iter!=cend(); ++iter)
+		for (auto iter=cbegin; iter!=cend(); iter)
 		{
-			if (where == (&iter))
+			if (where == iter)
 			{
 				return true;
 			}
