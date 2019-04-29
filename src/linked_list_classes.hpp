@@ -60,7 +60,8 @@ public:		// types
 		}
 
 		//GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
+		//GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
 
 		~NodeIterator() = default;
 
