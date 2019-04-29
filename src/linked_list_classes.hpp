@@ -37,7 +37,7 @@ public:		// types
 		{
 		}
 
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Node);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
 
 		~Node() = default;
 
