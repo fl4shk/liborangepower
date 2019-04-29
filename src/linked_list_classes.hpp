@@ -126,22 +126,36 @@ public:		// functions
 		}
 	}
 
+	inline Node* head()
+	{
+		return &_head;
+	}
+
 	inline NodeIterator begin()
 	{
-		return NodeIterator(_head.next());
+		return NodeIterator(head()->next());
 	}
 	inline NodeIterator end()
 	{
-		return NodeIterator(&_head);
+		return NodeIterator(head());
+	}
+
+	inline NodeIterator rbegin()
+	{
+		return NodeIterator(head()->prev());
+	}
+	inline NodeIterator rend()
+	{
+		return NodeIterator(head());
 	}
 
 	inline NodeIterator push_front(const Type& to_push)
 	{
-		return insert_after(&_head, to_push);
+		return insert_after(head(), to_push);
 	}
 	inline NodeIterator push_front(Type&& to_push)
 	{
-		return insert_after(&_head, std::move(to_push));
+		return insert_after(head(), std::move(to_push));
 	}
 
 	inline NodeIterator insert_before(Node* where, const Type& to_insert)
