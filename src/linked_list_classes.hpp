@@ -23,17 +23,17 @@ public:		// types
 		Node * _next = nullptr, * _prev = nullptr;
 
 	public:		// variables
-		Type data;
+		std::unique_ptr<Type> data;
 
 	public:		// functions
 		Node() = default;
 
 		inline Node(const Type& s_data)
-			: data(s_data)
+			: data(new Type(s_data))
 		{
 		}
 		inline Node(Type&& s_data)
-			: data(std::move(s_data))
+			: data(new Type(std::move(s_data)))
 		{
 		}
 
