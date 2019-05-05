@@ -77,7 +77,7 @@ public:		// types
 			return *this;
 		}
 
-		inline operator Node* ()
+		inline operator Node* () const
 		{
 			return _node;
 		}
@@ -295,6 +295,7 @@ private:		// functions
 		return NodeIterator(what);
 	}
 };
+
 
 } // namespace containers
 
