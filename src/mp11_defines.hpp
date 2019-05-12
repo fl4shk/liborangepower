@@ -32,12 +32,12 @@ public:		/* static variables */ \
 
 #define MP11_MAKE_BASE_CLASS_ARR_GETTER_INSIDES \
 private:		/* static variables */ \
-	static size_t _ret_for_all_ident_nums_arr[]; \
-	static const char* _ret_for_all_ident_names_arr[]; \
+	static size_t _ret_for_all_ident_num_arr[]; \
+	static const char* _ret_for_all_ident_name_arr[]; \
 	\
 public:		/* static functions */ \
-	static constexpr size_t* all_ident_nums_arr(); \
-	static constexpr const char** all_ident_names_arr(); \
+	static constexpr size_t* all_ident_num_arr(); \
+	static constexpr const char** all_ident_name_arr(); \
 
 
 #define MP11_MAKE_BASE_CLASS_INSIDES \
@@ -52,9 +52,9 @@ static_assert(mp_is_set<hierarchy_list>::value == true, \
 \
 MP11_DEFINE_IDENT_STATIC_VARS(base_class, hierarchy_list) \
 \
-size_t base_class::_ret_for_all_ident_nums_arr \
+size_t base_class::_ret_for_all_ident_num_arr \
 	[mp_size<hierarchy_list>::value]; \
-const char* base_class::_ret_for_all_ident_names_arr \
+const char* base_class::_ret_for_all_ident_name_arr \
 	[mp_size<hierarchy_list>::value]; \
 \
 const size_t base_class::hierarchy_size = mp_size<hierarchy_list>::value; \
@@ -62,26 +62,26 @@ const size_t base_class::hierarchy_size = mp_size<hierarchy_list>::value; \
 
 #define MP11_MAKE_BASE_CLASS_ARR_GETTER_OUTSIDES(some_class, \
 	hierarchy_list) \
-constexpr size_t* some_class::all_ident_nums_arr() \
+constexpr size_t* some_class::all_ident_num_arr() \
 { \
 	mp_for_each<hierarchy_list>([](auto iter) -> void \
 		{ \
-			_ret_for_all_ident_nums_arr[decltype(iter)::ident_num] \
+			_ret_for_all_ident_num_arr[decltype(iter)::ident_num] \
 				= decltype(iter)::ident_num; \
 		}); \
 	\
-	return _ret_for_all_ident_nums_arr; \
+	return _ret_for_all_ident_num_arr; \
 } \
 \
-constexpr const char** some_class::all_ident_names_arr() \
+constexpr const char** some_class::all_ident_name_arr() \
 { \
 	mp_for_each<hierarchy_list>([](auto iter) -> void \
 		{ \
-			_ret_for_all_ident_names_arr[decltype(iter)::ident_num] \
+			_ret_for_all_ident_name_arr[decltype(iter)::ident_num] \
 				= decltype(iter)::ident_name; \
 		}); \
 	\
-	return _ret_for_all_ident_names_arr; \
+	return _ret_for_all_ident_name_arr; \
 }
 //--------
 
