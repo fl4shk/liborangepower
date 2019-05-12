@@ -11,12 +11,16 @@
 #include "liborangepower_src/misc_defines.hpp"
 #include "liborangepower_src/gen_class_innards_defines.hpp"
 #include "liborangepower_src/string_conversion_stuff.hpp"
+#include "liborangepower_src/mp11_defines.hpp"
 
 using namespace liborangepower::printout_etc;
 using namespace liborangepower::integer_types;
 using namespace liborangepower::misc_util;
 using namespace liborangepower::bitwise;
 using namespace liborangepower::strings;
+
+#include <boost/mp11.hpp>
+using namespace boost::mp11;
 
 
 #endif		// src_misc_includes_hpp
