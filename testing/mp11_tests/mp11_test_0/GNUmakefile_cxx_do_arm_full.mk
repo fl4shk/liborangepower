@@ -32,7 +32,8 @@ PREFIX:=arm-none-eabi-
 
 # Compilers and initial compiler flags
 CXX:=$(PREFIX)g++
-CXX_FLAGS:=$(CXX_FLAGS) -std=c++17 -Wall
+#CXX_FLAGS:=$(CXX_FLAGS) -std=c++17 -Wall
+CXX_FLAGS:=$(CXX_FLAGS) -std=c++17 -Wall -flto
 
 AS:=$(PREFIX)as
 
@@ -43,7 +44,8 @@ OBJCOPY:=$(PREFIX)objcopy
 LD:=$(CXX)
 
 # Initial linker flags
-LD_FLAGS:=$(LD_FLAGS) -lm
+#LD_FLAGS:=$(LD_FLAGS) -lm
+LD_FLAGS:=$(LD_FLAGS) -lm -flto
 
 
 
@@ -57,8 +59,9 @@ else
 endif
 
 
-LD_SCRIPT:=linkscript.ld
-COMMON_LD_FLAGS:=$(COMMON_LD_FLAGS) -T $(LD_SCRIPT)
+#LD_SCRIPT:=linkscript.ld
+#COMMON_LD_FLAGS:=$(COMMON_LD_FLAGS) -T $(LD_SCRIPT)
+COMMON_LD_FLAGS:=$(COMMON_LD_FLAGS)
 
 
 EXTRA_BASE_FLAGS:=-mcpu=arm7tdmi -mtune=arm7tdmi -mthumb \

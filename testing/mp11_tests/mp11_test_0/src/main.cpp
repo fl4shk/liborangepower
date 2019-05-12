@@ -10,6 +10,14 @@ typedef volatile const char* VolIdentName;
 VolIdentNum vol_ident_num_arr[mp_size<HierarchyList>::value];
 VolIdentName vol_ident_name_arr[mp_size<HierarchyList>::value];
 
+
+extern "C"
+{
+	void __sync_synchronize()
+	{
+	}
+}
+
 int main(int argc, char** argv)
 {
 	ASM_COMMENT("all_ident_num_arr");
