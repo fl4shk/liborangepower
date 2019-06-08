@@ -17,8 +17,8 @@ std::ostream& osprintout(std::ostream& os, ArgTypes&&... args);
 class AnyPrintoutBackend
 {
 private:		// functions
-	template<typename FirstType, typename... RemArgTypes>
-	static void func(std::ostream& os, FirstType&& first_val, 
+	template<typename FirstArgType, typename... RemArgTypes>
+	static void func(std::ostream& os, FirstArgType&& first_val, 
 		RemArgTypes&&... rem_args)
 	{
 		typedef typename std::remove_reference<decltype(first_val)>::type
@@ -68,8 +68,8 @@ inline std::ostream& fprintout(std::ostream& out_file, ArgTypes&&... args)
 
 
 
-template<typename FirstType, typename... RemArgTypes>
-std::string sconcat(const FirstType& first_val, 
+template<typename FirstArgType, typename... RemArgTypes>
+std::string sconcat(const FirstArgType& first_val, 
 	RemArgTypes&&... rem_args)
 {
 	std::string ret;
@@ -117,8 +117,8 @@ inline std::string strappcom(const Type& to_concat)
 	return sconcat(to_concat, ", ");
 }
 
-template<typename FirstType, typename... RemArgTypes>
-inline std::string strappcom(const FirstType& first_val,
+template<typename FirstArgType, typename... RemArgTypes>
+inline std::string strappcom(const FirstArgType& first_val,
 	RemArgTypes&&... rem_args)
 {
 	//std::string ret = std::move(strappcom(first_val));
@@ -128,8 +128,8 @@ inline std::string strappcom(const FirstType& first_val,
 	return ret;
 }
 
-template<typename FirstType, typename... RemArgTypes>
-inline std::string strappcom2(const FirstType& first_val,
+template<typename FirstArgType, typename... RemArgTypes>
+inline std::string strappcom2(const FirstArgType& first_val,
 	RemArgTypes&&... rem_args)
 {
 	//std::string ret = std::move(strappcom(first_val, rem_args...));

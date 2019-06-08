@@ -8,8 +8,8 @@ namespace misc_util
 {
 
 // Don't use weird things with this.
-template<typename FirstType, typename SecondType>
-FirstType max_va(const FirstType& arg_0, const SecondType& arg_1)
+template<typename FirstArgType, typename SecondArgType>
+FirstArgType max_va(const FirstArgType& arg_0, const SecondArgType& arg_1)
 {
 	if (arg_0 >= arg_1)
 	{
@@ -21,18 +21,18 @@ FirstType max_va(const FirstType& arg_0, const SecondType& arg_1)
 	}
 }
 
-template<typename FirstType, typename SecondType, 
+template<typename FirstArgType, typename SecondArgType, 
 	typename... RemainingTypes>
-inline FirstType max_va(const FirstType& arg_0, 
-	const SecondType& arg_1, RemainingTypes... remaining_args )
+inline FirstArgType max_va(const FirstArgType& arg_0, 
+	const SecondArgType& arg_1, RemainingTypes... remaining_args )
 {
 	return max_va(max_va(arg_0, arg_1), remaining_args...);
 }
 
 
-template<typename FirstType, typename SecondType>
-inline FirstType min_va(const FirstType& arg_0, 
-	const SecondType& arg_1)
+template<typename FirstArgType, typename SecondArgType>
+inline FirstArgType min_va(const FirstArgType& arg_0, 
+	const SecondArgType& arg_1)
 {
 	if (arg_0 <= arg_1)
 	{
@@ -44,10 +44,10 @@ inline FirstType min_va(const FirstType& arg_0,
 	}
 }
 
-template<typename FirstType, typename SecondType, 
+template<typename FirstArgType, typename SecondArgType, 
 	typename... RemainingTypes>
-inline FirstType min_va(const FirstType& arg_0, 
-	const SecondType& arg_1, RemainingTypes... remaining_args )
+inline FirstArgType min_va(const FirstArgType& arg_0, 
+	const SecondArgType& arg_1, RemainingTypes... remaining_args )
 {
 	return min_va(min_va(arg_0, arg_1), remaining_args...);
 }
@@ -102,11 +102,13 @@ constexpr inline bool type_is_signed()
 }
 
 
-//template<typename FirstType, typename SecondType>
-//bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
+//template<typename FirstArgType, typename SecondArgType>
+//bool cmpeq_array(FirstArgType* first_arr, SecondArgType* second_arr,
+//	size_t size)
 //	_attribute_((noinline));
-template<typename FirstType, typename SecondType>
-bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
+template<typename FirstArgType, typename SecondArgType>
+bool cmpeq_array(FirstArgType* first_arr, SecondArgType* second_arr,
+	size_t size)
 {
 	if (size == 0)
 	{
@@ -125,15 +127,16 @@ bool cmpeq_array(FirstType* first_arr, SecondType* second_arr, size_t size)
 }
 
 
-template<typename FirstType>
-bool anything_matches(const FirstType& first_val)
+template<typename FirstArgType>
+bool anything_matches(const FirstArgType& first_val)
 {
 	return false;
 }
 
-template<typename FirstType, typename SecondType, typename... RemArgTypes>
-bool anything_matches(const FirstType& first_val, const SecondType& next, 
-	RemArgTypes&&... rem_args)
+template<typename FirstArgType, typename SecondArgType,
+	typename... RemArgTypes>
+bool anything_matches(const FirstArgType& first_val,
+	const SecondArgType& next, RemArgTypes&&... rem_args)
 {
 	if (sizeof...(rem_args) == 0)
 	{
