@@ -16,7 +16,7 @@ namespace range
 template<typename FirstArgType, typename SecondArgType,
 	typename ThirdArgType>
 inline bool in_range(FirstArgType range_start_inclusive, 
-	SecondArgType range_end_inclusive, ThirdArgType to_check)
+	SecondArgType range_end_exclusive, ThirdArgType to_check)
 {
 	return (to_check >= range_start_inclusive 
 		&& to_check < range_end_exclusive);
