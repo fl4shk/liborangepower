@@ -13,17 +13,19 @@ namespace range
 
 // in_range and vec2_in_range are PRIMARILY intended for use with a range
 // of 0 (inclusive) to size (exclusive)
-template<typename Type>
-inline bool in_range(Type range_start_inclusive, Type range_end_exclusive, 
-	Type to_check)
+template<typename FirstArgType, typename SecondArgType,
+	typename ThirdArgType>
+inline bool in_range(FirstArgType range_start_inclusive, 
+	SecondArgType range_end_inclusive, ThirdArgType to_check)
 {
 	return (to_check >= range_start_inclusive 
 		&& to_check < range_end_exclusive);
 }
 
-template<typename Type>
-inline bool in_range_inclusive(Type range_start_inclusive, 
-	Type range_end_inclusive, Type to_check)
+template<typename FirstArgType, typename SecondArgType,
+	typename ThirdArgType>
+inline bool in_range_inclusive(FirstArgType range_start_inclusive, 
+	SecondArgType range_end_inclusive, ThirdArgType to_check)
 {
 	return (to_check >= range_start_inclusive
 		&& to_check <= range_end_inclusive);
