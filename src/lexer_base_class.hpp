@@ -4,7 +4,6 @@
 // src/lexer_base_class.hpp
 
 #include "misc_includes.hpp"
-#include "src_code_chunk_class.hpp"
 
 namespace liborangepower
 {
@@ -20,12 +19,14 @@ public:		// types
 
 	class State
 	{
-	public:		// variables
-		TokType tok;
-		string s;
-		int c;
-		BigNum n;
-		size_t x = 0, line_num = 1, pos_in_line = 0;
+	friend class LexerBase<TokType>;
+
+	private:		// variables
+		TokType _tok;
+		string _s;
+		int _c;
+		BigNum _n;
+		size_t _x = 0, _line_num = 1, _pos_in_line = 0;
 
 	public:		// functions
 		State()
@@ -39,30 +40,30 @@ public:		// types
 		// This is just for sorting purposes (mainly for `std::set`)
 		bool operator < (const State& other) const
 		{
-			return (x < other.x);
+			return (_x < other._x);
 			//std::map<string, bool> cmp_lt_results, cmp_eq_results;
-			//cmp_lt_results["tok"] = (tok < other.tok);
-			//cmp_eq_results["tok"] = (tok == other.tok);
+			//cmp_lt_results["_tok"] = (_tok < other._tok);
+			//cmp_eq_results["_tok"] = (_tok == other._tok);
 
-			//cmp_lt_results["s"] = (s < other.s);
-			//cmp_eq_results["s"] = (s == other.s);
+			//cmp_lt_results["_s"] = (_s < other._s);
+			//cmp_eq_results["_s"] = (_s == other._s);
 
-			//cmp_lt_results["c"] = (c < other.c);
-			//cmp_eq_results["c"] = (c == other.c);
+			//cmp_lt_results["_c"] = (_c < other._c);
+			//cmp_eq_results["_c"] = (_c == other._c);
 
-			//cmp_lt_results["n"] = (n < other.n);
-			//cmp_eq_results["n"] = (n == other.n);
+			//cmp_lt_results["_n"] = (_n < other._n);
+			//cmp_eq_results["_n"] = (_n == other._n);
 
-			//cmp_lt_results["x"] = (x < other.x);
-			//cmp_eq_results["x"] = (x == other.x);
+			//cmp_lt_results["_x"] = (_x < other._x);
+			//cmp_eq_results["_x"] = (_x == other._x);
 
-			//cmp_lt_results["line_num"] = (line_num < other.line_num);
-			//cmp_eq_results["line_num"] = (line_num == other.line_num);
+			//cmp_lt_results["_line_num"] = (_line_num < other._line_num);
+			//cmp_eq_results["_line_num"] = (_line_num == other._line_num);
 
-			//cmp_lt_results["pos_in_line"]
-			//	= (pos_in_line < other.pos_in_line);
-			//cmp_eq_results["pos_in_line"]
-			//	= (pos_in_line == other.pos_in_line);
+			//cmp_lt_results["_pos_in_line"]
+			//	= (_pos_in_line < other._pos_in_line);
+			//cmp_eq_results["_pos_in_line"]
+			//	= (_pos_in_line == other._pos_in_line);
 
 			//for (const auto& iter : cmp_lt_results)
 			//{
@@ -78,17 +79,26 @@ public:		// types
 			//}
 			//return false;
 
-			//return (tok < other.tok);
+			//return (_tok < other._tok);
 		}
 		bool operator == (const State& other) const
 		{
-			return (x == other.x);
-			//return ((tok == other.tok) && (s == other.s) && (c == other.c)
-			//	&& (n == other.n) && (x == other.x)
-			//	&& (line_num == other.line_num)
-			//	&& (pos_in_line == other.pos_in_line));
+			return (_x == other._x);
+			//return ((_tok == other._tok) && (_s == other._s)
+			//	&& (_c == other._c)
+			//	&& (_n == other._n) && (_x == other._x)
+			//	&& (_line_num == other._line_num)
+			//	&& (_pos_in_line == other._pos_in_line));
 			//return (tok == other.tok);
 		}
+
+		GEN_GETTER_BY_VAL(tok)
+		GEN_GETTER_BY_CON_REF(s)
+		GEN_GETTER_BY_VAL(c)
+		GEN_GETTER_BY_CON_REF(n)
+		GEN_GETTER_BY_VAL(x)
+		GEN_GETTER_BY_VAL(line_num)
+		GEN_GETTER_BY_VAL(pos_in_line)
 	};
 
 protected:		// variables
@@ -110,48 +120,48 @@ public:		// functions
 
 
 	template<typename SrcCodeChunk>
-	virtual inline SrcCodeChunk src_code_chunk(State* state=nullptr)
-		const
+	virtual inline SrcCodeChunk src_code_chunk
+		(const State* other_state=nullptr) const
 	{
-		if (state == nullptr)
+		if (other_state == nullptr)
 		{
-			return SrcCodeChunk(filename(), state->s, state->line_num,
-				state->pos_in_line);
+			return SrcCodeChunk(filename(), other_state->_s,
+				other_state->_line_num, other_state->_pos_in_line);
 		}
 		else
 		{
-			return SrcCodeChunk(filename(), s(), line_num(),
-				pos_in_line());
+			return SrcCodeChunk(filename(), state()._s,
+				state()._line_num, state()._pos_in_line);
 		}
 	}
 
-	inline decltype(_state.tok) tok() const
+	inline auto tok() const
 	{
-		return _state.tok;
+		return state()._tok;
 	}
-	inline const decltype(_state.s)& s() const
+	inline const auto& s() const
 	{
-		return _state.s;
+		return state()._s;
 	}
-	inline decltype(_state.c) c() const
+	inline auto c() const
 	{
-		return _state.c;
+		return state()._c;
 	}
-	inline const decltype(_state.n) n() const
+	inline const auto& n() const
 	{
-		return _state.n;
+		return state()._n;
 	}
-	inline decltype(_state.x) x() const
+	inline auto x() const
 	{
-		return _state.x;
+		return state()._x;
 	}
-	inline decltype(_state.line_num) line_num() const
+	inline auto line_num() const
 	{
-		return _state.line_num;
+		return state()._line_num;
 	}
-	inline decltype(_state.pos_in_line) pos_in_line() const
+	inline auto pos_in_line() const
 	{
-		return _state.pos_in_line;
+		return state()._pos_in_line;
 	}
 	GEN_GETTER_BY_CON_REF(filename)
 	GEN_GETTER_BY_VAL(text)
