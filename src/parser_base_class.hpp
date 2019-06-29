@@ -24,6 +24,7 @@ public:		// types
 	{
 	public:		// variables
 		std::set<const LexerState> found_set, dup_set;
+		LexerState first_dup, end;
 
 	public:		// functions
 		LexStateSets()
@@ -140,6 +141,7 @@ protected:		// functions
 	{
 		_lss.found_set.clear();
 		_lss.dup_set.clear();
+		_lss.end = end;
 
 		const auto tokens = _next_n_tokens((prefix_set.size() + 1),
 			!just_test());
@@ -151,6 +153,10 @@ protected:		// functions
 				if (_lss.found_set.contains(tok_iter))
 				{
 					_lss.dup_set.insert(tok_iter);
+					if (_lss.dup_set.size() == 1)
+					{
+						_lss.first_dup = tok_iter;
+					}
 				}
 				_lss.found_set.insert(tok_iter);
 			};
@@ -172,14 +178,20 @@ protected:		// functions
 
 		return false;
 	}
-	inline void _next_lss_tokens()
+	inline void _next_lss_tokens(const TokToStringMap& some_tok_ident_map)
 	{
-		for (size_t i=0; i<lss().found_set.size(); ++i)
+		if (lss().valid())
 		{
-			_lexer()._next_tok();
+			for (size_t i=0; i<lss().found_set.size(); ++i)
+			{
+				_lexer()._next_tok();
+			}
+		}
+		else // if (!lss().valid())
+		{
+			_unexpected(some_tok_ident_map, &lss().first_dup);
 		}
 	}
-
 
 	inline auto _next_tok(LexerType* lexer=nullptr)
 	{
