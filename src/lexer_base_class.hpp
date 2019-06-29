@@ -109,18 +109,18 @@ public:		// functions
 	}
 
 
-	template<typename SrcCodeChunkType>
-	virtual inline SrcCodeChunkType src_code_chunk(State* state=nullptr)
+	template<typename SrcCodeChunk>
+	virtual inline SrcCodeChunk src_code_chunk(State* state=nullptr)
 		const
 	{
 		if (state == nullptr)
 		{
-			return SrcCodeChunkType(filename(), state->s, state->line_num,
+			return SrcCodeChunk(filename(), state->s, state->line_num,
 				state->pos_in_line);
 		}
 		else
 		{
-			return SrcCodeChunkType(filename(), s(), line_num(),
+			return SrcCodeChunk(filename(), s(), line_num(),
 				pos_in_line());
 		}
 	}
