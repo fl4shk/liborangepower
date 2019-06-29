@@ -123,12 +123,12 @@ protected:		// functions
 
 		LexerType temp_lexer(_lexer());
 
-		auto* lexer = (!affect_lexer) ? &_lexer() : &temp_lexer;
+		auto& lexer = (!affect_lexer) ? _lexer() : temp_lexer;
 
 		for (size_t i=0; i<n; ++i)
 		{
-			ret.push_back(lexer->state());
-			_next_tok(lexer);
+			ret.push_back(lexer.state());
+			lexer._next_tok();
 		}
 
 		return ret;
@@ -171,6 +171,13 @@ protected:		// functions
 		}
 
 		return false;
+	}
+	inline void _next_lss_tokens()
+	{
+		for (size_t i=0; i<lss().found_set.size(); ++i)
+		{
+			_lexer()._next_tok();
+		}
 	}
 
 
