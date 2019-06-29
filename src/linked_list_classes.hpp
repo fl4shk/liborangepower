@@ -192,6 +192,15 @@ public:		// functions
 		return false;
 	}
 
+	inline NodeIterator front()
+	{
+		return NodeIterator(_head._next);
+	}
+	inline NodeIterator back()
+	{
+		return NodeIterator(_head._prev);
+	}
+
 	inline NodeIterator push_front(const Type& to_push)
 	{
 		return insert_after(head(), to_push);
