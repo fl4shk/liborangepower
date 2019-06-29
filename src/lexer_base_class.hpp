@@ -93,13 +93,13 @@ public:		// types
 			//return (tok == other.tok);
 		}
 
-		GEN_GETTER_BY_VAL(tok)
-		GEN_GETTER_BY_CON_REF(s)
-		GEN_GETTER_BY_VAL(c)
-		GEN_GETTER_BY_CON_REF(n)
-		GEN_GETTER_BY_VAL(x)
-		GEN_GETTER_BY_VAL(line_num)
-		GEN_GETTER_BY_VAL(pos_in_line)
+		GEN_GETTER_AND_SETTER_BY_VAL(tok)
+		GEN_GETTER_AND_SETTER_BY_CON_REF(s)
+		GEN_GETTER_AND_SETTER_BY_VAL(c)
+		GEN_GETTER_AND_SETTER_BY_CON_REF(n)
+		GEN_GETTER_AND_SETTER_BY_VAL(x)
+		GEN_GETTER_AND_SETTER_BY_VAL(line_num)
+		GEN_GETTER_AND_SETTER_BY_VAL(pos_in_line)
 	};
 
 protected:		// variables
