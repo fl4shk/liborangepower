@@ -184,7 +184,7 @@ protected:		// functions
 		{
 			for (size_t i=0; i<lss().found_set.size(); ++i)
 			{
-				_lexer()._next_tok();
+				_lexer().next_tok(just_test());
 			}
 		}
 		else // if (!lss().valid())
