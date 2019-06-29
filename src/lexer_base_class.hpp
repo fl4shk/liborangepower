@@ -194,7 +194,7 @@ protected:		// functions
 
 			++_state._pos_in_line;
 
-			if (_c() == '\n')
+			if (c() == '\n')
 			{
 				++_state._line_num;
 				_state._pos_in_line = 1;
