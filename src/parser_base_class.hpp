@@ -41,6 +41,7 @@ public:		// types
 	};
 
 protected:		// variables
+	LexStateSets _lss;
 	bool _just_test = false;
 	size_t _curr_file_index = 0;
 	std::vector<std::string> _filename_vec;
@@ -99,6 +100,7 @@ public:		// functions
 
 	GEN_GETTER_BY_VAL(curr_file_index)
 	GEN_GETTER_BY_VAL(just_test)
+	GEN_GETTER_BY_CON_REF(lss)
 
 protected:		// functions
 	const LexerType& _lexer() const
@@ -134,8 +136,11 @@ protected:		// functions
 
 	// Duplicates are banned.
 	bool _check_prefixed_tok_seq(const std::set<TokType>& prefix_set,
-		TokType end, LexStateSets& lss)
+		TokType end)
 	{
+		_lss.found_set.clear();
+		_lss.dup_set.clear();
+
 		const auto tokens = _next_n_tokens((prefix_set.size() + 1),
 			!just_test());
 
@@ -143,11 +148,11 @@ protected:		// functions
 		{
 			auto update_lss = [&]() -> void
 			{
-				if (lss.found_set.contains(tok_iter))
+				if (_lss.found_set.contains(tok_iter))
 				{
-					lss.dup_set.insert(tok_iter);
+					_lss.dup_set.insert(tok_iter);
 				}
-				lss.found_set.insert(tok_iter);
+				_lss.found_set.insert(tok_iter);
 			};
 
 			if (prefix_set.contains(tok_iter.tok))
