@@ -23,7 +23,7 @@ public:		// types
 
 	private:		// variables
 		TokType _tok;
-		string _s;
+		std::string _s;
 		int _c;
 		BigNum _n;
 		size_t _x = 0, _line_num = 1, _pos_in_line = 0;
@@ -41,7 +41,7 @@ public:		// types
 		bool operator < (const State& other) const
 		{
 			return (_x < other._x);
-			//std::map<string, bool> cmp_lt_results, cmp_eq_results;
+			//std::map<std::string, bool> cmp_lt_results, cmp_eq_results;
 			//cmp_lt_results["_tok"] = (_tok < other._tok);
 			//cmp_eq_results["_tok"] = (_tok == other._tok);
 
@@ -102,12 +102,12 @@ public:		// types
 	};
 
 protected:		// variables
-	string _filename;
-	string* _text = nullptr;
+	std::string _filename;
+	std::string* _text = nullptr;
 	State _state;
 
 public:		// functions
-	inline LexerBase(const string& s_filename, string* s_text,
+	inline LexerBase(const std::string& s_filename, std::string* s_text,
 		TokType done_tok, TokType comment_tok)
 		: _filename(s_filename), _text(s_text)
 	{
@@ -227,7 +227,7 @@ protected:		// functions
 	virtual void _inner_next_tok() = 0;
 
 	inline bool _set_kw_tok
-		(const std::map<TokType, string>& some_tok_ident_map)
+		(const std::map<TokType, std::string>& some_tok_ident_map)
 	{
 		for (const auto& iter : some_tok_ident_map)
 		{
