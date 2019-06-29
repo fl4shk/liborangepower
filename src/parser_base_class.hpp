@@ -260,7 +260,8 @@ protected:		// functions
 	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
 		const LexerState* lex_state=nullptr)
 	{
-		if (tok)
+		if ((lex_state != nullptr) ? (_lexer.state().tok() == tok)
+			: (lex_state->tok() == tok))
 		{
 			_err(_msg_for_expect(tok, some_tok_ident_map, lex_state));
 		}
