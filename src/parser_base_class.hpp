@@ -23,7 +23,7 @@ public:		// types
 	class LexStateSets final
 	{
 	public:		// variables
-		std::set<const LexerState> found_set, dup_set;
+		std::set<LexerState> found_set, dup_set;
 		LexerState first_dup, end;
 
 	public:		// functions
