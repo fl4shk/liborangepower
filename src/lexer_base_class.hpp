@@ -26,7 +26,7 @@ public:		// types
 		TokType _tok;
 		std::string _s;
 		int _c;
-		BigNum _n;
+		bignum::BigNum _n;
 		size_t _x = 0, _line_num = 1, _pos_in_line = 0;
 
 	public:		// functions
