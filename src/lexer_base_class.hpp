@@ -190,14 +190,14 @@ protected:		// functions
 	{
 		if (x() < text()->size())
 		{
-			_state.c = text()->at(_state.x++);
+			_state._c = text()->at(_state._x++);
 
-			++_state.pos_in_line;
+			++_state._pos_in_line;
 
-			if (c() == '\n')
+			if (_c() == '\n')
 			{
-				++_state.line_num;
-				_state.pos_in_line = 1;
+				++_state._line_num;
+				_state._pos_in_line = 1;
 			}
 
 			return c();
@@ -216,7 +216,7 @@ protected:		// functions
 	}
 	void _set_tok(TokType n_tok, bool perf_next_char)
 	{
-		_state.tok = n_tok;
+		_state._tok = n_tok;
 
 		if (perf_next_char)
 		{
