@@ -4,6 +4,7 @@
 // src/lexer_base_class.hpp
 
 #include "misc_includes.hpp"
+#include "gmp_stuff.hpp"
 
 namespace liborangepower
 {
