@@ -169,6 +169,15 @@ public:		// functions
 		return NodeIterator(_head._next->_prev);
 	}
 
+	//inline NodeIterator rbegin()
+	//{
+	//	return NodeIterator(head()->prev());
+	//}
+	//inline NodeIterator rend()
+	//{
+	//	return NodeIterator(head());
+	//}
+
 	bool contains(Node* where) const
 	{
 		//for (auto iter : *this)
@@ -181,15 +190,6 @@ public:		// functions
 		}
 
 		return false;
-	}
-
-	inline NodeIterator rbegin()
-	{
-		return NodeIterator(head()->prev());
-	}
-	inline NodeIterator rend()
-	{
-		return NodeIterator(head());
 	}
 
 	inline NodeIterator push_front(const Type& to_push)
