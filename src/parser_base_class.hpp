@@ -18,7 +18,7 @@ class ParserBase
 public:		// types
 	using TokType = typename LexerType::TokType;
 	using LexerState = typename LexerType::State;
-	using TokToStringMap = std::map<TokType, string>;
+	using TokToStringMap = std::map<TokType, std::string>;
 
 	class LexStateSets final
 	{
@@ -43,12 +43,12 @@ public:		// types
 protected:		// variables
 	bool _just_test = false;
 	size_t _curr_file_index = 0;
-	std::vector<string> _filename_vec;
-	std::vector<string*> _text_vec;
+	std::vector<std::string> _filename_vec;
+	std::vector<std::string*> _text_vec;
 	std::vector<LexerType> _lexer_vec;
 
 public:		// functions
-	ParserBase(std::vector<string>&& s_filename_vec)
+	ParserBase(std::vector<std::string>&& s_filename_vec)
 		: _filename_vec(std::move(s_filename_vec))
 	{
 	}
@@ -200,7 +200,7 @@ protected:		// functions
 		return false;
 	}
 
-	//inline void _syntax_error(const string& msg) const
+	//inline void _syntax_error(const std::string& msg) const
 	//{
 	//	lex_src_code_chunk().syntax_error(msg);
 	//}
@@ -225,7 +225,7 @@ protected:		// functions
 		_lexer().src_code_chunk().warn(sconcat(args...));
 	}
 
-	string _msg_for_expect(TokType tok,
+	std::string _msg_for_expect(TokType tok,
 		const TokToStringMap& some_tok_ident_map,
 		const LexerState* lex_state=nullptr) const
 	{
