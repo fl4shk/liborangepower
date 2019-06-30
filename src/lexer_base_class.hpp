@@ -1,10 +1,7 @@
 #ifndef liborangepower_lexer_base_class_hpp
 #define liborangepower_lexer_base_class_hpp
 
-// src/lexer_base_class.hpp
-
 #include "misc_includes.hpp"
-#include "gmp_stuff.hpp"
 
 namespace liborangepower
 {
@@ -39,7 +36,7 @@ public:		// types
 		}
 
 		// This is just for sorting purposes (mainly for `std::set`)
-		bool operator < (const State& other) const
+		inline bool operator < (const State& other) const
 		{
 			return (_x < other._x);
 			//std::map<std::string, bool> cmp_lt_results, cmp_eq_results;
@@ -82,7 +79,7 @@ public:		// types
 
 			//return (_tok < other._tok);
 		}
-		bool operator == (const State& other) const
+		inline bool operator == (const State& other) const
 		{
 			return (_x == other._x);
 			//return ((_tok == other._tok) && (_s == other._s)
@@ -91,6 +88,10 @@ public:		// types
 			//	&& (_line_num == other._line_num)
 			//	&& (_pos_in_line == other._pos_in_line));
 			//return (tok == other.tok);
+		}
+		inline bool operator != (const State& other) const
+		{
+			return (!((*this) == other));
 		}
 
 		GEN_GETTER_AND_SETTER_BY_VAL(tok)

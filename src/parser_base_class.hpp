@@ -1,10 +1,7 @@
 #ifndef liborangepower_parser_base_class_hpp
 #define liborangepower_parser_base_class_hpp
 
-// src/parser_base_class.hpp
-
 #include "misc_includes.hpp"
-#include "lexer_base_class.hpp"
 
 namespace liborangepower
 {
@@ -24,7 +21,8 @@ public:		// types
 	{
 	public:		// variables
 		std::set<LexerState> found_set, dup_set;
-		LexerState first_dup, end;
+		LexerState first_dup;
+		TokType end;
 
 	public:		// functions
 		LexStateSets()
@@ -117,10 +115,10 @@ protected:		// functions
 		return _lexer().state();
 	}
 
-	const std::vector<const LexerState> _next_n_tokens(size_t n,
+	const std::vector<LexerState> _next_n_tokens(size_t n,
 		bool affect_lexer)
 	{
-		std::vector<const LexerState> ret;
+		std::vector<LexerState> ret;
 
 		LexerType temp_lexer(_lexer());
 
@@ -129,7 +127,7 @@ protected:		// functions
 		for (size_t i=0; i<n; ++i)
 		{
 			ret.push_back(lexer.state());
-			lexer._next_tok();
+			_next_tok(&lexer);
 		}
 
 		return ret;
@@ -150,7 +148,7 @@ protected:		// functions
 		{
 			auto update_lss = [&]() -> void
 			{
-				if (_lss.found_set.contains(tok_iter))
+				if (_lss.found_set.count(tok_iter) != 0)
 				{
 					_lss.dup_set.insert(tok_iter);
 					if (_lss.dup_set.size() == 1)
@@ -161,11 +159,11 @@ protected:		// functions
 				_lss.found_set.insert(tok_iter);
 			};
 
-			if (prefix_set.contains(tok_iter.tok))
+			if (prefix_set.count(tok_iter.tok()) != 0)
 			{
 				update_lss();
 			}
-			else if (tok_iter.tok == end)
+			else if (tok_iter.tok() == end)
 			{
 				update_lss();
 				return true;
@@ -189,7 +187,7 @@ protected:		// functions
 		}
 		else // if (!lss().valid())
 		{
-			_unexpected(some_tok_ident_map, &lss().first_dup);
+			_unexpected(some_tok_ident_map, lss().first_dup);
 		}
 	}
 
@@ -206,7 +204,8 @@ protected:		// functions
 	}
 
 	template<typename FirstFuncType, typename... RemFuncTypes>
-	bool _do_parse(FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
+	bool _do_one_level_parse(FirstFuncType&& first_func,
+		RemFuncTypes&&... rem_funcs)
 	{
 		_just_test = false;
 		if (std::mem_fn(first_func)(*this))
@@ -251,46 +250,56 @@ protected:		// functions
 
 	std::string _msg_for_expect(TokType tok,
 		const TokToStringMap& some_tok_ident_map,
-		const LexerState* lex_state=nullptr) const
+		const LexerState& lex_state) const
 	{
 		return sconcat("Expected token ", some_tok_ident_map.at(tok),
-			".  Have token ", some_tok_ident_map.at(lex_state->tok),
-			" and string ", lex_state->s);
+			".  Have token ", some_tok_ident_map.at(lex_state.tok()),
+			" and string ", lex_state.s());
 	}
 	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
-		const LexerState* lex_state=nullptr)
+		const LexerState& lex_state)
 	{
-		if ((lex_state != nullptr) ? (_lexer().state().tok() == tok)
-			: (lex_state->tok() == tok))
+		if (lex_state.tok() == tok)
 		{
 			_err(_msg_for_expect(tok, some_tok_ident_map, lex_state));
 		}
 		_next_tok();
 	}
 	void _unexpected(const TokToStringMap& some_tok_ident_map,
-		const LexerState* some_lex_state=nullptr)
+		const LexerState& lex_state)
 	{
-		const LexerState* lex_state = (some_lex_state == nullptr)
-			? &_lexer().state() : some_lex_state;
-		_err("Unexpected token ", some_tok_ident_map.at(lex_state->tok),
-			".  Have string ", lex_state->s);
+		_err("Unexpected token ", some_tok_ident_map.at(lex_state.tok()),
+			".  Have string ", lex_state.s());
+	}
+	void _unexpected(const TokToStringMap& some_tok_ident_map,
+		LexerType* lexer=nullptr)
+	{
+		if (lexer == nullptr)
+		{
+			_unexpected(some_tok_ident_map, _lexer().state());
+		}
+		else // if (lexer != nullptr)
+		{
+			_unexpected(some_tok_ident_map, lexer->state());
+		}
 	}
 	bool _to_next_in_list(TokType end, TokType separator,
-		const TokToStringMap& some_tok_ident_map)
+		const TokToStringMap& some_tok_ident_map,
+		LexerType* lexer=nullptr)
 	{
 		if (cmp_lex_tok(end))
 		{
-			_next_tok();
+			_next_tok(lexer);
 			return false;
 		}
 		else if (cmp_lex_tok(separator))
 		{
-			_next_tok();
+			_next_tok(lexer);
 			return true;
 		}
 		else
 		{
-			_unexpected(some_tok_ident_map);
+			_unexpected(some_tok_ident_map, lexer);
 		}
 	}
 };
@@ -298,6 +307,5 @@ protected:		// functions
 } // namespace lang
 
 } // namespace liborangepower
-
 
 #endif		// liborangepower_parser_base_class_hpp
