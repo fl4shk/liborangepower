@@ -2,9 +2,12 @@
 #define liborangepower_parser_base_class_hpp
 
 #include "misc_includes.hpp"
+#include "misc_output_classes.hpp"
 
 namespace liborangepower
 {
+
+using printout_etc::sconcat;
 
 namespace lang
 {
