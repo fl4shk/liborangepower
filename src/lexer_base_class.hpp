@@ -113,7 +113,7 @@ public:		// functions
 		TokType done_tok, TokType comment_tok)
 		: _filename(s_filename), _text(s_text)
 	{
-		//_next_tok_no_test(done_tok, comment_tok);
+		//_next_tok(done_tok, comment_tok);
 		_next_char();
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(LexerBase)
@@ -168,7 +168,7 @@ public:		// functions
 	GEN_GETTER_BY_CON_REF(state)
 
 protected:		// functions
-	TokType _next_tok_no_test(TokType done_tok, TokType comment_tok)
+	TokType _next_tok(TokType done_tok, TokType comment_tok)
 	{
 		do
 		{
