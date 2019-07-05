@@ -264,11 +264,16 @@ protected:		// functions
 	{
 		return _check_prefixed_tok_seq(std::set<TokType>(), end);
 	}
-	inline void _next_lss_tokens(const TokToStringMap& some_tok_ident_map)
+	inline void _next_lss_tokens(const TokToStringMap& some_tok_ident_map,
+		bool perf_next_tok)
 	{
 		if (lss().valid())
 		{
 			for (size_t i=0; i<lss().found_set.size(); ++i)
+			{
+				_lexer().next_tok();
+			}
+			if (perf_next_tok)
 			{
 				_lexer().next_tok();
 			}
