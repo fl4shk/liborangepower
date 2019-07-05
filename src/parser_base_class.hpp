@@ -111,13 +111,23 @@ protected:		// variables
 	bool _just_test = false;
 	size_t _curr_file_index = 0;
 	std::vector<std::string> _filename_vec;
-	std::vector<std::string*> _text_vec;
+	std::vector<std::unique_ptr<std::string>> _text_vec;
 	std::vector<LexerType> _lexer_vec;
 
 public:		// functions
 	ParserBase(std::vector<std::string>&& s_filename_vec)
 		: _filename_vec(std::move(s_filename_vec))
 	{
+		for (const auto& filename : filename_vec)
+		{
+			with(f, std::ifstream(filename))
+			{
+				_text_vec.push_back(std::unique_ptr<string>(new
+					std::string(get_istream_as_str(f))));
+			}
+			_lexer_vec.push_back(LexerType(filename,
+				_text_vec.back().get()));
+		}
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ParserBase)
 	virtual ~ParserBase()
