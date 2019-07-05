@@ -359,7 +359,7 @@ protected:		// functions
 	{
 		return sconcat("Expected token ", some_tok_ident_map.at(tok),
 			".  Have token ", some_tok_ident_map.at(lex_state.tok()),
-			" and string ", lex_state.s());
+			" and string \"", lex_state.s(), "\"");
 	}
 	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
 		const LexerState& lex_state, bool perf_next_tok=true)
