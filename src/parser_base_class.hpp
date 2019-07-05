@@ -314,7 +314,7 @@ protected:		// functions
 
 	template<typename DerivedType, typename FirstFuncType,
 		typename... RemFuncTypes>
-	static void _force_parse(DerivedType* self,
+	static void _req_parse(DerivedType* self,
 		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
 		bool found = false;
