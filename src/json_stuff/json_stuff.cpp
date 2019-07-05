@@ -1,7 +1,7 @@
 #include "../json_stuff.hpp"
 #include <fstream>
 
-using namespace liborangepower::printout_etc;
+using namespace liborangepower::misc_output;
 
 namespace liborangepower
 {
@@ -12,7 +12,7 @@ namespace json
 template<typename... arg_types>
 static void json_err(arg_types&&... args)
 {
-	printout_etc::printerr("Error:  ", args..., "\n");
+	misc_output::printerr("Error:  ", args..., "\n");
 	exit(1);
 }
 

@@ -7,7 +7,7 @@
 namespace liborangepower
 {
 
-namespace printout_etc
+namespace misc_output
 {
 
 
@@ -143,7 +143,7 @@ inline std::string strappcom2(const FirstArgType& first_val,
 	return ret;
 }
 
-} // namespace printout_etc
+} // namespace misc_output
 
 } // namespace liborangepower
 

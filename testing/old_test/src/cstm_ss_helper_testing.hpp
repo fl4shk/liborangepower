@@ -7,7 +7,7 @@
 
 #include "liborangepower_src/range_funcs.hpp"
 
-using namespace liborangepower::printout_etc;
+using namespace liborangepower::misc_output;
 
 #include "cstm_ss_helper_classes.hpp"
 

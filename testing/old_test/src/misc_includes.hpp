@@ -13,7 +13,7 @@
 #include "liborangepower_src/misc_types.hpp"
 #include "liborangepower_src/array_2d_helper_classes.hpp"
 
-using namespace liborangepower::printout_etc;
+using namespace liborangepower::misc_output;
 using namespace liborangepower::containers;
 using namespace liborangepower::integer_types;
 

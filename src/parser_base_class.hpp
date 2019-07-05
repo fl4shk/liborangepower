@@ -3,11 +3,12 @@
 
 #include "misc_includes.hpp"
 #include "misc_output_classes.hpp"
+#include "misc_input_classes.hpp"
 
 namespace liborangepower
 {
 
-using printout_etc::sconcat;
+using misc_output::sconcat;
 
 namespace lang
 {
@@ -123,7 +124,7 @@ public:		// functions
 			with(f, std::ifstream(filename))
 			{
 				_text_vec.push_back(std::unique_ptr<std::string>(new
-					std::string(get_istream_as_str(f))));
+					std::string(misc_input::get_istream_as_str(f))));
 			}
 			_lexer_vec.push_back(LexerType(filename,
 				_text_vec.back().get()));

@@ -13,7 +13,7 @@
 #include "liborangepower_src/string_conversion_stuff.hpp"
 #include "liborangepower_src/mp11_defines.hpp"
 
-using namespace liborangepower::printout_etc;
+using namespace liborangepower::misc_output;
 using namespace liborangepower::integer_types;
 using namespace liborangepower::misc_util;
 using namespace liborangepower::bitwise;
