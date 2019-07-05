@@ -288,7 +288,7 @@ protected:		// functions
 		}
 		else if constexpr (sizeof...(rem_funcs) != 0)
 		{
-			return _do_parse(rem_funcs...);
+			return _do_one_level_parse(rem_funcs...);
 		}
 
 		return false;
