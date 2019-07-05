@@ -53,6 +53,12 @@ public:		// types
 			}
 			return false;
 		}
+		inline LexerState find_found(TokType tok) const
+		{
+			LexerState ret;
+			find_found(tok, ret);
+			return ret;
+		}
 		inline bool find_dup(TokType tok, LexerState& ret) const
 		{
 			for (const auto& iter : dup_set)
@@ -64,6 +70,12 @@ public:		// types
 				}
 			}
 			return false;
+		}
+		inline LexerState find_dup(TokType tok) const
+		{
+			LexerState ret;
+			find_dup(tok, ret);
+			return ret;
 		}
 	};
 
