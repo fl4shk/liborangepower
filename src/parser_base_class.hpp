@@ -279,10 +279,10 @@ protected:		// functions
 	static bool _do_one_level_parse(DerivedType* self,
 		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
-		_just_test = false;
+		self->_just_test = false;
 		if ((self->*first_func)())
 		{
-			_just_test = true;
+			self->_just_test = true;
 			(self->*first_func)();
 
 			return true;
