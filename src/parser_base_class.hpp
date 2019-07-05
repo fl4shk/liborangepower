@@ -8,6 +8,7 @@
 namespace liborangepower
 {
 
+using misc_output::printout;
 using misc_output::sconcat;
 
 namespace lang
