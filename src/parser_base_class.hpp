@@ -412,6 +412,7 @@ protected:		// functions
 		else
 		{
 			_unexpected(some_tok_ident_map, lexer);
+			return false;
 		}
 	}
 };
