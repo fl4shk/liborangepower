@@ -276,7 +276,7 @@ protected:		// functions
 
 	template<typename DerivedType, typename FirstFuncType,
 		typename... RemFuncTypes>
-	static bool _do_one_level_parse(DerivedType* self,
+	static bool _inner_do_parse(DerivedType* self,
 		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
 		self->_just_test = false;
@@ -289,10 +289,26 @@ protected:		// functions
 		}
 		else if constexpr (sizeof...(rem_funcs) != 0)
 		{
-			return _do_one_level_parse(self, rem_funcs...);
+			return _inner_do_parse(self, rem_funcs...);
 		}
 
 		return false;
+	}
+
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
+	static void _do_parse(DerivedType* self, FirstFuncType&& first_func,
+		RemFuncTypes&&... rem_funcs)
+	{
+		bool found = false;
+		while (_inner_do_parse(self, first_func, rem_funcs...))
+		{
+			found = true;
+		}
+		if (!found)
+		{
+			self->_unexpected();
+		}
 	}
 
 	//inline void _syntax_error(const std::string& msg) const
