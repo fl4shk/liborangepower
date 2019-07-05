@@ -279,10 +279,10 @@ protected:		// functions
 		RemFuncTypes&&... rem_funcs)
 	{
 		_just_test = false;
-		if (first_func(*this))
+		if (this->*first_func())
 		{
 			_just_test = true;
-			first_func(*this);
+			this->*first_func();
 
 			return true;
 		}
