@@ -205,8 +205,8 @@ protected:		// functions
 
 		for (size_t i=0; i<n; ++i)
 		{
-			ret.push_back(lexer.state());
 			_next_tok(&lexer);
+			ret.push_back(lexer.state());
 		}
 
 		return ret;
