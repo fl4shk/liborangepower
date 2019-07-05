@@ -244,6 +244,7 @@ protected:		// functions
 			}
 			else if (tok_iter.tok() == end)
 			{
+				printout("_check_prefixed_tok_seq():  Test\n");
 				update_lss();
 				return true;
 			}
@@ -319,7 +320,6 @@ protected:		// functions
 		}
 		if (!found)
 		{
-			printout("testificate\n");
 			self->_unexpected();
 		}
 	}
