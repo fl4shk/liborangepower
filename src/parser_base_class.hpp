@@ -279,10 +279,10 @@ protected:		// functions
 		RemFuncTypes&&... rem_funcs)
 	{
 		_just_test = false;
-		if (std::mem_fn(first_func)(*this))
+		if (first_func(*this))
 		{
 			_just_test = true;
-			std::mem_fn(first_func)(*this);
+			first_func(*this);
 
 			return true;
 		}
