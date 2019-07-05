@@ -83,6 +83,29 @@ public:		// types
 		}
 	};
 
+	friend class WExpect;
+	class WExpect final
+	{
+	private:		// variables
+		ParserBase* _parser = nullptr;
+		LexerType* _lexer = nullptr;
+
+	public:		// functions
+		WExpect(ParserBase* s_parser, TokType tok,
+			const TokToStringMap& some_tok_ident_map,
+			Lexer* s_lexer=nullptr)
+		{
+			_parser = s_parser;
+			_lexer = s_lexer;
+			_parser->_expect(tok, some_tok_ident_map, _lexer, false);
+		}
+		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(WExpect);
+		~WExpect()
+		{
+			_parser->_next_tok(_lexer);
+		}
+	};
+
 protected:		// variables
 	LexStateSets _lss;
 	bool _just_test = false;
@@ -305,13 +328,43 @@ protected:		// functions
 			" and string ", lex_state.s());
 	}
 	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
-		const LexerState& lex_state)
+		const LexerState& lex_state, bool perf_next_tok=true)
 	{
-		if (lex_state.tok() == tok)
+		if (lex_state.tok() != tok)
 		{
 			_err(_msg_for_expect(tok, some_tok_ident_map, lex_state));
 		}
-		_next_tok();
+
+		if (perf_next_tok)
+		{
+			_next_tok();
+		}
+	}
+	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
+		LexerType* lexer=nullptr, bool perf_next_tok=true)
+	{
+		if (lexer != nullptr)
+		{
+			_expect(tok, some_tok_ident_map, lexer->state(),
+				perf_next_tok);
+		}
+		else // if (lexer == nullptr)
+		{
+			_expect(tok, some_tok_ident_map, _lexer().state(),
+				perf_next_tok);
+		}
+	}
+	inline auto _wexpect(TokType tok,
+		const TokToStringMap& some_tok_ident_map,
+		const LexerState& lex_state)
+	{
+		return WExpect(this, tok, some_tok_ident_map, lex_state);
+	}
+	inline auto _wexpect(TokType tok,
+		const TokToStringMap& some_tok_ident_map,
+		LexerType* lexer=nullptr)
+	{
+		return WExpect(this, tok, some_tok_ident_map, lexer);
 	}
 	void _unexpected(const TokToStringMap& some_tok_ident_map,
 		const LexerState& lex_state)
