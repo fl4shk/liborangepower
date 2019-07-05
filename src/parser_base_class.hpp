@@ -291,10 +291,10 @@ protected:		// functions
 	static bool _inner_do_parse(DerivedType* self,
 		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
-		self->_just_test = false;
+		self->_just_test = true;
 		if ((self->*first_func)())
 		{
-			self->_just_test = true;
+			self->_just_test = false;
 			(self->*first_func)();
 
 			return true;
