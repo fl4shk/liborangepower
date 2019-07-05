@@ -270,7 +270,7 @@ protected:		// functions
 		{
 			for (size_t i=0; i<lss().found_set.size(); ++i)
 			{
-				_lexer().next_tok(just_test());
+				_lexer().next_tok();
 			}
 		}
 		else // if (!lss().valid())
