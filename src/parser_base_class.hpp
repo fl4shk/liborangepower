@@ -227,7 +227,8 @@ protected:		// functions
 
 		for (const auto& tok_iter : tokens)
 		{
-			printout(tok_iter.s(), " ", tok_iter.tok());
+			printout(tok_iter.s(), " ",
+				static_cast<size_t>(tok_iter.tok()), "\n");
 			auto update_lss = [&]() -> void
 			{
 				if (_lss.found_set.count(tok_iter) != 0)
