@@ -122,7 +122,7 @@ public:		// functions
 	template<typename Type>
 	inline Type src_code_chunk(const State* other_state=nullptr) const
 	{
-		if (other_state == nullptr)
+		if (other_state != nullptr)
 		{
 			return Type(filename(), other_state->_s,
 				other_state->_line_num, other_state->_pos_in_line);
