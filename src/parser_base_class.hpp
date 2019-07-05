@@ -93,7 +93,7 @@ public:		// types
 	public:		// functions
 		WExpect(ParserBase* s_parser, TokType tok,
 			const TokToStringMap& some_tok_ident_map,
-			Lexer* s_lexer=nullptr)
+			LexerType* s_lexer=nullptr)
 		{
 			_parser = s_parser;
 			_lexer = s_lexer;
@@ -353,12 +353,6 @@ protected:		// functions
 			_expect(tok, some_tok_ident_map, _lexer().state(),
 				perf_next_tok);
 		}
-	}
-	inline auto _wexpect(TokType tok,
-		const TokToStringMap& some_tok_ident_map,
-		const LexerState& lex_state)
-	{
-		return WExpect(this, tok, some_tok_ident_map, lex_state);
 	}
 	inline auto _wexpect(TokType tok,
 		const TokToStringMap& some_tok_ident_map,
