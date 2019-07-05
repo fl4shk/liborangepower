@@ -114,6 +114,7 @@ public:		// functions
 		: _filename(s_filename), _text(s_text)
 	{
 		//_next_tok_no_test(done_tok, comment_tok);
+		_next_char();
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(LexerBase)
 	virtual ~LexerBase() = default;
