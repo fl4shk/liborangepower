@@ -118,7 +118,7 @@ public:		// functions
 	ParserBase(std::vector<std::string>&& s_filename_vec)
 		: _filename_vec(std::move(s_filename_vec))
 	{
-		for (const auto& filename : filename_vec)
+		for (const auto& filename : _filename_vec)
 		{
 			with(f, std::ifstream(filename))
 			{
