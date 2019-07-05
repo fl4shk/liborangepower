@@ -3,6 +3,7 @@
 
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
+#include <fstream>
 
 namespace liborangepower
 {
