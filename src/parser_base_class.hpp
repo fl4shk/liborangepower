@@ -274,21 +274,22 @@ protected:		// functions
 		}
 	}
 
-	template<typename FirstFuncType, typename... RemFuncTypes>
-	bool _do_one_level_parse(FirstFuncType&& first_func,
-		RemFuncTypes&&... rem_funcs)
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
+	static bool _do_one_level_parse(DerivedType* self,
+		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
 		_just_test = false;
-		if ((this->*first_func)())
+		if ((self->*first_func)())
 		{
 			_just_test = true;
-			(this->*first_func)();
+			(self->*first_func)();
 
 			return true;
 		}
 		else if constexpr (sizeof...(rem_funcs) != 0)
 		{
-			return _do_one_level_parse(rem_funcs...);
+			return _do_one_level_parse(self, rem_funcs...);
 		}
 
 		return false;
