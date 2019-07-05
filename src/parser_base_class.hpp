@@ -201,7 +201,7 @@ protected:		// functions
 
 		LexerType temp_lexer(_lexer());
 
-		auto& lexer = (!affect_lexer) ? _lexer() : temp_lexer;
+		auto& lexer = affect_lexer ? _lexer() : temp_lexer;
 
 		for (size_t i=0; i<n; ++i)
 		{
