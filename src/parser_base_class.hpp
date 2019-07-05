@@ -122,7 +122,7 @@ public:		// functions
 		{
 			with(f, std::ifstream(filename))
 			{
-				_text_vec.push_back(std::unique_ptr<string>(new
+				_text_vec.push_back(std::unique_ptr<std::string>(new
 					std::string(get_istream_as_str(f))));
 			}
 			_lexer_vec.push_back(LexerType(filename,
