@@ -116,9 +116,7 @@ public:		// functions
 		_next_tok_no_test(done_tok, comment_tok);
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(LexerBase)
-	virtual ~LexerBase()
-	{
-	}
+	virtual ~LexerBase() = default;
 
 
 	template<typename Type>

@@ -40,6 +40,31 @@ public:		// types
 		{
 			return (dup_set.size() == 0);
 		}
+
+		inline bool find_found(TokType tok, LexerState& ret) const
+		{
+			for (const auto& iter : found_set)
+			{
+				if (iter.tok() == tok)
+				{
+					ret = iter;
+					return true;
+				}
+			}
+			return false;
+		}
+		inline bool find_dup(TokType tok, LexerState& ret) const
+		{
+			for (const auto& iter : dup_set)
+			{
+				if (iter.tok() == tok)
+				{
+					ret = iter;
+					return true;
+				}
+			}
+			return false;
+		}
 	};
 
 protected:		// variables
@@ -178,6 +203,10 @@ protected:		// functions
 		}
 
 		return false;
+	}
+	bool _check_prefixed_tok_seq(TokType end)
+	{
+		return _check_prefixed_tok_seq(std::set<TokType>(), end);
 	}
 	inline void _next_lss_tokens(const TokToStringMap& some_tok_ident_map)
 	{
