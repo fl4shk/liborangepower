@@ -222,13 +222,13 @@ protected:		// functions
 
 		const auto tokens = _next_n_tokens((prefix_set.size() + 1),
 			!just_test());
-		printout("_check_prefixed_tok_seq():  Test 0:  ", tokens.size(),
-			"\n");
+		//printout("_check_prefixed_tok_seq():  Test 0:  ", tokens.size(),
+		//	"\n");
 
 		for (const auto& tok_iter : tokens)
 		{
-			printout(tok_iter.s(), " ",
-				static_cast<size_t>(tok_iter.tok()), "\n");
+			//printout(tok_iter.s(), " ",
+			//	static_cast<size_t>(tok_iter.tok()), "\n");
 			auto update_lss = [&]() -> void
 			{
 				if (_lss.found_set.count(tok_iter) != 0)
@@ -248,7 +248,7 @@ protected:		// functions
 			}
 			else if (tok_iter.tok() == end)
 			{
-				printout("_check_prefixed_tok_seq():  Test\n");
+				//printout("_check_prefixed_tok_seq():  Test\n");
 				update_lss();
 				return true;
 			}
