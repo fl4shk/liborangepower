@@ -283,11 +283,11 @@ protected:		// functions
 	{
 		if (lexer == nullptr)
 		{
-			return _lexer().next_tok(just_test());
+			return _lexer().next_tok();
 		}
 		else // if (lexer != nullptr)
 		{
-			return lexer->next_tok(just_test());
+			return lexer->next_tok();
 		}
 	}
 
