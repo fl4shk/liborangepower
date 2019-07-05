@@ -357,9 +357,9 @@ protected:		// functions
 		const TokToStringMap& some_tok_ident_map,
 		const LexerState& lex_state) const
 	{
-		return sconcat("Expected token ", some_tok_ident_map.at(tok),
-			".  Have token ", some_tok_ident_map.at(lex_state.tok()),
-			" and string \"", lex_state.s(), "\"");
+		return sconcat("Expected token \"", some_tok_ident_map.at(tok),
+			"\".  Have token \"", some_tok_ident_map.at(lex_state.tok()),
+			"\" and string \"", lex_state.s(), "\"");
 	}
 	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
 		const LexerState& lex_state, bool perf_next_tok=true)
@@ -397,8 +397,8 @@ protected:		// functions
 	void _unexpected(const TokToStringMap& some_tok_ident_map,
 		const LexerState& lex_state)
 	{
-		_err("Unexpected token ", some_tok_ident_map.at(lex_state.tok()),
-			".  Have string ", lex_state.s());
+		_err("Unexpected token \"", some_tok_ident_map.at(lex_state.tok()),
+			"\".  Have string \"", lex_state.s(), "\"");
 	}
 	void _unexpected(const TokToStringMap& some_tok_ident_map,
 		LexerType* lexer=nullptr)
