@@ -222,6 +222,8 @@ protected:		// functions
 
 		const auto tokens = _next_n_tokens((prefix_set.size() + 1),
 			!just_test());
+		printout("_check_prefixed_tok_seq():  Test 0:  ", tokens.size(),
+			"\n");
 
 		for (const auto& tok_iter : tokens)
 		{
