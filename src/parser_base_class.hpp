@@ -121,7 +121,7 @@ public:		// functions
 	{
 		for (const auto& filename : _filename_vec)
 		{
-			with(f, std::ifstream(filename))
+			if (auto&& f = std::ifstream(filename); true)
 			{
 				_text_vec.push_back(std::unique_ptr<std::string>(new
 					std::string(misc_input::get_istream_as_str(f))));

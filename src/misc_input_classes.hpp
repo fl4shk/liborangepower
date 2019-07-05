@@ -30,6 +30,10 @@ inline std::string get_istream_as_str(std::istream& to_get_from)
 
 	return ret;
 }
+inline auto get_istream_as_str(std::istream&& to_get_from)
+{
+	return get_istream_as_str(to_get_from);
+}
 
 inline std::string get_stdin_as_str()
 {
