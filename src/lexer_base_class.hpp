@@ -168,20 +168,12 @@ public:		// functions
 	GEN_GETTER_BY_CON_REF(state)
 
 protected:		// functions
-	TokType _next_tok(TokType done_tok, TokType comment_tok)
+	TokType _next_tok(TokType comment_tok)
 	{
 		do
 		{
-			//if (c() == EOF)
-			//{
-			//	_set_tok(done_tok, false);
-			//	break;
-			//}
-			//else
-			{
-				_eat_whitespace();
-				_inner_next_tok();
-			}
+			_eat_whitespace();
+			_inner_next_tok();
 		} while (tok() == comment_tok);
 
 		//if (c() == EOF)
@@ -204,13 +196,12 @@ protected:		// functions
 				++_state._line_num;
 				_state._pos_in_line = 1;
 			}
-
-			return c();
 		}
 		else
 		{
-			return EOF;
+			_state._c = EOF;
 		}
+		return c();
 	}
 	void _eat_whitespace()
 	{
