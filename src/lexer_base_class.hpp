@@ -172,8 +172,6 @@ protected:		// functions
 	{
 		do
 		{
-			_eat_whitespace();
-
 			if (c() == EOF)
 			{
 				_set_tok(done_tok, false);
@@ -181,6 +179,7 @@ protected:		// functions
 			}
 			else
 			{
+				_eat_whitespace();
 				_inner_next_tok();
 			}
 		} while (tok() == comment_tok);
