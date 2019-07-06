@@ -193,7 +193,7 @@ protected:		// functions
 	}
 	int _next_char()
 	{
-		if (x() < text()->size())
+		if (x() < (text()->size() - 1))
 		{
 			_state._c = text()->at(_state._x++);
 
