@@ -172,22 +172,22 @@ protected:		// functions
 	{
 		do
 		{
-			if (c() == EOF)
-			{
-				_set_tok(done_tok, false);
-				break;
-			}
-			else
+			//if (c() == EOF)
+			//{
+			//	_set_tok(done_tok, false);
+			//	break;
+			//}
+			//else
 			{
 				_eat_whitespace();
 				_inner_next_tok();
 			}
 		} while (tok() == comment_tok);
 
-		if (c() == EOF)
-		{
-			_set_tok(done_tok, false);
-		}
+		//if (c() == EOF)
+		//{
+		//	_set_tok(done_tok, false);
+		//}
 
 		return tok();
 	}
