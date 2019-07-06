@@ -177,6 +177,7 @@ protected:		// functions
 			if (c() == EOF)
 			{
 				_set_tok(done_tok, false);
+				break;
 			}
 			else
 			{
