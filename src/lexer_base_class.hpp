@@ -184,6 +184,11 @@ protected:		// functions
 			}
 		} while (tok() == comment_tok);
 
+		if (c() == EOF)
+		{
+			_set_tok(done_tok, false);
+		}
+
 		return tok();
 	}
 	int _next_char()
