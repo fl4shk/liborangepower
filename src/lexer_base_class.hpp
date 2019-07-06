@@ -214,7 +214,7 @@ protected:		// functions
 	}
 	void _eat_whitespace()
 	{
-		while (isspace(c()))
+		while (isspace(c()) && (c() != EOF))
 		{
 			_next_char();
 		}
