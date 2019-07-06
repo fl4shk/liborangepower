@@ -129,6 +129,7 @@ public:		// functions
 			}
 			_lexer_vec.push_back(LexerType(filename,
 				_text_vec.back().get()));
+			_next_tok(&_lexer_vec.back());
 		}
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ParserBase)
@@ -205,8 +206,8 @@ protected:		// functions
 
 		for (size_t i=0; i<n; ++i)
 		{
-			_next_tok(&lexer);
 			ret.push_back(lexer.state());
+			_next_tok(&lexer);
 		}
 
 		return ret;
@@ -264,16 +265,11 @@ protected:		// functions
 	{
 		return _check_prefixed_tok_seq(std::set<TokType>(), end);
 	}
-	inline void _next_lss_tokens(const TokToStringMap& some_tok_ident_map,
-		bool perf_next_tok)
+	inline void _next_lss_tokens(const TokToStringMap& some_tok_ident_map)
 	{
 		if (lss().valid())
 		{
 			for (size_t i=0; i<lss().found_set.size(); ++i)
-			{
-				_lexer().next_tok();
-			}
-			if (perf_next_tok)
 			{
 				_lexer().next_tok();
 			}
