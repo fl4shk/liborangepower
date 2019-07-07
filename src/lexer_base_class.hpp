@@ -109,8 +109,7 @@ protected:		// variables
 	State _state;
 
 public:		// functions
-	inline LexerBase(const std::string& s_filename, std::string* s_text,
-		TokType done_tok, TokType comment_tok)
+	inline LexerBase(const std::string& s_filename, std::string* s_text)
 		: _filename(s_filename), _text(s_text)
 	{
 		//_next_tok(done_tok, comment_tok);
