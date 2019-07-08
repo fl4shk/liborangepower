@@ -331,7 +331,7 @@ protected:		// functions
 	}
 	template<typename DerivedType, typename FuncType>
 	static void _req_parse(DerivedType* self,
-		const std::vector<FirstFuncType>& func_vec)
+		const std::vector<FuncType>& func_vec)
 	{
 		if (!_opt_parse(self, func_vec))
 		{
@@ -340,7 +340,7 @@ protected:		// functions
 	}
 	template<typename DerivedType, typename FuncType>
 	static void _req_parse_loop(DerivedType* self,
-		const std::vector<FirstFuncType>& func_vec)
+		const std::vector<FuncType>& func_vec)
 	{
 		bool found = false;
 		while (_opt_parse(self, func_vec))
