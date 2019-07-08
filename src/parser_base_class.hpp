@@ -292,34 +292,58 @@ protected:		// functions
 		}
 	}
 
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
+
+	template<typename DerivedType, typename FuncType>
 	static bool _opt_parse(DerivedType* self,
-		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
+		const std::vector<FuncType>& func_vec)
 	{
-		self->_just_test = true;
-		if ((self->*first_func)())
+		for (const auto& func : func_vec)
 		{
-			self->_just_test = false;
-			(self->*first_func)();
+			self->_just_test = true;
+			if ((self->*func)())
+			{
+				self->_just_test = false;
+				(self->*func)();
 
-			return true;
+				return true;
+			}
 		}
-		else if constexpr (sizeof...(rem_funcs) != 0)
-		{
-			return _opt_parse(self, rem_funcs...);
-		}
-
 		return false;
 	}
-
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
+	template<typename DerivedType, typename FuncType>
+	static bool _opt_parse(DerivedType* self, FuncType&& func)
+	{
+		return _opt_parse(self, std::vector({func}));
+	}
+	template<typename DerivedType, typename FuncType>
+	static auto _check_parse(DerivedType* self,
+		const std::vector<FuncType>& func_vec)
+	{
+		for (const auto& func : func_vec)
+		{
+			self->_just_test = true;
+			if ((self->*func)())
+			{
+				return func;
+			}
+		}
+		return nullptr;
+	}
+	template<typename DerivedType, typename FuncType>
 	static void _req_parse(DerivedType* self,
-		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
+		const std::vector<FirstFuncType>& func_vec)
+	{
+		if (!_opt_parse(self, func_vec))
+		{
+			self->_unexpected();
+		}
+	}
+	template<typename DerivedType, typename FuncType>
+	static void _req_parse_loop(DerivedType* self,
+		const std::vector<FirstFuncType>& func_vec)
 	{
 		bool found = false;
-		while (_opt_parse(self, first_func, rem_funcs...))
+		while (_opt_parse(self, func_vec))
 		{
 			found = true;
 		}
@@ -328,6 +352,7 @@ protected:		// functions
 			self->_unexpected();
 		}
 	}
+
 
 	//inline void _syntax_error(const std::string& msg) const
 	//{
