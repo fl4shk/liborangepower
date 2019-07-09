@@ -293,57 +293,65 @@ protected:		// functions
 	}
 
 
-	template<typename DerivedType, typename FuncType>
-	static bool _opt_parse(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
+	static bool _opt_parse(DerivedType* self, FirstFuncType&& first_func,
+		RemFuncTypes&&... rem_funcs)
 	{
-		for (const auto& func : func_vec)
+		self->_just_test = true;
+		if ((self->*first_func)())
 		{
-			self->_just_test = true;
-			if ((self->*func)())
-			{
-				self->_just_test = false;
-				(self->*func)();
+			self->_just_test = false;
+			(self->*first_func)();
 
-				return true;
-			}
+			return true;
+		}
+		else if constexpr (sizeof...(rem_funcs))
+		{
+			return _opt_parse(self, rem_funcs...);
 		}
 		return false;
 	}
-	template<typename DerivedType, typename FuncType>
-	static bool _opt_parse(DerivedType* self, FuncType&& func)
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
+	static bool _opt_parse(DerivedType* self, FirstFuncType&& first_func,
+		RemFuncTypes&&... rem_funcs)
 	{
-		return _opt_parse(self, std::vector({func}));
+		return _opt_parse(self, first_func, rem_funcs...);
 	}
-	template<typename DerivedType, typename FuncType>
-	static auto _check_parse(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
+	static auto _check_parse(DerivedType* self, FirstFuncType&& first_func,
+		RemFuncTypes&&... rem_funcs)
 	{
-		for (const auto& func : func_vec)
+		self->_just_test = true;
+		if ((self->*first_func)())
 		{
-			self->_just_test = true;
-			if ((self->*func)())
-			{
-				return func;
-			}
+			return first_func;
+		}
+		else if constexpr (sizeof...(rem_funcs))
+		{
+			return _check_parse(self, rem_funcs...);
 		}
 		return nullptr;
 	}
-	template<typename DerivedType, typename FuncType>
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
 	static void _req_parse(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
-		if (!_opt_parse(self, func_vec))
+		if (!_opt_parse(self, first_func, rem_funcs...))
 		{
 			self->_unexpected();
 		}
 	}
-	template<typename DerivedType, typename FuncType>
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
 	static void _req_parse_loop(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
 		bool found = false;
-		while (_opt_parse(self, func_vec))
+		while (_opt_parse(self, first_func, rem_funcs...))
 		{
 			found = true;
 		}
