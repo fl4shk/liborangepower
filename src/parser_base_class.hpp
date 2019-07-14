@@ -344,7 +344,7 @@ protected:		// functions
 		{
 			return _check_parse(self, rem_funcs...);
 		}
-		return nullptr;
+		return static_cast<FirstFuncType>(nullptr);
 	}
 	template<typename DerivedType, typename FuncType>
 	static auto _check_parse(DerivedType* self,
@@ -358,7 +358,7 @@ protected:		// functions
 				return iter;
 			}
 		}
-		return nullptr;
+		return static_cast<FuncType>(nullptr);
 	}
 
 	template<typename DerivedType, typename FirstFuncType,
