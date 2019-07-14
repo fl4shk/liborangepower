@@ -295,6 +295,37 @@ protected:		// functions
 
 	template<typename DerivedType, typename FirstFuncType,
 		typename... RemFuncTypes>
+	static auto _check_parse(DerivedType* self, FirstFuncType&& first_func,
+		RemFuncTypes&&... rem_funcs)
+	{
+		self->_just_test = true;
+		if ((self->*first_func)())
+		{
+			return first_func;
+		}
+		else if constexpr (sizeof...(rem_funcs))
+		{
+			return _check_parse(self, rem_funcs...);
+		}
+		return static_cast<FirstFuncType>(nullptr);
+	}
+	template<typename DerivedType, typename FuncType>
+	static auto _check_parse(DerivedType* self,
+		const std::vector<FuncType>& func_vec)
+	{
+		for (const auto& iter : func_vec)
+		{
+			self->_just_test = true;
+			if ((self->*iter)())
+			{
+				return iter;
+			}
+		}
+		return static_cast<FuncType>(nullptr);
+	}
+
+	template<typename DerivedType, typename FirstFuncType,
+		typename... RemFuncTypes>
 	static bool _opt_parse(DerivedType* self, FirstFuncType&& first_func,
 		RemFuncTypes&&... rem_funcs)
 	{
@@ -329,36 +360,28 @@ protected:		// functions
 		}
 		return false;
 	}
-
 	template<typename DerivedType, typename FirstFuncType,
 		typename... RemFuncTypes>
-	static auto _check_parse(DerivedType* self, FirstFuncType&& first_func,
-		RemFuncTypes&&... rem_funcs)
+	static bool _opt_parse_loop(DerivedType* self,
+		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
 	{
-		self->_just_test = true;
-		if ((self->*first_func)())
+		bool found = false;
+		while (_opt_parse(self, first_func, rem_funcs...))
 		{
-			return first_func;
+			found = true;
 		}
-		else if constexpr (sizeof...(rem_funcs))
-		{
-			return _check_parse(self, rem_funcs...);
-		}
-		return static_cast<FirstFuncType>(nullptr);
+		return found;
 	}
 	template<typename DerivedType, typename FuncType>
-	static auto _check_parse(DerivedType* self,
+	static bool _opt_parse_loop(DerivedType* self,
 		const std::vector<FuncType>& func_vec)
 	{
-		for (const auto& iter : func_vec)
+		bool found = false;
+		while (_opt_parse(self, func_vec))
 		{
-			self->_just_test = true;
-			if ((self->*iter)())
-			{
-				return iter;
-			}
+			found = true;
 		}
-		return static_cast<FuncType>(nullptr);
+		return found;
 	}
 
 	template<typename DerivedType, typename FirstFuncType,
