@@ -312,13 +312,24 @@ protected:		// functions
 		}
 		return false;
 	}
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
-	static bool _opt_parse(DerivedType* self, FirstFuncType&& first_func,
-		RemFuncTypes&&... rem_funcs)
+	template<typename DerivedType, typename FuncType>
+	static bool _opt_parse(DerivedType* self,
+		const std::vector<FuncType>& func_vec)
 	{
-		return _opt_parse(self, first_func, rem_funcs...);
+		for (const auto& iter : func_vec)
+		{
+			self->_just_test = true;
+			if ((self->*iter)())
+			{
+				self->_just_test = false;
+				(self->*iter)();
+
+				return true;
+			}
+		}
+		return false;
 	}
+
 	template<typename DerivedType, typename FirstFuncType,
 		typename... RemFuncTypes>
 	static auto _check_parse(DerivedType* self, FirstFuncType&& first_func,
@@ -335,6 +346,21 @@ protected:		// functions
 		}
 		return nullptr;
 	}
+	template<typename DerivedType, typename FuncType>
+	static auto _check_parse(DerivedType* self,
+		const std::vector<FuncType>& func_vec)
+	{
+		for (const auto& iter : func_vec)
+		{
+			self->_just_test = true;
+			if ((self->*iter)())
+			{
+				return iter;
+			}
+		}
+		return nullptr;
+	}
+
 	template<typename DerivedType, typename FirstFuncType,
 		typename... RemFuncTypes>
 	static void _req_parse(DerivedType* self,
@@ -345,6 +371,16 @@ protected:		// functions
 			self->_unexpected();
 		}
 	}
+	template<typename DerivedType, typename FuncType>
+	static void _req_parse(DerivedType* self,
+		const std::vector<FuncType>& func_vec)
+	{
+		if (!_opt_parse(self, func_vec))
+		{
+			self->_unexpected();
+		}
+	}
+
 	template<typename DerivedType, typename FirstFuncType,
 		typename... RemFuncTypes>
 	static void _req_parse_loop(DerivedType* self,
@@ -352,6 +388,20 @@ protected:		// functions
 	{
 		bool found = false;
 		while (_opt_parse(self, first_func, rem_funcs...))
+		{
+			found = true;
+		}
+		if (!found)
+		{
+			self->_unexpected();
+		}
+	}
+	template<typename DerivedType, typename FuncType>
+	static void _req_parse_loop(DerivedType* self,
+		const std::vector<FuncType>& func_vec)
+	{
+		bool found = false;
+		while (_opt_parse(self, func_vec))
 		{
 			found = true;
 		}
