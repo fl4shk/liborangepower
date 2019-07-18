@@ -86,33 +86,17 @@ public:		// types
 	};
 
 
-	friend class FriendBase;
-	class FriendBase
-	{
-	protected:		// variables
-		ParserBase* _parser = nullptr;
-		LexerType* _lexer = nullptr;
-
-	public:		// functions
-		FriendBase(ParserBase* s_parser, LexerType* s_lexer=nullptr)
-			: _parser(s_parser), _lexer(s_lexer)
-		{
-		}
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(FriendBase);
-		virtual ~FriendBase()
-		{
-		}
-	};
-
 
 	friend class WExpect;
-	class WExpect final : public FriendBase
+	class WExpect
 	{
+	private:		// variables
+		ParserBase* _parser = nullptr;
+		LexerType* _lexer = nullptr;
 	public:		// functions
 		WExpect(ParserBase* s_parser, TokType tok,
 			const TokToStringMap& some_tok_ident_map,
 			LexerType* s_lexer=nullptr)
-			: FriendBase(s_parser, s_lexer)
 		{
 			_parser->_expect(tok, some_tok_ident_map, _lexer, false);
 		}
