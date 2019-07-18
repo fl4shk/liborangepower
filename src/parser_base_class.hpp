@@ -282,7 +282,7 @@ public:		// types
 		virtual bool check() const
 		{
 			// Any one found gets used
-			for (const auto& iter : vec())
+			for (const auto& iter : Base::vec())
 			{
 				if (_check_one(iter))
 				{
@@ -293,7 +293,7 @@ public:		// types
 		}
 		virtual void exec() const
 		{
-			for (const auto& iter : vec())
+			for (const auto& iter : Base::vec())
 			{
 				// First one found gets executed
 				if (_check_one(iter))
