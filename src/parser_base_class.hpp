@@ -85,20 +85,35 @@ public:		// types
 		}
 	};
 
-	friend class WExpect;
-	class WExpect final
+
+	friend class FriendBase;
+	class FriendBase
 	{
-	private:		// variables
+	protected:		// variables
 		ParserBase* _parser = nullptr;
 		LexerType* _lexer = nullptr;
 
 	public:		// functions
+		FriendBase(ParserBase* s_parser, LexerType* s_lexer=nullptr)
+			: _parser(s_parser), _lexer(s_lexer)
+		{
+		}
+		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(FriendBase);
+		virtual ~FriendBase()
+		{
+		}
+	};
+
+
+	friend class WExpect;
+	class WExpect final : public FriendBase
+	{
+	public:		// functions
 		WExpect(ParserBase* s_parser, TokType tok,
 			const TokToStringMap& some_tok_ident_map,
 			LexerType* s_lexer=nullptr)
+			: FriendBase(s_parser, s_lexer)
 		{
-			_parser = s_parser;
-			_lexer = s_lexer;
 			_parser->_expect(tok, some_tok_ident_map, _lexer, false);
 		}
 		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(WExpect);
@@ -107,6 +122,205 @@ public:		// types
 			_parser->_next_tok(_lexer);
 		}
 	};
+
+
+	template<typename DerivedType>
+	friend class UnitParse;
+
+	template<typename DerivedType>
+	class UnitParse final
+	{
+	public:		// types
+		typedef bool (DerivedType::* ParseFunc)();
+
+	private:		// variables
+		DerivedType* _self = nullptr;
+		ParseFunc _parse_func = nullptr;
+		bool _optional = false;
+
+	public:		// functions
+		UnitParse(DerivedType* s_self, ParseFunc* s_parse_func,
+			bool s_optional=false)
+			: _self(s_self), _parse_func(s_parse_func),
+			_optional(s_optional)
+		{
+		}
+		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(UnitParse);
+		~UnitParse()
+		{
+		}
+
+		inline void set_just_test(bool n_just_test) const
+		{
+			_self->_just_test = n_just_test;
+		}
+
+		inline bool operator () () const
+		{
+			return _self->*_parse_func();
+		}
+
+		GEN_GETTER_BY_VAL(optional)
+	};
+
+	// Perform a parsing sequence using member function pointers
+	template<typename DerivedType>
+	class SeqParse
+	{
+	public:		// types
+		using TheUnitParse = UnitParse<DerivedType>;
+		using TheSeqParse
+			= std::unique_ptr<SeqParse<DerivedType>>;
+		using OneInst = std::variant<TheUnitParse, TheSeqParse>;
+		using Vec = std::vector<OneInst>;
+
+	protected:		// variables
+		Vec _vec;
+		bool _optional = false;
+
+	public:		// functions
+		SeqParse(Vec&& s_vec, bool s_optional=false)
+			: _vec(std::move(s_vec)), _optional(s_optional)
+		{
+		}
+		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(SeqParse);
+		virtual ~SeqParse()
+		{
+		}
+
+		virtual bool check() const
+		{
+			for (const auto& iter : vec())
+			{
+				if (!_check_one())
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		virtual void exec() const
+		{
+			for (const auto& iter : vec())
+			{
+				_exec_one(iter);
+			}
+		}
+
+		GEN_GETTER_BY_CON_REF(vec)
+		GEN_GETTER_BY_VAL(optional)
+
+	protected:		// functions
+		bool _check_one(const OneInst& iter) const
+		{
+			if (std::holds_alternative<TheUnitParse>(iter))
+			{
+				const auto& temp = std::get<TheUnitParse>(iter);
+				temp.set_just_test(true);
+
+				if ((!temp()) && (!temp.optional()))
+				{
+					return false;
+				}
+			}
+			else
+			{
+				const auto& temp = std::get<TheSeqParse>(iter);
+
+				if ((!temp.check()) && (!temp.optional()))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		void _exec_one(const OneInst& iter) const
+		{
+			if (std::holds_alternative<TheUnitParse>(iter))
+			{
+				const auto& temp = std::get<TheUnitParse>(iter);
+
+				if (temp.optional())
+				{
+					temp.set_just_test(true);
+
+					if (temp())
+					{
+						temp.set_just_test(false);
+						temp();
+					}
+				}
+				else
+				{
+					temp.set_just_test(false);
+					temp();
+				}
+			}
+			else
+			{
+				const auto& temp = std::get<TheSeqParse>(iter);
+
+				if (temp.optional())
+				{
+					if (temp.check())
+					{
+						temp.exec();
+					}
+				}
+				else
+				{
+					temp.exec();
+				}
+			}
+		}
+	};
+
+	// Find the first valid parsing sequence and execute it.  Choose from a
+	// list separated by pipes (|).
+	template<typename DerivedType>
+	class OrParse : public SeqParse<DerivedType>
+	{
+	public:		// typedefs
+		using Base = SeqParse<DerivedType>;
+		using TheUnitParse = Base::TheUnitParse;
+		using TheSeqParse = Base::TheSeqParse;
+
+	public:		// functions
+		OrParse(Base::Vec&& s_vec, bool s_optional=false)
+			: Base(std::move(s_vec), s_optional)
+		{
+		}
+		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(OrParse);
+		virtual ~OrParse()
+		{
+		}
+
+		virtual bool check() const
+		{
+			// Any one found gets used
+			for (const auto& iter : vec())
+			{
+				if (_check_one(iter))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		virtual void exec() const
+		{
+			for (const auto& iter : vec())
+			{
+				// First one found gets executed
+				if (_check_one(iter))
+				{
+					_exec_one(iter);
+					return;
+				}
+			}
+		}
+	};
+
 
 protected:		// variables
 	LexStateSets _lss;
