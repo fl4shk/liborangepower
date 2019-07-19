@@ -353,22 +353,40 @@ public:		// types
 		}
 
 		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheSeqParse _seq_parse(bool s_optional,
-			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
+		static inline TheSeqParse _opt_seq_parse(FirstArgType&& first_arg,
+			RemArgTypes&&... rem_args)
 		{
 			typename TheSeqParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
-			return TheSeqParse(std::move(s_vec), s_optional);
+			return TheSeqParse(std::move(s_vec), true);
 		}
 		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheOrParse _or_parse(bool s_optional,
-			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
+		static inline TheSeqParse _req_seq_parse(FirstArgType&& first_arg,
+			RemArgTypes&&... rem_args)
+		{
+			typename TheSeqParse::Vec s_vec;
+			_inner_seq_parse(s_vec, first_arg, rem_args...);
+
+			return TheSeqParse(std::move(s_vec), false);
+		}
+		template<typename FirstArgType, typename... RemArgTypes>
+		static inline TheOrParse _opt_or_parse(FirstArgType&& first_arg,
+			RemArgTypes&&... rem_args)
 		{
 			typename TheOrParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
-			return TheOrParse(std::move(s_vec), s_optional);
+			return TheOrParse(std::move(s_vec), true);
+		}
+		template<typename FirstArgType, typename... RemArgTypes>
+		static inline TheOrParse _req_or_parse(FirstArgType&& first_arg,
+			RemArgTypes&&... rem_args)
+		{
+			typename TheOrParse::Vec s_vec;
+			_inner_seq_parse(s_vec, first_arg, rem_args...);
+
+			return TheOrParse(std::move(s_vec), false);
 		}
 	};
 
