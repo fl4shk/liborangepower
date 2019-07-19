@@ -129,7 +129,7 @@ public:		// types
 			_optional(s_optional)
 		{
 		}
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(UnitParse);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(UnitParse);
 		~UnitParse()
 		{
 		}
@@ -167,7 +167,7 @@ public:		// types
 			: _vec(std::move(s_vec)), _optional(s_optional)
 		{
 		}
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(SeqParse);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(SeqParse);
 		virtual ~SeqParse()
 		{
 		}
@@ -274,7 +274,7 @@ public:		// types
 			: Base(std::move(s_vec), s_optional)
 		{
 		}
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(OrParse);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OrParse);
 		virtual ~OrParse()
 		{
 		}
