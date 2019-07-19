@@ -323,6 +323,7 @@ public:		// types
 	{
 	public:		// types
 		using TheUnitParse = UnitParse<DerivedType, SrcCodeChunkType>;
+		using ParseRet = typename TheUnitParse::ParseRet;
 		using ParseFunc = typename TheUnitParse::ParseFunc;
 		using TheSeqParse = SeqParse<DerivedType, SrcCodeChunkType>;
 		using TheOrParse = OrParse<DerivedType, SrcCodeChunkType>;
