@@ -108,14 +108,15 @@ public:		// types
 	};
 
 
-	template<typename DerivedType>
+	template<typename DerivedType, typename SrcCodeChunkType>
 	friend class UnitParse;
 
-	template<typename DerivedType>
+	template<typename DerivedType, typename SrcCodeChunkType>
 	class UnitParse final
 	{
 	public:		// types
-		typedef bool (DerivedType::* ParseFunc)();
+		using ParseRet = std::variant<bool, SrcCodeChunkType>;
+		typedef ParseRet (DerivedType::* ParseFunc)();
 
 	private:		// variables
 		DerivedType* _self = nullptr;
@@ -139,7 +140,7 @@ public:		// types
 			_self->_just_test = n_just_test;
 		}
 
-		inline bool operator () () const
+		inline ParseRet operator () () const
 		{
 			return (_self->*_parse_func)();
 		}
@@ -148,13 +149,13 @@ public:		// types
 	};
 
 	// Perform a parsing sequence using member function pointers
-	template<typename DerivedType>
+	template<typename DerivedType, typename SrcCodeChunkType>
 	class SeqParse
 	{
 	public:		// types
-		using TheUnitParse = UnitParse<DerivedType>;
+		using TheUnitParse = UnitParse<DerivedType, SrcCodeChunkType>;
 		using TheSeqParse
-			= std::unique_ptr<SeqParse<DerivedType>>;
+			= std::unique_ptr<SeqParse<DerivedType, SrcCodeChunkType>>;
 		using OneInst = std::variant<bool, TheUnitParse, TheSeqParse>;
 		using Vec = std::vector<OneInst>;
 
@@ -182,6 +183,18 @@ public:		// types
 				}
 			}
 			return true;
+		}
+		inline OneInst first_invalid() const
+		{
+			for (const auto& iter : vec())
+			{
+				if (!_check_one(iter))
+				{
+					return iter;
+				}
+			}
+			const OneInst ret = false;
+			return ret;
 		}
 		virtual void exec() const
 		{
@@ -261,11 +274,11 @@ public:		// types
 
 	// Find the first valid parsing sequence and execute it.  Choose from a
 	// list separated by pipes (|).
-	template<typename DerivedType>
-	class OrParse : public SeqParse<DerivedType>
+	template<typename DerivedType, typename SrcCodeChunkType>
+	class OrParse : public SeqParse<DerivedType, SrcCodeChunkType>
 	{
 	public:		// typedefs
-		using Base = SeqParse<DerivedType>;
+		using Base = SeqParse<DerivedType, SrcCodeChunkType>;
 		using TheUnitParse = Base::TheUnitParse;
 		using TheSeqParse = Base::TheSeqParse;
 
