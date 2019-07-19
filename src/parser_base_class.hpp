@@ -309,13 +309,10 @@ public:		// types
 	class MultiParse
 	{
 	public:		// types
-		using TheUnitParse
-			= typename ParserBase<LexerType>::UnitParse<DerivedType>;
+		using TheUnitParse = UnitParse<DerivedType>;
 		using ParseFunc = typename TheUnitParse::ParseFunc;
-		using TheSeqParse
-			= typename ParserBase<LexerType>::SeqParse<DerivedType>;
-		using TheOrParse
-			= typename ParserBase<LexerType>::OrParse<DerivedType>;
+		using TheSeqParse = SeqParse<DerivedType>;
+		using TheOrParse = OrParse<DerivedType>;
 
 	public:		// functions
 		static inline TheUnitParse _unit_parse(DerivedType* self,
@@ -332,7 +329,7 @@ public:		// types
 				|| std::is_same<FirstArgType, TheSeqParse>()
 				|| std::is_same<FirstArgType, TheOrParse>()),
 				"Invalid _inner_seq_parse() first arg");
-			TheSeqParse::OneInst to_push;
+			typename TheSeqParse::OneInst to_push;
 			if constexpr (std::is_same<FirstArgType, TheUnitParse>())
 			{
 				to_push = std::move(first_arg);
@@ -359,7 +356,7 @@ public:		// types
 		static inline TheSeqParse _seq_parse(bool s_optional,
 			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
 		{
-			TheSeqParse::Vec s_vec;
+			typename TheSeqParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return TheSeqParse(std::move(s_vec), s_optional);
@@ -368,7 +365,7 @@ public:		// types
 		static inline TheOrParse _or_parse(bool s_optional,
 			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
 		{
-			TheOrParse::Vec s_vec;
+			typename TheOrParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return TheOrParse(std::move(s_vec), s_optional);
