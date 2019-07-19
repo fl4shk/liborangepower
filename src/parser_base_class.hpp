@@ -227,7 +227,7 @@ public:		// types
 				_exec_one(iter);
 			}
 
-			return ret;
+			return ParseRet(new LexerState(ret));
 		}
 
 		GEN_GETTER_BY_CON_REF(vec)
@@ -331,7 +331,7 @@ public:		// types
 			}
 			return false;
 		}
-		virtual ParseRet exec() const
+		virtual Base::ParseRet exec() const
 		{
 			const auto ret = _self->_lex_state();
 
@@ -345,7 +345,7 @@ public:		// types
 				}
 			}
 
-			return ret;
+			return ParseRet(new LexerState(ret));
 		}
 	};
 
