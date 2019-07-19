@@ -391,14 +391,16 @@ public:		// types
 			else if constexpr (std::is_same<TrueFirstArgType,
 				TheSeqParse>())
 			{
-				to_push = SeqParse<DerivedType>::TheSeqParse
-					(new SeqParse<DerivedType>(first_arg));
+				using TempTheSeqParse = SeqParse<DerivedType>::TheSeqParse;
+				to_push = TempTheSeqParse(new SeqParse<DerivedType>
+					(first_arg));
 			}
 			else if constexpr (std::is_same<TrueFirstArgType,
 				TheOrParse>())
 			{
-				to_push = SeqParse<DerivedType>::TheSeqParse
-					(new OrParse<DerivedType>(first_arg));
+				using TempTheSeqParse = SeqParse<DerivedType>::TheSeqParse;
+				to_push = TempTheSeqParse(new OrParse<DerivedType>
+					(first_arg));
 			}
 			ret.push_back(std::move(to_push));
 
