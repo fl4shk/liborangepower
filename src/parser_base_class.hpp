@@ -361,9 +361,11 @@ public:		// types
 
 	public:		// functions
 		static inline TheUnitParse _unit_parse(DerivedType* self,
-			bool s_optional, ParseFunc s_parse_func)
+			const std::string& s_parse_func_str, ParseFunc s_parse_func,
+			bool s_optional)
 		{
-			return TheUnitParse(self, s_parse_func, s_optional);
+			return TheUnitParse(self, s_parse_func_str, s_parse_func,
+				s_optional);
 		}
 
 		template<typename FirstArgType, typename... RemArgTypes>
