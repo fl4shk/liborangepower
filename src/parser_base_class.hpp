@@ -341,11 +341,11 @@ public:		// types
 				if (Base::_check_one(iter))
 				{
 					Base::_exec_one(iter);
-					return ParseRet(new LexerState(ret));
+					return Base::ParseRet(new LexerState(ret));
 				}
 			}
 
-			return ParseRet(new LexerState(ret));
+			return Base::ParseRet(new LexerState(ret));
 		}
 	};
 
