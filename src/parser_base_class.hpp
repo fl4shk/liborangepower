@@ -325,21 +325,27 @@ public:		// types
 		static inline void _inner_seq_parse(TheSeqParse::Vec& ret,
 			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
 		{
-			static_assert((std::is_same<FirstArgType, TheUnitParse>()
-				|| std::is_same<FirstArgType, TheSeqParse>()
-				|| std::is_same<FirstArgType, TheOrParse>()),
+			using NoRefFirstArgType
+				= typename std::remove_reference<FirstArgType>::type;
+			using TrueFirstArgType
+				= typename std::remove_cv<NoRefFirstArgType>::type;
+			static_assert((std::is_same<TrueFirstArgType, TheUnitParse>()
+				|| std::is_same<TrueFirstArgType, TheSeqParse>()
+				|| std::is_same<TrueFirstArgType, TheOrParse>()),
 				"Invalid _inner_seq_parse() first arg");
+
 			typename TheSeqParse::OneInst to_push;
-			if constexpr (std::is_same<FirstArgType, TheUnitParse>())
+			if constexpr (std::is_same<TrueFirstArgType, TheUnitParse>())
 			{
 				to_push = std::move(first_arg);
 			}
-			else if constexpr (std::is_same<FirstArgType, TheSeqParse>())
+			else if constexpr (std::is_same<TrueFirstArgType,
+				TheSeqParse>())
 			{
 				to_push = TheSeqParse::TheSeqParse(new TheSeqParse
 					(std::move(first_arg)));
 			}
-			else if constexpr (std::is_same<FirstArgType, TheOrParse>())
+			else if constexpr (std::is_same<TrueFirstArgType, TheOrParse>())
 			{
 				to_push = TheSeqParse::TheSeqParse(new TheOrParse(std::move
 					(first_arg)));
