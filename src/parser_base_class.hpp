@@ -211,7 +211,7 @@ public:		// types
 			{
 				const auto& temp = std::get<TheSeqParse>(iter);
 
-				if ((!temp.check()) && (!temp.optional()))
+				if ((!temp->check()) && (!temp->optional()))
 				{
 					return false;
 				}
@@ -244,16 +244,16 @@ public:		// types
 			{
 				const auto& temp = std::get<TheSeqParse>(iter);
 
-				if (temp.optional())
+				if (temp->optional())
 				{
-					if (temp.check())
+					if (temp->check())
 					{
-						temp.exec();
+						temp->exec();
 					}
 				}
 				else
 				{
-					temp.exec();
+					temp->exec();
 				}
 			}
 		}
