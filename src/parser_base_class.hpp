@@ -305,6 +305,72 @@ public:		// types
 		}
 	};
 
+	template<typename DerivedType>
+	class MultiParse
+	{
+	public:		// types
+		using UnitParse = ::UnitParse<DerivedType>;
+		using SeqParse = ::SeqParse<DerivedType>;
+		using OrParse = ::OrParse<DerivedType>;
+
+	public:		// functions
+		static inline UnitParse _unit_parse(DerivedType* self,
+			bool s_optional, ParseFunc s_parse_func)
+		{
+			return UnitParse(this, s_parse_func, s_optional);
+		}
+
+		template<typename FirstArgType, typename... RemArgTypes>
+		static inline void _inner_seq_parse(SeqParse::Vec& ret,
+			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
+		{
+			static_assert((std::is_same<FirstArgType, UnitParse>()
+				|| std::is_same<FirstArgType, SeqParse>()
+				|| std::is_same<FirstArgType, OrParse>()),
+				"Invalid _inner_seq_parse() first arg");
+			SeqParse::OneInst to_push;
+			if constexpr (std::is_same<FirstArgType, UnitParse>())
+			{
+				to_push = std::move(first_arg);
+			}
+			else if constexpr (std::is_same<FirstArgType, SeqParse>())
+			{
+				to_push = SeqParse::TheSeqParse(new SeqParse(std::move
+					(first_arg)));
+			}
+			else if constexpr (std::is_same<FirstArgType, OrParse>())
+			{
+				to_push = SeqParse::TheSeqParse(new OrParse(std::move
+					(first_arg)));
+			}
+			ret.push_back(std::move(to_push));
+
+			if constexpr (sizeof...(rem_args) > 0)
+			{
+				_inner_seq_parse(ret, rem_args...);
+			}
+		}
+
+		template<typename FirstArgType, typename... RemArgTypes>
+		static inline SeqParse _seq_parse(bool s_optional,
+			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
+		{
+			SeqParse::Vec s_vec;
+			_inner_seq_parse(s_vec, first_arg, rem_args...);
+
+			return SeqParse(std::move(s_vec), s_optional);
+		}
+		template<typename FirstArgType, typename... RemArgTypes>
+		static inline OrParse _or_parse(bool s_optional,
+			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
+		{
+			OrParse::Vec s_vec;
+			_inner_seq_parse(s_vec, first_arg, rem_args...);
+
+			return OrParse(std::move(s_vec), s_optional);
+		}
+	};
+
 
 protected:		// variables
 	LexStateSets _lss;
