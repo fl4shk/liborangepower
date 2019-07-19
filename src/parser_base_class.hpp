@@ -123,7 +123,7 @@ public:		// types
 		bool _optional = false;
 
 	public:		// functions
-		UnitParse(DerivedType* s_self, ParseFunc* s_parse_func,
+		UnitParse(DerivedType* s_self, ParseFunc s_parse_func,
 			bool s_optional=false)
 			: _self(s_self), _parse_func(s_parse_func),
 			_optional(s_optional)
