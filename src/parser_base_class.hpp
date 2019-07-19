@@ -318,14 +318,14 @@ public:		// types
 		}
 	};
 
-	template<typename DerivedType>
+	template<typename DerivedType, typename SrcCodeChunkType>
 	class MultiParse
 	{
 	public:		// types
-		using TheUnitParse = UnitParse<DerivedType>;
+		using TheUnitParse = UnitParse<DerivedType, SrcCodeChunkType>;
 		using ParseFunc = typename TheUnitParse::ParseFunc;
-		using TheSeqParse = SeqParse<DerivedType>;
-		using TheOrParse = OrParse<DerivedType>;
+		using TheSeqParse = SeqParse<DerivedType, SrcCodeChunkType>;
+		using TheOrParse = OrParse<DerivedType, SrcCodeChunkType>;
 
 	public:		// functions
 		static inline TheUnitParse _unit_parse(DerivedType* self,
