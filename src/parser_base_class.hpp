@@ -318,7 +318,7 @@ public:		// types
 		static inline TheUnitParse _unit_parse(DerivedType* self,
 			bool s_optional, ParseFunc s_parse_func)
 		{
-			return TheUnitParse(this, s_parse_func, s_optional);
+			return TheUnitParse(self, s_parse_func, s_optional);
 		}
 
 		template<typename FirstArgType, typename... RemArgTypes>
