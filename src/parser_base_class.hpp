@@ -141,7 +141,7 @@ public:		// types
 
 		inline bool operator () () const
 		{
-			return _self->*_parse_func();
+			return (_self->*_parse_func)();
 		}
 
 		GEN_GETTER_BY_VAL(optional)
