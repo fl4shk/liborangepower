@@ -176,7 +176,7 @@ public:		// types
 		{
 			for (const auto& iter : vec())
 			{
-				if (!_check_one())
+				if (!_check_one(iter))
 				{
 					return false;
 				}
