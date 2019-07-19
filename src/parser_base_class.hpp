@@ -218,12 +218,16 @@ public:		// types
 			const OneInst ret = false;
 			return ret;
 		}
-		virtual void exec() const
+		virtual ParseRet exec() const
 		{
+			const auto ret = _self->_lex_state();
+
 			for (const auto& iter : vec())
 			{
 				_exec_one(iter);
 			}
+
+			return ret;
 		}
 
 		GEN_GETTER_BY_CON_REF(vec)
@@ -327,8 +331,10 @@ public:		// types
 			}
 			return false;
 		}
-		virtual void exec() const
+		virtual ParseRet exec() const
 		{
+			const auto ret = _self->_lex_state();
+
 			for (const auto& iter : Base::vec())
 			{
 				// First one found gets executed
@@ -338,6 +344,8 @@ public:		// types
 					return;
 				}
 			}
+
+			return ret;
 		}
 	};
 
