@@ -307,6 +307,7 @@ public:		// types
 		using Base = SeqParse<DerivedType>;
 		using TheUnitParse = Base::TheUnitParse;
 		using TheSeqParse = Base::TheSeqParse;
+		using ParseRet = typename Base::ParseRet;
 
 	public:		// functions
 		OrParse(DerivedType* s_self, Base::Vec&& s_vec,
@@ -331,7 +332,7 @@ public:		// types
 			}
 			return false;
 		}
-		virtual Base::ParseRet exec() const
+		virtual ParseRet exec() const
 		{
 			const auto ret = Base::_self->_lex_state();
 
@@ -341,11 +342,11 @@ public:		// types
 				if (Base::_check_one(iter))
 				{
 					Base::_exec_one(iter);
-					return Base::ParseRet(new LexerState(ret));
+					return ParseRet(new LexerState(ret));
 				}
 			}
 
-			return Base::ParseRet(new LexerState(ret));
+			return ParseRet(new LexerState(ret));
 		}
 	};
 
