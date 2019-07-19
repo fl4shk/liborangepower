@@ -383,6 +383,7 @@ public:		// types
 				"Invalid _inner_seq_parse() first arg");
 
 			typename TheSeqParse::OneInst to_push;
+
 			if constexpr (std::is_same<TrueFirstArgType, TheUnitParse>())
 			{
 				to_push = first_arg;
@@ -390,14 +391,14 @@ public:		// types
 			else if constexpr (std::is_same<TrueFirstArgType,
 				TheSeqParse>())
 			{
-				to_push = TheSeqParse::TheSeqParse
+				to_push = SeqParse<DerivedType>::SeqParse<DerivedType>
 					(new SeqParse<DerivedType>(first_arg));
 			}
 			else if constexpr (std::is_same<TrueFirstArgType,
 				TheOrParse>())
 			{
-				to_push = TheSeqParse::TheSeqParse(new OrParse<DerivedType>
-					(first_arg));
+				to_push = SeqParse<DerivedType>::SeqParse<DerivedType>
+					(new OrParse<DerivedType>(first_arg));
 			}
 			ret.push_back(std::move(to_push));
 
