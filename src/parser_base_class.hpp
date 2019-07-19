@@ -309,38 +309,38 @@ public:		// types
 	class MultiParse
 	{
 	public:		// types
-		using UnitParse = ::UnitParse<DerivedType>;
-		using SeqParse = ::SeqParse<DerivedType>;
-		using OrParse = ::OrParse<DerivedType>;
+		using TheUnitParse = UnitParse<DerivedType>;
+		using TheSeqParse = SeqParse<DerivedType>;
+		using TheOrParse = OrParse<DerivedType>;
 
 	public:		// functions
-		static inline UnitParse _unit_parse(DerivedType* self,
+		static inline TheUnitParse _unit_parse(DerivedType* self,
 			bool s_optional, ParseFunc s_parse_func)
 		{
-			return UnitParse(this, s_parse_func, s_optional);
+			return TheUnitParse(this, s_parse_func, s_optional);
 		}
 
 		template<typename FirstArgType, typename... RemArgTypes>
-		static inline void _inner_seq_parse(SeqParse::Vec& ret,
+		static inline void _inner_seq_parse(TheSeqParse::Vec& ret,
 			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
 		{
-			static_assert((std::is_same<FirstArgType, UnitParse>()
-				|| std::is_same<FirstArgType, SeqParse>()
-				|| std::is_same<FirstArgType, OrParse>()),
+			static_assert((std::is_same<FirstArgType, TheUnitParse>()
+				|| std::is_same<FirstArgType, TheSeqParse>()
+				|| std::is_same<FirstArgType, TheOrParse>()),
 				"Invalid _inner_seq_parse() first arg");
-			SeqParse::OneInst to_push;
-			if constexpr (std::is_same<FirstArgType, UnitParse>())
+			TheSeqParse::OneInst to_push;
+			if constexpr (std::is_same<FirstArgType, TheUnitParse>())
 			{
 				to_push = std::move(first_arg);
 			}
-			else if constexpr (std::is_same<FirstArgType, SeqParse>())
+			else if constexpr (std::is_same<FirstArgType, TheSeqParse>())
 			{
-				to_push = SeqParse::TheSeqParse(new SeqParse(std::move
-					(first_arg)));
+				to_push = TheSeqParse::TheSeqParse(new TheSeqParse
+					(std::move(first_arg)));
 			}
-			else if constexpr (std::is_same<FirstArgType, OrParse>())
+			else if constexpr (std::is_same<FirstArgType, TheOrParse>())
 			{
-				to_push = SeqParse::TheSeqParse(new OrParse(std::move
+				to_push = TheSeqParse::TheSeqParse(new TheOrParse(std::move
 					(first_arg)));
 			}
 			ret.push_back(std::move(to_push));
@@ -352,22 +352,22 @@ public:		// types
 		}
 
 		template<typename FirstArgType, typename... RemArgTypes>
-		static inline SeqParse _seq_parse(bool s_optional,
+		static inline TheSeqParse _seq_parse(bool s_optional,
 			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
 		{
-			SeqParse::Vec s_vec;
+			TheSeqParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
-			return SeqParse(std::move(s_vec), s_optional);
+			return TheSeqParse(std::move(s_vec), s_optional);
 		}
 		template<typename FirstArgType, typename... RemArgTypes>
-		static inline OrParse _or_parse(bool s_optional,
+		static inline TheOrParse _or_parse(bool s_optional,
 			FirstArgType&& first_arg, RemArgTypes&&... rem_args)
 		{
-			OrParse::Vec s_vec;
+			TheOrParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
-			return OrParse(std::move(s_vec), s_optional);
+			return TheOrParse(std::move(s_vec), s_optional);
 		}
 	};
 
