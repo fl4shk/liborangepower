@@ -309,10 +309,10 @@ public:		// types
 	class MultiParse
 	{
 	public:		// types
-		using TheUnitParse = UnitParse<DerivedType>;
-		using ParseFunc = TheUnitParse::ParseFunc;
-		using TheSeqParse = SeqParse<DerivedType>;
-		using TheOrParse = OrParse<DerivedType>;
+		using TheUnitParse = typename UnitParse<DerivedType>;
+		using ParseFunc = typename TheUnitParse::ParseFunc;
+		using TheSeqParse = typename SeqParse<DerivedType>;
+		using TheOrParse = typename OrParse<DerivedType>;
 
 	public:		// functions
 		static inline TheUnitParse _unit_parse(DerivedType* self,
