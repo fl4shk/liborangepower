@@ -164,7 +164,7 @@ public:		// functions
 	}
 	GEN_GETTER_BY_CON_REF(filename)
 	GEN_GETTER_BY_VAL(text)
-	GEN_GETTER_BY_CON_REF(state)
+	GEN_GETTER_AND_SETTER_BY_CON_REF(state)
 
 protected:		// functions
 	TokType _next_tok(TokType comment_tok)

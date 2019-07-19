@@ -108,26 +108,27 @@ public:		// types
 	};
 
 
-	template<typename DerivedType, typename SrcCodeChunkType>
+	template<typename DerivedType>
 	friend class UnitParse;
 
-	template<typename DerivedType, typename SrcCodeChunkType>
+	template<typename DerivedType>
 	class UnitParse final
 	{
 	public:		// types
-		using ParseRet = std::variant<bool, SrcCodeChunkType>;
+		using ParseRet = std::unique_ptr<LexerState>;
 		typedef ParseRet (DerivedType::* ParseFunc)();
 
 	private:		// variables
 		DerivedType* _self = nullptr;
+		std::string _parse_func_str;
 		ParseFunc _parse_func = nullptr;
 		bool _optional = false;
 
 	public:		// functions
-		UnitParse(DerivedType* s_self, ParseFunc s_parse_func,
-			bool s_optional=false)
-			: _self(s_self), _parse_func(s_parse_func),
-			_optional(s_optional)
+		UnitParse(DerivedType* s_self, const std::string& s_parse_func_str,
+			ParseFunc s_parse_func, bool s_optional=false)
+			: _self(s_self), _parse_func_str(s_parse_func_str),
+			_parse_func(s_parse_func), _optional(s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(UnitParse);
@@ -145,27 +146,33 @@ public:		// types
 			return (_self->*_parse_func)();
 		}
 
+		GEN_GETTER_BY_CON_REF(parse_func_str)
 		GEN_GETTER_BY_VAL(optional)
 	};
 
 	// Perform a parsing sequence using member function pointers
-	template<typename DerivedType, typename SrcCodeChunkType>
+	template<typename DerivedType>
+	friend class SeqParse;
+
+	template<typename DerivedType>
 	class SeqParse
 	{
 	public:		// types
-		using TheUnitParse = UnitParse<DerivedType, SrcCodeChunkType>;
+		using TheUnitParse = UnitParse<DerivedType>;
+		using ParseRet = TheUnitParse::ParseRet;
 		using TheSeqParse
-			= std::unique_ptr<SeqParse<DerivedType, SrcCodeChunkType>>;
+			= std::unique_ptr<SeqParse<DerivedType>>;
 		using OneInst = std::variant<bool, TheUnitParse, TheSeqParse>;
 		using Vec = std::vector<OneInst>;
 
 	protected:		// variables
+		DerivedType* _self = nullptr;
 		Vec _vec;
 		bool _optional = false;
 
 	public:		// functions
-		SeqParse(Vec&& s_vec, bool s_optional=false)
-			: _vec(std::move(s_vec)), _optional(s_optional)
+		SeqParse(DerivedType* s_self, Vec&& s_vec, bool s_optional=false)
+			: _self(s_self), _vec(std::move(s_vec)), _optional(s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(SeqParse);
@@ -175,24 +182,39 @@ public:		// types
 
 		virtual bool check() const
 		{
+			const auto lex_state = _self->_lex_state();
+
 			for (const auto& iter : vec())
 			{
 				if (!_check_one(iter))
 				{
+					_self->_lexer().set_state(lex_state);
 					return false;
 				}
+
+				// This is necessary to reach the next parsing function in
+				// the (linear) sequence.
+				_exec_one(iter);
 			}
+
+			_self->_lexer().set_state(lex_state);
 			return true;
 		}
 		inline OneInst first_invalid() const
 		{
+			const auto lex_state = _self->_lex_state();
+
 			for (const auto& iter : vec())
 			{
 				if (!_check_one(iter))
 				{
+					_self->_lexer().set_state(lex_state);
 					return iter;
 				}
+				_exec_one(iter);
 			}
+
+			_self->_lexer().set_state(lex_state);
 			const OneInst ret = false;
 			return ret;
 		}
@@ -274,17 +296,18 @@ public:		// types
 
 	// Find the first valid parsing sequence and execute it.  Choose from a
 	// list separated by pipes (|).
-	template<typename DerivedType, typename SrcCodeChunkType>
-	class OrParse : public SeqParse<DerivedType, SrcCodeChunkType>
+	template<typename DerivedType>
+	class OrParse : public SeqParse<DerivedType>
 	{
 	public:		// typedefs
-		using Base = SeqParse<DerivedType, SrcCodeChunkType>;
+		using Base = SeqParse<DerivedType>;
 		using TheUnitParse = Base::TheUnitParse;
 		using TheSeqParse = Base::TheSeqParse;
 
 	public:		// functions
-		OrParse(Base::Vec&& s_vec, bool s_optional=false)
-			: Base(std::move(s_vec), s_optional)
+		OrParse(DerivedType* s_self, Base::Vec&& s_vec,
+			bool s_optional=false)
+			: Base(s_self, std::move(s_vec), s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OrParse);
@@ -318,15 +341,15 @@ public:		// types
 		}
 	};
 
-	template<typename DerivedType, typename SrcCodeChunkType>
+	template<typename DerivedType>
 	class MultiParse
 	{
 	public:		// types
-		using TheUnitParse = UnitParse<DerivedType, SrcCodeChunkType>;
+		using TheUnitParse = UnitParse<DerivedType>;
 		using ParseRet = typename TheUnitParse::ParseRet;
 		using ParseFunc = typename TheUnitParse::ParseFunc;
-		using TheSeqParse = SeqParse<DerivedType, SrcCodeChunkType>;
-		using TheOrParse = OrParse<DerivedType, SrcCodeChunkType>;
+		using TheSeqParse = SeqParse<DerivedType>;
+		using TheOrParse = OrParse<DerivedType>;
 
 	public:		// functions
 		static inline TheUnitParse _unit_parse(DerivedType* self,
