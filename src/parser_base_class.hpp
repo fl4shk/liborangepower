@@ -333,7 +333,7 @@ public:		// types
 		}
 		virtual Base::ParseRet exec() const
 		{
-			const auto ret = _self->_lex_state();
+			const auto ret = Base::_self->_lex_state();
 
 			for (const auto& iter : Base::vec())
 			{
