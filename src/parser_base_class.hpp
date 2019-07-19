@@ -155,7 +155,7 @@ public:		// types
 		using TheUnitParse = UnitParse<DerivedType>;
 		using TheSeqParse
 			= std::unique_ptr<SeqParse<DerivedType>>;
-		using OneInst = std::variant<TheUnitParse, TheSeqParse>;
+		using OneInst = std::variant<bool, TheUnitParse, TheSeqParse>;
 		using Vec = std::vector<OneInst>;
 
 	protected:		// variables
