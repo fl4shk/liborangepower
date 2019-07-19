@@ -310,6 +310,7 @@ public:		// types
 	{
 	public:		// types
 		using TheUnitParse = UnitParse<DerivedType>;
+		using ParseFunc = TheUnitParse::ParseFunc;
 		using TheSeqParse = SeqParse<DerivedType>;
 		using TheOrParse = OrParse<DerivedType>;
 
