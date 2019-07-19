@@ -337,18 +337,18 @@ public:		// types
 			typename TheSeqParse::OneInst to_push;
 			if constexpr (std::is_same<TrueFirstArgType, TheUnitParse>())
 			{
-				to_push = std::move(first_arg);
+				to_push = first_arg;
 			}
 			else if constexpr (std::is_same<TrueFirstArgType,
 				TheSeqParse>())
 			{
 				to_push = TheSeqParse::TheSeqParse(new TheSeqParse
-					(std::move(first_arg)));
+					(first_arg));
 			}
 			else if constexpr (std::is_same<TrueFirstArgType, TheOrParse>())
 			{
-				to_push = TheSeqParse::TheSeqParse(new TheOrParse(std::move
-					(first_arg)));
+				to_push = TheSeqParse::TheSeqParse(new TheOrParse
+					(first_arg));
 			}
 			ret.push_back(std::move(to_push));
 
