@@ -215,7 +215,8 @@ public:		// types
 			{
 				if (!_check_one(iter))
 				{
-					ret.parse_ret.reset(new LexerState(_lexer().state()));
+					ret.parse_ret.reset(new LexerState(_self->_lexer()
+						.state()));
 					ret.one_inst = iter;
 					_self->_lexer().set_state(lex_state);
 					return ret;
@@ -223,7 +224,7 @@ public:		// types
 				_exec_one(iter);
 			}
 
-			ret.parse_ret.reset(new LexerState(_lexer().state()));
+			ret.parse_ret.reset(new LexerState(_self->_lexer().state()));
 			ret.one_inst = false;
 			_self->_lexer().set_state(lex_state);
 			return ret;
