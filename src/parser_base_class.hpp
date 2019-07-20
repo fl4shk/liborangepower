@@ -164,6 +164,13 @@ public:		// types
 		using OneInst = std::variant<bool, TheUnitParse, TheSeqParse>;
 		using Vec = std::vector<OneInst>;
 
+		class FirstInvalidRet
+		{
+		public:		// variables
+			ParseRet parse_ret;
+			OneInst one_inst;
+		};
+
 	protected:		// variables
 		DerivedType* _self = nullptr;
 		Vec _vec;
@@ -199,22 +206,26 @@ public:		// types
 			_self->_lexer().set_state(lex_state);
 			return true;
 		}
-		inline OneInst first_invalid() const
+		inline FirstInvalidRet first_invalid() const
 		{
+			FirstInvalidRet ret;
 			const auto lex_state = _self->_lex_state();
 
 			for (const auto& iter : vec())
 			{
 				if (!_check_one(iter))
 				{
+					ret.parse_ret.reset(new LexerState(_lexer().state()));
+					ret.one_inst = iter;
 					_self->_lexer().set_state(lex_state);
-					return iter;
+					return ret;
 				}
 				_exec_one(iter);
 			}
 
+			ret.parse_ret.reset(new LexerState(_lexer().state());
+			ret.one_inst = false;
 			_self->_lexer().set_state(lex_state);
-			const OneInst ret = false;
 			return ret;
 		}
 		virtual ParseRet exec() const
