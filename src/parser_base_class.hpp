@@ -402,7 +402,7 @@ public:		// types
 				to_push = TempTheSeqParse(new OrParse<DerivedType>
 					(first_arg));
 			}
-			ret.push_back(std::move(to_push));
+			ret.push_back(to_push);
 
 			if constexpr (sizeof...(rem_args) > 0)
 			{
