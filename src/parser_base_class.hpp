@@ -160,8 +160,7 @@ public:		// types
 	public:		// types
 		using TheUnitParse = UnitParse<DerivedType>;
 		using ParseRet = TheUnitParse::ParseRet;
-		using TheSeqParse
-			= std::unique_ptr<SeqParse<DerivedType>>;
+		using TheSeqParse = std::shared_ptr<SeqParse<DerivedType>>;
 		using OneInst = std::variant<bool, TheUnitParse, TheSeqParse>;
 		using Vec = std::vector<OneInst>;
 
