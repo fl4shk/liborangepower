@@ -97,6 +97,7 @@ public:		// types
 		WExpect(ParserBase* s_parser, TokType tok,
 			const TokToStringMap& some_tok_ident_map,
 			LexerType* s_lexer=nullptr)
+			: _parser(s_parser), _lexer(s_lexer)
 		{
 			_parser->_expect(tok, some_tok_ident_map, _lexer, false);
 		}
