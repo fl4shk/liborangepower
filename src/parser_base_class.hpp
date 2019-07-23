@@ -223,7 +223,7 @@ public:		// types
 					_self->_lexer().set_state(lex_state);
 					return ret;
 				}
-				_exec_one(iter);
+				//_exec_one(iter);
 			}
 
 			ret.parse_ret.reset(new LexerState(_self->_lexer().state()));
