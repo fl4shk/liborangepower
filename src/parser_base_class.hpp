@@ -422,11 +422,14 @@ public:		// types
 
 			if constexpr (std::is_same<TrueFirstArgType, TheUnitParse>())
 			{
+				printout("MultiParse::_inner_seq_parse():  TheUnitParse",
+					"\n");
 				to_push = first_arg;
 			}
 			else if constexpr (std::is_same<TrueFirstArgType,
 				TheSeqParse>())
 			{
+				printout("MultiParse::_inner_seq_parse():  TheSeqParse\n");
 				using TempTheSeqParse = SeqParse<DerivedType>::TheSeqParse;
 				to_push = TempTheSeqParse(new SeqParse<DerivedType>
 					(first_arg));
@@ -434,6 +437,7 @@ public:		// types
 			else if constexpr (std::is_same<TrueFirstArgType,
 				TheOrParse>())
 			{
+				printout("MultiParse::_inner_seq_parse():  TheOrParse\n");
 				using TempTheSeqParse = SeqParse<DerivedType>::TheSeqParse;
 				to_push = TempTheSeqParse(new OrParse<DerivedType>
 					(first_arg));
