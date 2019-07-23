@@ -382,7 +382,7 @@ public:		// types
 				}
 			}
 
-			return ParseRet(new LexerState(ret));
+			return ParseRet(nullptr);
 		}
 	};
 
