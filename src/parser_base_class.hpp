@@ -132,7 +132,7 @@ public:		// types
 			_parse_func(s_parse_func), _optional(s_optional)
 		{
 		}
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(UnitParse);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(UnitParse);
 		~UnitParse()
 		{
 		}
@@ -161,7 +161,7 @@ public:		// types
 	public:		// types
 		using TheUnitParse = UnitParse<DerivedType>;
 		using ParseRet = TheUnitParse::ParseRet;
-		using TheSeqParse = std::unique_ptr<SeqParse<DerivedType>>;
+		using TheSeqParse = std::shared_ptr<SeqParse<DerivedType>>;
 		using OneInst = std::variant<bool, TheUnitParse, TheSeqParse>;
 		using Vec = std::vector<OneInst>;
 
@@ -182,7 +182,7 @@ public:		// types
 			: _self(s_self), _vec(std::move(s_vec)), _optional(s_optional)
 		{
 		}
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(SeqParse);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(SeqParse);
 		virtual ~SeqParse()
 		{
 		}
@@ -213,13 +213,13 @@ public:		// types
 			FirstValidInvalidRet ret;
 			const auto lex_state = _self->_lex_state();
 
-			for (auto& iter : _vec)
+			for (const auto& iter : vec())
 			{
 				if (_check_one(iter))
 				{
 					ret.parse_ret.reset(new LexerState(_self->_lexer()
 						.state()));
-					ret.one_inst = std::move(iter);
+					ret.one_inst = iter;
 					_self->_lexer().set_state(lex_state);
 					return ret;
 				}
@@ -236,13 +236,13 @@ public:		// types
 			FirstValidInvalidRet ret;
 			const auto lex_state = _self->_lex_state();
 
-			for (auto& iter : _vec)
+			for (const auto& iter : vec())
 			{
 				if (!_check_one(iter))
 				{
 					ret.parse_ret.reset(new LexerState(_self->_lexer()
 						.state()));
-					ret.one_inst = std::move(iter);
+					ret.one_inst = iter;
 					_self->_lexer().set_state(lex_state);
 					return ret;
 				}
@@ -351,7 +351,7 @@ public:		// types
 			: Base(s_self, std::move(s_vec), s_optional)
 		{
 		}
-		GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(OrParse);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OrParse);
 		virtual ~OrParse()
 		{
 		}
