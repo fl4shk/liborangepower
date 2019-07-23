@@ -213,13 +213,13 @@ public:		// types
 			FirstValidInvalidRet ret;
 			const auto lex_state = _self->_lex_state();
 
-			for (const auto& iter : vec())
+			for (auto& iter : _vec)
 			{
 				if (_check_one(iter))
 				{
 					ret.parse_ret.reset(new LexerState(_self->_lexer()
 						.state()));
-					ret.one_inst = iter;
+					ret.one_inst = std::move(iter);
 					_self->_lexer().set_state(lex_state);
 					return ret;
 				}
@@ -236,13 +236,13 @@ public:		// types
 			FirstValidInvalidRet ret;
 			const auto lex_state = _self->_lex_state();
 
-			for (const auto& iter : vec())
+			for (auto& iter : _vec)
 			{
 				if (!_check_one(iter))
 				{
 					ret.parse_ret.reset(new LexerState(_self->_lexer()
 						.state()));
-					ret.one_inst = iter;
+					ret.one_inst = std::move(iter);
 					_self->_lexer().set_state(lex_state);
 					return ret;
 				}
