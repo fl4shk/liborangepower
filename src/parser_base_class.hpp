@@ -171,6 +171,8 @@ public:		// types
 			ParseRet parse_ret;
 			OneInst one_inst;
 		};
+	public:		// variables
+		static inline bool debug = false;
 
 	protected:		// variables
 		DerivedType* _self = nullptr;
@@ -305,6 +307,12 @@ public:		// types
 			if (std::holds_alternative<TheUnitParse>(iter))
 			{
 				const auto& temp = std::get<TheUnitParse>(iter);
+
+				if (debug)
+				{
+					printout("_exec_one():  ", temp.parse_func_str(),
+						"\n");
+				}
 
 				if (temp.optional())
 				{
