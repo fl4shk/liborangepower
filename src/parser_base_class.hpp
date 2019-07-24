@@ -279,7 +279,14 @@ public:		// types
 
 				if (!temp.optional())
 				{
-					return temp();
+					if (temp())
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
 				}
 			}
 			else
