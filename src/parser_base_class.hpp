@@ -330,7 +330,8 @@ public:		// types
 							printout("success:  \"",
 								debug_tok_ident_map->at(ret_from_func
 								->tok()), "\", \"", ret_from_func->s(),
-								"\"");
+								"\" ", ret_from_func->line_num(), ":",
+								ret_from_func->pos_in_line(), "\n");
 						}
 					}
 				}
@@ -343,7 +344,9 @@ public:		// types
 					{
 						printout("success:  \"",
 							debug_tok_ident_map->at(ret_from_func->tok()),
-							"\", \"", ret_from_func->s(), "\"");
+							"\", \"", ret_from_func->s(), "\" ",
+							ret_from_func->line_num(), ":",
+							ret_from_func->pos_in_line(), "\n");
 					}
 				}
 			}
