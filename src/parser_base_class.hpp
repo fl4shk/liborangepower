@@ -328,8 +328,9 @@ public:		// types
 						if (debug)
 						{
 							printout("success:  \"",
-								debug_tok_ident_map->at(ret->tok()),
-								"\", \"", ret->s(), "\"");
+								debug_tok_ident_map->at(ret_from_func
+								->tok()), "\", \"", ret_from_func->s(),
+								"\"");
 						}
 					}
 				}
@@ -341,8 +342,8 @@ public:		// types
 					if (debug)
 					{
 						printout("success:  \"",
-							debug_tok_ident_map->at(ret->tok()),
-							"\", \"", ret->s(), "\"");
+							debug_tok_ident_map->at(ret_from_func->tok()),
+							"\", \"", ret_from_func->s(), "\"");
 					}
 				}
 			}
