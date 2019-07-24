@@ -284,10 +284,12 @@ public:		// types
 				{
 					if (temp())
 					{
+						temp.set_just_test(false);
 						return true;
 					}
 					else
 					{
+						temp.set_just_test(false);
 						return false;
 					}
 				}
