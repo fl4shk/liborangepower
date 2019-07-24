@@ -277,9 +277,9 @@ public:		// types
 				const auto& temp = std::get<TheUnitParse>(iter);
 				temp.set_just_test(true);
 
-				if ((!temp()) && (!temp.optional()))
+				if (!temp.optional())
 				{
-					return false;
+					return temp();
 				}
 			}
 			else
