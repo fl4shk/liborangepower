@@ -173,6 +173,7 @@ public:		// types
 		};
 	public:		// variables
 		static inline bool debug = false;
+		static inline const TokToStringMap* debug_tok_ident_map = nullptr;
 
 	protected:		// variables
 		DerivedType* _self = nullptr;
@@ -314,6 +315,7 @@ public:		// types
 						"\n");
 				}
 
+
 				if (temp.optional())
 				{
 					temp.set_just_test(true);
@@ -321,13 +323,27 @@ public:		// types
 					if (temp())
 					{
 						temp.set_just_test(false);
-						temp();
+						const auto ret_from_func = temp();
+
+						if (debug)
+						{
+							printout("success:  \"",
+								debug_tok_ident_map->at(ret->tok()),
+								"\", \"", ret->s(), "\"");
+						}
 					}
 				}
 				else
 				{
 					temp.set_just_test(false);
-					temp();
+					const auto ret_from_func = temp();
+
+					if (debug)
+					{
+						printout("success:  \"",
+							debug_tok_ident_map->at(ret->tok()),
+							"\", \"", ret->s(), "\"");
+					}
 				}
 			}
 			else
