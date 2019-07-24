@@ -378,11 +378,11 @@ public:		// types
 				if (Base::_check_one(iter))
 				{
 					Base::_exec_one(iter);
-					return ParseRet(new LexerState(ret));
+					break;
 				}
 			}
 
-			return ParseRet(nullptr);
+			return ParseRet(new LexerState(ret));
 		}
 	};
 
