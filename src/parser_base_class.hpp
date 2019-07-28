@@ -23,8 +23,6 @@ public:		// types
 	using TokToStringMap = std::map<TokType, std::string>;
 	using ParseRet = std::unique_ptr<LexerState>;
 
-	template<typename SomeSeqParseType>
-	using MapSeqParse = std::map<std::string, SomeSeqParseType>;
 
 	class LexStateSets final
 	{
@@ -393,6 +391,10 @@ public:		// types
 		}
 	};
 
+	template<typename DerivedType>
+	using MapSeqParse = std::map<std::string, SeqParse<DerivedType>>;
+
+
 	// Find the first valid parsing sequence and execute it.  Choose from a
 	// list separated by pipes (|).
 	template<typename DerivedType>
@@ -524,6 +526,20 @@ public:		// types
 		using Vec = typename TheSeqParse::Vec;
 
 	public:		// functions
+		template<typename FirstArgType, typename...  RemArgTypes>
+		static inline void _append_msp
+			(MapSeqParse<DerivedType>& map_seq_parse,
+			const string& first_key, FirstArgType&& first_seq,
+			RemArgTypes&&... rem_args)
+		{
+			map_seq_parse[first_key] = std::move(first_seq);
+
+			if constexpr (sizeof...(rem_args) > 0)
+			{
+				_append_msp(map_seq_parse, rem_args...);
+			}
+		}
+
 		static inline TheUnitParse _unit_parse(DerivedType* self,
 			const std::string& s_parse_func_str, ParseFunc s_parse_func,
 			bool s_optional)
