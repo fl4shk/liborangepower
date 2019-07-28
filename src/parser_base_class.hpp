@@ -391,8 +391,8 @@ public:		// types
 		}
 	};
 
-	template<typename DerivedType>
-	using MapSeqParse = std::map<std::string, SeqParse<DerivedType>>;
+	template<typename SomeSeqParseType>
+	using MapSeqParse = std::map<std::string, SomeSeqParseType>;
 
 
 	// Find the first valid parsing sequence and execute it.  Choose from a
@@ -526,9 +526,10 @@ public:		// types
 		using Vec = typename TheSeqParse::Vec;
 
 	public:		// functions
-		template<typename FirstArgType, typename...  RemArgTypes>
+		template<typename SomeMapSeqParseType, typename FirstArgType,
+			typename...  RemArgTypes>
 		static inline void _append_msp
-			(MapSeqParse<DerivedType>& map_seq_parse,
+			(SomeMapSeqParseType& map_seq_parse,
 			const std::string& first_key, FirstArgType&& first_seq,
 			RemArgTypes&&... rem_args)
 		{
