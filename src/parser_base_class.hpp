@@ -239,7 +239,7 @@ public:		// types
 			return ret;
 		}
 		// For OrParse
-		inline string first_valid_parse_func_str() const
+		inline std::string first_valid_parse_func_str() const
 		{
 			return std::get<TheUnitParse>(std::get<TheSeqParse>
 				(first_valid_inst().one_inst)->vec().front())
