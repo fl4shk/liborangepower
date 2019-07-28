@@ -529,7 +529,7 @@ public:		// types
 		template<typename FirstArgType, typename...  RemArgTypes>
 		static inline void _append_msp
 			(MapSeqParse<DerivedType>& map_seq_parse,
-			const string& first_key, FirstArgType&& first_seq,
+			const std::string& first_key, FirstArgType&& first_seq,
 			RemArgTypes&&... rem_args)
 		{
 			map_seq_parse[first_key] = std::move(first_seq);
