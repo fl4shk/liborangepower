@@ -1115,21 +1115,6 @@ protected:		// functions
 		}
 	}
 
-	template<typename SeqType>
-	std::unique_ptr<LexerState> _check_for_just_test
-		(const SeqType& to_check) const
-	{
-		if (to_check.check())
-		{
-			return std::unique_ptr<LexerState>(new LexerState
-				(_lex_state()));
-		}
-		else
-		{
-			return std::unique_ptr<LexerState>(nullptr);
-		}
-	}
-
 	inline std::unique_ptr<LexerState> _dup_lex_state() const
 	{
 		return std::unique_ptr<LexerState>(new LexerState(_lex_state()));
