@@ -213,26 +213,23 @@ public:		// types
 			return true;
 		}
 		// For OrParse
-		inline FirstValidInvalidInst fv_inst() const
+		inline OneInst fv_inst() const
 		{
-			FirstValidInvalidInst ret;
+			OneInst ret;
 			const auto lex_state = _self->_lex_state();
 
 			for (const auto& iter : vec())
 			{
 				if (_check_one(iter))
 				{
-					ret.parse_ret.reset(new LexerState(_self->_lexer()
-						.state()));
-					ret.one_inst = iter;
+					ret = iter;
 					_self->_lexer().set_state(lex_state);
 					return ret;
 				}
 				//_exec_one(iter);
 			}
 
-			ret.parse_ret.reset(new LexerState(_self->_lexer().state()));
-			ret.one_inst = false;
+			ret = false;
 			_self->_lexer().set_state(lex_state);
 			return ret;
 		}
