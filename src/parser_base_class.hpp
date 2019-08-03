@@ -335,7 +335,7 @@ public:		// types
 					if (temp())
 					{
 						temp.set_just_test(false);
-						const auto lex_state = _dup_lex_state();
+						const auto lex_state = _self->_dup_lex_state();
 						temp();
 
 						if (debug)
