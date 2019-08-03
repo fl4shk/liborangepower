@@ -118,6 +118,7 @@ public:		// types
 	class UnitParse final
 	{
 	public:		// types
+		using ParseRet = bool;
 		typedef bool (DerivedType::* ParseFunc)();
 
 	private:		// variables
