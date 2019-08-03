@@ -328,6 +328,7 @@ public:		// types
 						"\n");
 				}
 
+				const auto lex_state = _self->_dup_lex_state();
 				if (temp.optional())
 				{
 					temp.set_just_test(true);
@@ -335,7 +336,6 @@ public:		// types
 					if (temp())
 					{
 						temp.set_just_test(false);
-						const auto lex_state = _self->_dup_lex_state();
 						temp();
 
 						if (debug)
@@ -352,15 +352,15 @@ public:		// types
 				else
 				{
 					temp.set_just_test(false);
-					const auto ret_from_func = temp();
+					temp();
 
 					if (debug)
 					{
 						printout("success:  \"",
-							debug_tok_ident_map->at(ret_from_func->tok()),
-							"\", \"", ret_from_func->s(), "\" ",
-							ret_from_func->line_num(), ":",
-							ret_from_func->pos_in_line(), "\n");
+							debug_tok_ident_map->at(lex_state->tok()),
+							"\", \"", lex_state->s(), "\" ",
+							lex_state->line_num(), ":",
+							lex_state->pos_in_line(), "\n");
 					}
 				}
 			}
