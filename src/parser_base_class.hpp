@@ -237,7 +237,7 @@ public:		// types
 		inline std::string fv_parse_func_str() const
 		{
 			return std::get<TheUnitParse>(std::get<TheSeqParse>
-				(fv_inst().one_inst)->vec().front()).parse_func_str();
+				(fv_inst()->vec().front())).parse_func_str();
 		}
 		inline FirstValidInvalidInst first_invalid_inst() const
 		{
