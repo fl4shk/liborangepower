@@ -21,7 +21,7 @@ public:		// types
 	using TokType = typename LexerType::TokType;
 	using LexerState = typename LexerType::State;
 	using TokToStringMap = std::map<TokType, std::string>;
-	using ParseRet = std::unique_ptr<LexerState>;
+	using ParseRet = bool;
 
 
 	class LexStateSets final
@@ -118,8 +118,7 @@ public:		// types
 	class UnitParse final
 	{
 	public:		// types
-		using ParseRet = std::unique_ptr<LexerState>;
-		typedef ParseRet (DerivedType::* ParseFunc)();
+		typedef bool (DerivedType::* ParseFunc)();
 
 	private:		// variables
 		DerivedType* _self = nullptr;
@@ -144,7 +143,7 @@ public:		// types
 			_self->_just_test = n_just_test;
 		}
 
-		inline ParseRet operator () () const
+		inline bool operator () () const
 		{
 			return (_self->*_parse_func)();
 		}
@@ -213,7 +212,7 @@ public:		// types
 			return true;
 		}
 		// For OrParse
-		inline FirstValidInvalidInst first_valid_inst() const
+		inline FirstValidInvalidInst fv_inst() const
 		{
 			FirstValidInvalidInst ret;
 			const auto lex_state = _self->_lex_state();
@@ -237,7 +236,7 @@ public:		// types
 			return ret;
 		}
 		// For OrParse
-		inline std::string first_valid_parse_func_str() const
+		inline std::string fv_parse_func_str() const
 		{
 			return std::get<TheUnitParse>(std::get<TheSeqParse>
 				(first_valid_inst().one_inst)->vec().front())
