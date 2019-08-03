@@ -512,7 +512,11 @@ public:		// types
 				++to_push;
 			} while (check());
 
-			Base::_self->_push_num(to_push);
+			if ((!Base::_self->actual_just_test())
+				&& (!Base::_self->just_parse()))
+			{
+				Base::_self->_push_num(to_push);
+			}
 
 			return ParseRet(new LexerState(ret));
 		}
