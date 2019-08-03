@@ -265,7 +265,7 @@ public:		// types
 			_self->_lexer().set_state(lex_state);
 			return ret;
 		}
-		virtual ParseRet exec() const
+		virtual void exec() const
 		{
 			const auto ret = _self->_lex_state();
 
@@ -274,7 +274,7 @@ public:		// types
 				_exec_one(iter);
 			}
 
-			return ParseRet(new LexerState(ret));
+			//return ParseRet(new LexerState(ret));
 		}
 
 		GEN_GETTER_BY_CON_REF(vec)
@@ -428,9 +428,9 @@ public:		// types
 			}
 			return false;
 		}
-		virtual ParseRet exec() const
+		virtual void exec() const
 		{
-			const auto ret = Base::_self->_lex_state();
+			//const auto ret = Base::_self->_lex_state();
 
 			for (const auto& iter : Base::vec())
 			{
@@ -442,7 +442,7 @@ public:		// types
 				}
 			}
 
-			return ParseRet(new LexerState(ret));
+			//return ParseRet(new LexerState(ret));
 		}
 	};
 
@@ -499,9 +499,9 @@ public:		// types
 			Base::_self->_lexer().set_state(lex_state);
 			return first_done;
 		}
-		virtual ParseRet exec() const
+		virtual void exec() const
 		{
-			const auto ret = Base::_self->_lex_state();
+			//const auto ret = Base::_self->_lex_state();
 
 			size_t to_push = 0;
 
@@ -517,7 +517,7 @@ public:		// types
 				Base::_self->_push_num(to_push);
 			}
 
-			return ParseRet(new LexerState(ret));
+			//return ParseRet(new LexerState(ret));
 		}
 	};
 
