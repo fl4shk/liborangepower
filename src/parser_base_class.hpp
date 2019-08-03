@@ -1129,9 +1129,9 @@ protected:		// functions
 		}
 	}
 
-	inline ParseRet _dup_lex_state() const
+	inline std::unique_ptr<LexerState> _dup_lex_state() const
 	{
-		return ParseRet(new LexerState(_lex_state()));
+		return std::unique_ptr<LexerState>(new LexerState(_lex_state()));
 	}
 };
 
