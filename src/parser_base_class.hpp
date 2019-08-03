@@ -504,10 +504,15 @@ public:		// types
 		{
 			const auto ret = Base::_self->_lex_state();
 
+			size_t to_push = 0;
+
 			do
 			{
 				Base::exec();
+				++to_push;
 			} while (check());
+
+			Base::_self->_push_num(to_push);
 
 			return ParseRet(new LexerState(ret));
 		}
