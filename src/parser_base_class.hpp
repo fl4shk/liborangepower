@@ -119,25 +119,37 @@ public:		// types
 	{
 	public:		// types
 		using LexerState = typename DerivedType::LexerState;
+		using TokType = typename LexerType::TokType;
 
 		class ParseRet final
 		{
 		private:		// variables
 			bool _valid = false;
-			LexerState _actual, _wanted;
+			LexerState _ls;
+			std::set<TokType> _wanted_tok_set;
 		public:		// functions
 			inline ParseRet() = default;
-			inline ParseRet(bool s_valid, const LexerState& s_actual,
-				const LexerState& s_wanted)
-				: _valid(s_valid), _actual(s_actual), _wanted(s_wanted)
+			inline ParseRet(bool s_valid, const LexerState& s_ls,
+				const std::set<TokType>& s_wanted_tok_set)
+				: _valid(s_valid), _ls(s_ls),
+				_wanted_tok_set(s_wanted_tok_set)
 			{
 			}
 			GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ParseRet);
 			inline ~ParseRet() = default;
 
+			inline void add_to_wanted_tok_set
+				(const std::set<TokType>& to_add)
+			{
+				for (const auto iter : to_add)
+				{
+					_wanted_tok_set.insert(iter);
+				}
+			}
+
 			GEN_GETTER_AND_SETTER_BY_VAL(valid)
-			GEN_GETTERS_BY_CON_REF_AND_REF(actual)
-			GEN_GETTERS_BY_CON_REF_AND_REF(wanted)
+			GEN_GETTERS_BY_CON_REF_AND_REF(ls)
+			GEN_GETTERS_BY_CON_REF_AND_REF(wanted_tok_set)
 		};
 		using ParseFunc = ParseRet (DerivedType::*)();
 
