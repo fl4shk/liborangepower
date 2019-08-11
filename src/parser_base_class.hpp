@@ -146,10 +146,14 @@ public:		// types
 					_wanted_tok_set.insert(iter);
 				}
 			}
+			inline void add_to_wanted_tok_set(const ParseRet& other)
+			{
+				add_to_wanted_tok_set(other.wanted_tok_set());
+			}
 
-			GEN_GETTER_AND_SETTER_BY_VAL(valid)
-			GEN_GETTERS_BY_CON_REF_AND_REF(ls)
-			GEN_GETTERS_BY_CON_REF_AND_REF(wanted_tok_set)
+			GEN_GETTER_BY_VAL(valid)
+			GEN_GETTER_BY_CON_REF(ls)
+			GEN_GETTER_BY_CON_REF(wanted_tok_set)
 		};
 		using ParseFunc = ParseRet (DerivedType::*)();
 
