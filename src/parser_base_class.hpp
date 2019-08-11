@@ -118,8 +118,28 @@ public:		// types
 	class UnitParse final
 	{
 	public:		// types
-		using ParseRet = bool;
-		typedef bool (DerivedType::* ParseFunc)();
+		using LexerState = typename DerivedType::LexerState;
+
+		class ParseRet final
+		{
+		private:		// variables
+			bool _valid = false;
+			LexerState _actual, _wanted;
+		public:		// functions
+			inline ParseRet() = default;
+			inline ParseRet(bool s_valid, const LexerState& s_actual,
+				const LexerState& s_wanted)
+				: _valid(s_valid), _actual(s_actual), _wanted(s_wanted)
+			{
+			}
+			GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ParseRet);
+			inline ~ParseRet() = default;
+
+			GEN_GETTER_AND_SETTER_BY_VAL(valid)
+			GEN_GETTERS_BY_CON_REF_AND_REF(actual)
+			GEN_GETTERS_BY_CON_REF_AND_REF(wanted)
+		};
+		using ParseFunc = ParseRet (DerivedType::*)();
 
 	private:		// variables
 		DerivedType* _self = nullptr;
