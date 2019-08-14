@@ -103,10 +103,12 @@ public:		// types
 		GEN_GETTER_AND_SETTER_BY_VAL(pos_in_line)
 	};
 
+	using TwoStates = std::pair<State, State>;
+
 protected:		// variables
 	std::string _filename;
 	std::string* _text = nullptr;
-	State _state;
+	TwoStates _two_states;
 
 public:		// functions
 	inline LexerBase(const std::string& s_filename, std::string* s_text)
@@ -120,17 +122,19 @@ public:		// functions
 
 
 	template<typename Type>
-	inline Type src_code_chunk(const State* other_state=nullptr) const
+	inline Type src_code_chunk(const TwoStates* other_two_states=nullptr)
+		const
 	{
-		if (other_state != nullptr)
+		if (other_two_states != nullptr)
 		{
-			return Type(filename(), other_state->_s,
-				other_state->_line_num, other_state->_pos_in_line);
+			return Type(filename(), other_two_states->second._s,
+				other_two_states->first._line_num,
+				other_two_states->first._pos_in_line);
 		}
 		else
 		{
 			return Type(filename(), state()._s,
-				state()._line_num, state()._pos_in_line);
+				prev_state()._line_num, prev_state()._pos_in_line);
 		}
 	}
 
@@ -158,20 +162,56 @@ public:		// functions
 	{
 		return state()._line_num;
 	}
+	inline auto prev_line_num() const
+	{
+		return prev_state()._line_num;
+	}
 	inline auto pos_in_line() const
 	{
 		return state()._pos_in_line;
 	}
+	inline auto prev_pos_in_line() const
+	{
+		return prev_state()._pos_in_line;
+	}
+
+	inline const auto& prev_state() const
+	{
+		return two_states().first;
+	}
+	inline auto& prev_state()
+	{
+		return _two_states.first;
+	}
+	inline void set_prev_state(const State& n_prev_state)
+	{
+		_two_states.first = n_prev_state;
+	}
+
+	inline const auto& state() const
+	{
+		return two_states().second;
+	}
+	inline auto& state()
+	{
+		return _two_states.second;
+	}
+	inline void set_state(const State& n_state)
+	{
+		_two_states.second = n_state;
+	}
+
 	GEN_GETTER_BY_CON_REF(filename)
 	GEN_GETTER_BY_VAL(text)
-	GEN_GETTER_AND_SETTER_BY_CON_REF(state)
+	GEN_GETTER_AND_SETTER_BY_CON_REF(two_states)
 
 protected:		// functions
-	TokType _next_tok(TokType comment_tok)
+	void _next_tok(TokType comment_tok)
 	{
 		do
 		{
 			_eat_whitespace();
+			_two_states.first = _two_states.second;
 			_inner_next_tok();
 		} while (tok() == comment_tok);
 
@@ -179,28 +219,25 @@ protected:		// functions
 		//{
 		//	_set_tok(done_tok, false);
 		//}
-
-		return tok();
 	}
-	int _next_char()
+	void _next_char()
 	{
 		if (x() < text()->size())
 		{
-			_state._c = text()->at(_state._x++);
+			state()._c = text()->at(state()._x++);
 
-			++_state._pos_in_line;
+			++state()._pos_in_line;
 
 			if (c() == '\n')
 			{
-				++_state._line_num;
-				_state._pos_in_line = 1;
+				++state()._line_num;
+				state()._pos_in_line = 1;
 			}
 		}
 		else
 		{
-			_state._c = EOF;
+			state()._c = EOF;
 		}
-		return c();
 	}
 	void _eat_whitespace()
 	{
@@ -211,7 +248,7 @@ protected:		// functions
 	}
 	void _set_tok(TokType n_tok, bool perf_next_char)
 	{
-		_state._tok = n_tok;
+		state()._tok = n_tok;
 
 		if (perf_next_char)
 		{
