@@ -28,7 +28,7 @@ private:		// variables
 	std::map<std::string, Child> _children;
 
 public:		// functions
-	inline ParseTreeBase(const SrcCodeChunk& s_src_code_chunk)
+	inline ParseTreeBase(const SrcCodeChunkType& s_src_code_chunk)
 		: _src_code_chunk(s_src_code_chunk)
 	{
 	}
