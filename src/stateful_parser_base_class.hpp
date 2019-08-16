@@ -119,7 +119,7 @@ public:		// types
 	{
 	public:		// types
 		using ParseRet = bool;
-		typedef bool (DerivedType::* ParseFunc)();
+		using ParseFunc = bool (DerivedType::*)();
 
 	private:		// variables
 		DerivedType* _self = nullptr;
