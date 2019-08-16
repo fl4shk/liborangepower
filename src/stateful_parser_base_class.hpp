@@ -1,5 +1,5 @@
-#ifndef liborangepower_parser_base_class_hpp
-#define liborangepower_parser_base_class_hpp
+#ifndef liborangepower_stateful_parser_base_class_hpp
+#define liborangepower_stateful_parser_base_class_hpp
 
 #include "misc_includes.hpp"
 #include "misc_output_classes.hpp"
@@ -15,7 +15,7 @@ namespace lang
 {
 
 template<typename LexerType>
-class ParserBase
+class StatefulParserBase
 {
 public:		// types
 	using TokType = typename LexerType::TokType;
@@ -93,10 +93,10 @@ public:		// types
 	class WExpect
 	{
 	private:		// variables
-		ParserBase* _parser = nullptr;
+		StatefulParserBase* _parser = nullptr;
 		LexerType* _lexer = nullptr;
 	public:		// functions
-		WExpect(ParserBase* s_parser, TokType tok,
+		WExpect(StatefulParserBase* s_parser, TokType tok,
 			const TokToStringMap& some_tok_ident_map,
 			LexerType* s_lexer=nullptr)
 			: _parser(s_parser), _lexer(s_lexer)
@@ -673,7 +673,7 @@ protected:		// variables
 	std::vector<LexerType> _lexer_vec;
 
 public:		// functions
-	ParserBase(std::vector<std::string>&& s_filename_vec)
+	StatefulParserBase(std::vector<std::string>&& s_filename_vec)
 		: _filename_vec(std::move(s_filename_vec))
 	{
 		for (const auto& filename : _filename_vec)
@@ -689,8 +689,8 @@ public:		// functions
 			_next_tok(&_lexer_vec.back());
 		}
 	}
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ParserBase)
-	virtual ~ParserBase()
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(StatefulParserBase)
+	virtual ~StatefulParserBase()
 	{
 	}
 
@@ -1122,4 +1122,4 @@ protected:		// functions
 
 } // namespace liborangepower
 
-#endif		// liborangepower_parser_base_class_hpp
+#endif		// liborangepower_stateful_parser_base_class_hpp
