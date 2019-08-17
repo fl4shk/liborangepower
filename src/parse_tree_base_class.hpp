@@ -19,7 +19,10 @@ template<typename SrcCodeChunkType, typename TokType>
 class ParseTreeBase
 {
 public:		// types
-	using Child = std::unique_ptr<ParseTreeBase>;
+	using OneChild = std::unique_ptr<ParseTreeBase>;
+	using ChildVec = std::vector<OneChild>;
+	using Child = std::variant<OneChild, ChildVec>;
+
 	using DataElem = std::variant<bool, std::string, bignum::BigNum,
 		TokType>;
 
