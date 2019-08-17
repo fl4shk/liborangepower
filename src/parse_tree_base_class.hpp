@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <variant>
 
 namespace liborangepower
 {
@@ -19,7 +20,7 @@ class ParseTreeBase
 {
 public:		// types
 	using Child = std::unique_ptr<ParseTreeBase>;
-	using DataElem = variant<bool, std::string, bignum::BigNum, TokType>;
+	using DataElem = std::variant<bool, std::string, bignum::BigNum, TokType>;
 
 private:		// variables
 	SrcCodeChunkType _src_code_chunk;
