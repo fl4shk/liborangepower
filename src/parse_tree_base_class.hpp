@@ -33,7 +33,7 @@ public:		// functions
 		: _src_code_chunk(s_src_code_chunk)
 	{
 	}
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ParseTreeBase);
+	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(ParseTreeBase);
 	virtual inline ~ParseTreeBase() = default;
 
 	GEN_GETTER_BY_CON_REF(src_code_chunk)
