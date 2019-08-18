@@ -28,7 +28,7 @@ public:		// types
 	private:		// variables
 		bool _valid = true;
 		std::vector<TwoStates> _lex_two_states_vec;
-		set::set<TokType> _tok_set;
+		std::set<TokType> _tok_set;
 	public:		// functions
 		inline ParseRet() = default;
 		inline ParseRet(const ParseRet& to_copy) = default;
