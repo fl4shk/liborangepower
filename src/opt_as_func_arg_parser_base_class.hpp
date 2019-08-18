@@ -1,6 +1,9 @@
 #ifndef liborangepower_opt_as_func_arg_parser_base_class_hpp
 #define liborangepower_opt_as_func_arg_parser_base_class_hpp
 
+#include <vector>
+#include <set>
+
 namespace liborangepower
 {
 
@@ -24,8 +27,8 @@ public:		// types
 	{
 	private:		// variables
 		bool _valid = true;
-		vector<TwoStates> _lex_two_states_vec;
-		set<Tok> _tok_set;
+		std::vector<TwoStates> _lex_two_states_vec;
+		set::set<TokType> _tok_set;
 	public:		// functions
 		inline ParseRet() = default;
 		inline ParseRet(const ParseRet& to_copy) = default;
@@ -38,11 +41,11 @@ public:		// types
 		{
 			_lex_two_states_vec.push_back(to_append);
 		}
-		inline void append_tok(Tok tok)
+		inline void append_tok(TokType tok)
 		{
 			_tok_set.insert(tok);
 		}
-		inline void append_tok_set(const set<Tok>& to_append_set)
+		inline void append_tok_set(const std::set<TokType>& to_append_set)
 		{
 			for (const auto& iter : to_append_set)
 			{
