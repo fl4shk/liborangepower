@@ -1,6 +1,8 @@
 #ifndef liborangepower_gen_class_innards_defines_hpp
 #define liborangepower_gen_class_innards_defines_hpp
 
+#include "cpp_magic.hpp"
+
 #define GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, move_dd) \
 	inline Type(const Type& to_copy) = copy_dd; \
 	inline Type(Type&& to_move) = move_dd; \
@@ -48,6 +50,8 @@ inline decltype(prefix##suffix) suffix() const \
 { \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_GENERIC_GETTER_BY_VAL(...) \
+	EVAL(MAP_PAIRS(GEN_GENERIC_GETTER_BY_VAL, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_GENERIC_GETTER_AS_POINTER
@@ -57,12 +61,16 @@ inline decltype(prefix##suffix)* suffix() \
 { \
 	return &prefix##suffix; \
 }
+#define MULTI_GEN_GENERIC_GETTER_AS_POINTER(...) \
+	EVAL(MAP_PAIRS(GEN_GENERIC_GETTER_AS_POINTER, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_GETTER_BY_VAL
 // By value
 #define GEN_GETTER_BY_VAL(suffix) \
 GEN_GENERIC_GETTER_BY_VAL(_, suffix)
+#define MULTI_GEN_GETTER_BY_VAL(...) \
+	EVAL(MAP(GEN_GETTER_BY_VAL, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -70,6 +78,8 @@ GEN_GENERIC_GETTER_BY_VAL(_, suffix)
 // As a pointer
 #define GEN_GETTER_AS_POINTER(suffix) \
 GEN_GENERIC_GETTER_AS_POINTER(_, suffix)
+#define MULTI_GEN_GETTER_AS_POINTER(...) \
+	EVAL(MAP(GEN_GETTER_AS_POINTER, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -81,12 +91,16 @@ inline const decltype(prefix##suffix)& suffix() const \
 { \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_GENERIC_GETTER_BY_CON_REF(...) \
+	EVAL(MAP_PAIRS(GEN_GENERIC_GETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_GETTER_BY_CON_REF
 // By constant reference
 #define GEN_GETTER_BY_CON_REF(suffix) \
 GEN_GENERIC_GETTER_BY_CON_REF(_, suffix)
+#define MULTI_GEN_GETTER_BY_CON_REF(...) \
+	EVAL(MAP(GEN_GETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -98,18 +112,24 @@ inline decltype(prefix##suffix)& suffix() \
 { \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_GENERIC_GETTER_BY_REF(...) \
+	EVAL(MAP_PAIRS(GEN_GENERIC_GETTER_BY_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_GETTER_BY_REF
 // By reference
 #define GEN_GETTER_BY_REF(suffix) \
 GEN_GENERIC_GETTER_BY_REF(_, suffix)
+#define MULTI_GEN_GETTER_BY_REF(...) \
+	EVAL(MAP(GEN_GETTER_BY_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_GETTERS_BY_CON_REF_AND_REF
 #define GEN_GETTERS_BY_CON_REF_AND_REF(suffix) \
 GEN_GETTER_BY_CON_REF(suffix) \
 GEN_GETTER_BY_REF(suffix)
+#define MULTI_GEN_GETTERS_BY_CON_REF_AND_REF(...) \
+	EVAL(MAP(GEN_GETTERS_BY_CON_REF_AND_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -121,12 +141,16 @@ static inline decltype(prefix##suffix) suffix() const \
 { \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_STATIC_GENERIC_GETTER_BY_VAL(...) \
+	EVAL(MAP_PAIRS(GEN_STATIC_GENERIC_GETTER_BY_VAL, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_STATIC_GETTER_BY_VAL
 // By value
 #define GEN_STATIC_GETTER_BY_VAL(suffix) \
 GEN_STATIC_GENERIC_GETTER_BY_VAL(_, suffix)
+#define MULTI_GEN_STATIC_GETTER_BY_VAL(...) \
+	EVAL(MAP(GEN_STATIC_GETTER_BY_VAL, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -138,12 +162,16 @@ static inline const decltype(prefix##suffix)& suffix() const \
 { \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_STATIC_GENERIC_GETTER_BY_CON_REF(...) \
+	EVAL(MAP_PAIRS(GEN_STATIC_GENERIC_GETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_STATIC_GETTER_BY_CON_REF
 // By constant reference
 #define GEN_STATIC_GETTER_BY_CON_REF(suffix) \
 GEN_STATIC_GENERIC_GETTER_BY_CON_REF(_, suffix)
+#define MULTI_GEN_STATIC_GETTER_BY_CON_REF(...) \
+	EVAL(MAP(GEN_STATIC_GETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -155,12 +183,16 @@ static inline decltype(prefix##suffix)& suffix() \
 { \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_STATIC_GENERIC_GETTER_BY_REF(...) \
+	EVAL(MAP_PAIRS(GEN_STATIC_GENERIC_GETTER_BY_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_STATIC_GETTER_BY_REF
 // By reference
 #define GEN_STATIC_GETTER_BY_REF(suffix) \
 GEN_STATIC_GENERIC_GETTER_BY_REF(_, suffix)
+#define MULTI_GEN_STATIC_GETTER_BY_REF(...) \
+	EVAL(MAP(GEN_STATIC_GETTER_BY_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -169,17 +201,22 @@ GEN_STATIC_GENERIC_GETTER_BY_REF(_, suffix)
 #ifndef GEN_GENERIC_SETTER_BY_VAL
 // By value
 #define GEN_GENERIC_SETTER_BY_VAL(prefix, suffix) \
-inline decltype(prefix##suffix) set_##suffix(decltype(prefix##suffix) to_copy) \
+template<typename Type> \
+inline decltype(prefix##suffix) set_##suffix(Type to_copy) \
 { \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_GENERIC_SETTER_BY_VAL(...) \
+	EVAL(MAP(GEN_GENERIC_SETTER_BY_VAL, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_SETTER_BY_VAL
 // By value
 #define GEN_SETTER_BY_VAL(suffix) \
 GEN_GENERIC_SETTER_BY_VAL(_, suffix)
+#define MULTI_GEN_SETTER_BY_VAL(...) \
+	EVAL(MAP(GEN_SETTER_BY_VAL, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -187,18 +224,22 @@ GEN_GENERIC_SETTER_BY_VAL(_, suffix)
 #ifndef GEN_GENERIC_SETTER_BY_CON_REF
 // By const reference
 #define GEN_GENERIC_SETTER_BY_CON_REF(prefix, suffix) \
-inline const decltype(prefix##suffix)& set_##suffix \
-	(const decltype(prefix##suffix)& to_copy) \
+template<typename Type> \
+inline const decltype(prefix##suffix)& set_##suffix(const Type& to_copy) \
 { \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
 }
+#define MULTI_(prefix(...) \
+	EVAL(MAP((prefix, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_SETTER_BY_CON_REF
 // By const reference
 #define GEN_SETTER_BY_CON_REF(suffix) \
 GEN_GENERIC_SETTER_BY_CON_REF(_, suffix)
+#define MULTI_GEN_SETTER_BY_CON_REF(...) \
+	EVAL(MAP(GEN_SETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -206,18 +247,22 @@ GEN_GENERIC_SETTER_BY_CON_REF(_, suffix)
 #ifndef GEN_GENERIC_SETTER_BY_RVAL_REF
 // By rvalue reference
 #define GEN_GENERIC_SETTER_BY_RVAL_REF(prefix, suffix) \
-inline const decltype(prefix##suffix)& set_##suffix \
-	(decltype(prefix##suffix)&& to_move) \
+template<typename Type> \
+inline const decltype(prefix##suffix)& set_##suffix(Type&& to_move) \
 { \
 	prefix##suffix = std::move(to_move); \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_GENERIC_SETTER_BY_RVAL_REF(...) \
+	EVAL(MAP(GEN_GENERIC_SETTER_BY_RVAL_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_SETTER_BY_RVAL_REF
 // By rvalue reference
 #define GEN_SETTER_BY_RVAL_REF(suffix) \
 GEN_GENERIC_SETTER_BY_RVAL_REF(_, suffix)
+#define MULTI_GEN_SETTER_BY_RVAL_REF(...) \
+	EVAL(MAP(GEN_SETTER_BY_RVAL_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -225,11 +270,14 @@ GEN_GENERIC_SETTER_BY_RVAL_REF(_, suffix)
 #ifndef GEN_STATIC_GENERIC_SETTER_BY_VAL
 // By value
 #define GEN_STATIC_GENERIC_SETTER_BY_VAL(prefix, suffix) \
-static inline decltype(prefix##suffix) set_##suffix(decltype(prefix##suffix) to_copy) \
+template<typename Type> \
+static inline decltype(prefix##suffix) set_##suffix(Type to_copy) \
 { \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_STATIC_GENERIC_SETTER_BY_VAL(...) \
+	EVAL(MAP(GEN_STATIC_GENERIC_SETTER_BY_VAL, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_STATIC_SETTER_BY_VAL
@@ -243,18 +291,23 @@ GEN_STATIC_GENERIC_SETTER_BY_VAL(_, suffix)
 #ifndef GEN_STATIC_GENERIC_SETTER_BY_CON_REF
 // By const reference
 #define GEN_STATIC_GENERIC_SETTER_BY_CON_REF(prefix, suffix) \
+template<typename Type> \
 static inline const decltype(prefix##suffix)& set_##suffix \
-	(const decltype(prefix##suffix)& to_copy) \
+	(const Type& to_copy) \
 { \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_STATIC_GENERIC_SETTER_BY_CON_REF(...) \
+	EVAL(MAP(GEN_STATIC_GENERIC_SETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_STATIC_SETTER_BY_CON_REF
 // By const reference
 #define GEN_STATIC_SETTER_BY_CON_REF(suffix) \
 GEN_STATIC_GENERIC_SETTER_BY_CON_REF(_, suffix)
+#define MULTI_GEN_STATIC_SETTER_BY_CON_REF(...) \
+	EVAL(MAP(GEN_STATIC_SETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -268,12 +321,16 @@ static inline const decltype(prefix##suffix)& set_##suffix \
 	prefix##suffix = std::move(to_move); \
 	return prefix##suffix; \
 }
+#define MULTI_GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF(...) \
+	EVAL(MAP(GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_STATIC_SETTER_BY_RVAL_REF
 // By rvalue reference
 #define GEN_STATIC_SETTER_BY_RVAL_REF(suffix) \
 GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF(_, suffix)
+#define MULTI_GEN_STATIC_SETTER_BY_RVAL_REF(...) \
+	EVAL(MAP(GEN_STATIC_SETTER_BY_RVAL_REF, COMMA, __VA_ARGS__))
 #endif
 
 
@@ -281,15 +338,20 @@ GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF(_, suffix)
 #define GEN_GETTER_AND_SETTER_BY_CON_REF(stuff) \
 	GEN_GETTER_BY_CON_REF(stuff) \
 	GEN_SETTER_BY_CON_REF(stuff)
-
+#define MULTI_GEN_GETTER_AND_SETTER_BY_CON_REF(...) \
+	EVAL(MAP(GEN_GETTER_AND_SETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 
 #define GEN_GETTER_AND_SETTER_BY_VAL(stuff) \
 	GEN_GETTER_BY_VAL(stuff) \
 	GEN_SETTER_BY_VAL(stuff)
+#define MULTI_GEN_GETTER_AND_SETTER_BY_VAL(...) \
+	EVAL(MAP(GEN_GETTER_AND_SETTER_BY_VAL, COMMA, __VA_ARGS__))
 
 
 #define GEN_GETTER_BCR_AND_SETTER_BRR(stuff) \
 	GEN_GETTER_BY_CON_REF(stuff) \
 	GEN_SETTER_BY_RVAL_REF(stuff)
+#define MULTI_GEN_GETTER_BCR_AND_SETTER_BRR(...) \
+	EVAL(MAP(GEN_GETTER_BCR_AND_SETTER_BRR, COMMA, __VA_ARGS__))
 
 #endif		// liborangepower_gen_class_innards_defines_hpp
