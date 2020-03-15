@@ -230,8 +230,8 @@ inline const decltype(prefix##suffix)& set_##suffix(const Type& to_copy) \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
 }
-#define MULTI_(prefix(...) \
-	EVAL(MAP((prefix, COMMA, __VA_ARGS__))
+#define MULTI_GEN_GENERIC_SETTER_BY_CON_REF(...) \
+	EVAL(MAP(GEN_GENERIC_SETTER_BY_CON_REF, COMMA, __VA_ARGS__))
 #endif
 
 #ifndef GEN_SETTER_BY_CON_REF
