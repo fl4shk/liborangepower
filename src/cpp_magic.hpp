@@ -120,6 +120,7 @@
 #define PLUS() +
 #define ZERO() 0
 #define ONE() 1
+#define ELSE() else
 
 /**
  * Causes a function-style macro to require an additional pass to be expanded.
