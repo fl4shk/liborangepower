@@ -519,14 +519,14 @@ public:		// functions
 	}
 
 	template<bool reverse=false>
-	inline NodeIterator front()
+	inline NodeIterator<reverse> front()
 	{
-		return NodeIterator(this, head().next());
+		return NodeIterator<reverse>(this, head().next());
 	}
 	template<bool reverse=false>
-	inline NodeIterator back()
+	inline NodeIterator<reverse> back()
 	{
-		return NodeIterator(this, head().prev());
+		return NodeIterator<reverse>(this, head().prev());
 	}
 
 	template<bool reverse=false>
