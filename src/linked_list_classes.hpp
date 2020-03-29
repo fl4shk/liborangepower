@@ -48,9 +48,13 @@ public:		// types
 		GEN_GETTER_BY_VAL(prev)
 	};
 
+	template<bool _reverse> 
 	class NodeIterator final
 	{
 		friend class PtrCircLinkList;
+
+	public:		// constants
+		static constexpr bool REVERSE = _reverse;
 
 	private:		// variables
 		Node* _node = nullptr;
@@ -70,13 +74,13 @@ public:		// types
 
 		inline NodeIterator& operator ++ ()
 		{
-			_node = _node->next();
+			_node = !REVERSE ? _node->next() : _node->prev();
 			return *this;
 		}
 
 		inline NodeIterator& operator -- ()
 		{
-			_node = _node->prev();
+			_node = !REVERSE ? _node->prev() : _node->next();
 			return *this;
 		}
 
@@ -154,22 +158,55 @@ public:		// functions
 		return (_head._next == &_head);
 	}
 
-	inline NodeIterator begin()
+	inline NodeIterator<false> begin()
 	{
-		return NodeIterator(head()->next());
+		return NodeIterator<false>(head()->next());
 	}
-	inline NodeIterator end()
+	inline const NodeIterator<false> begin() const
 	{
-		return NodeIterator(head());
+		return NodeIterator<false>(head()->next());
+	}
+	inline NodeIterator<false> end()
+	{
+		return NodeIterator<false>(head());
+	}
+	inline const NodeIterator<false> end() const
+	{
+		return NodeIterator<false>(head());
 	}
 
-	inline NodeIterator cbegin() const
+	inline NodeIterator<true> rbegin()
 	{
-		return NodeIterator(_head._next);
+		return NodeIterator<true>(_head._prev);
 	}
-	inline NodeIterator cend() const
+	inline const NodeIterator<true> rbegin() const
 	{
-		return NodeIterator(_head._next->_prev);
+		return NodeIterator<true>(_head._prev);
+	}
+	inline NodeIterator<true> rend()
+	{
+		return NodeIterator<true>(_head._prev->_next);
+	}
+	inline const NodeIterator<true> rend() const
+	{
+		return NodeIterator<true>(_head._prev->_next);
+	}
+
+	inline const NodeIterator<false> cbegin() const
+	{
+		return NodeIterator<false>(_head._next);
+	}
+	inline const NodeIterator<false> cend() const
+	{
+		return NodeIterator<false>(_head._next->_prev);
+	}
+	inline const NodeIterator<true> crbegin() const
+	{
+		return NodeIterator<true>(_head._prev);
+	}
+	inline const NodeIterator<true> crend() const
+	{
+		return NodeIterator<true>(_head._prev->_next);
 	}
 
 	//inline NodeIterator rbegin()
@@ -486,11 +523,11 @@ public:		// functions
 
 	inline NodeIterator<true> rbegin()
 	{
-		return NodeIterator<true>(this, head().next());
+		return NodeIterator<true>(this, head().prev());
 	}
 	inline const NodeIterator<true> rbegin() const
 	{
-		return NodeIterator<true>(this, head().next());
+		return NodeIterator<true>(this, head().prev());
 	}
 	inline NodeIterator<true> rend()
 	{
@@ -511,7 +548,7 @@ public:		// functions
 	}
 	inline const NodeIterator<true> crbegin() const
 	{
-		return NodeIterator<true>(this, head().next());
+		return NodeIterator<true>(this, head().prev());
 	}
 	inline const NodeIterator<true> crend() const
 	{
