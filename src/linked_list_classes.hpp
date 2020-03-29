@@ -447,7 +447,7 @@ public:		// types
 		}
 		inline Node* operator -> () const
 		{
-			return _list->at(_node_index);
+			return &_list->at(_node_index);
 		}
 
 		inline NodeIterator& operator ++ ()
