@@ -3,6 +3,7 @@
 
 //#include "misc_types.hpp"
 
+#include <iostream>
 #include <stack>
 #include <vector>
 #include <stdint.h>
@@ -730,7 +731,46 @@ private:		// functions
 
 } // namespace containers
 
-} // namespace containers
+} // namespace liborangepower
+
+template<typename Type>
+std::ostream& operator << (std::ostream& os,
+	const liborangepower::containers::PtrCircLinkList<Type>& to_print)
+{
+	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
+	{
+		os << *iter;
+
+		auto temp_iter = iter;
+		++temp_iter;
+
+		if (temp_iter != to_print.end())
+		{
+			os << ",";
+		}
+		os << "\n";
+	}
+	return os;
+}
+template<typename Type>
+std::ostream& operator << (std::ostream& os,
+	const liborangepower::containers::IndCircLinkList<Type>& to_print)
+{
+	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
+	{
+		os << *iter;
+
+		auto temp_iter = iter;
+		++temp_iter;
+
+		if (temp_iter != to_print.end())
+		{
+			os << ",";
+		}
+		os << "\n";
+	}
+	return os;
+}
 
 
 #endif		// liborangepower_linked_list_classes_hpp
