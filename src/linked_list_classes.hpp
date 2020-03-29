@@ -469,53 +469,53 @@ public:		// functions
 
 	inline NodeIterator<false> begin()
 	{
-		return NodeIterator<false>(this, head().next(), false);
+		return NodeIterator<false>(this, head().next());
 	}
 	inline const NodeIterator<false> begin() const
 	{
-		return NodeIterator<false>(this, head().next(), false);
+		return NodeIterator<false>(this, head().next());
 	}
 	inline NodeIterator<false> end()
 	{
-		return NodeIterator<false>(this, HEAD_INDEX, false);
+		return NodeIterator<false>(this, HEAD_INDEX);
 	}
 	inline const NodeIterator<false> end() const
 	{
-		return NodeIterator<false>(this, HEAD_INDEX, false);
+		return NodeIterator<false>(this, HEAD_INDEX);
 	}
 
 	inline NodeIterator<true> rbegin()
 	{
-		return NodeIterator<true>(this, head().next(), true);
+		return NodeIterator<true>(this, head().next());
 	}
 	inline const NodeIterator<true> rbegin() const
 	{
-		return NodeIterator<true>(this, head().next(), true);
+		return NodeIterator<true>(this, head().next());
 	}
 	inline NodeIterator<true> rend()
 	{
-		return NodeIterator<true>(this, HEAD_INDEX, true);
+		return NodeIterator<true>(this, HEAD_INDEX);
 	}
 	inline const NodeIterator<true> rend() const
 	{
-		return NodeIterator<true>(this, HEAD_INDEX, true);
+		return NodeIterator<true>(this, HEAD_INDEX);
 	}
 
 	inline const NodeIterator<false> cbegin() const
 	{
-		return NodeIterator<false>(this, head().next(), false);
+		return NodeIterator<false>(this, head().next());
 	}
 	inline const NodeIterator<false> cend() const
 	{
-		return NodeIterator<false>(this, HEAD_INDEX, false);
+		return NodeIterator<false>(this, HEAD_INDEX);
 	}
 	inline const NodeIterator<true> crbegin() const
 	{
-		return NodeIterator<true>(this, head().next(), true);
+		return NodeIterator<true>(this, head().next());
 	}
 	inline const NodeIterator<true> crend() const
 	{
-		return NodeIterator<true>(this, HEAD_INDEX, true);
+		return NodeIterator<true>(this, HEAD_INDEX);
 	}
 
 	template<bool reverse=false>
