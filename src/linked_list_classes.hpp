@@ -349,20 +349,28 @@ public:		// types
 		GEN_GETTER_BY_VAL(prev);
 	};
 
+	template<bool _reverse=false> 
 	class NodeIterator final
 	{
 		friend class IndCircLinkList;
 
+	public:		// constants
+		static constexpr bool REVERSE = _reverse;
+
 	private:		// variables
 		IndCircLinkList* _list = nullptr;
 		IndexT _node_index = NULL_INDEX;
-		bool _reverse = false;
 
 	public:		// functions
 		NodeIterator() = default;
-		inline NodeIterator(IndCircLinkList* s_list, IndexT s_node_index,
-			bool s_reverse=false)
-			: _list(s_list), _node_index(s_node_index), _reverse(s_reverse)
+		inline NodeIterator(IndCircLinkList* s_list, IndexT s_node_index)
+			: _list(s_list), _node_index(s_node_index)
+		{
+		}
+		inline NodeIterator(const IndCircLinkList* s_list,
+			IndexT s_node_index)
+			: _list(const_cast<IndCircLinkList*>(s_list)),
+			_node_index(s_node_index)
 		{
 		}
 
