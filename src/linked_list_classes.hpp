@@ -739,7 +739,7 @@ std::ostream& operator << (std::ostream& os,
 {
 	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
 	{
-		os << *iter;
+		os << iter->data;
 
 		auto temp_iter = iter;
 		++temp_iter;
@@ -758,7 +758,7 @@ std::ostream& operator << (std::ostream& os,
 {
 	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
 	{
-		os << *iter;
+		os << iter->data;
 
 		auto temp_iter = iter;
 		++temp_iter;
