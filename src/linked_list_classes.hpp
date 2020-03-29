@@ -368,7 +368,7 @@ public:		// types
 
 		~NodeIterator() = default;
 
-		inline Node& node()
+		inline Node& node() const
 		{
 			return _list->at(_node_index);
 		}
