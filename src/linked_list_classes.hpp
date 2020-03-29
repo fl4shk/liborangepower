@@ -395,13 +395,13 @@ public:		// types
 
 		inline NodeIterator& operator ++ ()
 		{
-			_node_index = !_reverse ? node.next() : node.prev();
+			_node_index = !_reverse ? node().next() : node().prev();
 			return *this;
 		}
 
 		inline NodeIterator& operator -- ()
 		{
-			_node_index = !_reverse ? node.prev() : node.next();
+			_node_index = !_reverse ? node().prev() : node().next();
 			return *this;
 		}
 
