@@ -349,7 +349,7 @@ public:		// types
 		GEN_GETTER_BY_VAL(prev);
 	};
 
-	template<bool _reverse=false> 
+	template<bool _reverse> 
 	class NodeIterator final
 	{
 		friend class IndCircLinkList;
@@ -467,81 +467,87 @@ public:		// functions
 		return (head()._next == HEAD_INDEX);
 	}
 
-	inline NodeIterator begin()
+	inline NodeIterator<false> begin()
 	{
-		return NodeIterator(this, head().next(), false);
+		return NodeIterator<false>(this, head().next(), false);
 	}
-	inline const NodeIterator begin() const
+	inline const NodeIterator<false> begin() const
 	{
-		return NodeIterator(this, head().next(), false);
+		return NodeIterator<false>(this, head().next(), false);
 	}
-	inline NodeIterator end()
+	inline NodeIterator<false> end()
 	{
-		return NodeIterator(this, HEAD_INDEX, false);
+		return NodeIterator<false>(this, HEAD_INDEX, false);
 	}
-	inline const NodeIterator end() const
+	inline const NodeIterator<false> end() const
 	{
-		return NodeIterator(this, HEAD_INDEX, false);
-	}
-
-	inline NodeIterator rbegin()
-	{
-		return NodeIterator(this, head().next(), true);
-	}
-	inline const NodeIterator rbegin() const
-	{
-		return NodeIterator(this, head().next(), true);
-	}
-	inline NodeIterator rend()
-	{
-		return NodeIterator(this, HEAD_INDEX, true);
-	}
-	inline const NodeIterator rend() const
-	{
-		return NodeIterator(this, HEAD_INDEX, true);
+		return NodeIterator<false>(this, HEAD_INDEX, false);
 	}
 
-	inline const NodeIterator cbegin() const
+	inline NodeIterator<true> rbegin()
 	{
-		return NodeIterator(this, head().next(), false);
+		return NodeIterator<true>(this, head().next(), true);
 	}
-	inline const NodeIterator cend() const
+	inline const NodeIterator<true> rbegin() const
 	{
-		return NodeIterator(this, HEAD_INDEX, false);
+		return NodeIterator<true>(this, head().next(), true);
 	}
-	inline const NodeIterator crbegin() const
+	inline NodeIterator<true> rend()
 	{
-		return NodeIterator(this, head().next(), true);
+		return NodeIterator<true>(this, HEAD_INDEX, true);
 	}
-	inline const NodeIterator crend() const
+	inline const NodeIterator<true> rend() const
 	{
-		return NodeIterator(this, HEAD_INDEX, true);
+		return NodeIterator<true>(this, HEAD_INDEX, true);
 	}
 
+	inline const NodeIterator<false> cbegin() const
+	{
+		return NodeIterator<false>(this, head().next(), false);
+	}
+	inline const NodeIterator<false> cend() const
+	{
+		return NodeIterator<false>(this, HEAD_INDEX, false);
+	}
+	inline const NodeIterator<true> crbegin() const
+	{
+		return NodeIterator<true>(this, head().next(), true);
+	}
+	inline const NodeIterator<true> crend() const
+	{
+		return NodeIterator<true>(this, HEAD_INDEX, true);
+	}
+
+	template<bool reverse=false>
 	inline NodeIterator front()
 	{
 		return NodeIterator(this, head().next());
 	}
+	template<bool reverse=false>
 	inline NodeIterator back()
 	{
 		return NodeIterator(this, head().prev());
 	}
 
-	inline NodeIterator push_front(const Type& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_front(const Type& to_push)
 	{
-		return insert_after(HEAD_INDEX, to_push);
+		return insert_after<reverse>(HEAD_INDEX, to_push);
 	}
-	inline NodeIterator push_front(Type&& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_front(Type&& to_push)
 	{
-		return insert_after(HEAD_INDEX, std::move(to_push));
+		return insert_after<reverse>(HEAD_INDEX, std::move(to_push));
 	}
-	inline NodeIterator push_back(const Type& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_back(const Type& to_push)
 	{
-		return insert_before(HEAD_INDEX, to_push);
+		return insert_before<reverse>(HEAD_INDEX, to_push);
 	}
-	inline NodeIterator push_back(Type&& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_back(Type&& to_push)
 	{
-		return insert_before(HEAD_INDEX, std::move(to_push));
+		return insert_before<reverse>(HEAD_INDEX, std::move(to_push));
 	}
 	inline void pop_front()
 	{
@@ -552,22 +558,32 @@ public:		// functions
 		remove_before(HEAD_INDEX);
 	}
 
-	inline NodeIterator insert_before(IndexT where, const Type& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_before(IndexT where,
+		const Type& to_insert)
 	{
-		return _inner_insert_before(where, Node(to_insert));
+		return _inner_insert_before<reverse>(where, Node(to_insert));
 	}
-	inline NodeIterator insert_before(IndexT where, Type&& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_before(IndexT where,
+		Type&& to_insert)
 	{
-		return _inner_insert_before(where, Node(std::move(to_insert)));
+		return _inner_insert_before<reverse>(where,
+			Node(std::move(to_insert)));
 	}
 
-	inline NodeIterator insert_after(IndexT where, const Type& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_after(IndexT where,
+		const Type& to_insert)
 	{
-		return _inner_insert_after(where, Node(to_insert));
+		return _inner_insert_after<reverse>(where, Node(to_insert));
 	}
-	inline NodeIterator insert_after(IndexT where, Type&& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_after(IndexT where,
+		Type&& to_insert)
 	{
-		return _inner_insert_after(where, Node(std::move(to_insert)));
+		return _inner_insert_after<reverse>(where,
+			Node(std::move(to_insert)));
 	}
 
 	inline void remove_before(IndexT where)
@@ -611,7 +627,9 @@ public:		// functions
 	}
 
 private:		// functions
-	inline NodeIterator _inner_insert_before(IndexT where, Node&& what)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> _inner_insert_before(IndexT where,
+		Node&& what)
 	{
 		const auto what_index = _alloc_what_index(std::move(what));
 
@@ -623,10 +641,12 @@ private:		// functions
 		at(where)._prev = what_index;
 		at(what_index)._next = where;
 
-		return NodeIterator(this, what_index);
+		return NodeIterator<reverse>(this, what_index);
 	}
 
-	inline NodeIterator _inner_insert_after(IndexT where, Node&& what)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> _inner_insert_after(IndexT where,
+		Node&& what)
 	{
 		const auto what_index = _alloc_what_index(std::move(what));
 
@@ -638,7 +658,7 @@ private:		// functions
 		at(where)._next = what_index;
 		at(what_index)._prev = where;
 
-		return NodeIterator(this, what_index);
+		return NodeIterator<reverse>(this, what_index);
 	}
 
 	inline IndexT _alloc_what_index(Node&& what)
