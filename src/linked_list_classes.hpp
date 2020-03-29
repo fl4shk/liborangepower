@@ -154,11 +154,11 @@ public:		// functions
 		return (_head._next == &_head);
 	}
 
-	inline NodeIterator begin() const
+	inline NodeIterator begin()
 	{
 		return NodeIterator(head()->next());
 	}
-	inline NodeIterator end() const
+	inline NodeIterator end()
 	{
 		return NodeIterator(head());
 	}
@@ -356,11 +356,13 @@ public:		// types
 	private:		// variables
 		IndCircLinkList* _list = nullptr;
 		IndexT _node_index = NULL_INDEX;
+		bool _reverse = false;
 
 	public:		// functions
 		NodeIterator() = default;
-		inline NodeIterator(IndCircLinkList* s_list, IndexT s_node_index)
-			: _list(s_list), _node_index(s_node_index)
+		inline NodeIterator(IndCircLinkList* s_list, IndexT s_node_index,
+			bool s_reverse=false)
+			: _list(s_list), _node_index(s_node_index), _reverse(s_reverse)
 		{
 		}
 
@@ -393,13 +395,13 @@ public:		// types
 
 		inline NodeIterator& operator ++ ()
 		{
-			_node_index = node().next();
+			_node_index = !_reverse ? node.next() : node.prev();
 			return *this;
 		}
 
 		inline NodeIterator& operator -- ()
 		{
-			_node_index = node().prev();
+			_node_index = !_reverse ? node.prev() : node.next();
 			return *this;
 		}
 
@@ -457,22 +459,55 @@ public:		// functions
 		return (head()._next == HEAD_INDEX);
 	}
 
-	inline NodeIterator begin() const
+	inline NodeIterator begin()
 	{
-		return NodeIterator(this, head().next());
+		return NodeIterator(this, head().next(), false);
 	}
-	inline NodeIterator end() const
+	inline const NodeIterator begin() const
 	{
-		return NodeIterator(this, HEAD_INDEX);
+		return NodeIterator(this, head().next(), false);
+	}
+	inline NodeIterator end()
+	{
+		return NodeIterator(this, HEAD_INDEX, false);
+	}
+	inline const NodeIterator end() const
+	{
+		return NodeIterator(this, HEAD_INDEX, false);
 	}
 
-	inline NodeIterator cbegin() const
+	inline NodeIterator rbegin()
 	{
-		return NodeIterator(this, head().next());
+		return NodeIterator(this, head().next(), true);
 	}
-	inline NodeIterator cend() const
+	inline const NodeIterator rbegin() const
 	{
-		return NodeIterator(this, HEAD_INDEX);
+		return NodeIterator(this, head().next(), true);
+	}
+	inline NodeIterator rend()
+	{
+		return NodeIterator(this, HEAD_INDEX, true);
+	}
+	inline const NodeIterator rend() const
+	{
+		return NodeIterator(this, HEAD_INDEX, true);
+	}
+
+	inline const NodeIterator cbegin() const
+	{
+		return NodeIterator(this, head().next(), false);
+	}
+	inline const NodeIterator cend() const
+	{
+		return NodeIterator(this, HEAD_INDEX, false);
+	}
+	inline const NodeIterator crbegin() const
+	{
+		return NodeIterator(this, head().next(), true);
+	}
+	inline const NodeIterator crend() const
+	{
+		return NodeIterator(this, HEAD_INDEX, true);
 	}
 
 	inline NodeIterator front()
