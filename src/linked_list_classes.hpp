@@ -377,6 +377,20 @@ public:		// types
 			return _list->at(_node_index);
 		}
 
+		inline operator Node* () const
+		{
+			return node();
+		}
+
+		inline Node& operator * () const
+		{
+			return node();
+		}
+		inline Node* operator -> () const
+		{
+			return &node();
+		}
+
 		inline NodeIterator& operator ++ ()
 		{
 			_node_index = node().next();
