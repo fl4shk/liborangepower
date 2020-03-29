@@ -209,15 +209,6 @@ public:		// functions
 		return NodeIterator<true>(_head._prev->_next);
 	}
 
-	//inline NodeIterator rbegin()
-	//{
-	//	return NodeIterator(head()->prev());
-	//}
-	//inline NodeIterator rend()
-	//{
-	//	return NodeIterator(head());
-	//}
-
 	bool contains(Node* where) const
 	{
 		//for (auto iter : *this)
@@ -232,30 +223,36 @@ public:		// functions
 		return false;
 	}
 
-	inline NodeIterator front()
+	template<bool reverse=false>
+	inline NodeIterator<reverse> front()
 	{
-		return NodeIterator(_head._next);
+		return NodeIterator<reverse>(_head._next);
 	}
-	inline NodeIterator back()
+	template<bool reverse=false>
+	inline NodeIterator<reverse> back()
 	{
-		return NodeIterator(_head._prev);
+		return NodeIterator<reverse>(_head._prev);
 	}
 
-	inline NodeIterator push_front(const Type& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_front(const Type& to_push)
 	{
-		return insert_after(head(), to_push);
+		return insert_after<reverse>(head(), to_push);
 	}
-	inline NodeIterator push_front(Type&& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_front(Type&& to_push)
 	{
-		return insert_after(head(), std::move(to_push));
+		return insert_after<reverse>(head(), std::move(to_push));
 	}
-	inline NodeIterator push_back(const Type& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_back(const Type& to_push)
 	{
-		return insert_before(head(), to_push);
+		return insert_before<reverse>(head(), to_push);
 	}
-	inline NodeIterator push_back(Type&& to_push)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> push_back(Type&& to_push)
 	{
-		return insert_before(head(), std::move(to_push));
+		return insert_before<reverse>(head(), std::move(to_push));
 	}
 	inline void pop_front()
 	{
@@ -267,22 +264,32 @@ public:		// functions
 	}
 
 
-	inline NodeIterator insert_before(Node* where, const Type& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_before(Node* where,
+		const Type& to_insert)
 	{
-		return _inner_insert_before(where, new Node(to_insert));
+		return _inner_insert_before<reverse>(where, new Node(to_insert));
 	}
-	inline NodeIterator insert_before(Node* where, Type&& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_before(Node* where,
+		Type&& to_insert)
 	{
-		return _inner_insert_before(where, new Node(std::move(to_insert)));
+		return _inner_insert_before<reverse>(where,
+			new Node(std::move(to_insert)));
 	}
 
-	inline NodeIterator insert_after(Node* where, const Type& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_after(Node* where,
+		const Type& to_insert)
 	{
-		return _inner_insert_after(where, new Node(to_insert));
+		return _inner_insert_after<reverse>(where, new Node(to_insert));
 	}
-	inline NodeIterator insert_after(Node* where, Type&& to_insert)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> insert_after(Node* where,
+		Type&& to_insert)
 	{
-		return _inner_insert_after(where, new Node(std::move(to_insert)));
+		return _inner_insert_after<reverse>(where,
+			new Node(std::move(to_insert)));
 	}
 
 	inline void remove_before(Node* where)
@@ -318,7 +325,9 @@ public:		// functions
 	}
 
 private:		// functions
-	inline NodeIterator _inner_insert_before(Node* where, Node* what)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> _inner_insert_before(Node* where,
+		Node* what)
 	{
 		auto old_prev = where->_prev;
 
@@ -328,10 +337,12 @@ private:		// functions
 		where->_prev = what;
 		what->_next = where;
 
-		return NodeIterator(what);
+		return NodeIterator<reverse>(what);
 	}
 
-	inline NodeIterator _inner_insert_after(Node* where, Node* what)
+	template<bool reverse=false>
+	inline NodeIterator<reverse> _inner_insert_after(Node* where,
+		Node* what)
 	{
 		auto old_next = where->_next;
 
@@ -341,7 +352,7 @@ private:		// functions
 		where->_next = what;
 		what->_prev = where;
 
-		return NodeIterator(what);
+		return NodeIterator<reverse>(what);
 	}
 };
 
