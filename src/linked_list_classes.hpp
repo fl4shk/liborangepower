@@ -154,11 +154,11 @@ public:		// functions
 		return (_head._next == &_head);
 	}
 
-	inline NodeIterator begin()
+	inline NodeIterator begin() const
 	{
 		return NodeIterator(head()->next());
 	}
-	inline NodeIterator end()
+	inline NodeIterator end() const
 	{
 		return NodeIterator(head());
 	}
