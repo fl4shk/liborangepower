@@ -16,14 +16,21 @@ typedef mpz_class BigNum;
 
 bool str_is_base_10_sint_bignum(const std::string& str, BigNum& ret);
 
-inline std::string convert_bignum_to_str(const BigNum& in_bignum)
+template<typename Type>
+inline Type convert_bignum_to(const BigNum& to_conv)
 {
-	std::string ret;
+	Type ret;
 	std::stringstream sstm;
 	sstm << in_bignum;
 	sstm >> ret;
 	return ret;
 }
+
+inline std::string convert_bignum_to_str(const BigNum& to_conv)
+{
+	return convert_bignum_to<std::string>(to_conv);
+}
+
 
 } // namespace bignum
 
