@@ -21,7 +21,7 @@ public:		// functions
 	inline OptArg(const string& to_parse, size_t num_prefixes=2,
 		char prefix='-')
 	{
-		bool old_left, left = true;
+		bool left = true;
 
 		for (const auto& c: to_parse)
 		{
@@ -47,14 +47,14 @@ public:		// functions
 					}
 					else
 					{
-						if (_opt.size() < (num_prefixes + 1))
+						if ((_opt.size() < (num_prefixes + 1))
+							|| (c != '='))
 						{
 							_valid = false;
 							break;
 						}
 						else
 						{
-							old_left = left;
 							left = false;
 						}
 					}
@@ -62,19 +62,7 @@ public:		// functions
 			}
 			else // if (!left)
 			{
-				if (old_left)
-				{
-					if (c != '=')
-					{
-						_valid = false;
-						break;
-					}
-				}
-				else // if (!old_left)
-				{
-					_val += c;
-				}
-				old_left = left;
+				_val += c;
 			}
 		}
 
