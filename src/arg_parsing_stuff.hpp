@@ -18,6 +18,9 @@ private:		// variables
 	std::string _opt, _val;
 	bool _valid = true;
 public:		// functions
+	inline OptArg()
+	{
+	}
 	inline OptArg(const string& to_parse, size_t num_prefixes=2,
 		char prefix='-')
 	{
