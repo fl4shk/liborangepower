@@ -12,7 +12,7 @@ namespace liborangepower
 namespace strings
 {
 
-inline std::unique_ptr<char[]>&& get_temp_path(const std::string& path)
+inline std::unique_ptr<char[]> get_temp_path(const std::string& path)
 {
 	std::unique_ptr<char[]> temp_path(new char[path.size() + 1]);
 	temp_path[path.size()] = '\0';
@@ -22,7 +22,7 @@ inline std::unique_ptr<char[]>&& get_temp_path(const std::string& path)
 		temp_path[i] = path.at(i);
 	}
 
-	return std::move(temp_path);
+	return temp_path;
 }
 
 // Once I hit C++20, I should probably use std::filesystem... unless that
