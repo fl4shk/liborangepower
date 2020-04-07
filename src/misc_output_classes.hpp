@@ -128,6 +128,10 @@ inline std::string strappcom(const FirstArgType& first_val,
 	return ret;
 }
 
+inline std::string strappcom2()
+{
+	return std::string();
+}
 template<typename FirstArgType, typename... RemArgTypes>
 inline std::string strappcom2(const FirstArgType& first_val,
 	RemArgTypes&&... rem_args)
