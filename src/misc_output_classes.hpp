@@ -128,21 +128,22 @@ inline std::string strappcom(const FirstArgType& first_val,
 	return ret;
 }
 
-inline std::string strappcom2()
-{
-	return std::string();
-}
-template<typename FirstArgType, typename... RemArgTypes>
-inline std::string strappcom2(const FirstArgType& first_val,
-	RemArgTypes&&... rem_args)
+template<typename... ArgTypes>
+inline std::string strappcom2(ArgTypes&&... args)
 {
 	//std::string ret = std::move(strappcom(first_val, rem_args...));
 
 	//ret = std::move(ret.substr(0, ret.size() - std::string(", ").size()));
 
-	std::string ret = strappcom(first_val, rem_args...);
+	std::string ret = strappcom(args...);
 
-	ret = ret.substr(0, ret.size() - std::string(", ").size());
+	if constexpr (sizeof...(args) > 0)
+	{
+		if (ret.size() != 0)
+		{
+			ret = ret.substr(0, ret.size() - std::string(", ").size());
+		}
+	}
 
 	return ret;
 }
