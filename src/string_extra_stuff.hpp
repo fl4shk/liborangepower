@@ -12,7 +12,7 @@ namespace liborangepower
 namespace strings
 {
 
-inline std::unique_ptr<char[]>&& get_temp_path(const string& path)
+inline std::unique_ptr<char[]>&& get_temp_path(const std::string& path)
 {
 	std::unique_ptr<char[]> temp_path(new char[path.size() + 1]);
 	temp_path[path.size()] = '\0';
@@ -27,7 +27,7 @@ inline std::unique_ptr<char[]>&& get_temp_path(const string& path)
 
 // Once I hit C++20, I should probably use std::filesystem... unless that
 // exists in C++17?
-inline std::string dirname(const string& path)
+inline std::string dirname(const std::string& path)
 {
 	std::string ret;
 
@@ -41,7 +41,7 @@ inline std::string dirname(const string& path)
 
 	return ret;
 }
-inline std::string basename(const string& path)
+inline std::string basename(const std::string& path)
 {
 	std::string ret;
 	auto&& temp_path = std::move(get_temp_path(path));
@@ -54,7 +54,8 @@ inline std::string basename(const string& path)
 
 	return ret;
 }
-inline std::string strip_file_ext(const string& path, size_t how_many=1)
+inline std::string strip_file_ext(const std::string& path,
+	size_t how_many=1)
 {
 	// Hopefully this won't include the ".".
 	std::string ret = path.substr(0, path.rfind("."));
