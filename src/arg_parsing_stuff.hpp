@@ -18,7 +18,8 @@ private:		// variables
 	std::string _opt, _val;
 	bool _valid = true;
 public:		// functions
-	inline OptArg(const string& to_parse)
+	inline OptArg(const string& to_parse, size_t num_prefixes=2,
+		char prefix='-')
 	{
 		bool old_left, left = true;
 
@@ -26,14 +27,37 @@ public:		// functions
 		{
 			if (left)
 			{
-				if (isalnum(c) || (c == '_'))
+				if (_opt.size() < num_prefixes)
 				{
-					_opt += c;
+					if (c == prefix)
+					{
+						_opt += c;
+					}
+					else // if (c != prefix)
+					{
+						_valid = false;
+						break;
+					}
 				}
-				else
+				else // if (_opt.size() >= num_prefixes)
 				{
-					old_left = left;
-					left = false;
+					if (isalnum(c) || (c == '_'))
+					{
+						_opt += c;
+					}
+					else
+					{
+						if (_opt.size() < (num_prefixes + 1))
+						{
+							_valid = false;
+							break;
+						}
+						else
+						{
+							old_left = left;
+							left = false;
+						}
+					}
 				}
 			}
 			else // if (!left)
@@ -54,7 +78,7 @@ public:		// functions
 			}
 		}
 
-		if (_opt.size() == 0)
+		if (_opt.size() < (num_prefixes + 1))
 		{
 			_valid = false;
 		}
