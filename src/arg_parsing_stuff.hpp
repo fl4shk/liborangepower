@@ -79,7 +79,7 @@ public:		// functions
 
 	GEN_GETTER_BY_CON_REF(opt);
 	GEN_GETTER_BY_CON_REF(val);
-	GEN_GETTER_BY_VAL(val);
+	GEN_GETTER_BY_VAL(valid);
 };
 
 } // namespace arg_parse
