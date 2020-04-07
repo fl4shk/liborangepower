@@ -25,6 +25,8 @@ inline std::unique_ptr<char[]>&& get_temp_path(const string& path)
 	return std::move(temp_path);
 }
 
+// Once I hit C++20, I should probably use std::filesystem... unless that
+// exists in C++17?
 inline std::string dirname(const string& path)
 {
 	std::string ret;
@@ -48,6 +50,18 @@ inline std::string basename(const string& path)
 	for (char c=modded_path[0]; c!='\0'; ++c)
 	{
 		ret += c;
+	}
+
+	return ret;
+}
+inline std::string strip_file_ext(const string& path, size_t how_many=1)
+{
+	// Hopefully this won't include the ".".
+	std::string ret = path.substr(0, path.rfind("."));
+
+	if (how_many > 1)
+	{
+		return strip_file_ext(ret, how_many - 1);
 	}
 
 	return ret;
