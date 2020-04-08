@@ -80,15 +80,17 @@ public:		// functions
 
 	inline std::string errwarn_msg_dup() const
 	{
-		return sconcat("Duplicate \"", opt(), "\" option.");
+		return misc_output::sconcat("Duplicate \"", opt(), "\" option.");
 	}
 	inline std::string errwarn_msg_has_val() const
 	{
-		return sconcat("Option \"", opt(), "\" takes no value.");
+		return misc_output::sconcat("Option \"", opt(),
+			"\" takes no value.");
 	}
 	inline std::string errwarn_msg_no_val() const
 	{
-		return sconcat("Option \"", opt(), "\" requires a value.");
+		return misc_output::sconcat("Option \"", opt(),
+			"\" requires a value.");
 	}
 
 	GEN_GETTER_BY_CON_REF(opt);
