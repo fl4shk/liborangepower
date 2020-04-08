@@ -77,6 +77,15 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OptArg);
 	inline ~OptArg() = default;
 
+	inline std::string errwarn_msg_dup() const
+	{
+		return sconcat("Duplicate \"", opt(), "\" option.\n");
+	}
+	inline string errwarn_msg_has_val() const
+	{
+		printerr("Option \"", opt(), "\" takes no value.\n");
+	}
+
 	GEN_GETTER_BY_CON_REF(opt);
 	GEN_GETTER_BY_CON_REF(val);
 	GEN_GETTER_BY_VAL(valid);
