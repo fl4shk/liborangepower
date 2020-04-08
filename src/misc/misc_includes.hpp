@@ -1,5 +1,5 @@
-#ifndef liborangepower_misc_includes_hpp
-#define liborangepower_misc_includes_hpp
+#ifndef liborangepower_misc_misc_includes_hpp
+#define liborangepower_misc_misc_includes_hpp
 
 #include <iostream>
 #include <vector>
@@ -25,4 +25,4 @@ using std::cin;
 using std::endl;
 
 
-#endif		// liborangepower_misc_includes_hpp
+#endif		// liborangepower_misc_misc_includes_hpp

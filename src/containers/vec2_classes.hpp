@@ -1,7 +1,7 @@
-#ifndef liborangepower_vec2_classes_hpp
-#define liborangepower_vec2_classes_hpp
+#ifndef liborangepower_containers_vec2_classes_hpp
+#define liborangepower_containers_vec2_classes_hpp
 
-#include "gen_class_innards_defines.hpp"
+#include "../gen_class_innards_defines.hpp"
 
 namespace liborangepower
 {
@@ -31,4 +31,4 @@ public:		// functions
 
 } // namespace liborangepower
 
-#endif		// liborangepower_vec2_classes_hpp
+#endif		// liborangepower_containers_vec2_classes_hpp

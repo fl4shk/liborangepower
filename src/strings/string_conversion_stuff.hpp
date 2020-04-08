@@ -1,8 +1,8 @@
-#ifndef liborangepower_string_conversion_stuff_hpp
-#define liborangepower_string_conversion_stuff_hpp
+#ifndef liborangepower_strings_string_conversion_stuff_hpp
+#define liborangepower_strings_string_conversion_stuff_hpp
 
 
-#include "misc_includes.hpp"
+#include "../misc/misc_includes.hpp"
 
 namespace liborangepower
 {
@@ -29,4 +29,4 @@ inline Type convert_str_to(const std::string& to_convert)
 
 
 
-#endif		// liborangepower_string_conversion_stuff_hpp
+#endif		// liborangepower_strings_string_conversion_stuff_hpp

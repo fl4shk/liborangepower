@@ -1,9 +1,9 @@
 #ifndef liborangepower_str_split_helper_classes_hpp
 #define liborangepower_str_split_helper_classes_hpp
 
-#include "misc_types.hpp"
-#include "misc_defines.hpp"
-#include "misc_includes.hpp"
+#include "misc/misc_types.hpp"
+#include "misc/misc_defines.hpp"
+#include "misc/misc_includes.hpp"
 
 //namespace liborangepower
 //{

@@ -1,5 +1,5 @@
-#ifndef liborangepower_misc_input_classes_hpp
-#define liborangepower_misc_input_classes_hpp
+#ifndef liborangepower_misc_misc_input_classes_hpp
+#define liborangepower_misc_misc_input_classes_hpp
 
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
@@ -72,4 +72,4 @@ inline std::string get_stdin_as_str()
 
 
 
-#endif		// liborangepower_misc_input_classes_hpp
+#endif		// liborangepower_misc_miscinput_classes_hpp

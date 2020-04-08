@@ -1,8 +1,8 @@
 #ifndef liborangepower_mpi_handler_class_hpp
 #define liborangepower_mpi_handler_class_hpp
 
-#include "misc_includes.hpp"
-#include "misc_output_classes.hpp"
+#include "misc/misc_includes.hpp"
+#include "misc/misc_output_classes.hpp"
 #include <mpi.h>
 
 
@@ -48,10 +48,10 @@ public:		// functions
 	{
 		static_assert(root == 0, "root must equal zero");
 
-		raw_init(*_argc_ptr, *_argv_ptr);
+		_raw_init(*_argc_ptr, *_argv_ptr);
 
-		set_world_rank(raw_comm_rank(MPI_COMM_WORLD));
-		set_world_size(raw_comm_size(MPI_COMM_WORLD));
+		set_world_rank(_raw_comm_rank(MPI_COMM_WORLD));
+		set_world_size(_raw_comm_size(MPI_COMM_WORLD));
 		set_num_threads_per_proc(s_num_threads_per_proc);
 		set_min_world_size(s_min_world_size);
 
@@ -59,14 +59,14 @@ public:		// functions
 		{
 			misc_output::printerr("World size must be at least ",
 				min_world_size(), " for ", argv()[0], "\n");
-			regular_abort(ErrorCode::TooFewProcs);
+			_regular_abort(ErrorCode::TooFewProcs);
 		}
 
 	}
 
 	virtual inline ~MpiHandler()
 	{
-		raw_finalize();
+		_raw_finalize();
 	}
 
 	inline int argc() const
@@ -87,7 +87,7 @@ public:		// functions
 		MPI_HANDLER_STATIC_ASSERT_0(Type, "send");
 		MPI_HANDLER_STATIC_ASSERT_1(Type, "send");
 
-		return wrapped_send(buf, num_instances, dst, tag, comm);
+		return _wrapped_send(buf, num_instances, dst, tag, comm);
 	}
 	template<typename ArrType>
 	inline int send(const ArrType& buf, int dst, int tag=0,
@@ -110,7 +110,7 @@ public:		// functions
 	//	MPI_HANDLER_STATIC_ASSERT_0(Type, "send_single");
 	//	MPI_HANDLER_STATIC_ASSERT_1(Type, "send_single");
 	//
-	//	return wrapped_send(non_buf, 1, dst, tag, comm);
+	//	return _wrapped_send(non_buf, 1, dst, tag, comm);
 	//}
 	template<typename Type>
 	inline int send_single(const Type& some_var, int dst, int tag=0,
@@ -119,7 +119,7 @@ public:		// functions
 		MPI_HANDLER_STATIC_ASSERT_0(Type, "send_single");
 		MPI_HANDLER_STATIC_ASSERT_1(Type, "send_single");
 
-		return wrapped_send(&some_var, 1, dst, tag, comm);
+		return _wrapped_send(&some_var, 1, dst, tag, comm);
 	}
 
 
@@ -131,7 +131,7 @@ public:		// functions
 		MPI_HANDLER_STATIC_ASSERT_0(Type, "recv");
 		MPI_HANDLER_STATIC_ASSERT_1(Type, "recv");
 
-		return wrapped_recv(buf, num_instances, src, tag, comm, status);
+		return _wrapped_recv(buf, num_instances, src, tag, comm, status);
 	}
 	template<typename ArrType>
 	inline int recv(ArrType& buf, int src,
@@ -156,7 +156,7 @@ public:		// functions
 		MPI_HANDLER_STATIC_ASSERT_0(Type, "recv_single");
 		MPI_HANDLER_STATIC_ASSERT_1(Type, "recv_single");
 
-		return wrapped_recv(&some_var, 1, src, tag, comm, status);
+		return _wrapped_recv(&some_var, 1, src, tag, comm, status);
 	}
 
 	// This form of reduce() is not very much of a wrapper.  That is
@@ -179,7 +179,7 @@ public:		// functions
 		MPI_HANDLER_STATIC_ASSERT_0(Type, "send_recv");
 		MPI_HANDLER_STATIC_ASSERT_1(Type, "send_recv");
 
-		return wrapped_send_recv(send_buf, num_send_instances, dst,
+		return _wrapped_send_recv(send_buf, num_send_instances, dst,
 			send_tag, recv_buf, num_recv_instances, src, recv_tag, comm,
 			status);
 		//return raw_send_recv(send_buf, num_send_instances * sizeof(Type),
@@ -196,7 +196,7 @@ public:		// functions
 		MPI_HANDLER_STATIC_ASSERT_0(Type, "send_recv_single");
 		MPI_HANDLER_STATIC_ASSERT_1(Type, "send_recv_single");
 
-		return wrapped_send_recv(&to_send, 1, dst, send_tag,
+		return _wrapped_send_recv(&to_send, 1, dst, send_tag,
 			&to_recv, 1, src, recv_tag, comm, status);
 	}
 	template<typename Type>
@@ -234,7 +234,7 @@ public:		// functions
 
 protected:		// functions
 	template<typename... arg_types>
-	inline void quit_with_misc_output(arg_types&&... args) const
+	inline void _quit_with_misc_output(arg_types&&... args) const
 	{
 		if (world_rank() == root)
 		{
@@ -255,56 +255,56 @@ protected:		// functions
 			recv_single(to_recv, root);
 		}
 
-		regular_abort(ErrorCode::DidQuitWithMiscOutput);
+		_regular_abort(ErrorCode::DidQuitWithMiscOutput);
 	}
 
-	inline int raw_init(int& argc, char**& argv) const
+	inline int _raw_init(int& argc, char**& argv) const
 	{
 		return MPI_Init(&argc, &argv);
 	}
 
-	inline int raw_comm_rank(MPI_Comm comm) const
+	inline int _raw_comm_rank(MPI_Comm comm) const
 	{
 		int temp_world_rank;
 		MPI_Comm_rank(comm, &temp_world_rank);
 		return temp_world_rank;
 	}
-	inline int raw_comm_size(MPI_Comm comm) const
+	inline int _raw_comm_size(MPI_Comm comm) const
 	{
 		int temp_world_size;
 		MPI_Comm_size(comm, &temp_world_size);
 		return temp_world_size;
 	}
-	inline int raw_abort(MPI_Comm comm, int ec) const
+	inline int _raw_abort(MPI_Comm comm, int ec) const
 	{
 		return MPI_Abort(comm, ec);
 	}
-	inline int regular_abort(const ErrorCode& ec) const
+	inline int _regular_abort(const ErrorCode& ec) const
 	{
-		return raw_abort(MPI_COMM_WORLD, static_cast<int>(ec));
+		return _raw_abort(MPI_COMM_WORLD, static_cast<int>(ec));
 	}
 
-	inline int raw_finalize() const
+	inline int _raw_finalize() const
 	{
 		return MPI_Finalize();
 	}
 
 	template<typename Type>
-	inline int wrapped_send(const Type* buf, int num_instances, int dst, 
+	inline int _wrapped_send(const Type* buf, int num_instances, int dst, 
 		int tag, MPI_Comm comm) const
 	{
 		return MPI_Send(buf, num_instances * sizeof(Type), MPI_BYTE, dst,
 			tag, comm);
 	}
 	template<typename Type>
-	inline int wrapped_recv(Type* buf, int num_instances, int src,
+	inline int _wrapped_recv(Type* buf, int num_instances, int src,
 		int tag, MPI_Comm comm, MPI_Status* status) const
 	{
 		return MPI_Recv(buf, num_instances * sizeof(Type), MPI_BYTE, src, 
 			tag, comm, status);
 	}
 	template<typename Type>
-	inline int wrapped_send_recv(const Type* send_buf, 
+	inline int _wrapped_send_recv(const Type* send_buf, 
 		int num_send_instances, int dst, int send_tag, Type* recv_buf,
 		int num_recv_instances, int src, int recv_tag, MPI_Comm comm,
 		MPI_Status* status) const
@@ -315,10 +315,10 @@ protected:		// functions
 			comm, status);
 	}
 
-	GEN_SETTER_BY_VAL(world_rank)
-	GEN_SETTER_BY_VAL(world_size)
-	GEN_SETTER_BY_VAL(num_threads_per_proc)
-	GEN_SETTER_BY_VAL(min_world_size)
+	GEN_SETTER_BY_VAL(world_rank);
+	GEN_SETTER_BY_VAL(world_size);
+	GEN_SETTER_BY_VAL(num_threads_per_proc);
+	GEN_SETTER_BY_VAL(min_world_size);
 };
 
 #undef MPI_HANDLER_STATIC_ASSERT_0

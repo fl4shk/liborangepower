@@ -1,0 +1,8 @@
+*.sw[pox]
+src/tags
+types_*.taghl
+test_including_headers*
+*.ignore
+deps*
+objs*
+preprocs*

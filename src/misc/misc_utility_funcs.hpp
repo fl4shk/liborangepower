@@ -1,5 +1,5 @@
-#ifndef liborangepower_misc_utility_funcs_hpp
-#define liborangepower_misc_utility_funcs_hpp
+#ifndef liborangepower_misc_misc_utility_funcs_hpp
+#define liborangepower_misc_misc_utility_funcs_hpp
 
 namespace liborangepower
 {
@@ -157,4 +157,4 @@ bool anything_matches(const FirstArgType& first_val,
 
 } // namespace liborangepower
 
-#endif		// liborangepower_misc_utility_funcs_hpp
+#endif		// liborangepower_misc_misc_utility_funcs_hpp

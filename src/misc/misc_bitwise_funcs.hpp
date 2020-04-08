@@ -1,5 +1,5 @@
-#ifndef liborangepower_misc_bitwise_funcs_hpp
-#define liborangepower_misc_bitwise_funcs_hpp
+#ifndef liborangepower_misc_misc_bitwise_funcs_hpp
+#define liborangepower_misc_misc_bitwise_funcs_hpp
 
 #include "misc_types.hpp"
 #include "misc_defines.hpp"
@@ -138,16 +138,16 @@ inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
 
 
 using liborangepower::integer_types::u8;
-using liborangepower::integer_types::s8;
+using liborangepower::integer_types::i8;
 
 using liborangepower::integer_types::u16;
-using liborangepower::integer_types::s16;
+using liborangepower::integer_types::i16;
 
 using liborangepower::integer_types::u32;
-using liborangepower::integer_types::s32;
+using liborangepower::integer_types::i32;
 
 using liborangepower::integer_types::u64;
-using liborangepower::integer_types::s64;
+using liborangepower::integer_types::i64;
 
 
 // Can this be made "constexpr"?
@@ -213,7 +213,7 @@ size_t count_leading_zeros(Type x)
 
 			//// 128-bit, eh?  I don't know what else it'd be....
 			//default:
-			//	for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+			//	for (i64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
 			//	{
 			//		if (!get_bits_with_range(s, i, i))
 			//		{
@@ -248,7 +248,7 @@ size_t count_leading_zeros(Type x)
 //	}
 //	else
 //	{
-//		for (s64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+//		for (i64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
 //		{
 //			if (!get_bits_with_range(s, i, i))
 //			{
@@ -278,4 +278,4 @@ size_t count_leading_zeros(Type x)
 } // namespace liborangepower
 
 
-#endif		// liborangepower_misc_bitwise_funcs_hpp
+#endif		// liborangepower_misc_misc_bitwise_funcs_hpp

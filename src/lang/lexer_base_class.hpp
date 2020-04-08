@@ -1,7 +1,8 @@
-#ifndef liborangepower_lexer_base_class_hpp
-#define liborangepower_lexer_base_class_hpp
+#ifndef liborangepower_lang_lexer_base_class_hpp
+#define liborangepower_lang_lexer_base_class_hpp
 
-#include "misc_includes.hpp"
+#include "../misc/misc_includes.hpp"
+#include "../gmp_stuff/gmp_stuff.hpp"
 
 namespace liborangepower
 {
@@ -9,21 +10,22 @@ namespace liborangepower
 namespace lang
 {
 
-template<typename _TokType>
+template<typename _TokType, typename _NumType=bignum::BigNum>
 class LexerBase
 {
 public:		// types
 	using TokType = _TokType;
+	using NumType = _NumType;
 
 	class State
 	{
-	friend class LexerBase<TokType>;
+	friend class LexerBase<TokType, NumType>;
 
 	private:		// variables
 		TokType _tok;
 		std::string _s;
 		int _c;
-		bignum::BigNum _n;
+		NumType _n;
 		size_t _x = 0, _line_num = 1, _pos_in_line = 0;
 
 	public:		// functions
@@ -63,7 +65,7 @@ public:		// types
 			//cmp_eq_results["_pos_in_line"]
 			//	= (_pos_in_line == other._pos_in_line);
 
-			//for (const auto& iter : cmp_lt_results)
+			//for (const auto& iter: cmp_lt_results)
 			//{
 			//	if (iter.second)
 			//	{
@@ -261,7 +263,7 @@ protected:		// functions
 	inline bool _set_kw_tok
 		(const std::map<TokType, std::string>& some_tok_ident_map)
 	{
-		for (const auto& iter : some_tok_ident_map)
+		for (const auto& iter: some_tok_ident_map)
 		{
 			if (s() == iter.second)
 			{
@@ -278,4 +280,4 @@ protected:		// functions
 } // namespace liborangepower
 
 
-#endif		// liborangepower_lexer_base_class_hpp
+#endif		// liborangepower_lang_lexer_base_class_hpp

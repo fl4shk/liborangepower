@@ -1,10 +1,10 @@
-#ifndef liborangepower_array_helper_classes_hpp
-#define liborangepower_array_helper_classes_hpp
+#ifndef liborangepower_containers_array_helper_classes_hpp
+#define liborangepower_containers_array_helper_classes_hpp
 
 
 
-#include "misc_types.hpp"
-#include "misc_defines.hpp"
+#include "../misc/misc_types.hpp"
+#include "../misc/misc_defines.hpp"
 
 namespace liborangepower
 {
@@ -18,8 +18,8 @@ class ArrayCszHelper
 public:			// variables
 	Type* _arr = nullptr;
 
-protected:		// variables
-	static constexpr size_t _size = _size;
+public:		// constants
+	static constexpr size_t SIZE = _size;
 
 public:			// functions
 	ArrayCszHelper()
@@ -48,7 +48,7 @@ public:			// functions
 
 	size_t size() const
 	{
-		return _size;
+		return SIZE;
 	}
 
 	Type& at(size_t offset)
@@ -125,4 +125,4 @@ public:			// functions
 
 } // namespace liborangepower
 
-#endif		// liborangepower_array_helper_classes_hpp
+#endif		// liborangepower_containers_array_helper_classes_hpp

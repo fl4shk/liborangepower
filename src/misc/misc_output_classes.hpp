@@ -1,5 +1,5 @@
-#ifndef liborangepower_misc_output_classes_hpp
-#define liborangepower_misc_output_classes_hpp
+#ifndef liborangepower_misc_misc_output_classes_hpp
+#define liborangepower_misc_misc_output_classes_hpp
 
 #include "misc_types.hpp"
 #include "misc_includes.hpp"
@@ -153,4 +153,4 @@ inline std::string strappcom2(ArgTypes&&... args)
 } // namespace liborangepower
 
 
-#endif		// liborangepower_misc_output_classes_hpp
+#endif		// liborangepower_misc_misc_output_classes_hpp

@@ -1,5 +1,5 @@
-#ifndef liborangepower_memwhatever_wrappers_hpp
-#define liborangepower_memwhatever_wrappers_hpp
+#ifndef liborangepower_misc_memwhatever_wrappers_hpp
+#define liborangepower_misc_memwhatever_wrappers_hpp
 
 #include <string.h>
 #include <array>
@@ -51,4 +51,4 @@ inline void* arr_memset(std::array<Type, size>& dst, size_t src)
 } // namespace liborangepower
 
 
-#endif		// liborangepower_memwhatever_wrappers_hpp
+#endif		// liborangepower_misc_memwhatever_wrappers_hpp

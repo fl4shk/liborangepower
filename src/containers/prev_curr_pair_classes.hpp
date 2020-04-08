@@ -1,12 +1,12 @@
-#ifndef liborangepower_prev_curr_pair_classes_hpp
-#define liborangepower_prev_curr_pair_classes_hpp
+#ifndef liborangepower_containers_prev_curr_pair_classes_hpp
+#define liborangepower_containers_prev_curr_pair_classes_hpp
 
-#include "misc_types.hpp"
-#include "misc_defines.hpp"
+#include "../misc/misc_types.hpp"
+#include "../misc/misc_defines.hpp"
 
 #include <utility>
 
-#include "gen_class_innards_defines.hpp"
+#include "../gen_class_innards_defines.hpp"
 
 
 namespace liborangepower
@@ -113,4 +113,4 @@ public:		// functions
 } // namespace liborangepower
 
 
-#endif		// liborangepower_prev_curr_pair_classes_hpp
+#endif		// liborangepower_containers_prev_curr_pair_classes_hpp

@@ -1,13 +1,13 @@
-#ifndef liborangepower_linked_list_classes_hpp
-#define liborangepower_linked_list_classes_hpp
+#ifndef liborangepower_containers_linked_list_classes_hpp
+#define liborangepower_containers_linked_list_classes_hpp
 
-//#include "misc_types.hpp"
+//#include "misc/misc_types.hpp"
 
 #include <iostream>
 #include <stack>
 #include <vector>
 #include <stdint.h>
-#include "gen_class_innards_defines.hpp"
+#include "../gen_class_innards_defines.hpp"
 
 namespace liborangepower
 {
@@ -773,4 +773,4 @@ std::ostream& operator << (std::ostream& os,
 }
 
 
-#endif		// liborangepower_linked_list_classes_hpp
+#endif		// liborangepower_containers_linked_list_classes_hpp

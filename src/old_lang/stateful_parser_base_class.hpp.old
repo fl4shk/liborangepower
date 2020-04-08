@@ -1,9 +1,9 @@
 #ifndef liborangepower_stateful_parser_base_class_hpp
 #define liborangepower_stateful_parser_base_class_hpp
 
-#include "misc_includes.hpp"
-#include "misc_output_classes.hpp"
-#include "misc_input_classes.hpp"
+#include "misc/misc_includes.hpp"
+#include "misc/misc_output_classes.hpp"
+#include "misc/misc_input_classes.hpp"
 
 namespace liborangepower
 {

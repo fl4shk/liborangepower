@@ -1,8 +1,8 @@
-#ifndef liborangepower_string_extra_stuff_hpp
-#define liborangepower_string_extra_stuff_hpp
+#ifndef liborangepower_strings_string_extra_stuff_hpp
+#define liborangepower_strings_string_extra_stuff_hpp
 
 
-#include "misc_includes.hpp"
+#include "../misc/misc_includes.hpp"
 #include <string.h>
 #include <libgen.h>
 
@@ -72,4 +72,4 @@ inline std::string strip_file_ext(const std::string& path,
 
 } // namespace liborangepower
 
-#endif		// liborangepower_string_extra_stuff_hpp
+#endif		// liborangepower_strings_string_extra_stuff_hpp

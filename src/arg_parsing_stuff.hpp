@@ -1,8 +1,8 @@
 #ifndef liborangepower_arg_parsing_stuff_hpp
 #define liborangepower_arg_parsing_stuff_hpp
 
-#include "misc_types.hpp"
-#include "misc_includes.hpp"
+#include "misc/misc_types.hpp"
+#include "misc/misc_includes.hpp"
 #include "gen_class_innards_defines.hpp"
 #include <ctype.h>
 

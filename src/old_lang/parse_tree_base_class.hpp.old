@@ -1,7 +1,7 @@
 #ifndef liborangepower_parse_tree_base_class_hpp
 #define liborangepower_parse_tree_base_class_hpp
 
-#include "gmp_stuff.hpp"
+#include "gmp_stuff/gmp_stuff.hpp"
 
 
 #include <string>

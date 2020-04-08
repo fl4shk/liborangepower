@@ -1,4 +1,4 @@
-#include "../json_stuff.hpp"
+#include "json_stuff.hpp"
 #include <fstream>
 
 using namespace liborangepower::misc_output;

@@ -1,7 +1,7 @@
-#ifndef liborangepower_gmp_stuff_hpp
-#define liborangepower_gmp_stuff_hpp
+#ifndef liborangepower_gmp_stuff_gmp_stuff_hpp
+#define liborangepower_gmp_stuff_gmp_stuff_hpp
 
-#include "misc_includes.hpp"
+#include "../misc/misc_includes.hpp"
 
 // GMP headers
 #include <gmpxx.h>
@@ -36,4 +36,4 @@ inline std::string conv_bignum_to_str(const BigNum& to_conv)
 
 } // namespace liborangepower
 
-#endif		// liborangepower_gmp_stuff_hpp
+#endif		// liborangepower_gmp_stuff_gmp_stuff_hpp

@@ -1,4 +1,4 @@
-#include "../gmp_stuff.hpp"
+#include "gmp_stuff.hpp"
 
 namespace liborangepower
 {

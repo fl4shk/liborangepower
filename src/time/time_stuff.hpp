@@ -1,10 +1,10 @@
-#ifndef liborangepower_time_stuff_hpp
-#define liborangepower_time_stuff_hpp
+#ifndef liborangepower_time_stuff_time_stuff_hpp
+#define liborangepower_time_stuff_time_stuff_hpp
 
-#include "misc_defines.hpp"
-#include "misc_types.hpp"
-#include "misc_includes.hpp"
-#include "gen_class_innards_defines.hpp"
+#include "../misc/misc_defines.hpp"
+#include "../misc/misc_types.hpp"
+#include "../misc/misc_includes.hpp"
+#include "../gen_class_innards_defines.hpp"
 
 #include <iomanip>
 
@@ -168,4 +168,4 @@ inline auto put_now_as_gmtime()
 
 
 
-#endif		// liborangepower_time_stuff_hpp
+#endif		// liborangepower_time_stuff_time_stuff_hpp

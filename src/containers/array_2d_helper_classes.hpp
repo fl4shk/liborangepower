@@ -1,7 +1,7 @@
-#ifndef liborangepower_array_2d_helper_classes_hpp
-#define liborangepower_array_2d_helper_classes_hpp
+#ifndef liborangepower_containers_array_2d_helper_classes_hpp
+#define liborangepower_containers_array_2d_helper_classes_hpp
 
-#include "misc_types.hpp"
+#include "../misc/misc_types.hpp"
 #include "vec2_classes.hpp"
 
 
@@ -70,11 +70,8 @@ public:			// functions
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	Type& at(const Vec2<size_t>& offset_2d)
-	{
-		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
-	}
-	Type& at(const Vec2S32& offset_2d)
+	template<typename PosType>
+	Type& at(const Vec2<PosType>& offset_2d)
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}
@@ -84,11 +81,8 @@ public:			// functions
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	const Type& at(const Vec2<size_t>& offset_2d) const
-	{
-		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
-	}
-	const Type& at(const Vec2S32& offset_2d) const
+	template<typename PosType>
+	const Type& at(const Vec2<PosType>& offset_2d) const
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}
@@ -161,11 +155,8 @@ public:			// functions
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	Type& at(const Vec2<size_t>& offset_2d)
-	{
-		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
-	}
-	Type& at(const Vec2S32& offset_2d)
+	template<typename PosType>
+	Type& at(const Vec2<PosType>& offset_2d)
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}
@@ -175,11 +166,8 @@ public:			// functions
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	const Type& at(const Vec2<size_t>& offset_2d) const
-	{
-		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
-	}
-	const Type& at(const Vec2S32& offset_2d) const
+	template<typename PosType>
+	const Type& at(const Vec2<PosType>& offset_2d) const
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}
@@ -196,4 +184,4 @@ public:			// functions
 
 
 
-#endif		// liborangepower_array_2d_helper_classes_hpp
+#endif		// liborangepower_containers_array_2d_helper_classes_hpp

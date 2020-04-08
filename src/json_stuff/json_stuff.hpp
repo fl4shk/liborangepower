@@ -1,8 +1,8 @@
-#ifndef liborangepower_json_stuff_hpp
-#define liborangepower_json_stuff_hpp
+#ifndef liborangepower_json_stuff_json_stuff_hpp
+#define liborangepower_json_stuff_json_stuff_hpp
 
-#include "misc_includes.hpp"
-#include "misc_output_classes.hpp"
+#include "../misc/misc_includes.hpp"
+#include "../misc/misc_output_classes.hpp"
 
 // jsoncpp headers
 #include <json/value.h>
@@ -86,4 +86,4 @@ inline void debug_print_json(Json::Value* iter,
 
 } // namespace liborangepower
 
-#endif		// liborangepower_json_stuff_hpp
+#endif		// liborangepower_json_stuff_json_stuff_hpp
