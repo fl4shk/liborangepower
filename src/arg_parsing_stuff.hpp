@@ -3,7 +3,7 @@
 
 #include "misc/misc_types.hpp"
 #include "misc/misc_includes.hpp"
-#include "misc/misc_output_funcs.hpp"
+#include "misc/misc_output_classes.hpp"
 #include "gen_class_innards_defines.hpp"
 #include <ctype.h>
 
