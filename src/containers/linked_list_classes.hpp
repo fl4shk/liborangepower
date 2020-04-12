@@ -491,7 +491,10 @@ public:		// functions
 
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(IndCircLinkList);
 
-	virtual inline ~IndCircLinkList() = default;
+	//virtual inline ~IndCircLinkList() = default;
+	virtual inline ~IndCircLinkList()
+	{
+	}
 
 	inline Node& head()
 	{
@@ -645,7 +648,7 @@ public:		// functions
 
 		at(old_prev)._next = NULL_INDEX;
 		at(old_prev)._prev = NULL_INDEX;
-		//at(old_prev).data = Type();
+		at(old_prev).data = Type();
 		_avail_index_stack.push(old_prev);
 	}
 	inline void remove_after(IndexT where)
@@ -658,7 +661,7 @@ public:		// functions
 
 		at(old_next)._next = NULL_INDEX;
 		at(old_next)._prev = NULL_INDEX;
-		//at(old_next).data = Type();
+		at(old_next).data = Type();
 		_avail_index_stack.push(old_next);
 	}
 	inline void remove(IndexT where)
@@ -671,7 +674,7 @@ public:		// functions
 
 		at(where)._next = NULL_INDEX;
 		at(where)._prev = NULL_INDEX;
-		//at(where).data = Type();
+		at(where).data = Type();
 		_avail_index_stack.push(where);
 	}
 
