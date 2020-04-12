@@ -478,7 +478,7 @@ public:		// types
 public:		// constants
 	static constexpr IndexT HEAD_INDEX = 0;
 private:		// variables
-	std::stack<IndexT> _avail_index_stack;
+	std::vector<IndexT> _avail_index_stack;
 	std::vector<Node> _node_vec;
 
 public:		// functions
@@ -491,10 +491,7 @@ public:		// functions
 
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(IndCircLinkList);
 
-	//virtual inline ~IndCircLinkList() = default;
-	virtual inline ~IndCircLinkList()
-	{
-	}
+	virtual inline ~IndCircLinkList() = default;
 
 	inline Node& head()
 	{
@@ -649,7 +646,7 @@ public:		// functions
 		at(old_prev)._next = NULL_INDEX;
 		at(old_prev)._prev = NULL_INDEX;
 		at(old_prev).data = Type();
-		_avail_index_stack.push(old_prev);
+		_avail_index_stack.push_back(old_prev);
 	}
 	inline void remove_after(IndexT where)
 	{
@@ -662,7 +659,7 @@ public:		// functions
 		at(old_next)._next = NULL_INDEX;
 		at(old_next)._prev = NULL_INDEX;
 		at(old_next).data = Type();
-		_avail_index_stack.push(old_next);
+		_avail_index_stack.push_back(old_next);
 	}
 	inline void remove(IndexT where)
 	{
@@ -675,7 +672,7 @@ public:		// functions
 		at(where)._next = NULL_INDEX;
 		at(where)._prev = NULL_INDEX;
 		at(where).data = Type();
-		_avail_index_stack.push(where);
+		_avail_index_stack.push_back(where);
 	}
 
 private:		// functions
@@ -715,19 +712,18 @@ private:		// functions
 
 	inline IndexT _alloc_what_index(Node&& what)
 	{
-		//if (_avail_index_stack.empty())
+		if (_avail_index_stack.empty())
 		{
 			const auto ret = _node_vec.size();
 			_node_vec.push_back(std::move(what));
 			return ret;
 		}
-		//else // if (!_avail_index_stack.empty())
-		//{
-		//	const auto ret = _avail_index_stack.top();
-		//	_avail_index_stack.pop();
-		//	_node_vec.at(ret) = std::move(what);
-		//	return ret;
-		//}
+		else // if (!_avail_index_stack.empty())
+		{
+			const auto ret = _avail_index_stack.pop_back();
+			_node_vec.at(ret) = std::move(what);
+			return ret;
+		}
 	}
 };
 
