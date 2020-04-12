@@ -715,19 +715,19 @@ private:		// functions
 
 	inline IndexT _alloc_what_index(Node&& what)
 	{
-		if (_avail_index_stack.empty())
+		//if (_avail_index_stack.empty())
 		{
 			const auto ret = _node_vec.size();
 			_node_vec.push_back(std::move(what));
 			return ret;
 		}
-		else // if (!_avail_index_stack.empty())
-		{
-			const auto ret = _avail_index_stack.top();
-			_avail_index_stack.pop();
-			_node_vec.at(ret) = std::move(what);
-			return ret;
-		}
+		//else // if (!_avail_index_stack.empty())
+		//{
+		//	const auto ret = _avail_index_stack.top();
+		//	_avail_index_stack.pop();
+		//	_node_vec.at(ret) = std::move(what);
+		//	return ret;
+		//}
 	}
 };
 
