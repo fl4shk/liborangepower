@@ -46,7 +46,7 @@ inline std::string strjoin(const std::string& sep,
 
 	if constexpr (sizeof...(rem_args) > 0)
 	{
-		return sconcat(ret, strjoin(sep, rem_args...));
+		return ret + strjoin(sep, rem_args...);
 	}
 }
 
