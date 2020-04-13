@@ -57,7 +57,7 @@ inline std::string strjoin(const std::string& sep,
 	}
 	return ret;
 }
-template<typename ArgTypes...>
+template<typename... ArgTypes>
 inline std::string strjoin2(const std::string& sep, ArgTypes&&... args)
 {
 	auto temp = strjoin(sep, args...);
