@@ -38,38 +38,53 @@ inline std::string strjoin(const std::string& sep)
 	return std::string();
 }
 
+template<typename FirstArgType>
+inline std::string strjoin(const std::string& sep,
+	const FirstArgType& first_arg)
+{
+	return sconcat(first_arg, sep);
+}
+
 template<typename FirstArgType, typename... RemArgTypes>
 inline std::string strjoin(const std::string& sep,
 	const FirstArgType& first_arg, RemArgTypes&&... rem_args)
 {
-	std::string ret = sconcat(first_arg, sep);
+	auto ret = strjoin(sep, first_arg);
 
 	if constexpr (sizeof...(rem_args) > 0)
 	{
-		return ret + strjoin(sep, rem_args...);
+		ret = sconcat(ret, strjoin(sep, rem_args...));
 	}
+	return ret;
+}
+template<typename ArgTypes...>
+inline std::string strjoin2(const std::string& sep, ArgTypes&&... args)
+{
+	auto temp = strjoin(sep, args...);
+
+	std::string ret;
+
+	if (temp.size() > 0)
+	{
+		for (size_t i=0; i<temp.size() - sep.size(); ++i)
+		{
+			ret += temp.at(i);
+		}
+	}
+
+	return ret;
 }
 
-inline std::string strappcom()
+template<typename... ArgTypes>
+inline std::string strappcom(ArgTypes&&... args)
 {
-	return std::string();
-}
-template<typename FirstArgType, typename... RemArgTypes>
-inline std::string strappcom(const FirstArgType& first_arg,
-	RemArgTypes&&... rem_args)
-{
-	return sconcat(strjoin(", ", rem_args...), ", ");
+	return strjoin(", ", args...);
 }
 
-inline std::string strappcom2()
+template<typename... ArgTypes>
+inline std::string strappcom2(ArgTypes&&... args)
 {
-	return std::string();
-}
-template<typename FirstArgType, typename... RemArgTypes>
-inline std::string strappcom2(const FirstArgType& first_arg,
-	RemArgTypes&&... rem_args)
-{
-	return sconcat(strjoin(", ", rem_args...));
+	return strjoin2(", ", args...);
 }
 
 
