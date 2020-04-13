@@ -50,16 +50,26 @@ inline std::string strjoin(const std::string& sep,
 	}
 }
 
-template<typename... ArgTypes>
-inline std::string strappcom(ArgTypes&&... args)
+inline std::string strappcom()
 {
-	return sconcat(strjoin(", ", args...), ", ");
+	return std::string();
+}
+template<typename FirstArgType, typename... RemArgTypes>
+inline std::string strappcom(const FirstArgType& first_arg,
+	RemArgTypes&&... rem_args)
+{
+	return sconcat(strjoin(", ", rem_args...), ", ");
 }
 
-template<typename... ArgTypes>
-inline std::string strappcom2(ArgTypes&&... args)
+inline std::string strappcom2()
 {
-	return sconcat(strjoin(", ", args...));
+	return std::string();
+}
+template<typename FirstArgType, typename... RemArgTypes>
+inline std::string strappcom2(const FirstArgType& first_arg,
+	RemArgTypes&&... rem_args)
+{
+	return sconcat(strjoin(", ", rem_args...));
 }
 
 
