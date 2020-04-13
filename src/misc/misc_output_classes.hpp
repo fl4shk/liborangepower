@@ -68,27 +68,6 @@ inline std::ostream& fprintout(std::ostream& out_file, ArgTypes&&... args)
 
 
 
-template<typename FirstArgType, typename... RemArgTypes>
-std::string sconcat(const FirstArgType& first_val, 
-	RemArgTypes&&... rem_args)
-{
-	std::string ret;
-	std::stringstream sstm;
-	
-	osprintout(sstm, first_val, rem_args...);
-
-	while (!sstm.eof())
-	{
-		char c = sstm.get();
-
-		if (!sstm.eof())
-		{
-			ret += c;
-		}
-	}
-
-	return ret;
-}
 
 
 template<typename ArrType>
@@ -104,48 +83,6 @@ std::ostream& osprint_arr(std::ostream& os, ArrType* to_print, size_t size)
 	}
 
 	return os;
-}
-
-
-inline std::string strappcom()
-{
-	return std::string();
-}
-template<typename Type>
-inline std::string strappcom(const Type& to_concat)
-{
-	return sconcat(to_concat, ", ");
-}
-
-template<typename FirstArgType, typename... RemArgTypes>
-inline std::string strappcom(const FirstArgType& first_val,
-	RemArgTypes&&... rem_args)
-{
-	//std::string ret = std::move(strappcom(first_val));
-	//ret += std::move(strappcom(rem_args...));
-	std::string ret = strappcom(first_val);
-	ret += strappcom(rem_args...);
-	return ret;
-}
-
-template<typename... ArgTypes>
-inline std::string strappcom2(ArgTypes&&... args)
-{
-	//std::string ret = std::move(strappcom(first_val, rem_args...));
-
-	//ret = std::move(ret.substr(0, ret.size() - std::string(", ").size()));
-
-	std::string ret = strappcom(args...);
-
-	if constexpr (sizeof...(args) > 0)
-	{
-		if (ret.size() != 0)
-		{
-			ret = ret.substr(0, ret.size() - std::string(", ").size());
-		}
-	}
-
-	return ret;
 }
 
 } // namespace misc_output

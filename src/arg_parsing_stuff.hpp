@@ -4,6 +4,7 @@
 #include "misc/misc_types.hpp"
 #include "misc/misc_includes.hpp"
 #include "misc/misc_output_classes.hpp"
+#include "strings/sconcat_etc.hpp"
 #include "gen_class_innards_defines.hpp"
 #include <ctype.h>
 
@@ -80,16 +81,16 @@ public:		// functions
 
 	inline std::string errwarn_msg_dup() const
 	{
-		return misc_output::sconcat("Duplicate \"", opt(), "\" option.");
+		return strings::sconcat("Duplicate \"", opt(), "\" option.");
 	}
 	inline std::string errwarn_msg_has_val() const
 	{
-		return misc_output::sconcat("Option \"", opt(),
+		return strings::sconcat("Option \"", opt(),
 			"\" takes no value.");
 	}
 	inline std::string errwarn_msg_no_val() const
 	{
-		return misc_output::sconcat("Option \"", opt(),
+		return strings::sconcat("Option \"", opt(),
 			"\" requires a value.");
 	}
 

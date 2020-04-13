@@ -22,6 +22,7 @@
 #include "liborangepower_src/lang/lexer_base_class.hpp"
 #include "liborangepower_src/strings/string_conversion_stuff.hpp"
 #include "liborangepower_src/strings/string_extra_stuff.hpp"
+#include "liborangepower_src/strings/sconcat_etc.hpp"
 #include "liborangepower_src/containers/prev_curr_pair_classes.hpp"
 #include "liborangepower_src/containers/array_2d_helper_classes.hpp"
 #include "liborangepower_src/containers/array_helper_classes.hpp"
