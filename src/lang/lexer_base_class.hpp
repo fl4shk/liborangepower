@@ -17,7 +17,7 @@ public:		// types
 	using TokType = _TokType;
 	using NumType = _NumType;
 
-	class State
+	class State final
 	{
 	friend class LexerBase<TokType, NumType>;
 
@@ -133,7 +133,7 @@ public:		// functions
 				other_two_states->first._line_num,
 				other_two_states->first._pos_in_line);
 		}
-		else
+		else // if (other_two_states == nullptr)
 		{
 			return Type(filename(), state()._s,
 				prev_state()._line_num, prev_state()._pos_in_line);
@@ -259,6 +259,44 @@ protected:		// functions
 	}
 
 	virtual void _inner_next_tok() = 0;
+
+	inline bool _inner_set_ifelse_tok(TokType last_tok)
+	{
+		_set_tok(last_tok);
+		return true;
+	}
+	template<typename... RemArgTypes>
+	inline bool _inner_set_ifelse_tok(TokType first_tok, char first_char,
+		RemArgTypes&&... rem_args)
+	{
+		if (c() == first_char)
+		{
+			_set_tok(first_tok);
+			return true;
+		}
+		else if constexpr (sizeof...(rem_args) > 0)
+		{
+			return _inner_set_ifelse_tok(rem_args...);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	template<typename... ArgTypes>
+	inline bool _set_ifelse_tok(ArgTypes&&... args)
+	{
+		_next_char();
+
+		if constexpr (sizeof...(args) > 0)
+		{
+			return _inner_set_ifelse_tok(args...);
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 	inline bool _set_kw_tok
 		(const std::map<TokType, std::string>& some_tok_ident_map)
