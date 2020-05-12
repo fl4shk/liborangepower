@@ -260,13 +260,14 @@ protected:		// functions
 
 	virtual void _inner_next_tok() = 0;
 
-	inline bool _inner_set_ifelse_tok(TokType last_tok)
+private:		// functions
+	inline bool _inner_multi_set_tok(TokType last_tok)
 	{
 		_set_tok(last_tok, false);
 		return true;
 	}
 	template<typename... RemArgTypes>
-	inline bool _inner_set_ifelse_tok(char first_char, TokType first_tok,
+	inline bool _inner_multi_set_tok(char first_char, TokType first_tok,
 		RemArgTypes&&... rem_args)
 	{
 		if (c() == first_char)
@@ -276,21 +277,29 @@ protected:		// functions
 		}
 		else if constexpr (sizeof...(rem_args) > 0)
 		{
-			return _inner_set_ifelse_tok(rem_args...);
+			return _inner_multi_set_tok(rem_args...);
 		}
 		else
 		{
 			return false;
 		}
 	}
-	template<typename... ArgTypes>
-	inline bool _set_ifelse_tok(ArgTypes&&... args)
-	{
-		static_assert(sizeof...(args) > 0);
 
+public:		// functions
+	inline bool _multi_set_tok(TokType only_tok)
+	{
+		_next_char();
+		_set_tok(only_tok, false);
+		return true;
+	}
+
+	template<typename... RemArgTypes>
+	inline bool _multi_set_tok(char first_char, TokType first_tok,
+		RemArgTypes&&... rem_args)
+	{
 		_next_char();
 
-		return _inner_set_ifelse_tok(args...);
+		return _inner_multi_set_tok(first_char, first_tok, rem_args...);
 	}
 
 	inline bool _set_kw_tok
