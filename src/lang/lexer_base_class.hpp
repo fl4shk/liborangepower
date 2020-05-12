@@ -266,7 +266,7 @@ protected:		// functions
 		return true;
 	}
 	template<typename... RemArgTypes>
-	inline bool _inner_set_ifelse_tok(TokType first_tok, char first_char,
+	inline bool _inner_set_ifelse_tok(char first_char, TokType first_tok,
 		RemArgTypes&&... rem_args)
 	{
 		if (c() == first_char)
