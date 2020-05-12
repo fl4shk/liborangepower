@@ -261,13 +261,13 @@ protected:		// functions
 	virtual void _inner_next_tok() = 0;
 
 private:		// functions
-	inline bool _inner_multi_set_tok(TokType last_tok)
+	inline bool _inner_sel_set_tok(TokType last_tok)
 	{
 		_set_tok(last_tok, false);
 		return true;
 	}
 	template<typename... RemArgTypes>
-	inline bool _inner_multi_set_tok(char first_char, TokType first_tok,
+	inline bool _inner_sel_set_tok(char first_char, TokType first_tok,
 		RemArgTypes&&... rem_args)
 	{
 		if (c() == first_char)
@@ -277,7 +277,7 @@ private:		// functions
 		}
 		else if constexpr (sizeof...(rem_args) > 0)
 		{
-			return _inner_multi_set_tok(rem_args...);
+			return _inner_sel_set_tok(rem_args...);
 		}
 		else
 		{
@@ -286,7 +286,7 @@ private:		// functions
 	}
 
 public:		// functions
-	inline bool _multi_set_tok(TokType only_tok)
+	inline bool _sel_set_tok(TokType only_tok)
 	{
 		_next_char();
 		_set_tok(only_tok, false);
@@ -294,15 +294,15 @@ public:		// functions
 	}
 
 	template<typename... RemArgTypes>
-	inline bool _multi_set_tok(char first_char, TokType first_tok,
+	inline bool _sel_set_tok(char first_char, TokType first_tok,
 		RemArgTypes&&... rem_args)
 	{
 		_next_char();
 
-		return _inner_multi_set_tok(first_char, first_tok, rem_args...);
+		return _inner_sel_set_tok(first_char, first_tok, rem_args...);
 	}
 
-	inline bool _set_kw_tok
+	inline bool _kw_set_tok
 		(const std::map<TokType, std::string>& some_tok_ident_map)
 	{
 		for (const auto& iter: some_tok_ident_map)
