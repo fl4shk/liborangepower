@@ -262,7 +262,7 @@ protected:		// functions
 
 	inline bool _inner_set_ifelse_tok(TokType last_tok)
 	{
-		_set_tok(last_tok);
+		_set_tok(last_tok, false);
 		return true;
 	}
 	template<typename... RemArgTypes>
@@ -271,7 +271,7 @@ protected:		// functions
 	{
 		if (c() == first_char)
 		{
-			_set_tok(first_tok);
+			_set_tok(first_tok, false);
 			return true;
 		}
 		else if constexpr (sizeof...(rem_args) > 0)
@@ -286,16 +286,11 @@ protected:		// functions
 	template<typename... ArgTypes>
 	inline bool _set_ifelse_tok(ArgTypes&&... args)
 	{
+		static_assert(sizeof...(args) > 0);
+
 		_next_char();
 
-		if constexpr (sizeof...(args) > 0)
-		{
-			return _inner_set_ifelse_tok(args...);
-		}
-		else
-		{
-			return false;
-		}
+		return _inner_set_ifelse_tok(args...);
 	}
 
 	inline bool _set_kw_tok
