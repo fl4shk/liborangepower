@@ -102,7 +102,7 @@ private:		// functions
 
 		for (const auto& p: ret->first)
 		{
-			ret.second.insert(p.first);
+			ret->second.insert(p.first);
 		}
 
 		self->_just_recrs_get_rules = old_just_recrs_get_rules;
