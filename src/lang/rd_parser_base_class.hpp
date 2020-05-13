@@ -24,586 +24,196 @@ using strings::sconcat;
 namespace lang
 {
 
-template<typename LexerType, typename DerivedType>
+template<typename LexerType, typename DerivedType,
+	typename FilePos>
 class RdParserBase
 {
 public:		// types
 	//--------
 	using TokType = LexerType::TokType;
 	using LexerState = LexerType::State;
-	using TokToStringMap = std::map<TokType, std::string>;
 
-	using ParseRet = bool;
-	using ParseFunc = bool (DerivedType::*)();
+	using ParseFunc = void (DerivedType::*)();
 
-	// Set this to a `TokType` when we just want to parse one particular
-	// token.
-	using ParseAction = std::variant<TokType, ParseFunc>;
-	//--------
+	//using ParseAction = std::variant<TokType, ParseFunc>;
 
-	//--------
-	class DeferRestoreLexState final
-	{
-	private:		// variables
-		std::shared_ptr<LexerType>* _lexer;
-		LexerState _lex_state;
-	public:		// functions
-		inline DeferRestoreLexState(std::shared_ptr<LexerType>& s_lexer)
-			: _lexer(&s_lexer)
-		{
-			_lex_state = (*_lexer)->state();
-		}
-		inline ~DeferRestoreLexState()
-		{
-			(*_lexer)->set_state(_lex_state);
-		}
-	};
-	//--------
+	//using RecurseParseRet = std::map<TokType, ParseFunc>;
 
-	//--------
-	friend class UnitParse;
-
-	class UnitParse final
-	{
-	private:		// variables
-		DerivedType* _self = nullptr;
-		std::string _parse_act_str;
-		ParseAction _parse_action;
-		bool _optional = false;
-	public:		// functions
-		inline UnitParse(DerivedType* s_self,
-			const std::string& s_parse_act_str,
-			const ParseAction& s_parse_action, bool s_optional=false)
-			: _self(s_self), _parse_act_str(s_parse_act_str),
-			_parse_action(s_parse_action), _optional(s_optional)
-		{
-		}
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(UnitParse);
-		inline ~UnitParse = default();
-
-		inline void set_just_test(bool n_just_test) const
-		{
-			_self->_just_test = n_just_test;
-		}
-
-		inline bool operator () () const
-		{
-			if (std::holds_alternative<TokType>(_parse_action))
-			{
-				auto parse_tok = std::get<TokType>(_parse_action);
-				return (_self->_lexer->tok() == parse_tok);
-			}
-			else if (std::holds_alternative<ParseFunc>(_parse_action))
-			{
-				auto parse_func = std::get<ParseFunc>(_parse_action);
-				return (_self->*_parse_func)();
-			}
-			else
-			{
-				printerr("RdParserBase::UnitParse::operator () ():",
-					"  Eek!\n");
-				exit(1);
-			}
-		}
-
-		GEN_GETTER_BY_CON_REF(parse_act_str);
-		GEN_GETTER_BY_VAL(optional);
-	};
-	//--------
-
-	//--------
-	friend class SeqParse;
-	class SeqParse
-	{
-	public:		// types
-		using SeqParseSptr = std::shared_ptr<SeqParse>;
-		using SearchInst = std::variant<bool, UnitParse, SeqParseSptr>;
-		using Inst = std::variant<UnitParse, SeqParseSptr>;
-		using InstVec = std::vector<Inst>;
-
-		class FirstValidInvalidInst final
-		{
-		public:		// variables
-			LexerState lex_state;
-			SearchInst search_inst;
-		public:		// functions
-			inline FirstValidInvalidInst() = default;
-			GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(FirstValidInvalidInst);
-			inline ~FirstValidInvalidInst() = default;
-		};
-
-	protected:		// variables
-		DerivedType* _self = nullptr;
-		InstVec _inst_vec;
-		bool _optional = false;
-		std::set<TokType> _valid_next_token_set;
-
-	public:		// functions
-		inline SeqParse() = default;
-		inline SeqParse(DerivedType* s_self, InstVec&& s_inst_vec,
-			bool s_optional=false)
-			: _self(s_self), _inst_vec(std::move(s_inst_vec)),
-			_optional(s_optional)
-		{
-		}
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(SeqParse);
-		virtual inline ~SeqParse() = default;
-
-		// For error handling (which I didn't originally really handle).
-		virtual bool valid_next_token_set(std::set<TokType>& ret) const
-		{
-			self->_just_get_valid_next_token_set = true;
-			self->_just_get_valid_next_token_set = false;
-		}
-
-		virtual bool check() const
-		{
-			DeferRestoreLexState drls(_self->_lexer);
-
-			for (const auto& iter: inst_vec())
-			{
-				if (!_check_one(iter))
-				{
-					return false;
-				}
-
-				// This is necessary to reach the next parsing function in
-				// the (linear) sequence.
-				_exec_one(iter, true);
-			}
-
-			return true;
-		}
-
-		// For OrParse.  "fv" stands for "first valid".
-		inline Inst fv_inst() const
-		{
-			Inst ret;
-			DeferRestoreLexState drls(_self->_lexer);
-
-			for (const auto& iter: inst_vec())
-			{
-				if (_check_one(iter))
-				{
-					ret = iter;
-					return ret;
-				}
-				//_exec_one(iter);
-			}
-
-			ret = false;
-			return ret;
-		}
-		//// For OrParse
-		//inline std::string fv_parse_act_str() const
-		//{
-		//	return std::get<UnitParse>(std::get<SeqParseSptr>
-		//		(fv_inst())->inst_vec().front()).parse_act_str();
-		//}
-		inline FirstValidInvalidInst first_invalid_inst() const
-		{
-			FirstValidInvalidInst ret;
-			DeferRestoreLexState drls(_self->_lexer);
-
-			for (const auto& iter: inst_vec())
-			{
-				if (!_check_one(iter))
-				{
-					ret.lex_state = _self->_lexer->state();
-
-					if (std::holds_alternative<UnitParse>(iter))
-					{
-						ret.search_inst = std::get<UnitParse>(iter);
-					}
-					else if (std::holds_alternative<SeqParseSptr>(iter))
-					{
-						ret.search_inst = std::get<SeqParseSptr>(iter);
-					}
-					else
-					{
-						printerr("RdParserBase::SeqParse",
-							"::first_invalid_inst():  Eek!\n");
-						exit(1);
-					}
-					return ret;
-				}
-				_exec_one(iter, true);
-			}
-
-			ret.lex_state = _self->_lexer->state();
-			ret.search_inst = false;
-			return ret;
-		}
-		virtual void exec() const
-		{
-			for (const auto& iter: inst_vec())
-			{
-				_exec_one(iter);
-			}
-		}
-
-		GEN_GETTER_BY_CON_REF(inst_vec);
-		GEN_GETTER_BY_VAL(optional);
-
-	protected:		// functions
-		bool _check_one(const Inst& iter) const
-		{
-			if (std::holds_alternative<UnitParse>(iter))
-			{
-				const auto& temp = std::get<UnitParse>(iter);
-				temp.set_just_test(true);
-
-				if (!temp.optional())
-				{
-					//if (temp())
-					//{
-					//	temp.set_just_test(false);
-					//	return true;
-					//}
-					//else // if (!temp())
-					//{
-					//	temp.set_just_test(false);
-					//	return false;
-					//}
-					const auto ret = temp();
-					temp.set_just_test(false);
-					return ret;
-				}
-				//temp.set_just_test(false);
-			}
-			else if (std::holds_alternative<SeqParseSptr>(iter))
-			{
-				const auto& temp = std::get<SeqParseSptr>(iter);
-
-				if (!temp->optional())
-				{
-					return temp->check();
-				}
-			}
-			else
-			{
-				printerr("RdParserBase::SeqParse::_check_one():  Eek!\n");
-				exit(1);
-			}
-
-			return true;
-		}
-		void _exec_one(const Inst& iter, bool actual_just_parse=false)
-			const
-		{
-			//self->_push_num(_self->just_parse());
-			const auto old_just_parse = _self->just_parse();
-			self->_just_parse = actual_just_parse;
-
-			if (std::holds_alternative<UnitParse>(iter))
-			{
-				const auto& temp = std::get<UnitParse>(iter);
-
-				if (temp.optional())
-				{
-					// Check to see if it exists.
-					temp.set_just_test(true);
-
-					const auto run_val = temp(); 
-
-					temp.set_just_test(false);
-
-					if (run_val)
-					{
-						// If it exists, then we proceed to accept this
-						// rule.
-						temp();
-					}
-				}
-				else // if (!temp.optional())
-				{
-					temp.set_just_test(false);
-					temp();
-				}
-			}
-			else if (std::holds_alternative<SeqParseSptr>(iter))
-			{
-				const auto& temp = std::get<SeqParseSptr>(iter);
-
-				if (temp->optional())
-				{
-					if (temp->check())
-					{
-						temp->exec();
-					}
-				}
-				else
-				{
-					temp->exec();
-				}
-			}
-			else
-			{
-				printerr("RdParserBase::SeqParse::_exec_one():  Eek!\n");
-				exit(1);
-			}
-
-			_self->_just_parse = old_just_parse;
-		}
-	};
-	//--------
-
-	//--------
-	// Find the first valid parsing sequence and execute it.  Choose from a
-	// list separated by pipes (`|`).
-	friend class OrParse;
-
-	class OrParse final: public SeqParse
-	{
-	public:		// types
-		using SeqParseSptr = SeqParse::SeqParseSptr;
-		using Inst = SeqParse::Inst;
-		using InstVec = SeqParse::InstVec;
-
-	public:		// functions
-		inline OrParse(DerivedType* s_self, InstVec&& s_inst_vec,
-			bool s_optional=false)
-			: SeqParse(s_self, std::move(s_inst_vec), s_optional)
-		{
-		}
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OrParse);
-		virtual inline ~OrParse() = default;
-
-		virtual bool check() const
-		{
-			// Any one found gets used
-			for (const auto& iter: inst_vec())
-			{
-				if (_check_one(iter))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-		virtual void exec() const
-		{
-			for (const auto& iter: inst_vec())
-			{
-				// First one found gets executed
-				if (_check_one(iter))
-				{
-					_exec_one(iter);
-					break;
-				}
-			}
-		}
-	};
-	//--------
-
-	//--------
-	class ListParse final: public SeqParse
-	{
-	public:		// types
-		using SeqParseSptr = SeqParse::SeqParseSptr;
-		using Inst = SeqParse::Inst;
-		using InstVec = SeqParse::InstVec;
-
-	private:		// variables
-		size_t _num_execs = 0;
-
-	public:		// functions
-		inline ListParse(DerivedType* s_self, InstVec&& s_inst_vec,
-			bool s_optional=false)
-			: SeqParse(s_self, std::move(s_inst_vec), s_optional)
-		{
-		}
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ListParse);
-		virtual inline ~ListParse() = default;
-
-		virtual bool check() const
-		{
-			DeferRestoreLexState drls(_lexer);
-
-			bool found = true;
-			bool first_done = false;
-
-			for (;;)
-			{
-				//found = true;
-
-				for (const auto& iter: inst_vec())
-				{
-					if (!_check_one(iter))
-					{
-						found = false;
-						break;
-					}
-					_exec_one(iter, true);
-				}
-
-				if (!found)
-				{
-					break;
-				}
-				first_done = true;
-			}
-
-			return first_done;
-		}
-		virtual void exec() const
-		{
-			// Do we really need the `_num_execs` member variable for this
-			// class?  I am unsure at the time of this writing.
-			_num_execs = 0;
-			do
-			{
-				// Call the base class's `exec()` member function
-				// specifically.
-				SeqParse::exec();
-				++_num_execs;
-			} while (check());
-		}
-
-		GEN_GETTER_BY_VAL(num_execs);
-	};
-	//--------
-
-	//--------
-	template<typename SomeSeqParseType>
-	using MapSeqParse = std::map<std::string, SomeSeqParseType>;
-
-	class MultiParse final
-	{
-	public:		// types
-		using SeqParseSptr = SeqParse::SeqParseSptr;
-		using Inst = SeqParse::Inst;
-		using InstVec = SeqParse::InstVec;
-
-	public:		// functions
-		template<typename SomeMapSeqParseType, typename FirstArgType,
-			typename... RemArgTypes>
-		static inline void append_msp
-			(SomeMapSeqParseType& map_seq_parse,
-			const std::string& first_key, FirstArgType&& first_seq,
-			RemArgTypes&&... rem_args)
-		{
-			map_seq_parse[first_key] = std::move(first_seq);
-
-			if constexpr (sizeof...(rem_args) > 0)
-			{
-				append_msp(map_seq_parse, rem_args...);
-			}
-		}
-
-		static inline UnitParse unit_parse(DerivedType* s_self,
-			const std::string& s_parse_act_str,
-			const ParseAction& s_parse_action, bool s_optional)
-		{
-			return UnitParse(s_self, s_parse_act_str, s_parse_action,
-				s_optional);
-		}
-
-	private:		// functions
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline void _inner_seq_parse(InstVec& ret,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
-		{
-			using NoRefFirstArgType
-				= std::remove_reference<FirstArgType>::type;
-			using TrueFirstArgType
-				= std::remove_cv<NoRefFirstArgType>::type;
-
-			static_assert((std::is_same<TrueFirstArgType, UnitParse>()
-				|| std::is_same<TrueFirstArgType, SeqParse>()
-				|| std::is_same<TrueFirstArgType, OrParse>()
-				|| std::is_same<TrueFirstArgType, ListParse>()),
-				"Invalid _inner_seq_parse() first arg");
-
-			Inst to_push;
-
-			if constexpr (std::is_same<TrueFirstArgType, UnitParse>())
-			{
-				to_push = first_arg;
-			}
-			else if constexpr (std::is_same<TrueFirstArgType, SeqParse>())
-			{
-				to_push = SeqParseSptr(new SeqParse(first_arg));
-			}
-			else if constexpr (std::is_same<TrueFirstArgType, OrParse>())
-			{
-				to_push = SeqParseSptr(new OrParse(first_arg));
-			}
-			else if constexpr (std::is_same<TrueFirstArgType, ListParse>())
-			{
-				to_push = SeqParseSptr(new ListParse(first_arg));
-			}
-			else
-			{
-				printerr("RdParserBase::MultiParse::_inner_seq_parse():  ",
-					"Eek!\n");
-				exit(1);
-			}
-			ret.push_back(to_push);
-
-			if constexpr (sizeof...(rem_args) > 0)
-			{
-				_inner_seq_parse(ret, rem_args...);
-			}
-		}
-
-	public:		// functions
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline SeqParse seq_parse(DerivedType* s_self,
-			bool s_optional, const FirstArgType& first_arg,
-			RemArgTypes&&... rem_args)
-		{
-			SeqParse::InstVec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
-
-			return SeqParse(s_self, std::move(s_vec), s_optional);
-		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline SeqParse or_parse(DerivedType* s_self,
-			bool s_optional, const FirstArgType& first_arg,
-			RemArgTypes&&... rem_args)
-		{
-			SeqParse::InstVec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
-
-			return OrParse(s_self, std::move(s_vec), s_optional);
-		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline SeqParse list_parse(DerivedType* s_self,
-			bool s_optional, const FirstArgType& first_arg,
-			RemArgTypes&&... rem_args)
-		{
-			SeqParse::InstVec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
-
-			return ListParse(s_self, std::move(s_vec), s_optional);
-		}
-	};
+	// Used for things like expression parsing.
+	using RecrsGetRulesRet = std::pair<std::map<TokType, ParseFunc>,
+		std::set<TokType>>;
 	//--------
 
 protected:		// variables
 	std::string _filename, _text;
 	std::unique_ptr<LexerType> _lexer;
-	bool _just_get_valid_next_token_set, _just_test, _just_parse;
+	//bool _just_get_valid_next_token_set, _just_test, _just_parse;
+
+	std::stack<RecrsGetRulesRet*> _recrs_get_rules_ret_stack;
+	bool _just_recrs_get_rules = false;
+	//std::stack<DerivedType*> _self_stack;
+
+	bool _debug = false;
 
 public:		// functions
 	inline RdParserBase(const std::string& s_filename)
-		: _filename(s_filename)
+		: _filename(s_filename),
 	{
 		if (auto&& f = std::ifstream(filename()); true)
 		{
 			_text = misc_input::get_istream_as_str(f);
 		}
+		
 		_lexer.push_back(new LexerType(_filename, &_text));
 		_next_tok();
+
+		//_lexer.push_back(new LexerType(_filename, _text));
+		//_next_tok();
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(RdParserBase);
 	virtual inline ~RdParserBase() = default;
 
 protected:		// functions
+	inline FilePos file_pos() const
+	{
+		return _lexer->file_pos();
+	}
+
 	inline auto _next_tok()
 	{
 		return _lexer->next_tok();
+	}
+
+private:		// functions
+	// Used for things like expression parsing where the check for what
+	// token yields what parsing rule can take place across multiple
+	// parsing rules.
+	inline void _recrs_get_rules(DerivedType* self, ParseFunc parse_func,
+		RecrsGetRulesRet* ret)
+	{
+		const bool old_just_recrs_get_rules = self->_just_recrs_get_rules;
+		self->_just_recrs_get_rules = true;
+
+		_recrs_get_rules_ret_stack.push(&ret);
+		(self->*parse_func)();
+		_recrs_get_rules_ret_stack.pop();
+
+		for (const auto& p: ret->first)
+		{
+			ret.second.insert(p.first);
+		}
+
+		self->_just_recrs_get_rules = old_just_recrs_get_rules;
+	}
+
+protected:		// functions
+	void _recrs_parse(DerivedType* self, ParseFunc parse_func)
+	{
+		RecrsGetRulesRet recrs_get_rules_ret;
+		_recrs_get_rules(self, parse_func, &recrs_get_rules_ret);
+
+		if (recrs_get_rules_ret.first.count(_lexer->tok()) > 0)
+		{
+			(self->*recrs_get_rules_ret.first.at(_lexer->tok()))();
+		}
+		else
+		{
+			_inner_expect_fail(recrs_get_rules_ret.second);
+		}
+	}
+
+private:		// functions
+	void _inner_expect_fail(std::set<TokType>& tok_set)
+	{
+		std::string msg = sconcat("Expected one of the following tokens:",
+			"  {");
+
+		decltype(tok_set.size()) i = 0;
+
+		for (const auto& p: tok_set)
+		{
+			msg += _lexer->tok_to_string_map().at(p);
+
+			if ((i + 1) < tok_set.size())
+			{
+				msg += ", ";
+			}
+
+			++i;
+		}
+
+		msg += sconcat("}");
+
+		file_pos().err(msg);
+	}
+
+	template<typename... RemArgTypes>
+	bool _inner_expect(std::set<TokType>& tok_set, TokType first_tok,
+		RemArgTypes&&... rem_args) const
+	{
+		tok_set.insert(first_tok);
+
+		if (_lexer->tok() == first_tok)
+		{
+			return true;
+		}
+		else if constexpr (sizeof...(rem_args) > 0)
+		{
+			return _inner_expect(tok_set, rem_args...);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+protected:		// functions
+	template<typename... RemArgTypes>
+	void _expect(TokType first_tok, RemArgTypes&&... rem_args) const
+	{
+		std::set<TokType> tok_set;
+
+		if (!_inner_expect(tok_set, first_tok, rem_args...))
+		{
+			_inner_expect_fail(tok_set);
+		}
+	}
+
+private:		// functions
+	template<typename... RemArgTypes>
+	bool _inner_sel_parse(std::set<TokType>& tok_set, DerivedType* self,
+		TokType first_tok, ParseFunc first_parse_func,
+		RemArgTypes&&... rem_args)
+	{
+		tok_set.insert(first_tok);
+
+		if (_lexer->tok() == first_tok)
+		{
+			(self->*first_parse_func)();
+			return true;
+		}
+		else if constexpr (sizeof...(rem_args) > 0)
+		{
+			return _inner_sel_parse(tok_set, self, rem_args...);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+protected:		// functions
+	template<typename... RemArgTypes>
+	void _sel_parse(DerivedType* self, TokType first_tok,
+		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
+	{
+		std::set<TokType> tok_set;
+
+		if (!_inner_sel_parse(tok_set, first_tok, first_parse_func,
+			rem_args...))
+		{
+			_inner_expect_fail(tok_set);
+		}
 	}
 };
 

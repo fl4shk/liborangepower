@@ -4,6 +4,8 @@
 #include "../misc/misc_includes.hpp"
 #include "../gmp_stuff/gmp_stuff.hpp"
 
+#include "file_pos_class.hpp"
+
 namespace liborangepower
 {
 
@@ -107,6 +109,8 @@ public:		// types
 
 	using TwoStates = std::pair<State, State>;
 
+	using TokToStringMap = std::map<TokType, std::string>;
+
 protected:		// variables
 	std::string _filename;
 	std::string* _text = nullptr;
@@ -123,22 +127,28 @@ public:		// functions
 	virtual ~LexerBase() = default;
 
 
-	template<typename Type>
-	inline Type src_code_chunk(const TwoStates* other_two_states=nullptr)
-		const
+	//template<typename Type>
+	//inline Type src_code_chunk(const TwoStates* other_two_states=nullptr)
+	//	const
+	//{
+	//	if (other_two_states != nullptr)
+	//	{
+	//		return Type(filename(), other_two_states->second._s,
+	//			other_two_states->first._line_num,
+	//			other_two_states->first._pos_in_line);
+	//	}
+	//	else // if (other_two_states == nullptr)
+	//	{
+	//		return Type(filename(), state()._s,
+	//			prev_state()._line_num, prev_state()._pos_in_line);
+	//	}
+	//}
+	inline FilePos file_pos() const
 	{
-		if (other_two_states != nullptr)
-		{
-			return Type(filename(), other_two_states->second._s,
-				other_two_states->first._line_num,
-				other_two_states->first._pos_in_line);
-		}
-		else // if (other_two_states == nullptr)
-		{
-			return Type(filename(), state()._s,
-				prev_state()._line_num, prev_state()._pos_in_line);
-		}
+		return FilePos(filename(), prev_state()._line_num,
+			prev_state()._pos_in_line);
 	}
+	virtual const TokToStringMap& tok_to_string_map() const = 0;
 
 	inline auto tok() const
 	{
