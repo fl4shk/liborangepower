@@ -40,7 +40,7 @@ public:		// types
 	//using RecurseParseRet = std::map<TokType, ParseFunc>;
 
 	// Used for things like expression parsing.
-	using RecrsGetRulesRet = std::pair<std::map<TokType, ParseFunc>,
+	using RcrRet = std::pair<std::map<TokType, ParseFunc>,
 		std::set<TokType>>;
 	//--------
 
@@ -49,7 +49,7 @@ protected:		// variables
 	std::unique_ptr<LexerType> _lexer;
 	//bool _just_get_valid_next_token_set, _just_test, _just_parse;
 
-	std::stack<RecrsGetRulesRet*> _recrs_get_rules_ret_stack;
+	std::stack<RcrRet*> _recrs_get_rules_ret_stack;
 	bool _just_recrs_get_rules = false;
 	//std::stack<DerivedType*> _self_stack;
 
@@ -73,9 +73,21 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(RdParserBase);
 	virtual inline ~RdParserBase() = default;
 
-	inline FilePos file_pos() const
+	inline FilePos lex_file_pos() const
 	{
 		return _lexer->file_pos();
+	}
+	inline auto lex_tok() const
+	{
+		return _lexer->tok();
+	}
+	inline const auto& lex_s() const
+	{
+		return _lexer->s();
+	}
+	inline const auto& lex_n() const
+	{
+		return _lexer->n();
 	}
 
 	GEN_GETTER_BY_CON_REF(filename);
@@ -91,7 +103,7 @@ private:		// functions
 	// token yields what parsing rule can take place across multiple
 	// parsing rules.
 	inline void _recrs_get_rules(DerivedType* self, ParseFunc parse_func,
-		RecrsGetRulesRet* ret)
+		RcrRet* ret)
 	{
 		const bool old_just_recrs_get_rules = self->_just_recrs_get_rules;
 		self->_just_recrs_get_rules = true;
@@ -111,7 +123,7 @@ private:		// functions
 protected:		// functions
 	void _recrs_parse(DerivedType* self, ParseFunc parse_func)
 	{
-		RecrsGetRulesRet recrs_get_rules_ret;
+		RcrRet recrs_get_rules_ret;
 		_recrs_get_rules(self, parse_func, &recrs_get_rules_ret);
 
 		if (recrs_get_rules_ret.first.count(_lexer->tok()) > 0)
