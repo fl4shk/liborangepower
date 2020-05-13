@@ -35,12 +35,12 @@ public:		// functions
 
 	virtual void warn(const string& msg) const
 	{
-		printerr("Warning in file \"", filename(), "\" on line ",
-			line_num(), ", position ", pos_in_line(), ":  ", msg, "\n");
+		printerr("Warning in file \"", filename(), "\" on line ", line(),
+			", position ", pos_in_line(), ":  ", msg, "\n");
 	}
 	virtual void err(const string& msg) const
 	{
-		printerr("Error in file \"", filename(), "\" on line ", line_num(),
+		printerr("Error in file \"", filename(), "\" on line ", line(),
 			", position ", pos_in_line(), ":  ", msg, "\n");
 		exit(1);
 	}
