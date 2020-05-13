@@ -118,6 +118,16 @@ protected:		// functions
 		return _rg_rules_ret_stack.top()->first;
 	}
 
+	// Ensure that there is only one layer deep of parsing funcs
+	inline void _recrs_get_rules_flatten(ParseFunc repl_parse_func,
+		RgRulesRet* ret)
+	{
+		for (auto& p: ret->first)
+		{
+			p.second = repl_parse_func;
+		}
+	}
+
 	// Used for things like expression parsing where the check for what
 	// token yields what parsing rule can take place across multiple
 	// parsing rules.
