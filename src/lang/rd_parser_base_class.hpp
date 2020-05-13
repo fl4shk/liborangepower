@@ -57,7 +57,7 @@ protected:		// variables
 
 public:		// functions
 	inline RdParserBase(const std::string& s_filename)
-		: _filename(s_filename),
+		: _filename(s_filename)
 	{
 		if (auto&& f = std::ifstream(filename()); true)
 		{
@@ -73,11 +73,14 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(RdParserBase);
 	virtual inline ~RdParserBase() = default;
 
-protected:		// functions
 	inline FilePos file_pos() const
 	{
 		return _lexer->file_pos();
 	}
+
+	GEN_GETTER_BY_CON_REF(filename);
+
+protected:		// functions
 
 	inline auto _next_tok()
 	{
