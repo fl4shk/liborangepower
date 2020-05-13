@@ -63,7 +63,7 @@ public:		// functions
 } // namespace liborangepower
 
 inline std::ostream& operator << (std::ostream& os,
-	const fling_hdl::FilePos& fp)
+	const liborangepower::lang::FilePos& fp)
 {
 	return osprintout(os, fp.filename(), ":", fp.line(), ":",
 		fp.pos_in_line());
