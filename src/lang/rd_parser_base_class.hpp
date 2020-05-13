@@ -5,6 +5,7 @@
 #include "../misc/misc_output_classes.hpp"
 #include "../misc/misc_input_classes.hpp"
 #include "../strings/sconcat_etc.hpp"
+#include "file_pos_class.hpp"
 
 #include <variant>
 #include <memory>
@@ -24,8 +25,7 @@ using strings::sconcat;
 namespace lang
 {
 
-template<typename LexerType, typename DerivedType,
-	typename FilePos>
+template<typename LexerType, typename DerivedType>
 class RdParserBase
 {
 public:		// types
