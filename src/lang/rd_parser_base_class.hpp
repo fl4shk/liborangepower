@@ -105,7 +105,6 @@ protected:		// functions
 		return _rg_rules_ret_stack.top()->first;
 	}
 
-private:		// functions
 	// Used for things like expression parsing where the check for what
 	// token yields what parsing rule can take place across multiple
 	// parsing rules.
@@ -127,7 +126,6 @@ private:		// functions
 		self->_just_rg_rules = old_just_rg_rules;
 	}
 
-protected:		// functions
 	void _recrs_parse(DerivedType* self, ParseFunc parse_func)
 	{
 		RgRulesRet rg_rules_ret;
