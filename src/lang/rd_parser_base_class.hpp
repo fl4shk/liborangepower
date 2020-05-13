@@ -100,6 +100,11 @@ protected:		// functions
 		return _lexer->next_tok();
 	}
 
+	inline RgRulesRet& _top_rg_rules_ret()
+	{
+		return *_rg_rules_ret_stack.top();
+	}
+
 private:		// functions
 	// Used for things like expression parsing where the check for what
 	// token yields what parsing rule can take place across multiple
