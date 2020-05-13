@@ -158,7 +158,7 @@ protected:		// functions
 	}
 
 private:		// functions
-	void _inner_expect_fail(std::set<TokType>& tok_set)
+	void _inner_expect_fail(std::set<TokType>& tok_set) const
 	{
 		std::string msg = sconcat("Expected one of the following tokens:",
 			"  {");
