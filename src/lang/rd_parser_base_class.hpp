@@ -91,6 +91,19 @@ public:		// functions
 		return _lexer->n();
 	}
 
+	inline auto prev_lex_tok() const
+	{
+		return _lexer->prev_state().tok();
+	}
+	inline const auto& prev_lex_s() const
+	{
+		return _lexer->prev_state().s();
+	}
+	inline const auto& prev_lex_n() const
+	{
+		return _lexer->prev_state().n();
+	}
+
 	GEN_GETTER_BY_CON_REF(filename);
 	GEN_GETTER_BY_VAL(just_rg_rules);
 
