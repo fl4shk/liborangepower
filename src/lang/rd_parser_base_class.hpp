@@ -179,7 +179,7 @@ private:		// functions
 
 		msg += sconcat("}");
 
-		file_pos().err(msg);
+		lex_file_pos().err(msg);
 	}
 
 	template<typename... RemArgTypes>
