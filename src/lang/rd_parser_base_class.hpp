@@ -135,6 +135,9 @@ protected:		// functions
 
 		if (rg_rules_ret.first.count(_lexer->tok()) > 0)
 		{
+			// This is so we don't have to keep doing this in the parsing
+			// functions themselves.
+			_next_tok();
 			(self->*rg_rules_ret.first.at(_lexer->tok()))();
 		}
 		else
