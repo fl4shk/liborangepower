@@ -25,6 +25,7 @@ using strings::sconcat;
 namespace lang
 {
 
+// A base class for parsing LL(1) grammars via recursive descent.
 template<typename LexerType, typename DerivedType>
 class RdParserBase
 {
@@ -40,7 +41,7 @@ public:		// types
 	//using RecurseParseRet = std::map<TokType, ParseFunc>;
 
 	// Used for things like expression parsing.
-	using RcrRet = std::pair<std::map<TokType, ParseFunc>,
+	using RgRulesRet = std::pair<std::map<TokType, ParseFunc>,
 		std::set<TokType>>;
 	//--------
 
@@ -49,8 +50,8 @@ protected:		// variables
 	std::unique_ptr<LexerType> _lexer;
 	//bool _just_get_valid_next_token_set, _just_test, _just_parse;
 
-	std::stack<RcrRet*> _recrs_get_rules_ret_stack;
-	bool _just_recrs_get_rules = false;
+	std::stack<RgRulesRet*> _rg_rules_ret_stack;
+	bool _just_rg_rules = false;
 	//std::stack<DerivedType*> _self_stack;
 
 	bool _debug = false;
@@ -91,6 +92,7 @@ public:		// functions
 	}
 
 	GEN_GETTER_BY_CON_REF(filename);
+	GEN_GETTER_BY_VAL(just_rg_rules);
 
 protected:		// functions
 	inline auto _next_tok()
@@ -103,36 +105,36 @@ private:		// functions
 	// token yields what parsing rule can take place across multiple
 	// parsing rules.
 	inline void _recrs_get_rules(DerivedType* self, ParseFunc parse_func,
-		RcrRet* ret)
+		RgRulesRet* ret)
 	{
-		const bool old_just_recrs_get_rules = self->_just_recrs_get_rules;
-		self->_just_recrs_get_rules = true;
+		const bool old_just_rg_rules = self->_just_rg_rules;
+		self->_just_rg_rules = true;
 
-		_recrs_get_rules_ret_stack.push(ret);
+		_rg_rules_ret_stack.push(ret);
 		(self->*parse_func)();
-		_recrs_get_rules_ret_stack.pop();
+		_rg_rules_ret_stack.pop();
 
 		for (const auto& p: ret->first)
 		{
 			ret->second.insert(p.first);
 		}
 
-		self->_just_recrs_get_rules = old_just_recrs_get_rules;
+		self->_just_rg_rules = old_just_rg_rules;
 	}
 
 protected:		// functions
 	void _recrs_parse(DerivedType* self, ParseFunc parse_func)
 	{
-		RcrRet recrs_get_rules_ret;
-		_recrs_get_rules(self, parse_func, &recrs_get_rules_ret);
+		RgRulesRet rg_rules_ret;
+		_recrs_get_rules(self, parse_func, &rg_rules_ret);
 
-		if (recrs_get_rules_ret.first.count(_lexer->tok()) > 0)
+		if (rg_rules_ret.first.count(_lexer->tok()) > 0)
 		{
-			(self->*recrs_get_rules_ret.first.at(_lexer->tok()))();
+			(self->*rg_rules_ret.first.at(_lexer->tok()))();
 		}
 		else
 		{
-			_inner_expect_fail(recrs_get_rules_ret.second);
+			_inner_expect_fail(rg_rules_ret.second);
 		}
 	}
 
