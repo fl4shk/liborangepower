@@ -81,7 +81,6 @@ public:		// functions
 	GEN_GETTER_BY_CON_REF(filename);
 
 protected:		// functions
-
 	inline auto _next_tok()
 	{
 		return _lexer->next_tok();
