@@ -4,6 +4,7 @@
 // src/file_pos_class.hpp
 
 #include "../misc/misc_includes.hpp"
+#include "../misc/misc_output_classes.hpp"
 
 namespace liborangepower
 {
@@ -65,8 +66,8 @@ public:		// functions
 inline std::ostream& operator << (std::ostream& os,
 	const liborangepower::lang::FilePos& fp)
 {
-	return osprintout(os, fp.filename(), ":", fp.line(), ":",
-		fp.pos_in_line());
+	return liborangepower::misc_output::osprintout(os, fp.filename(), ":",
+		fp.line(), ":", fp.pos_in_line());
 }
 
 #endif		// src_file_pos_class_hpp
