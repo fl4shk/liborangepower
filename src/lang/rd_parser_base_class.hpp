@@ -100,9 +100,9 @@ protected:		// functions
 		return _lexer->next_tok();
 	}
 
-	inline RgRulesRet& _top_rg_rules_ret()
+	inline std::map<TokType, ParseFunc>& _top_rgr_ret_map()
 	{
-		return *_rg_rules_ret_stack.top();
+		return _rg_rules_ret_stack.top()->first;
 	}
 
 private:		// functions
