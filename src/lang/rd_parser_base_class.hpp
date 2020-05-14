@@ -152,6 +152,12 @@ protected:		// functions
 		self->_just_rg_rules = old_just_rg_rules;
 	}
 
+	inline void _rg_rules_parse(DerivedType* self, ParseFunc parse_func)
+	{
+		RgRulesRet rg_rules_ret;
+		_recrs_get_rules(self, parse_func, &rg_rules_ret);
+		_rg_rules_parse(self, rg_rules_ret);
+	}
 	inline void _rg_rules_parse(DerivedType* self,
 		RgRulesRet* rg_rules_ret)
 	{
