@@ -41,8 +41,8 @@ public:		// types
 	//using RecurseParseRet = std::map<TokType, ParseFunc>;
 
 	// Used for things like expression parsing.
-	using RgRulesRet = std::pair<std::map<TokType, ParseFunc>,
-		std::set<TokType>>;
+	using TokSet = std::set<TokType>;
+	using RgRulesRet = std::pair<std::map<TokType, ParseFunc>, TokSet>;
 	//--------
 
 protected:		// variables
@@ -133,14 +133,14 @@ protected:		// functions
 	// token yields what parsing rule can take place across multiple
 	// parsing rules.
 	inline void _recrs_get_rules(DerivedType* self, ParseFunc parse_func,
-		RgRulesRet* ret)
+		RgRulesRet& ret)
 	{
 		const bool old_just_rg_rules = self->_just_rg_rules;
 		self->_just_rg_rules = true;
 
 		const auto old_rg_rules_ret = self->_rg_rules_ret;
 
-		self->_rg_rules_ret = ret;
+		self->_rg_rules_ret = &ret;
 		(self->*parse_func)();
 		self->_rg_rules_ret = old_rg_rules_ret;
 
@@ -155,12 +155,27 @@ protected:		// functions
 	inline void _rg_rules_parse(DerivedType* self, ParseFunc parse_func)
 	{
 		RgRulesRet rg_rules_ret;
-		_recrs_get_rules(self, parse_func, &rg_rules_ret);
+		_recrs_get_rules(self, parse_func, rg_rules_ret);
+
+		_rg_rules_parse(self, rg_rules_ret);
+	}
+	inline void _rg_rules_parse(DerivedType* self, ParseFunc parse_func,
+		const TokSet& extra_fail_tok_set)
+	{
+		RgRulesRet rg_rules_ret;
+		_recrs_get_rules(self, parse_func, rg_rules_ret);
+
+		rg_rules_ret.second.merge(extra_fail_tok_set);
 
 		_rg_rules_parse(self, rg_rules_ret);
 	}
 	inline void _rg_rules_parse(DerivedType* self,
-		RgRulesRet* rg_rules_ret)
+		RgRulesRet& rg_rules_ret)
+	{
+		_rg_rules_parse(self, rg_rules_ret, rg_rules_ret.second);
+	}
+	inline void _rg_rules_parse(DerivedType* self,
+		RgRulesRet& rg_rules_ret, const TokSet& fail_tok_set)
 	{
 		//RgRulesRet rg_rules_ret;
 		//_recrs_get_rules(self, parse_func, &rg_rules_ret);
@@ -171,12 +186,12 @@ protected:		// functions
 		}
 		else
 		{
-			_inner_expect_fail(rg_rules_ret.second);
+			_inner_expect_fail(tok_set);
 		}
 	}
 
 private:		// functions
-	void _inner_expect_fail(std::set<TokType>& tok_set) const
+	void _inner_expect_fail(const TokSet& tok_set) const
 	{
 		std::string msg = sconcat("Expected one of the following tokens:",
 			"  {");
@@ -201,7 +216,7 @@ private:		// functions
 	}
 
 	template<typename... RemArgTypes>
-	bool _inner_expect(std::set<TokType>& tok_set, TokType first_tok,
+	bool _inner_expect(TokSet& tok_set, TokType first_tok,
 		RemArgTypes&&... rem_args) const
 	{
 		tok_set.insert(first_tok);
@@ -224,7 +239,7 @@ protected:		// functions
 	template<typename... RemArgTypes>
 	void _expect(TokType first_tok, RemArgTypes&&... rem_args) const
 	{
-		std::set<TokType> tok_set;
+		TokSet tok_set;
 
 		if (!_inner_expect(tok_set, first_tok, rem_args...))
 		{
@@ -232,42 +247,42 @@ protected:		// functions
 		}
 	}
 
-//private:		// functions
-//	template<typename... RemArgTypes>
-//	bool _inner_sel_parse(std::set<TokType>& tok_set, DerivedType* self,
-//		TokType first_tok, ParseFunc first_parse_func,
-//		RemArgTypes&&... rem_args)
-//	{
-//		tok_set.insert(first_tok);
-//
-//		if (_lexer->tok() == first_tok)
-//		{
-//			(self->*first_parse_func)();
-//			return true;
-//		}
-//		else if constexpr (sizeof...(rem_args) > 0)
-//		{
-//			return _inner_sel_parse(tok_set, self, rem_args...);
-//		}
-//		else
-//		{
-//			return false;
-//		}
-//	}
-//
-//protected:		// functions
-//	template<typename... RemArgTypes>
-//	void _sel_parse(DerivedType* self, TokType first_tok,
-//		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
-//	{
-//		std::set<TokType> tok_set;
-//
-//		if (!_inner_sel_parse(tok_set, first_tok, first_parse_func,
-//			rem_args...))
-//		{
-//			_inner_expect_fail(tok_set);
-//		}
-//	}
+private:		// functions
+	template<typename... RemArgTypes>
+	bool _inner_sel_parse(TokSet& tok_set, DerivedType* self,
+		TokType first_tok, ParseFunc first_parse_func,
+		RemArgTypes&&... rem_args)
+	{
+		tok_set.insert(first_tok);
+
+		if (_lexer->tok() == first_tok)
+		{
+			(self->*first_parse_func)();
+			return true;
+		}
+		else if constexpr (sizeof...(rem_args) > 0)
+		{
+			return _inner_sel_parse(tok_set, self, rem_args...);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+protected:		// functions
+	template<typename... RemArgTypes>
+	void _sel_parse(DerivedType* self, TokType first_tok,
+		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
+	{
+		TokSet tok_set;
+
+		if (!_inner_sel_parse(tok_set, first_tok, first_parse_func,
+			rem_args...))
+		{
+			_inner_expect_fail(tok_set);
+		}
+	}
 };
 
 } // namespace lang
