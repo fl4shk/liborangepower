@@ -159,7 +159,7 @@ protected:		// functions
 			// This is so we don't have to keep doing this in the parsing
 			// functions themselves.
 			_next_tok();
-			(self->*rg_rules_ret.first.at(_lexer->tok()))();
+			(self->*rg_rules_ret.first.at(prev_lex_tok()))();
 		}
 		else
 		{
