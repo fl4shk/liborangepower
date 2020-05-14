@@ -50,7 +50,8 @@ protected:		// variables
 	std::unique_ptr<LexerType> _lexer;
 	//bool _just_get_valid_next_token_set, _just_test, _just_parse;
 
-	std::stack<RgRulesRet*> _rg_rules_ret_stack;
+	//std::stack<RgRulesRet*> _rg_rules_ret_stack;
+	RgRulesRet* _rg_rules_ret = nullptr;
 	bool _just_rg_rules = false;
 	//std::stack<DerivedType*> _self_stack;
 
@@ -113,10 +114,10 @@ protected:		// functions
 		return _lexer->next_tok();
 	}
 
-	inline std::map<TokType, ParseFunc>& _top_rgr_ret_map()
-	{
-		return _rg_rules_ret_stack.top()->first;
-	}
+	//inline std::map<TokType, ParseFunc>& _top_rgr_ret_map()
+	//{
+	//	return _rg_rules_ret_stack.top()->first;
+	//}
 
 	// Ensure that there is only one layer deep of parsing funcs
 	inline void _rg_rules_flatten(ParseFunc repl_parse_func,
@@ -137,9 +138,11 @@ protected:		// functions
 		const bool old_just_rg_rules = self->_just_rg_rules;
 		self->_just_rg_rules = true;
 
-		_rg_rules_ret_stack.push(ret);
+		const auto old_rg_rules_ret = self->_rg_rules_ret;
+
+		self->_rg_rules_ret = ret;
 		(self->*parse_func)();
-		_rg_rules_ret_stack.pop();
+		self->_rg_rules_ret = old_rg_rules_ret;
 
 		for (const auto& p: ret->first)
 		{
@@ -149,17 +152,15 @@ protected:		// functions
 		self->_just_rg_rules = old_just_rg_rules;
 	}
 
-	void _recrs_parse(DerivedType* self, ParseFunc parse_func)
+	inline void _rg_rules_parse(DerivedType* self,
+		RgRulesRet* rg_rules_ret)
 	{
-		RgRulesRet rg_rules_ret;
-		_recrs_get_rules(self, parse_func, &rg_rules_ret);
+		//RgRulesRet rg_rules_ret;
+		//_recrs_get_rules(self, parse_func, &rg_rules_ret);
 
 		if (rg_rules_ret.first.count(_lexer->tok()) > 0)
 		{
-			// This is so we don't have to keep doing this in the parsing
-			// functions themselves.
-			_next_tok();
-			(self->*rg_rules_ret.first.at(prev_lex_tok()))();
+			(self->*rg_rules_ret.first.at(lex_tok()))();
 		}
 		else
 		{
@@ -224,42 +225,42 @@ protected:		// functions
 		}
 	}
 
-private:		// functions
-	template<typename... RemArgTypes>
-	bool _inner_sel_parse(std::set<TokType>& tok_set, DerivedType* self,
-		TokType first_tok, ParseFunc first_parse_func,
-		RemArgTypes&&... rem_args)
-	{
-		tok_set.insert(first_tok);
-
-		if (_lexer->tok() == first_tok)
-		{
-			(self->*first_parse_func)();
-			return true;
-		}
-		else if constexpr (sizeof...(rem_args) > 0)
-		{
-			return _inner_sel_parse(tok_set, self, rem_args...);
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-protected:		// functions
-	template<typename... RemArgTypes>
-	void _sel_parse(DerivedType* self, TokType first_tok,
-		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
-	{
-		std::set<TokType> tok_set;
-
-		if (!_inner_sel_parse(tok_set, first_tok, first_parse_func,
-			rem_args...))
-		{
-			_inner_expect_fail(tok_set);
-		}
-	}
+//private:		// functions
+//	template<typename... RemArgTypes>
+//	bool _inner_sel_parse(std::set<TokType>& tok_set, DerivedType* self,
+//		TokType first_tok, ParseFunc first_parse_func,
+//		RemArgTypes&&... rem_args)
+//	{
+//		tok_set.insert(first_tok);
+//
+//		if (_lexer->tok() == first_tok)
+//		{
+//			(self->*first_parse_func)();
+//			return true;
+//		}
+//		else if constexpr (sizeof...(rem_args) > 0)
+//		{
+//			return _inner_sel_parse(tok_set, self, rem_args...);
+//		}
+//		else
+//		{
+//			return false;
+//		}
+//	}
+//
+//protected:		// functions
+//	template<typename... RemArgTypes>
+//	void _sel_parse(DerivedType* self, TokType first_tok,
+//		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
+//	{
+//		std::set<TokType> tok_set;
+//
+//		if (!_inner_sel_parse(tok_set, first_tok, first_parse_func,
+//			rem_args...))
+//		{
+//			_inner_expect_fail(tok_set);
+//		}
+//	}
 };
 
 } // namespace lang
