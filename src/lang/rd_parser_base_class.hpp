@@ -114,10 +114,10 @@ protected:		// functions
 		return _lexer->next_tok();
 	}
 
-	//inline std::map<TokType, ParseFunc>& _top_rgr_ret_map()
-	//{
-	//	return _rg_rules_ret_stack.top()->first;
-	//}
+	inline std::map<TokType, ParseFunc>& _rgr_ret_map()
+	{
+		return _rg_rules_ret->first;
+	}
 
 	// Ensure that there is only one layer deep of parsing funcs
 	inline void _rg_rules_flatten(ParseFunc repl_parse_func,
@@ -156,6 +156,7 @@ protected:		// functions
 	{
 		RgRulesRet rg_rules_ret;
 		_recrs_get_rules(self, parse_func, &rg_rules_ret);
+
 		_rg_rules_parse(self, rg_rules_ret);
 	}
 	inline void _rg_rules_parse(DerivedType* self,
