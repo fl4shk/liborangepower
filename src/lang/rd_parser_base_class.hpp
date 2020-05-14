@@ -119,7 +119,7 @@ protected:		// functions
 	}
 
 	// Ensure that there is only one layer deep of parsing funcs
-	inline void _recrs_get_rules_flatten(ParseFunc repl_parse_func,
+	inline void _rg_rules_flatten(ParseFunc repl_parse_func,
 		RgRulesRet* ret)
 	{
 		for (auto& p: ret->first)
