@@ -49,6 +49,7 @@ public:		// types
 	using TokSet = std::set<TokType>;
 	using RgRulesRet = std::pair<std::map<TokType, 
 		std::optional<ParseFunc>>, TokSet>;
+	using RgrParseRet = std::pair<RgRulesRet, bool>;
 	//--------
 
 protected:		// variables
@@ -156,7 +157,6 @@ protected:		// functions
 	inline void _recrs_get_rules(DerivedType* self,
 		const ParseFunc& parse_func, RgRulesRet& ret)
 	{
-		const bool old_just_rg_rules = self->_just_rg_rules;
 		self->_just_rg_rules = true;
 
 		const auto old_rg_rules_ret = self->_rg_rules_ret;
@@ -170,78 +170,69 @@ protected:		// functions
 			ret->second.insert(p.first);
 		}
 
-		self->_just_rg_rules = old_just_rg_rules;
+		// We shouldn't need nesting
+		self->_just_rg_rules = false;
 	}
 
-	inline void _rg_rules_parse(DerivedType* self, ParseFunc parse_func)
-	{
-		RgRulesRet rg_rules_ret;
-		_recrs_get_rules(self, parse_func, rg_rules_ret);
-
-		_rg_rules_parse(self, rg_rules_ret);
-	}
-	inline void _rg_rules_parse(DerivedType* self, ParseFunc parse_func,
-		const TokSet& extra_fail_tok_set)
-	{
-		RgRulesRet rg_rules_ret;
-		_recrs_get_rules(self, parse_func, rg_rules_ret);
-
-		rg_rules_ret.second.merge(extra_fail_tok_set);
-
-		_rg_rules_parse(self, rg_rules_ret);
-	}
-	inline void _rg_rules_parse(DerivedType* self,
-		RgRulesRet& rg_rules_ret)
-	{
-		_rg_rules_parse(self, rg_rules_ret, rg_rules_ret.second);
-	}
-	inline void _rg_rules_parse(DerivedType* self,
-		RgRulesRet& rg_rules_ret, const TokSet& fail_tok_set)
-	{
-		if (rg_rules_ret.first.count(_lexer->tok()) > 0)
-		{
-			_call_parse_func(self, rg_rules_ret.first.at(lex_tok()));
-		}
-		else
-		{
-			_inner_expect_fail(fail_tok_set);
-		}
-	}
-
-	//inline void _opt_rgr_parse(DerivedType* self, ParseFunc parse_func)
+	//inline void _rg_rules_parse(DerivedType* self,
+	//	const ParseFunc& parse_func)
 	//{
 	//	RgRulesRet rg_rules_ret;
 	//	_recrs_get_rules(self, parse_func, rg_rules_ret);
 
-	//	_opt_rgr_parse(self, rg_rules_ret);
+	//	_rg_rules_parse(self, rg_rules_ret);
 	//}
-	//inline void _opt_rgr_parse(DerivedType* self, ParseFunc parse_func,
-	//	const TokSet& extra_fail_tok_set)
+	//inline void _rg_rules_parse(DerivedType* self,
+	//	const ParseFunc& parse_func, const TokSet& extra_fail_tok_set)
 	//{
 	//	RgRulesRet rg_rules_ret;
 	//	_recrs_get_rules(self, parse_func, rg_rules_ret);
 
 	//	rg_rules_ret.second.merge(extra_fail_tok_set);
 
-	//	_opt_rgr_parse(self, rg_rules_ret);
+	//	_rg_rules_parse(self, rg_rules_ret);
 	//}
-	//inline void _opt_rgr_parse(DerivedType* self,
+	//inline void _rg_rules_parse(DerivedType* self,
 	//	RgRulesRet& rg_rules_ret)
 	//{
-	//	_opt_rgr_parse(self, rg_rules_ret, rg_rules_ret.second);
+	//	_rg_rules_parse(self, rg_rules_ret, rg_rules_ret.second);
 	//}
-	//inline std::optional<TokSet> _opt_rgr_parse(DerivedType* self,
+	//inline void _rg_rules_parse(DerivedType* self,
 	//	RgRulesRet& rg_rules_ret, const TokSet& fail_tok_set)
 	//{
-	//	if (rg_rules_ret.first.count(_lexer->tok()) > 0)
+	//	auto& rgr_ret_map = rg_rules_ret.first;
+	//	if (rgr_ret_map.count(_lexer->tok()) > 0)
 	//	{
-	//		(self->*rg_rules_ret.first.at(lex_tok()))();
+	//		_call_parse_func(self, rgr_ret_map.at(lex_tok()));
 	//	}
 	//	else
 	//	{
-	//		//_inner_expect_fail(tok_set);
+	//		_inner_expect_fail(fail_tok_set);
 	//	}
 	//}
+
+	inline bool _rg_rules_parse(DerivedType* self,
+		const ParseFunc& parse_func, RgrParseRet& ret)
+	{
+		_recrs_get_rules(self, parse_func, ret.first);
+
+		_rg_rules_parse(self, ret);
+	}
+	inline bool _rg_rules_parse(DerivedType* self, RgrParseRet& ret)
+	{
+		if (ret.first.first.count(lex_tok()) > 0)
+		{
+			_call_parse_func(self, ret.first.first.at(lex_tok()));
+			ret.second = true;
+		}
+		else
+		{
+			ret.second = false;
+		}
+
+		return ret.second;
+	}
+
 
 private:		// functions
 	void _inner_expect_fail(const TokSet& tok_set) const
