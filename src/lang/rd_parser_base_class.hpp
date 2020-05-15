@@ -157,12 +157,14 @@ protected:		// functions
 	inline void _recrs_get_rules(DerivedType* self,
 		const ParseFunc& parse_func, RgRulesRet& ret)
 	{
+		// We shouldn't need nesting
 		self->_just_rg_rules = true;
 
 		const auto old_rg_rules_ret = self->_rg_rules_ret;
-
 		self->_rg_rules_ret = &ret;
+
 		_call_parse_func(self, parse_func);
+
 		self->_rg_rules_ret = old_rg_rules_ret;
 
 		for (const auto& p: ret->first)
@@ -174,67 +176,26 @@ protected:		// functions
 		self->_just_rg_rules = false;
 	}
 
-	//inline void _rg_rules_parse(DerivedType* self,
-	//	const ParseFunc& parse_func)
-	//{
-	//	RgRulesRet rg_rules_ret;
-	//	_recrs_get_rules(self, parse_func, rg_rules_ret);
-
-	//	_rg_rules_parse(self, rg_rules_ret);
-	//}
-	//inline void _rg_rules_parse(DerivedType* self,
-	//	const ParseFunc& parse_func, const TokSet& extra_fail_tok_set)
-	//{
-	//	RgRulesRet rg_rules_ret;
-	//	_recrs_get_rules(self, parse_func, rg_rules_ret);
-
-	//	rg_rules_ret.second.merge(extra_fail_tok_set);
-
-	//	_rg_rules_parse(self, rg_rules_ret);
-	//}
-	//inline void _rg_rules_parse(DerivedType* self,
-	//	RgRulesRet& rg_rules_ret)
-	//{
-	//	_rg_rules_parse(self, rg_rules_ret, rg_rules_ret.second);
-	//}
-	//inline void _rg_rules_parse(DerivedType* self,
-	//	RgRulesRet& rg_rules_ret, const TokSet& fail_tok_set)
-	//{
-	//	auto& rgr_ret_map = rg_rules_ret.first;
-	//	if (rgr_ret_map.count(_lexer->tok()) > 0)
-	//	{
-	//		_call_parse_func(self, rgr_ret_map.at(lex_tok()));
-	//	}
-	//	else
-	//	{
-	//		_inner_expect_fail(fail_tok_set);
-	//	}
-	//}
-
-	inline bool _rg_rules_parse(RgrParseRet& ret, DerivedType* self,
+	inline RgrParseRet _rg_rules_parse(DerivedType* self,
 		const ParseFunc& parse_func)
 	{
+		RgrParseRet ret;
 		_recrs_get_rules(self, parse_func, ret.first);
 
 		return _rg_rules_parse(self, ret);
 	}
-	inline bool _rg_rules_parse(RgrParseRet& ret, DerivedType* self,
+	inline RgrParseRet _rg_rules_parse(DerivedType* self,
 		const ParseFunc& parse_func, const TokSet& extra_fail_tok_set)
 	{
+		RgrParseRet ret;
 		_recrs_get_rules(self, parse_func, ret.first);
 
 		return _rg_rules_parse(ret, self, extra_fail_tok_set);
 	}
-	inline bool _rg_rules_parse(RgrParseRet& ret, DerivedType* self)
-	{
-		// This should just end up not changing `ret`.
-		return _rg_rules_parse(ret, self, TokSet());
-	}
-	inline bool _rg_rules_parse(RgrParseRet& ret, DerivedType* self,
-		const TokSet& extra_fail_tok_set)
-	{
-		ret.first.second.merge(extra_fail_tok_set);
 
+private:		// functions
+	inline RgrParseRet _rg_rules_parse(RgrParseRet& ret, DerivedType* self)
+	{
 		if (ret.first.first.count(lex_tok()) > 0)
 		{
 			_call_parse_func(self, ret.first.first.at(lex_tok()));
@@ -245,7 +206,14 @@ protected:		// functions
 			ret.second = false;
 		}
 
-		return ret.second;
+		return ret;
+	}
+	inline RgrParseRet _rg_rules_parse(RgrParseRet& ret, DerivedType* self,
+		const TokSet& extra_fail_tok_set)
+	{
+		ret.first.second.merge(extra_fail_tok_set);
+
+		return _rg_rules_parse(ret, self);
 	}
 
 
