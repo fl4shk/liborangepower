@@ -37,8 +37,7 @@ public:		// types
 
 	using TokSet = std::set<TokType>;
 
-	using JtParseRet = std::pair<TokSet, bool>;
-	using ParseRet = std::optional<JtParseRet>;
+	using ParseRet = std::optional<TokSet>;
 
 	using ParseFunc = ParseRet (DerivedType::*)();
 
@@ -53,12 +52,12 @@ public:		// types
 protected:		// variables
 	std::string _filename, _text;
 	std::unique_ptr<LexerType> _lexer;
-	//bool _just_get_valid_next_token_set, _just_test, _just_parse;
+	//bool _just_get_valid_next_token_set, _just_get_valid_tokens, _just_parse;
 
 	//std::stack<RgRulesRet*> _rg_rules_ret_stack;
 	//RgRulesRet* _rg_rules_ret = nullptr;
 	//bool _just_rg_rules = false;
-	bool _just_test = false;
+	bool _just_get_valid_tokens = false;
 
 	//bool _debug = false;
 
@@ -111,7 +110,7 @@ public:		// functions
 	}
 
 	GEN_GETTER_BY_CON_REF(filename);
-	GEN_GETTER_BY_VAL(just_test);
+	GEN_GETTER_BY_VAL(just_get_valid_tokens);
 
 protected:		// functions
 	//inline void _call_parse_func(DerivedType* self,
@@ -159,14 +158,14 @@ protected:		// functions
 		const ParseFunc& parse_func, TokSet& wanted_tok_set,
 		const std::string& func_str)
 	{
-		self->_just_test = true;
-
+		self->_just_get_valid_tokens = true;
 		const auto parse_ret = (self->*parse_func)();
+		self->_just_get_valid_tokens = false;
 
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
 		for (const auto& outer_item: wanted_tok_set)
 		{
-			for (const auto& inner_item: parse_ret->first)
+			for (const auto& inner_item: *parse_ret)
 			{
 				if (outer_item == inner_item)
 				{
@@ -177,11 +176,9 @@ protected:		// functions
 			}
 		}
 
-		wanted_tok_set.merge(parse_ret->first);
+		wanted_tok_set.merge(*parse_ret);
 
-		self->_just_test = false;
-
-		return parse_ret->second;
+		return (parse_ret->count(lex_tok()) > 0);
 	}
 
 	//// Ensure that there is only one layer deep of parsing funcs
