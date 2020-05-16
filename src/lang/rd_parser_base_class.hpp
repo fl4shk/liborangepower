@@ -170,8 +170,9 @@ protected:		// functions
 				}
 			}
 		}
+		TokSet temp_to_merge_from = to_merge_from;
 
-		to_merge_into.merge(to_merge_from);
+		to_merge_into.merge(temp_to_merge_from);
 	}
 
 	inline bool _check_parse(DerivedType* self,
