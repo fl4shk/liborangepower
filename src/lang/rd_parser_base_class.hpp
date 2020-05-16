@@ -161,7 +161,7 @@ protected:		// functions
 		lex_file_pos().err(full_msg);
 	}
 
-	inline bool _check_parse(DerivedType* self,
+	virtual inline bool _check_parse(DerivedType* self,
 		const ParseFunc& parse_func, TokSet& wanted_tok_set,
 		const std::string& func_str)
 	{
