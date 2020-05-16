@@ -83,12 +83,14 @@ private:		// variables
 	std::unique_ptr<LexerType> _lexer;
 
 	string _parse_func_str;
-	bool _found_tok;
-	TokSet _wanted_tok_set;
 
 	bool _just_get_valid_tokens = false;
 
 	//bool _debug = false;
+
+protected:		// variables
+	bool _found_tok;
+	TokSet _wanted_tok_set;
 
 public:		// functions
 	inline RdParserBase(const std::string& s_filename)
