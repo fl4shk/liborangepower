@@ -154,7 +154,7 @@ protected:		// functions
 		lex_file_pos().err(full_msg);
 	}
 
-	inline bool _tok_set_merge(TokSet& to_merge_into,
+	inline void _tok_set_merge(TokSet& to_merge_into,
 		const TokSet& to_merge_from, const std::string& func_str) const
 	{
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
