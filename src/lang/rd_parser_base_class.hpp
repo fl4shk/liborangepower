@@ -154,18 +154,13 @@ protected:		// functions
 		lex_file_pos().err(full_msg);
 	}
 
-	virtual inline bool _check_parse(DerivedType* self,
-		const ParseFunc& parse_func, TokSet& wanted_tok_set,
-		const std::string& func_str)
+	inline bool _tok_set_merge(TokSet& to_merge_into,
+		const TokSet& to_merge_from, const std::string& func_str) const
 	{
-		self->_just_get_valid_tokens = true;
-		const auto parse_ret = (self->*parse_func)();
-		self->_just_get_valid_tokens = false;
-
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
-		for (const auto& outer_item: wanted_tok_set)
+		for (const auto& outer_item: to_merge_into)
 		{
-			for (const auto& inner_item: *parse_ret)
+			for (const auto& inner_item: to_merge_from)
 			{
 				if (outer_item == inner_item)
 				{
@@ -176,7 +171,18 @@ protected:		// functions
 			}
 		}
 
-		wanted_tok_set.merge(*parse_ret);
+		to_merge_into.merge(*parse_ret);
+	}
+
+	inline bool _check_parse(DerivedType* self,
+		const ParseFunc& parse_func, TokSet& wanted_tok_set,
+		const std::string& func_str)
+	{
+		self->_just_get_valid_tokens = true;
+		const auto parse_ret = (self->*parse_func)();
+		self->_just_get_valid_tokens = false;
+
+		_tok_set_merge(wanted_tok_set, *parse_ret, func_str);
 
 		return (parse_ret->count(lex_tok()) > 0);
 	}
