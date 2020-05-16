@@ -193,16 +193,6 @@ protected:		// functions
 		return _rg_rules_parse(ret, self, extra_fail_tok_set);
 	}
 
-	inline void _post_rg_rules_parse(const RgrParseRet& rgr_parse_ret)
-		const
-	{
-		if ((!rgr_parse_ret.second)
-			&& (rgr_parse_ret.first.second.count(lex_tok()) == 0))
-		{
-			_inner_expect_fail(rgr_parse_ret.first.second);
-		}
-	}
-
 private:		// functions
 	inline RgrParseRet _rg_rules_parse(RgrParseRet& ret, DerivedType* self)
 	{
@@ -224,6 +214,52 @@ private:		// functions
 		ret.first.second.merge(extra_fail_tok_set);
 
 		return _rg_rules_parse(ret, self);
+	}
+
+protected:		// functions
+	inline void _post_rg_rules_parse(const RgrParseRet& rgr_parse_ret)
+		const
+	{
+		if ((!rgr_parse_ret.second)
+			&& (rgr_parse_ret.first.second.count(lex_tok()) == 0))
+		{
+			_inner_expect_fail(rgr_parse_ret.first.second);
+		}
+	}
+
+	template<typename... RemArgTypes>
+	inline bool _cmp_lex_tok(TokType first_tok, RemArgTypes&&... rem_args)
+	{
+		if (lex_tok() == first_tok)
+		{
+			return true;
+		}
+		else if constexpr (sizeof...(rem_args) > 0)
+		{
+			return _cmp_lex_tok(rem_args...);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	template<typename... RemArgTypes>
+	inline bool _cmp_prev_lex_tok(TokType first_tok,
+		RemArgTypes&&... rem_args)
+	{
+		if (prev_lex_tok() == first_tok)
+		{
+			return true;
+		}
+		else if constexpr (sizeof...(rem_args) > 0)
+		{
+			return _cmp_lex_tok(rem_args...);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 
