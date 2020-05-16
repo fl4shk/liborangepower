@@ -193,6 +193,16 @@ protected:		// functions
 		return _rg_rules_parse(ret, self, extra_fail_tok_set);
 	}
 
+	inline void _post_rg_rules_parse(const RgrParseRet& rgr_parse_ret)
+		const
+	{
+		if ((!rgr_parse_ret.second)
+			&& (rgr_parse_ret.first.second.count(lex_tok()) == 0))
+		{
+			_inner_expect_fail(rgr_parse_ret.first.second);
+		}
+	}
+
 private:		// functions
 	inline RgrParseRet _rg_rules_parse(RgrParseRet& ret, DerivedType* self)
 	{
