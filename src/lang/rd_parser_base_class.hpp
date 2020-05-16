@@ -229,6 +229,7 @@ protected:		// functions
 
 	template<typename... RemArgTypes>
 	inline bool _cmp_lex_tok(TokType first_tok, RemArgTypes&&... rem_args)
+		const
 	{
 		if (lex_tok() == first_tok)
 		{
@@ -246,7 +247,7 @@ protected:		// functions
 
 	template<typename... RemArgTypes>
 	inline bool _cmp_prev_lex_tok(TokType first_tok,
-		RemArgTypes&&... rem_args)
+		RemArgTypes&&... rem_args) const
 	{
 		if (prev_lex_tok() == first_tok)
 		{
