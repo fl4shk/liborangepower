@@ -37,14 +37,8 @@ public:		// types
 
 	using TokSet = std::set<TokType>;
 
-	//enum class ParseRetErr
-	//{
-	//	None,
-
-	//	NonLlOf1,
-	//};
-
-	using ParseRet = std::optional<std::pair<TokSet, bool>>;
+	using JustTestParseRet = std::pair<TokSet, bool>;
+	using ParseRet = std::optional<JustTestParseRet>;
 
 	using ParseFunc = ParseRet (DerivedType::*)();
 
