@@ -171,7 +171,7 @@ protected:		// functions
 			}
 		}
 
-		to_merge_into.merge(*parse_ret);
+		to_merge_into.merge(to_merge_from);
 	}
 
 	inline bool _check_parse(DerivedType* self,
