@@ -37,8 +37,8 @@ public:		// types
 
 	using TokSet = std::set<TokType>;
 
-	using JustTestParseRet = std::pair<TokSet, bool>;
-	using ParseRet = std::optional<JustTestParseRet>;
+	using JtParseRet = std::pair<TokSet, bool>;
+	using ParseRet = std::optional<JtParseRet>;
 
 	using ParseFunc = ParseRet (DerivedType::*)();
 
