@@ -26,6 +26,9 @@ using strings::sconcat;
 namespace lang
 {
 
+template<typename ParserType>
+class ParseFuncStrDeferredRestorer;
+
 // A base class for parsing LL(1) grammars via recursive descent.
 template<typename LexerType, typename DerivedType>
 class RdParserBase
@@ -40,23 +43,49 @@ public:		// types
 	using ParseRet = std::optional<TokSet>;
 
 	using ParseFunc = ParseRet (DerivedType::*)();
-
-	//using ParseAction = std::variant<TokType, ParseFunc>;
-
-	//using RecurseParseRet = std::map<TokType, ParseFunc>;
-
-	//using RgRulesRet = std::pair<std::map<TokType, ParseFunc>, TokSet>;
-	//using ParseRet = std::pair<TokSet, bool>;
 	//--------
 
-protected:		// variables
+	//--------
+	friend class PrologueAndEpilogue;
+	class PrologueAndEpilogue final
+	{
+	private:		// variables
+		RdParserBase* _parser = nullptr;
+		string _old_parse_func_str;
+		bool _old_found_tok;
+		TokSet _old_wanted_tok_set;
+
+	public:		// functions
+		inline PrologueAndEpilogue(RdParserBase* s_parser,
+			string&& s_parse_func_str)
+			: _parser(s_parser)
+		{
+			_old_parse_func_str = std::move(_parser->_parse_func_str);
+			_parser->_parse_func_str = std::move(s_parse_func_str);
+
+			_old_found_tok = _parser->_found_tok;
+			_parser->_found_tok = false;
+
+			_old_wanted_tok_set = std::move(_parser->_wanted_tok_set);
+		}
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(PrologueAndEpilogue);
+		inline ~PrologueAndEpilogue()
+		{
+			_parser->_parse_func_str = std::move(_old_parse_func_str);
+			_parser->_found_tok = _old_found_tok;
+			_parser->_wanted_tok_set = std::move(_old_wanted_tok_set);
+		}
+	};
+	//--------
+
+private:		// variables
 	std::string _filename, _text;
 	std::unique_ptr<LexerType> _lexer;
-	//bool _just_get_valid_next_token_set, _just_get_valid_tokens, _just_parse;
 
-	//std::stack<RgRulesRet*> _rg_rules_ret_stack;
-	//RgRulesRet* _rg_rules_ret = nullptr;
-	//bool _just_rg_rules = false;
+	string _parse_func_str;
+	bool _found_tok;
+	TokSet _wanted_tok_set;
+
 	bool _just_get_valid_tokens = false;
 
 	//bool _debug = false;
@@ -113,30 +142,14 @@ public:		// functions
 	GEN_GETTER_BY_VAL(just_get_valid_tokens);
 
 protected:		// functions
-	//inline void _call_parse_func(DerivedType* self,
-	//	const ParseFunc& parse_func)
-	//{
-	//	if (std::holds_alternative<MembParseFunc>(parse_func))
-	//	{
-	//		auto memb_parse_func = std::get<MembParseFunc>(parse_func);
-	//		(self->*memb_parse_func)();
-	//	}
-	//	else // if (std::holds_alternative<NonMembParseFunc>(parse_func))
-	//	{
-	//		auto non_memb_parse_func = std::get<NonMembParseFunc>
-	//			(parse_func);
-	//		(*non_memb_parse_func)(self);
-	//	}
-	//}
+	inline DerivedType* _self()
+	{
+		return static_cast<DerivedType*>(this);
+	}
 	inline auto _next_tok()
 	{
 		return _lexer->next_tok();
 	}
-
-	//inline std::map<TokType, ParseFunc>& _rgr_ret_map()
-	//{
-	//	return _rg_rules_ret->first;
-	//}
 
 	virtual inline void _internal_err(const std::string& func_str,
 		const std::string& msg="") const
@@ -154,8 +167,7 @@ protected:		// functions
 		lex_file_pos().err(full_msg);
 	}
 
-	inline void _tok_set_merge(TokSet& to_merge_into,
-		const TokSet& to_merge_from, const std::string& func_str) const
+	inline void _tok_set_merge(const ParseRet& to_merge_from) const
 	{
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
 		for (const auto& outer_item: to_merge_into)
@@ -164,115 +176,37 @@ protected:		// functions
 			{
 				if (outer_item == inner_item)
 				{
-					_internal_err(func_str, sconcat("_check_parse", ":  ",
+					_internal_err("_tok_set_merge", sconcat(":  ",
 						"Duplicate token \"", _lexer->tok_to_string_map()
 						.at(outer_item), "\"."));
 				}
 			}
 		}
+
 		TokSet temp_to_merge_from = to_merge_from;
 
-		to_merge_into.merge(temp_to_merge_from);
+		_tok_set.merge(temp_to_merge_from);
 	}
 
-	inline bool _check_parse(DerivedType* self,
-		const ParseFunc& parse_func, TokSet& wanted_tok_set,
-		const std::string& func_str)
+	inline bool _check_parse(const ParseFunc& parse_func)
 	{
-		self->_just_get_valid_tokens = true;
-		const auto parse_ret = (self->*parse_func)();
-		self->_just_get_valid_tokens = false;
+		_just_get_valid_tokens = true;
+		const auto parse_ret = (_self()->*parse_func)();
+		_just_get_valid_tokens = false;
 
-		_tok_set_merge(wanted_tok_set, *parse_ret, func_str);
+		_tok_set_merge(parse_ret);
 
 		return (parse_ret->count(lex_tok()) > 0);
 	}
 
-	//// Ensure that there is only one layer deep of parsing funcs
-	//inline void _rg_rules_flatten(ParseFunc repl_parse_func,
-	//	RgRulesRet* ret)
-	//{
-	//	for (auto& p: ret->first)
-	//	{
-	//		p.second = repl_parse_func;
-	//	}
-	//}
+	inline void _fail_if_not_found_tok() const
+	{
+		if (!_found_tok)
+		{
+			_inner_expect_fail(_wanted_tok_set);
+		}
+	}
 
-	//// Used for things like expression parsing where the check for what
-	//// token yields what parsing rule can take place across multiple
-	//// parsing rules.
-	//inline void _recrs_get_rules(DerivedType* self,
-	//	const ParseFunc& parse_func, RgRulesRet& ret)
-	//{
-	//	// We shouldn't need nesting
-	//	self->_just_rg_rules = true;
-
-	//	const auto old_rg_rules_ret = self->_rg_rules_ret;
-	//	self->_rg_rules_ret = &ret;
-
-	//	_call_parse_func(self, parse_func);
-
-	//	self->_rg_rules_ret = old_rg_rules_ret;
-
-	//	for (const auto& p: ret->first)
-	//	{
-	//		ret->second.insert(p.first);
-	//	}
-
-	//	// We shouldn't need nesting
-	//	self->_just_rg_rules = false;
-	//}
-
-	//inline RgrParseRet _rg_rules_parse(DerivedType* self,
-	//	const ParseFunc& parse_func)
-	//{
-	//	RgrParseRet ret;
-	//	_recrs_get_rules(self, parse_func, ret.first);
-
-	//	return _rg_rules_parse(self, ret);
-	//}
-	//inline RgrParseRet _rg_rules_parse(DerivedType* self,
-	//	const ParseFunc& parse_func, const TokSet& extra_fail_tok_set)
-	//{
-	//	RgrParseRet ret;
-	//	_recrs_get_rules(self, parse_func, ret.first);
-
-	//	return _rg_rules_parse(ret, self, extra_fail_tok_set);
-	//}
-
-private:		// functions
-	//inline RgrParseRet _rg_rules_parse(RgrParseRet& ret, DerivedType* self)
-	//{
-	//	if (ret.first.first.count(lex_tok()) > 0)
-	//	{
-	//		_call_parse_func(self, ret.first.first.at(lex_tok()));
-	//		ret.second = true;
-	//	}
-	//	else
-	//	{
-	//		ret.second = false;
-	//	}
-
-	//	return ret;
-	//}
-	//inline RgrParseRet _rg_rules_parse(RgrParseRet& ret, DerivedType* self,
-	//	const TokSet& extra_fail_tok_set)
-	//{
-	//	ret.first.second.merge(extra_fail_tok_set);
-
-	//	return _rg_rules_parse(ret, self);
-	//}
-
-protected:		// functions
-	//inline void _post_rg_rules_parse(const RgrParseRet& rgr_parse_ret)
-	//	const
-	//{
-	//	if ((!rgr_parse_ret.second)
-	//		&& (rgr_parse_ret.first.second.count(lex_tok()) == 0))
-	//	{
-	//		_inner_expect_fail(rgr_parse_ret.first.second);
-	//	}
-	//}
 
 	template<typename... RemArgTypes>
 	inline std::optional<TokType> _cmp_lex_tok(TokType first_tok,
@@ -310,8 +244,6 @@ protected:		// functions
 		}
 	}
 
-
-private:		// functions
 	void _inner_expect_fail(const TokSet& tok_set) const
 	{
 		std::string msg = sconcat("Expected one of the following tokens:",
@@ -336,6 +268,7 @@ private:		// functions
 		lex_file_pos().err(msg);
 	}
 
+private:		// functions
 	template<typename... RemArgTypes>
 	bool _inner_expect(TokSet& tok_set, TokType first_tok,
 		RemArgTypes&&... rem_args) const
@@ -368,43 +301,43 @@ protected:		// functions
 		}
 	}
 
-private:		// functions
-	template<typename... RemArgTypes>
-	bool _inner_sel_parse(TokSet& tok_set, DerivedType* self,
-		TokType first_tok, ParseFunc first_parse_func,
-		RemArgTypes&&... rem_args)
-	{
-		tok_set.insert(first_tok);
-
-		if (_lexer->tok() == first_tok)
-		{
-			(self->*first_parse_func)();
-			return true;
-		}
-		else if constexpr (sizeof...(rem_args) > 0)
-		{
-			return _inner_sel_parse(tok_set, self, rem_args...);
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-protected:		// functions
-	template<typename... RemArgTypes>
-	void _sel_parse(DerivedType* self, TokType first_tok,
-		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
-	{
-		TokSet tok_set;
-
-		if (!_inner_sel_parse(tok_set, first_tok, first_parse_func,
-			rem_args...))
-		{
-			_inner_expect_fail(tok_set);
-		}
-	}
+//private:		// functions
+//	template<typename... RemArgTypes>
+//	bool _inner_sel_parse(TokSet& tok_set, TokType first_tok,
+//		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
+//	{
+//		tok_set.insert(first_tok);
+//
+//		if (_lexer->tok() == first_tok)
+//		{
+//			(_self()->*first_parse_func)();
+//			return true;
+//		}
+//		else if constexpr (sizeof...(rem_args) > 0)
+//		{
+//			return _inner_sel_parse(tok_set, rem_args...);
+//		}
+//		else
+//		{
+//			return false;
+//		}
+//	}
+//
+//protected:		// functions
+//	template<typename... RemArgTypes>
+//	void _sel_parse(TokType first_tok, ParseFunc first_parse_func,
+//		RemArgTypes&&... rem_args)
+//	{
+//		TokSet tok_set;
+//
+//		if (!_inner_sel_parse(tok_set, first_tok, first_parse_func,
+//			rem_args...))
+//		{
+//			_inner_expect_fail(tok_set);
+//		}
+//	}
 };
+
 
 } // namespace lang
 
