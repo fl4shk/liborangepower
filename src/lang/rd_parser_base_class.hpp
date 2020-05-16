@@ -47,8 +47,7 @@ public:		// types
 
 	// Used for things like expression parsing.
 	using TokSet = std::set<TokType>;
-	using RgRulesRet = std::pair<std::map<TokType, 
-		std::optional<ParseFunc>>, TokSet>;
+	using RgRulesRet = std::pair<std::map<TokType, ParseFunc>, TokSet>;
 	using RgrParseRet = std::pair<RgRulesRet, bool>;
 	//--------
 
