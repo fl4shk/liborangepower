@@ -169,7 +169,7 @@ protected:		// functions
 		lex_file_pos().err(full_msg);
 	}
 
-	inline void _tok_set_merge(const ParseRet& to_merge_from) const
+	inline void _tok_set_merge(const ParseRet& to_merge_from)
 	{
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
 		for (const auto& outer_item: _wanted_tok_set)
