@@ -174,7 +174,7 @@ protected:		// functions
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
 		for (const auto& outer_item: _wanted_tok_set)
 		{
-			for (const auto& inner_item: to_merge_from)
+			for (const auto& inner_item: *to_merge_from)
 			{
 				if (outer_item == inner_item)
 				{
@@ -185,7 +185,7 @@ protected:		// functions
 			}
 		}
 
-		TokSet temp_to_merge_from = to_merge_from;
+		TokSet temp_to_merge_from = *to_merge_from;
 
 		_wanted_tok_set.merge(temp_to_merge_from);
 	}
