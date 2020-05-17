@@ -201,6 +201,20 @@ protected:		// functions
 		return (parse_ret->count(lex_tok()) > 0);
 	}
 
+	inline bool _if_parse(const ParseFunc& parse_func)
+	{
+		if (_check_parse(parse_func))
+		{
+			_found_tok = true;
+			(_self()->*parse_func)();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	inline void _fail_if_not_found_tok() const
 	{
 		if (!_found_tok)
