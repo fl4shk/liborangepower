@@ -166,10 +166,11 @@ protected:		// functions
 		lex_file_pos().err(full_msg);
 	}
 
-	inline void _wanted_tok_set_merge(const ParseRet& to_merge_from)
+	inline void _tok_set_merge(TokSet& tok_set,
+		const ParseRet& to_merge_from)
 	{
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
-		for (const auto& outer_item: _wanted_tok_set)
+		for (const auto& outer_item: tok_set)
 		{
 			for (const auto& inner_item: *to_merge_from)
 			{
@@ -184,7 +185,12 @@ protected:		// functions
 
 		TokSet temp_to_merge_from = *to_merge_from;
 
-		_wanted_tok_set.merge(temp_to_merge_from);
+		tok_set.merge(temp_to_merge_from);
+	}
+
+	inline void _wanted_tok_set_merge(const ParseRet& to_merge_from)
+	{
+		_tok_set_merge(_wanted_tok_set, to_merge_from);
 	}
 
 	inline bool _check_parse(const ParseFunc& parse_func)
