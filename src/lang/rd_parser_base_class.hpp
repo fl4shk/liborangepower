@@ -205,7 +205,7 @@ protected:		// functions
 		return ret;
 	}
 
-	inline bool _if_parse(const ParseFunc& parse_func)
+	inline bool _attempt_parse(const ParseFunc& parse_func)
 	{
 		if (_check_parse(parse_func))
 		{
