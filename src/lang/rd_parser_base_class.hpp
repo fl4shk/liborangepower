@@ -195,7 +195,9 @@ protected:		// functions
 
 		_wanted_tok_set_merge(parse_ret);
 
-		return (parse_ret->count(lex_tok()) > 0);
+		const bool ret = (parse_ret->count(lex_tok()) > 0);
+		_found_wanted_tok = true;
+		return ret;
 	}
 
 	inline bool _if_parse(const ParseFunc& parse_func)
