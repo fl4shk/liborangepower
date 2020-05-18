@@ -49,7 +49,7 @@ public:		// types
 	private:		// variables
 		RdParserBase* _parser = nullptr;
 		string _old_parse_func_str;
-		bool _old_found_wanted_tok;
+		//bool _old_found_wanted_tok;
 		TokSet _old_wanted_tok_set;
 
 	public:		// functions
@@ -60,8 +60,8 @@ public:		// types
 			_old_parse_func_str = std::move(_parser->_parse_func_str);
 			_parser->_parse_func_str = std::move(s_parse_func_str);
 
-			_old_found_wanted_tok = _parser->_found_wanted_tok;
-			_parser->_found_wanted_tok = false;
+			//_old_found_wanted_tok = _parser->_found_wanted_tok;
+			//_parser->_found_wanted_tok = false;
 
 			_old_wanted_tok_set = std::move(_parser->_wanted_tok_set);
 		}
@@ -69,7 +69,7 @@ public:		// types
 		inline ~PrologueAndEpilogue()
 		{
 			_parser->_parse_func_str = std::move(_old_parse_func_str);
-			_parser->_found_wanted_tok = _old_found_wanted_tok;
+			//_parser->_found_wanted_tok = _old_found_wanted_tok;
 			_parser->_wanted_tok_set = std::move(_old_wanted_tok_set);
 		}
 	};
@@ -86,7 +86,7 @@ private:		// variables
 	//bool _debug = false;
 
 protected:		// variables
-	bool _found_wanted_tok;
+	//bool _found_wanted_tok;
 	TokSet _wanted_tok_set;
 
 public:		// functions
@@ -197,7 +197,7 @@ protected:		// functions
 
 		if (parse_ret->count(lex_tok()) > 0)
 		{
-			_found_wanted_tok = true;
+			//_found_wanted_tok = true;
 			return true;
 		}
 		else
@@ -219,49 +219,69 @@ protected:		// functions
 		}
 	}
 
-	inline void _fail_if_not_found_wanted_tok() const
-	{
-		if (!_found_wanted_tok)
-		{
-			_inner_expect_fail(_wanted_tok_set);
-		}
-	}
+	//inline void _fail_if_not_found_wanted_tok() const
+	//{
+	//	if (!_found_wanted_tok)
+	//	{
+	//		_expect(_wanted_tok_set);
+	//	}
+	//}
 
-
+private:		// functions
 	template<typename... RemArgTypes>
-	inline std::optional<TokType> _cmp_lex_tok(TokType first_tok,
-		RemArgTypes&&... rem_args) const
+	inline std::optional<TokType> _cmp_tok(TokType to_cmp,
+		TokType first_tok, RemArgTypes&&... rem_args) const
 	{
-		if (lex_tok() == first_tok)
+		if (tok == first_tok)
 		{
 			return first_tok;
 		}
 		else if constexpr (sizeof...(rem_args) > 0)
 		{
-			return _cmp_lex_tok(rem_args...);
+			return _cmp_tok(to_cmp, rem_args...);
 		}
 		else
 		{
 			return std::nullopt;
 		}
+	}
+	inline std::optional<TokType> _cmp_tok(TokType to_cmp,
+		const TokSet& tok_set) const
+	{
+		for (const auto& tok: tok_set)
+		{
+			if (to_cmp == tok)
+			{
+				return tok;
+			}
+		}
+
+		return std::nullopt;
+	}
+
+protected:		// functions
+	template<typename... RemArgTypes>
+	inline std::optional<TokType> _cmp_lex_tok(TokType first_tok,
+		RemArgTypes&&... rem_args) const
+	{
+		return _cmp_tok(lex_tok, first_tok, rem_args...);
+	}
+	inline std::optional<TokType> _cmp_lex_tok(const TokSet& tok_set)
+		const
+	{
+		return _cmp_tok(lex_tok(), tok_set);
 	}
 
 	template<typename... RemArgTypes>
 	inline std::optional<TokType> _cmp_prev_lex_tok(TokType first_tok,
 		RemArgTypes&&... rem_args) const
 	{
-		if (prev_lex_tok() == first_tok)
-		{
-			return first_tok;
-		}
-		else if constexpr (sizeof...(rem_args) > 0)
-		{
-			return _cmp_lex_tok(rem_args...);
-		}
-		else
-		{
-			return std::nullopt;
-		}
+		return _cmp_tok(prev_lex_tok, first_tok, rem_args...);
+	}
+	inline std::optional<TokType> _cmp_prev_lex_tok(const TokSet& tok_set)
+		const
+	{
+		return _cmp_tok(prev_lex_tok(), tok_set);
 	}
 
 	void _inner_expect_fail(const TokSet& tok_set) const
@@ -295,7 +315,7 @@ private:		// functions
 	{
 		tok_set.insert(first_tok);
 
-		if (_lexer->tok() == first_tok)
+		if (lex_tok() == first_tok)
 		{
 			return true;
 		}
@@ -318,6 +338,13 @@ protected:		// functions
 		if (!_inner_expect(tok_set, first_tok, rem_args...))
 		{
 			_inner_expect_fail(tok_set);
+		}
+	}
+	void _expect_wanted_tok()
+	{
+		if (!_cmp_lex_tok(_wanted_tok_set))
+		{
+			_inner_expect_fail(_wanted_tok_set);
 		}
 	}
 
