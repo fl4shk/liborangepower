@@ -26,9 +26,6 @@ using strings::sconcat;
 namespace lang
 {
 
-template<typename ParserType>
-class ParseFuncStrDeferredRestorer;
-
 // A base class for parsing LL(1) grammars via recursive descent.
 template<typename LexerType, typename DerivedType>
 class RdParserBase
