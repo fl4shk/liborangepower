@@ -196,7 +196,12 @@ protected:		// functions
 		_wanted_tok_set_merge(parse_ret);
 
 		const bool ret = (parse_ret->count(lex_tok()) > 0);
-		_found_wanted_tok = true;
+
+		if (ret)
+		{
+			_found_wanted_tok = true;
+		}
+
 		return ret;
 	}
 
