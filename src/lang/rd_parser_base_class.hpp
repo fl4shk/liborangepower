@@ -193,13 +193,14 @@ protected:		// functions
 		_tok_set_merge(_wanted_tok_set, to_merge_from);
 	}
 
-	inline bool _check_parse(const ParseFunc& parse_func)
+	inline bool _check_parse(TokSet& tok_set, const ParseFunc& parse_func)
 	{
+		const bool old_just_get_valid_tokens = just_get_valid_tokens();
 		_just_get_valid_tokens = true;
 		const auto parse_ret = (_self()->*parse_func)();
-		_just_get_valid_tokens = false;
+		_just_get_valid_tokens = old_just_get_valid_tokens;
 
-		_wanted_tok_set_merge(parse_ret);
+		_tok_set_merge(tok_set, parse_ret);
 
 		if (parse_ret->count(lex_tok()) > 0)
 		{
@@ -210,6 +211,33 @@ protected:		// functions
 		{
 			return false;
 		}
+	}
+	inline bool _check_parse(const ParseFunc& parse_func)
+	{
+		return _check_parse(_wanted_tok_set, parse_func);
+	}
+
+private:		// functions
+	template<typename... RemArgTypes>
+	inline void _inner_get_valid_tok_set(TokSet& ret,
+		const ParseFunc& first_parse_func, RemArgTypes&&... rem_args)
+	{
+		_check_parse(ret, first_parse_func);
+
+		if constexpr (sizeof...(rem_args) > 0)
+		{
+			_inner_get_valid_tok_set(ret, rem_args...);
+		}
+	}
+
+public:		// functions
+	template<typename... RemArgTypes>
+	inline TokSet _get_valid_tok_set(const ParseFunc& first_parse_func,
+		RemArgTypes&&... rem_args)
+	{
+		TokSet ret;
+		_inner_get_valid_tok_set(ret, first_parse_func, rem_args...);
+		return ret;
 	}
 
 	inline bool _attempt_parse(const ParseFunc& parse_func)
