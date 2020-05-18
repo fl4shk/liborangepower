@@ -52,7 +52,7 @@ public:		// types
 	private:		// variables
 		RdParserBase* _parser = nullptr;
 		string _old_parse_func_str;
-		bool _old_found_tok;
+		bool _old_found_wanted_tok;
 		TokSet _old_wanted_tok_set;
 
 	public:		// functions
@@ -63,8 +63,8 @@ public:		// types
 			_old_parse_func_str = std::move(_parser->_parse_func_str);
 			_parser->_parse_func_str = std::move(s_parse_func_str);
 
-			_old_found_tok = _parser->_found_tok;
-			_parser->_found_tok = false;
+			_old_found_wanted_tok = _parser->_found_wanted_tok;
+			_parser->_found_wanted_tok = false;
 
 			_old_wanted_tok_set = std::move(_parser->_wanted_tok_set);
 		}
@@ -72,7 +72,7 @@ public:		// types
 		inline ~PrologueAndEpilogue()
 		{
 			_parser->_parse_func_str = std::move(_old_parse_func_str);
-			_parser->_found_tok = _old_found_tok;
+			_parser->_found_wanted_tok = _old_found_wanted_tok;
 			_parser->_wanted_tok_set = std::move(_old_wanted_tok_set);
 		}
 	};
@@ -89,7 +89,7 @@ private:		// variables
 	//bool _debug = false;
 
 protected:		// variables
-	bool _found_tok;
+	bool _found_wanted_tok;
 	TokSet _wanted_tok_set;
 
 public:		// functions
@@ -205,7 +205,7 @@ protected:		// functions
 	{
 		if (_check_parse(parse_func))
 		{
-			_found_tok = true;
+			_found_wanted_tok = true;
 			(_self()->*parse_func)();
 			return true;
 		}
@@ -215,9 +215,9 @@ protected:		// functions
 		}
 	}
 
-	inline void _fail_if_not_found_tok() const
+	inline void _fail_if_not_found_wanted_tok() const
 	{
-		if (!_found_tok)
+		if (!_found_wanted_tok)
 		{
 			_inner_expect_fail(_wanted_tok_set);
 		}
