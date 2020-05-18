@@ -49,8 +49,8 @@ public:		// types
 	private:		// variables
 		RdParserBase* _parser = nullptr;
 		string _old_parse_func_str;
-		bool _old_found_wanted_tok;
-		TokSet _old_wanted_tok_set;
+		bool _old_found_tok;
+		TokSet _old_tok_set;
 
 	public:		// functions
 		inline PrologueAndEpilogue(RdParserBase* s_parser,
@@ -60,17 +60,17 @@ public:		// types
 			_old_parse_func_str = std::move(_parser->_parse_func_str);
 			_parser->_parse_func_str = std::move(s_parse_func_str);
 
-			_old_found_wanted_tok = _parser->_found_wanted_tok;
-			_parser->_found_wanted_tok = false;
+			_old_found_tok = _parser->_found_tok;
+			_parser->_found_tok = false;
 
-			_old_wanted_tok_set = std::move(_parser->_wanted_tok_set);
+			_old_tok_set = std::move(_parser->_tok_set);
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(PrologueAndEpilogue);
 		inline ~PrologueAndEpilogue()
 		{
 			_parser->_parse_func_str = std::move(_old_parse_func_str);
-			_parser->_found_wanted_tok = _old_found_wanted_tok;
-			_parser->_wanted_tok_set = std::move(_old_wanted_tok_set);
+			_parser->_found_tok = _old_found_tok;
+			_parser->_tok_set = std::move(_old_tok_set);
 		}
 	};
 	//--------
@@ -86,8 +86,8 @@ private:		// variables
 	//bool _debug = false;
 
 protected:		// variables
-	bool _found_wanted_tok;
-	TokSet _wanted_tok_set;
+	bool _found_tok;
+	TokSet _tok_set;
 
 public:		// functions
 	inline RdParserBase(const std::string& s_filename)
@@ -169,7 +169,7 @@ protected:		// functions
 	inline void _tok_set_merge(const ParseRet& to_merge_from)
 	{
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar
-		for (const auto& outer_item: _wanted_tok_set)
+		for (const auto& outer_item: _tok_set)
 		{
 			for (const auto& inner_item: *to_merge_from)
 			{
@@ -184,7 +184,7 @@ protected:		// functions
 
 		TokSet temp_to_merge_from = *to_merge_from;
 
-		_wanted_tok_set.merge(temp_to_merge_from);
+		_tok_set.merge(temp_to_merge_from);
 	}
 
 	inline bool _check_parse(const ParseFunc& parse_func)
@@ -202,7 +202,7 @@ protected:		// functions
 	{
 		if (_check_parse(parse_func))
 		{
-			_found_wanted_tok = true;
+			_found_tok = true;
 			(_self()->*parse_func)();
 			return true;
 		}
@@ -212,11 +212,11 @@ protected:		// functions
 		}
 	}
 
-	inline void _fail_if_not_found_wanted_tok() const
+	inline void _fail_if_not_found_tok() const
 	{
-		if (!_found_wanted_tok)
+		if (!_found_tok)
 		{
-			_inner_expect_fail(_wanted_tok_set);
+			_inner_expect_fail(_tok_set);
 		}
 	}
 
