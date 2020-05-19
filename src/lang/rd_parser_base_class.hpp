@@ -75,10 +75,11 @@ public:		// types
 	};
 	//--------
 
-private:		// variables
+protected:		// variables
 	std::string _filename, _text;
 	std::unique_ptr<LexerType> _lexer;
 
+private:		// variables
 	string _parse_func_str;
 
 	bool _just_get_valid_tokens = false;
