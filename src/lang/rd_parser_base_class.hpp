@@ -266,7 +266,7 @@ private:		// functions
 	inline std::optional<TokType> _cmp_tok(TokType to_cmp,
 		TokType first_tok, RemArgTypes&&... rem_args) const
 	{
-		if (tok == first_tok)
+		if (to_cmp == first_tok)
 		{
 			return first_tok;
 		}
