@@ -72,6 +72,11 @@ public:		// types
 			//_parser->_found_wanted_tok = _old_found_wanted_tok;
 			_parser->_wanted_tok_set = std::move(_old_wanted_tok_set);
 		}
+
+		inline void internal_err(const std::string& msg="") const
+		{
+			_parser->_internal_err(_parser->_parse_func_str, msg);
+		}
 	};
 	//--------
 
