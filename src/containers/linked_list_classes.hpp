@@ -32,14 +32,14 @@ public:		// types
 	public:		// functions
 		Node() = default;
 
-		inline Node(const Type& s_data)
-			: data(s_data)
-		{
-		}
-		inline Node(Type&& s_data)
-			: data(std::move(s_data))
-		{
-		}
+		//inline Node(const Type& s_data)
+		//	: data(s_data)
+		//{
+		//}
+		//inline Node(Type&& s_data)
+		//	: data(std::move(s_data))
+		//{
+		//}
 
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
 
@@ -269,28 +269,34 @@ public:		// functions
 	inline NodeIterator<reverse> insert_before(Node* where,
 		const Type& to_insert)
 	{
-		return _inner_insert_before<reverse>(where, new Node(to_insert));
+		Node* node = new Node();
+		node->data = to_insert;
+		return _inner_insert_before<reverse>(where, node);
 	}
 	template<bool reverse=false>
 	inline NodeIterator<reverse> insert_before(Node* where,
 		Type&& to_insert)
 	{
-		return _inner_insert_before<reverse>(where,
-			new Node(std::move(to_insert)));
+		Node* node = new Node();
+		node->data = std::move(to_insert);
+		return _inner_insert_before<reverse>(where, node);
 	}
 
 	template<bool reverse=false>
 	inline NodeIterator<reverse> insert_after(Node* where,
 		const Type& to_insert)
 	{
-		return _inner_insert_after<reverse>(where, new Node(to_insert));
+		Node* node = new Node();
+		node->data = to_insert;
+		return _inner_insert_after<reverse>(where, node);
 	}
 	template<bool reverse=false>
 	inline NodeIterator<reverse> insert_after(Node* where,
 		Type&& to_insert)
 	{
-		return _inner_insert_after<reverse>(where,
-			new Node(std::move(to_insert)));
+		Node* node = new Node();
+		node->data = std::move(to_insert);
+		return _inner_insert_after<reverse>(where, node);
 	}
 
 	inline void remove_before(Node* where)
@@ -381,14 +387,14 @@ public:		// types
 	public:		// functions
 		Node() = default;
 
-		inline Node(const Type& s_data)
-			: data(s_data)
-		{
-		}
-		inline Node(Type&& s_data)
-			: data(std::move(s_data))
-		{
-		}
+		//inline Node(const Type& s_data)
+		//	: data(s_data)
+		//{
+		//}
+		//inline Node(Type&& s_data)
+		//	: data(std::move(s_data))
+		//{
+		//}
 
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
 
@@ -611,28 +617,34 @@ public:		// functions
 	inline NodeIterator<reverse> insert_before(IndexT where,
 		const Type& to_insert)
 	{
-		return _inner_insert_before<reverse>(where, Node(to_insert));
+		Node node;
+		node.data = to_insert;
+		return _inner_insert_before<reverse>(where, std::move(to_insert));
 	}
 	template<bool reverse=false>
 	inline NodeIterator<reverse> insert_before(IndexT where,
 		Type&& to_insert)
 	{
-		return _inner_insert_before<reverse>(where,
-			Node(std::move(to_insert)));
+		Node node;
+		node.data = std::move(to_insert);
+		return _inner_insert_before<reverse>(where, std::move(node));
 	}
 
 	template<bool reverse=false>
 	inline NodeIterator<reverse> insert_after(IndexT where,
 		const Type& to_insert)
 	{
-		return _inner_insert_after<reverse>(where, Node(to_insert));
+		Node node;
+		node.data = to_insert;
+		return _inner_insert_after<reverse>(where, std::move(node));
 	}
 	template<bool reverse=false>
 	inline NodeIterator<reverse> insert_after(IndexT where,
 		Type&& to_insert)
 	{
-		return _inner_insert_after<reverse>(where,
-			Node(std::move(to_insert)));
+		Node node;
+		node.data = std::move(to_insert);
+		return _inner_insert_after<reverse>(where, std::move(node));
 	}
 
 	inline void remove_before(IndexT where)
