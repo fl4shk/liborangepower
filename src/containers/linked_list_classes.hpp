@@ -32,14 +32,25 @@ public:		// types
 	public:		// functions
 		Node() = default;
 
-		//inline Node(const Type& s_data)
-		//	: data(s_data)
-		//{
-		//}
-		//inline Node(Type&& s_data)
-		//	: data(std::move(s_data))
-		//{
-		//}
+		template<typename OtherType=Type,
+			typename std::enable_if_t<std::is_copy_assignable
+				<OtherType>, size_t> = 0>
+		static inline Node construct(const Type& s_data)
+		{
+			Node ret;
+			ret.data = s_data;
+			return ret;
+		}
+
+		template<typename OtherType=Type,
+			typename std::enable_if_t<std::is_move_assignable
+				<OtherType>, size_t> = 0>
+		static inline Node construct(Type&& s_data)
+		{
+			Node ret;
+			ret.data = std::move(s_data);
+			return ret;
+		}
 
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
 
@@ -265,34 +276,46 @@ public:		// functions
 	}
 
 
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_copy_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_before(Node* where,
-		const Type& to_insert)
+		const OtherType& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_before<reverse>(where, node);
 	}
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_move_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_before(Node* where,
-		Type&& to_insert)
+		OtherType&& to_insert)
 	{
 		Node* node = new Node();
 		node->data = std::move(to_insert);
 		return _inner_insert_before<reverse>(where, node);
 	}
 
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_copy_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_after(Node* where,
-		const Type& to_insert)
+		const OtherType& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_after<reverse>(where, node);
 	}
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_move_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_after(Node* where,
-		Type&& to_insert)
+		OtherType&& to_insert)
 	{
 		Node* node = new Node();
 		node->data = std::move(to_insert);
@@ -387,14 +410,25 @@ public:		// types
 	public:		// functions
 		Node() = default;
 
-		//inline Node(const Type& s_data)
-		//	: data(s_data)
-		//{
-		//}
-		//inline Node(Type&& s_data)
-		//	: data(std::move(s_data))
-		//{
-		//}
+		template<typename OtherType=Type,
+			typename std::enable_if_t<std::is_copy_assignable
+				<OtherType>, size_t> = 0>
+		static inline Node construct(const Type& s_data)
+		{
+			Node ret;
+			ret.data = s_data;
+			return ret;
+		}
+
+		template<typename OtherType=Type,
+			typename std::enable_if_t<std::is_move_assignable
+				<OtherType>, size_t> = 0>
+		static inline Node construct(Type&& s_data)
+		{
+			Node ret;
+			ret.data = std::move(s_data);
+			return ret;
+		}
 
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
 
@@ -613,38 +647,46 @@ public:		// functions
 		remove_before(HEAD_INDEX);
 	}
 
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_copy_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_before(IndexT where,
-		const Type& to_insert)
+		const OtherType& to_insert)
 	{
-		Node node;
-		node.data = to_insert;
-		return _inner_insert_before<reverse>(where, std::move(to_insert));
+		return _inner_insert_before<reverse>(where,
+			Node::construct(to_insert));
 	}
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_move_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_before(IndexT where,
-		Type&& to_insert)
+		OtherType&& to_insert)
 	{
-		Node node;
-		node.data = std::move(to_insert);
-		return _inner_insert_before<reverse>(where, std::move(node));
+		return _inner_insert_before<reverse>(where,
+			Node::construct(std::move(to_insert)));
 	}
 
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_copy_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_after(IndexT where,
-		const Type& to_insert)
+		const OtherType& to_insert)
 	{
-		Node node;
-		node.data = to_insert;
-		return _inner_insert_after<reverse>(where, std::move(node));
+		return _inner_insert_after<reverse>(where,
+			Node::construct(to_insert));
 	}
-	template<bool reverse=false>
+	template<bool reverse=false,
+		typename OtherType=Type,
+		typename std::enable_if_t<std::is_move_assignable
+			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_after(IndexT where,
-		Type&& to_insert)
+		OtherType&& to_insert)
 	{
-		Node node;
-		node.data = std::move(to_insert);
-		return _inner_insert_after<reverse>(where, std::move(node));
+		return _inner_insert_after<reverse>(where,
+			Node::construct(std::move(to_insert)));
 	}
 
 	inline void remove_before(IndexT where)
