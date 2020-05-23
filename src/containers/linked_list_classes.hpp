@@ -33,7 +33,7 @@ public:		// types
 		Node() = default;
 
 		template<typename OtherType=Type,
-			typename std::enable_if_t<std::is_copy_assignable<OtherType>(), 
+			typename std::enable_if<std::is_copy_assignable<OtherType>(), 
 				size_t> = 0>
 		static inline Node construct(const Type& s_data)
 		{
@@ -43,7 +43,7 @@ public:		// types
 		}
 
 		template<typename OtherType=Type,
-			typename std::enable_if_t<std::is_move_assignable<OtherType>(),
+			typename std::enable_if<std::is_move_assignable<OtherType>(),
 				size_t> = 0>
 		static inline Node construct(Type&& s_data)
 		{
@@ -278,7 +278,7 @@ public:		// functions
 
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_copy_assignable
+		typename std::enable_if<std::is_copy_assignable
 			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_before(Node* where,
 		const OtherType& to_insert)
@@ -289,7 +289,7 @@ public:		// functions
 	}
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_move_assignable<OtherType>(),
+		typename std::enable_if<std::is_move_assignable<OtherType>(),
 			size_t> = 0>
 	inline NodeIterator<reverse> insert_before(Node* where,
 		OtherType&& to_insert)
@@ -301,7 +301,7 @@ public:		// functions
 
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_copy_assignable
+		typename std::enable_if<std::is_copy_assignable
 			<OtherType>, size_t> = 0>
 	inline NodeIterator<reverse> insert_after(Node* where,
 		const OtherType& to_insert)
@@ -312,7 +312,7 @@ public:		// functions
 	}
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_move_assignable<OtherType>(),
+		typename std::enable_if<std::is_move_assignable<OtherType>(),
 			size_t> = 0>
 	inline NodeIterator<reverse> insert_after(Node* where,
 		OtherType&& to_insert)
@@ -411,7 +411,7 @@ public:		// types
 		Node() = default;
 
 		template<typename OtherType=Type,
-			typename std::enable_if_t<std::is_copy_assignable<OtherType>(),
+			typename std::enable_if<std::is_copy_assignable<OtherType>(),
 				size_t> = 0>
 		static inline Node construct(const Type& s_data)
 		{
@@ -421,7 +421,7 @@ public:		// types
 		}
 
 		template<typename OtherType=Type,
-			typename std::enable_if_t<std::is_move_assignable<OtherType>(), 
+			typename std::enable_if<std::is_move_assignable<OtherType>(), 
 				size_t> = 0>
 		static inline Node construct(Type&& s_data)
 		{
@@ -649,7 +649,7 @@ public:		// functions
 
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_copy_assignable<OtherType>(),
+		typename std::enable_if<std::is_copy_assignable<OtherType>(),
 			size_t> = 0>
 	inline NodeIterator<reverse> insert_before(IndexT where,
 		const OtherType& to_insert)
@@ -659,7 +659,7 @@ public:		// functions
 	}
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_move_assignable<OtherType>(),
+		typename std::enable_if<std::is_move_assignable<OtherType>(),
 			size_t> = 0>
 	inline NodeIterator<reverse> insert_before(IndexT where,
 		OtherType&& to_insert)
@@ -670,7 +670,7 @@ public:		// functions
 
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_copy_assignable<OtherType>(),
+		typename std::enable_if<std::is_copy_assignable<OtherType>(),
 			size_t> = 0>
 	inline NodeIterator<reverse> insert_after(IndexT where,
 		const OtherType& to_insert)
@@ -680,7 +680,7 @@ public:		// functions
 	}
 	template<bool reverse=false,
 		typename OtherType=Type,
-		typename std::enable_if_t<std::is_move_assignable<OtherType>(),
+		typename std::enable_if<std::is_move_assignable<OtherType>(),
 			size_t> = 0>
 	inline NodeIterator<reverse> insert_after(IndexT where,
 		OtherType&& to_insert)
