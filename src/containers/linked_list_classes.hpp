@@ -25,12 +25,12 @@ public:		// types
 
 	public:		// types
 		template<typename OtherType>
-		using CopyConstruct = std::enable_if_t<std::is_copy_assignable
-			<OtherType>::value, Node>;
+		using CopyConstruct = std::enable_if<std::is_copy_assignable
+			<OtherType>::value, Node>::type;
 
 		template<typename OtherType>
-		using MoveConstruct = std::enable_if_t<std::is_move_assignable
-			<OtherType>::value, Node>;
+		using MoveConstruct = std::enable_if<std::is_move_assignable
+			<OtherType>::value, Node>::type;
 
 	private:		// variables
 		Node * _next = nullptr, * _prev = nullptr;
@@ -135,11 +135,11 @@ public:		// types
 	};
 
 	template<bool _reverse, typename OtherType>
-	using UpdateByCopy = std::enable_if_t<std::is_copy_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;;
+	using UpdateByCopy = std::enable_if<std::is_copy_assignable
+		<OtherType>::value, NodeIterator<_reverse>>::type;;
 	template<bool _reverse, typename OtherType>
-	using UpdateByMove = std::enable_if_t<std::is_move_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;;
+	using UpdateByMove = std::enable_if<std::is_move_assignable
+		<OtherType>::value, NodeIterator<_reverse>>::type;;
 
 private:		// variables
 	Node _head;
@@ -407,12 +407,12 @@ public:		// types
 
 	public:		// types
 		template<typename OtherType>
-		using CopyConstruct = std::enable_if_t<std::is_copy_assignable
-			<OtherType>::value, Node>;
+		using CopyConstruct = std::enable_if<std::is_copy_assignable
+			<OtherType>::value, Node>::type;
 
 		template<typename OtherType>
-		using MoveConstruct = std::enable_if_t<std::is_move_assignable
-			<OtherType>::value, Node>;
+		using MoveConstruct = std::enable_if<std::is_move_assignable
+			<OtherType>::value, Node>::type;
 
 	private:		// variables
 		ArgIndexT _next = NULL_INDEX, _prev = NULL_INDEX;
@@ -527,11 +527,11 @@ public:		// types
 	};
 
 	template<bool _reverse, typename OtherType>
-	using UpdateByCopy = std::enable_if_t<std::is_copy_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;;
+	using UpdateByCopy = std::enable_if<std::is_copy_assignable
+		<OtherType>::value, NodeIterator<_reverse>>::type;
 	template<bool _reverse, typename OtherType>
-	using UpdateByMove = std::enable_if_t<std::is_move_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;;
+	using UpdateByMove = std::enable_if<std::is_move_assignable
+		<OtherType>::value, NodeIterator<_reverse>>::type;
 
 public:		// constants
 	static constexpr IndexT HEAD_INDEX = 0;
