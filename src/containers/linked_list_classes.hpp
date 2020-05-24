@@ -7,6 +7,7 @@
 #include <stack>
 #include <vector>
 #include <stdint.h>
+#include <type_traits>
 #include "../gen_class_innards_defines.hpp"
 
 namespace liborangepower
