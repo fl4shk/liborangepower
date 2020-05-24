@@ -268,7 +268,7 @@ public:		// functions
 			return false;
 		}
 	}
-	inline bool _attempt_parse_with_wtsm(const ParseFunc& parse_func)
+	inline bool _attempt_parse(const ParseFunc& parse_func)
 	{
 		_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
 
