@@ -636,25 +636,27 @@ public:		// functions
 		return NodeIterator<reverse>(this, head().prev());
 	}
 
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_front(const Type& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline NodeIterator<reverse> push_front(const OtherType& to_push)
 	{
-		return insert_after<reverse>(HEAD_INDEX, to_push);
+		return insert_after<reverse, OtherType>(HEAD_INDEX, to_push);
 	}
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_front(Type&& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline NodeIterator<reverse> push_front(OtherType&& to_push)
 	{
-		return insert_after<reverse>(HEAD_INDEX, std::move(to_push));
+		return insert_after<reverse, OtherType>(HEAD_INDEX,
+			std::move(to_push));
 	}
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_back(const Type& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline NodeIterator<reverse> push_back(const OtherType& to_push)
 	{
-		return insert_before<reverse>(HEAD_INDEX, to_push);
+		return insert_before<reverse, OtherType>(HEAD_INDEX, to_push);
 	}
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_back(Type&& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline NodeIterator<reverse> push_back(OtherType&& to_push)
 	{
-		return insert_before<reverse>(HEAD_INDEX, std::move(to_push));
+		return insert_before<reverse, OtherType>(HEAD_INDEX,
+			std::move(to_push));
 	}
 	inline void pop_front()
 	{
