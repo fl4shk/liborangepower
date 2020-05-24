@@ -419,6 +419,11 @@ protected:		// functions
 
 		_wanted_tok_set.clear();
 	}
+	inline void _expect_wanted_tok(const TokSet& extra_wanted_tok_set)
+	{
+		_wanted_tok_set_merge(extra_wanted_tok_set);
+		_expect_wanted_tok();
+	}
 
 //private:		// functions
 //	template<typename... RemArgTypes>
