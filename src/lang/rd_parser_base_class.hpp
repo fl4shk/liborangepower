@@ -48,35 +48,36 @@ public:		// types
 	{
 	private:		// variables
 		RdParserBase* _parser = nullptr;
-		string _old_parse_func_str;
-		//bool _old_found_wanted_tok;
-		TokSet _old_wanted_tok_set;
+		string _parent_parse_func_str;
+		TokSet _parent_wanted_tok_set;
 
 	public:		// functions
 		inline PrologueAndEpilogue(RdParserBase* s_parser,
 			string&& s_parse_func_str)
 			: _parser(s_parser)
 		{
-			_old_parse_func_str = std::move(_parser->_parse_func_str);
+			_parent_parse_func_str = std::move(_parser->_parse_func_str);
 			_parser->_parse_func_str = std::move(s_parse_func_str);
 
-			//_old_found_wanted_tok = _parser->_found_wanted_tok;
-			//_parser->_found_wanted_tok = false;
-
-			_old_wanted_tok_set = std::move(_parser->_wanted_tok_set);
+			_parent_wanted_tok_set = std::move(_parser->_wanted_tok_set);
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(PrologueAndEpilogue);
 		inline ~PrologueAndEpilogue()
 		{
-			_parser->_parse_func_str = std::move(_old_parse_func_str);
-			//_parser->_found_wanted_tok = _old_found_wanted_tok;
-			_parser->_wanted_tok_set = std::move(_old_wanted_tok_set);
+			_parser->_parse_func_str = std::move(_parent_parse_func_str);
+			_parser->_wanted_tok_set = std::move(_parent_wanted_tok_set);
 		}
 
-		inline void internal_err(const std::string& msg="") const
+		inline void parent_wanted_tok_set_merge
+			(const ParseRet& to_merge_from)
 		{
-			_parser->_internal_err(_parser->_parse_func_str, msg);
+			_parser->_tok_set_merge(_parent_wanted_tok_set, to_merge_from);
 		}
+
+		//inline void internal_err(const std::string& msg="") const
+		//{
+		//	_parser->_internal_err(_parser->_parse_func_str, msg);
+		//}
 	};
 	//--------
 
@@ -155,6 +156,10 @@ protected:		// functions
 		return _lexer->next_tok();
 	}
 
+	virtual inline void _pfs_internal_err(const std::string& msg="") const
+	{
+		_internal_err(_parse_func_str, msg);
+	}
 	virtual inline void _internal_err(const std::string& func_str,
 		const std::string& msg="") const
 	{
