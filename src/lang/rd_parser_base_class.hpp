@@ -142,6 +142,31 @@ public:		// functions
 	GEN_GETTER_BY_VAL(just_get_valid_tokens);
 
 protected:		// functions
+	template<typename FirstArgType, typename... RemArgTypes>
+	inline void _warn(const FilePos& some_file_pos,
+		const FirstArgType& first_arg, RemArgTypes&&... rem_args) const
+	{
+		some_file_pos.warn(sconcat(first_arg, rem_args...));
+	}
+	template<typename FirstArgType, typename... RemArgTypes>
+	inline void _lex_fp_warn(const FirstArgType& first_arg,
+		RemArgTypes&&... rem_args) const
+	{
+		_warn(lex_file_pos(), first_arg, rem_args...);
+	}
+	template<typename FirstArgType, typename... RemArgTypes>
+	inline void _err(const FilePos& some_file_pos, 
+		const FirstArgType& first_arg, RemArgTypes&&... rem_args) const
+	{
+		some_file_pos.err(sconcat(first_arg, rem_args...));
+	}
+	template<typename FirstArgType, typename... RemArgTypes>
+	inline void _lex_fp_err(const FirstArgType& first_arg,
+		RemArgTypes&&... rem_args) const
+	{
+		_err(lex_file_pos(), first_arg, rem_args...);
+	}
+
 	inline DerivedType* _self()
 	{
 		return static_cast<DerivedType*>(this);
