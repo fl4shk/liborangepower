@@ -250,6 +250,18 @@ public:		// functions
 		return false;
 	}
 
+	size_t size() const
+	{
+		size_t ret = 0;
+
+		for (const auto& item: *this)
+		{
+			++ret;
+		}
+
+		return ret;
+	}
+
 	template<bool reverse=false>
 	inline NodeIterator<reverse> front()
 	{
@@ -628,6 +640,18 @@ public:		// functions
 	inline const NodeIterator<true> crend() const
 	{
 		return NodeIterator<true>(this, HEAD_INDEX);
+	}
+
+	size_t size() const
+	{
+		size_t ret = 0;
+
+		for (const auto& item: *this)
+		{
+			++ret;
+		}
+
+		return ret;
 	}
 
 	template<bool reverse=false>
