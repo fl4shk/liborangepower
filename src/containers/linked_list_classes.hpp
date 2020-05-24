@@ -23,6 +23,15 @@ public:		// types
 	{
 		friend class PtrCircLinkList;
 
+	public:		// types
+		template<typename OtherType>
+		using CopyConstruct = std::enable_if_t<std::is_copy_assignable
+			<OtherType>::value, Node>;
+
+		template<typename OtherType>
+		using MoveConstruct = std::enable_if_t<std::is_move_assignable
+			<OtherType>::value, Node>;
+
 	private:		// variables
 		Node * _next = nullptr, * _prev = nullptr;
 
@@ -32,20 +41,18 @@ public:		// types
 	public:		// functions
 		Node() = default;
 
-		template<typename OtherType=Type,
-			typename std::enable_if<std::is_copy_assignable<OtherType>
-				::value, size_t> = 0>
-		static inline Node construct(const Type& s_data)
+		template<typename OtherType=Type>
+		static inline CopyConstruct<OtherType> construct
+			(const OtherType& s_data)
 		{
 			Node ret;
 			ret.data = s_data;
 			return ret;
 		}
 
-		template<typename OtherType=Type,
-			typename std::enable_if<std::is_move_assignable<OtherType>
-				::value, size_t> = 0>
-		static inline Node construct(Type&& s_data)
+		template<typename OtherType=Type>
+		static inline MoveConstruct<OtherType> construct
+			(OtherType&& s_data)
 		{
 			Node ret;
 			ret.data = std::move(s_data);
@@ -126,6 +133,13 @@ public:		// types
 			return (_node != other._node);
 		}
 	};
+
+	template<bool _reverse, typename OtherType>
+	using UpdateByCopy = std::enable_if_t<std::is_copy_assignable
+		<OtherType>::value, NodeIterator<_reverse>>;;
+	template<bool _reverse, typename OtherType>
+	using UpdateByMove = std::enable_if_t<std::is_move_assignable
+		<OtherType>::value, NodeIterator<_reverse>>;;
 
 private:		// variables
 	Node _head;
@@ -246,25 +260,27 @@ public:		// functions
 		return NodeIterator<reverse>(_head._prev);
 	}
 
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_front(const Type& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByCopy<reverse, OtherType> push_front
+		(const OtherType& to_push)
 	{
-		return insert_after<reverse>(head(), to_push);
+		return insert_after<reverse, OtherType>(head(), to_push);
 	}
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_front(Type&& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByMove<reverse, OtherType> push_front(Type&& to_push)
 	{
-		return insert_after<reverse>(head(), std::move(to_push));
+		return insert_after<reverse, OtherType>(head(),
+			std::move(to_push));
 	}
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_back(const Type& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByCopy<reverse, OtherType> push_back(const Type& to_push)
 	{
-		return insert_before<reverse>(head(), to_push);
+		return insert_before<reverse, OtherType>(head(), to_push);
 	}
-	template<bool reverse=false>
-	inline NodeIterator<reverse> push_back(Type&& to_push)
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByMove<reverse, OtherType> push_back(Type&& to_push)
 	{
-		return insert_before<reverse>(head(), std::move(to_push));
+		return insert_before<reverse, Type>(head(), std::move(to_push));
 	}
 	inline void pop_front()
 	{
@@ -276,22 +292,16 @@ public:		// functions
 	}
 
 
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_copy_assignable
-			<OtherType>, size_t> = 0>
-	inline NodeIterator<reverse> insert_before(Node* where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByCopy<reverse, OtherType> insert_before(Node* where,
 		const OtherType& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_before<reverse>(where, node);
 	}
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_move_assignable<OtherType>::value,
-			size_t> = 0>
-	inline NodeIterator<reverse> insert_before(Node* where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByMove<reverse, OtherType> insert_before(Node* where,
 		OtherType&& to_insert)
 	{
 		Node* node = new Node();
@@ -299,22 +309,16 @@ public:		// functions
 		return _inner_insert_before<reverse>(where, node);
 	}
 
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_copy_assignable
-			<OtherType>, size_t> = 0>
-	inline NodeIterator<reverse> insert_after(Node* where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByCopy<reverse, OtherType> insert_after(Node* where,
 		const OtherType& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_after<reverse>(where, node);
 	}
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_move_assignable<OtherType>::value,
-			size_t> = 0>
-	inline NodeIterator<reverse> insert_after(Node* where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByMove<reverse, OtherType> insert_after(Node* where,
 		OtherType&& to_insert)
 	{
 		Node* node = new Node();
@@ -401,30 +405,37 @@ public:		// types
 	{
 		friend class IndCircLinkList;
 
+	public:		// types
+		template<typename OtherType>
+		using CopyConstruct = std::enable_if_t<std::is_copy_assignable
+			<OtherType>::value, Node>;
+
+		template<typename OtherType>
+		using MoveConstruct = std::enable_if_t<std::is_move_assignable
+			<OtherType>::value, Node>;
+
 	private:		// variables
 		ArgIndexT _next = NULL_INDEX, _prev = NULL_INDEX;
 
 	public:		// variables
 		Type data;
 
+
 	public:		// functions
 		Node() = default;
 
-		template<typename OtherType=Type,
-			typename std::enable_if<std::is_copy_assignable<OtherType>
-				::value,
-				size_t> = 0>
-		static inline Node construct(const Type& s_data)
+		template<typename OtherType=Type>
+		static inline CopyConstruct<OtherType> construct
+			(const OtherType& s_data)
 		{
 			Node ret;
 			ret.data = s_data;
 			return ret;
 		}
 
-		template<typename OtherType=Type,
-			typename std::enable_if<std::is_move_assignable<OtherType>
-				::value, size_t> = 0>
-		static inline Node construct(Type&& s_data)
+		template<typename OtherType=Type>
+		static inline MoveConstruct<OtherType> construct
+			(OtherType&& s_data)
 		{
 			Node ret;
 			ret.data = std::move(s_data);
@@ -515,6 +526,12 @@ public:		// types
 		}
 	};
 
+	template<bool _reverse, typename OtherType>
+	using UpdateByCopy = std::enable_if_t<std::is_copy_assignable
+		<OtherType>::value, NodeIterator<_reverse>>;;
+	template<bool _reverse, typename OtherType>
+	using UpdateByMove = std::enable_if_t<std::is_move_assignable
+		<OtherType>::value, NodeIterator<_reverse>>;;
 
 public:		// constants
 	static constexpr IndexT HEAD_INDEX = 0;
@@ -648,42 +665,30 @@ public:		// functions
 		remove_before(HEAD_INDEX);
 	}
 
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_copy_assignable<OtherType>::value,
-			size_t> = 0>
-	inline NodeIterator<reverse> insert_before(IndexT where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByCopy<reverse, OtherType> insert_before(IndexT where,
 		const OtherType& to_insert)
 	{
 		return _inner_insert_before<reverse>(where,
 			Node::construct(to_insert));
 	}
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_move_assignable<OtherType>::value,
-			size_t> = 0>
-	inline NodeIterator<reverse> insert_before(IndexT where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByMove<reverse, OtherType> insert_before(IndexT where,
 		OtherType&& to_insert)
 	{
 		return _inner_insert_before<reverse>(where,
 			Node::construct(std::move(to_insert)));
 	}
 
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_copy_assignable<OtherType>::value,
-			size_t> = 0>
-	inline NodeIterator<reverse> insert_after(IndexT where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByCopy<reverse, OtherType> insert_after(IndexT where,
 		const OtherType& to_insert)
 	{
 		return _inner_insert_after<reverse>(where,
 			Node::construct(to_insert));
 	}
-	template<bool reverse=false,
-		typename OtherType=Type,
-		typename std::enable_if<std::is_move_assignable<OtherType>::value,
-			size_t> = 0>
-	inline NodeIterator<reverse> insert_after(IndexT where,
+	template<bool reverse=false, typename OtherType=Type>
+	inline UpdateByMove<reverse, OtherType> insert_after(IndexT where,
 		OtherType&& to_insert)
 	{
 		return _inner_insert_after<reverse>(where,
