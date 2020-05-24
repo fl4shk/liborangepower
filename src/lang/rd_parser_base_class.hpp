@@ -396,6 +396,8 @@ protected:		// functions
 		{
 			_inner_expect_fail(tok_set);
 		}
+
+		_wanted_tok_set.clear();
 	}
 	void _expect_wanted_tok()
 	{
@@ -403,6 +405,8 @@ protected:		// functions
 		{
 			_inner_expect_fail(_wanted_tok_set);
 		}
+
+		_wanted_tok_set.clear();
 	}
 
 //private:		// functions
