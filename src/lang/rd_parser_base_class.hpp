@@ -260,7 +260,7 @@ public:		// functions
 	}
 	inline bool _attempt_parse_ifelse(const ParseFunc& parse_func)
 	{
-		_tok_set_merge(_get_valid_tok_set(parse_func));
+		_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
 
 		return _attempt_parse_basic(parse_func);
 	}
