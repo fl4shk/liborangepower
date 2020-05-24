@@ -48,9 +48,8 @@ public:		// types
 	{
 	private:		// variables
 		RdParserBase* _parser = nullptr;
-		PrologueAndEpilogue* _parent = nullptr;
 		string _saved_parse_func_str;
-		TokSet _to_merge_tok_set;
+		//TokSet _to_merge_tok_set;
 
 	public:		// functions
 		inline PrologueAndEpilogue(RdParserBase* s_parser,
@@ -64,11 +63,11 @@ public:		// types
 		inline ~PrologueAndEpilogue()
 		{
 			_parser->_parse_func_str = std::move(_saved_parse_func_str);
-			_parser->_wanted_tok_set_merge(_to_merge_tok_set);
+			//_parser->_wanted_tok_set_merge(_to_merge_tok_set);
 		}
 
 		GEN_GETTER_BY_CON_REF(saved_parse_func_str);
-		GEN_GETTER_AND_SETTER_BY_CON_REF(to_merge_tok_set);
+		//GEN_GETTER_AND_SETTER_BY_CON_REF(to_merge_tok_set);
 
 		//inline void internal_err(const std::string& msg="") const
 		//{
