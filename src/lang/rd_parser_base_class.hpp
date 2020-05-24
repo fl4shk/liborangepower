@@ -174,7 +174,8 @@ protected:		// functions
 	inline void _tok_set_merge(TokSet& tok_set,
 		const ParseRet& to_merge_from)
 	{
-		// Check for duplicate tokens, i.e. a non-LL(1) grammar
+		// Check for duplicate tokens, i.e. a non-LL(1) grammar, and spit
+		// out an error if duplicate tokens were found.
 		for (const auto& outer_item: tok_set)
 		{
 			for (const auto& inner_item: *to_merge_from)
@@ -245,7 +246,7 @@ public:		// functions
 		return ret;
 	}
 
-	inline bool _attempt_parse(const ParseFunc& parse_func)
+	inline bool _attempt_parse_basic(const ParseFunc& parse_func)
 	{
 		if (_check_parse(parse_func))
 		{
@@ -256,6 +257,12 @@ public:		// functions
 		{
 			return false;
 		}
+	}
+	inline bool _attempt_parse_ifelse(const ParseFunc& parse_func)
+	{
+		_tok_set_merge(_get_valid_tok_set(parse_func));
+
+		return _attempt_parse_basic(parse_func);
 	}
 
 	//inline void _fail_if_not_found_wanted_tok() const
