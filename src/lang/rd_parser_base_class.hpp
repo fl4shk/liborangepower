@@ -67,10 +67,8 @@ public:		// types
 			_parser->_wanted_tok_set_merge(_to_merge_tok_set);
 		}
 
-		EVAL(MAP(GEN_GETTER_BY_CON_REF, EMPTY,
-			saved_parse_func_str,
-			to_merge_tok_set));
-		GEN_SETTER_BY_CON_REF(to_merge_tok_set);
+		GEN_GETTER_BY_CON_REF(saved_parse_func_str);
+		GEN_GETTER_AND_SETTER_BY_CON_REF(to_merge_tok_set);
 
 		//inline void internal_err(const std::string& msg="") const
 		//{
