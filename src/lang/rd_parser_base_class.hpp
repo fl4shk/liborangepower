@@ -399,7 +399,7 @@ private:		// functions
 
 protected:		// functions
 	template<typename... RemArgTypes>
-	void _expect(TokType first_tok, RemArgTypes&&... rem_args) const
+	void _expect(TokType first_tok, RemArgTypes&&... rem_args)
 	{
 		TokSet tok_set;
 
