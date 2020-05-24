@@ -48,31 +48,29 @@ public:		// types
 	{
 	private:		// variables
 		RdParserBase* _parser = nullptr;
-		string _parent_parse_func_str;
-		TokSet _parent_wanted_tok_set;
+		PrologueAndEpilogue* _parent = nullptr;
+		string _saved_parse_func_str;
+		TokSet _to_merge_tok_set;
 
 	public:		// functions
 		inline PrologueAndEpilogue(RdParserBase* s_parser,
 			string&& s_parse_func_str)
 			: _parser(s_parser)
 		{
-			_parent_parse_func_str = std::move(_parser->_parse_func_str);
+			_saved_parse_func_str = std::move(_parser->_parse_func_str);
 			_parser->_parse_func_str = std::move(s_parse_func_str);
-
-			_parent_wanted_tok_set = std::move(_parser->_wanted_tok_set);
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(PrologueAndEpilogue);
 		inline ~PrologueAndEpilogue()
 		{
-			_parser->_parse_func_str = std::move(_parent_parse_func_str);
-			_parser->_wanted_tok_set = std::move(_parent_wanted_tok_set);
+			_parser->_parse_func_str = std::move(_saved_parse_func_str);
+			_parser->_wanted_tok_set_merge(_to_merge_tok_set);
 		}
 
-		inline void parent_wanted_tok_set_merge
-			(const ParseRet& to_merge_from)
-		{
-			_parser->_tok_set_merge(_parent_wanted_tok_set, to_merge_from);
-		}
+		EVAL(MAP(GEN_GETTER_BY_CON_REF, EMPTY,
+			saved_parse_func_str,
+			to_merge_tok_set));
+		GEN_SETTER_BY_CON_REF(to_merge_tok_set);
 
 		//inline void internal_err(const std::string& msg="") const
 		//{
@@ -177,13 +175,13 @@ protected:		// functions
 	}
 
 	inline void _tok_set_merge(TokSet& tok_set,
-		const ParseRet& to_merge_from)
+		const TokSet& to_merge_from)
 	{
 		// Check for duplicate tokens, i.e. a non-LL(1) grammar, and spit
 		// out an error if duplicate tokens were found.
 		for (const auto& outer_item: tok_set)
 		{
-			for (const auto& inner_item: *to_merge_from)
+			for (const auto& inner_item: to_merge_from)
 			{
 				if (outer_item == inner_item)
 				{
@@ -194,14 +192,24 @@ protected:		// functions
 			}
 		}
 
-		TokSet temp_to_merge_from = *to_merge_from;
+		TokSet temp_to_merge_from = to_merge_from;
 
 		tok_set.merge(temp_to_merge_from);
 	}
 
-	inline void _wanted_tok_set_merge(const ParseRet& to_merge_from)
+	inline void _wanted_tok_set_merge(const TokSet& to_merge_from)
 	{
 		_tok_set_merge(_wanted_tok_set, to_merge_from);
+	}
+
+	inline void _tok_set_merge(TokSet& tok_set,
+		const ParseRet& to_merge_from)
+	{
+		_tok_set_merge(tok_set, *to_merge_from);
+	}
+	inline void _wanted_tok_set_merge(const ParseRet& to_merge_from)
+	{
+		_wanted_tok_set_merge(*to_merge_from);
 	}
 
 	inline bool _check_parse(TokSet& tok_set, const ParseFunc& parse_func)
