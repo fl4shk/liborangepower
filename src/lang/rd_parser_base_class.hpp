@@ -268,7 +268,19 @@ public:		// functions
 			return false;
 		}
 	}
-	inline bool _attempt_parse(const ParseFunc& parse_func)
+	inline bool _attempt_parse_opt(const ParseFunc& parse_func)
+	{
+		if (_attempt_parse_basic(parse_func))
+		{
+			return true;
+		}
+		else
+		{
+			_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
+			return false;
+		}
+	}
+	inline bool _attempt_parse_wtsm(const ParseFunc& parse_func)
 	{
 		_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
 
