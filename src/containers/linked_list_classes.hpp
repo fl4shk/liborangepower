@@ -254,7 +254,8 @@ public:		// functions
 	{
 		size_t ret = 0;
 
-		for (const auto& item: *this)
+		//for (const auto& item: *this)
+		for (auto iter=cbegin(); iter!=cend(); ++iter)
 		{
 			++ret;
 		}
@@ -646,7 +647,8 @@ public:		// functions
 	{
 		size_t ret = 0;
 
-		for (const auto& item: *this)
+		//for (const auto& item: *this)
+		for (auto iter=cbegin(); iter!=cend(); ++iter)
 		{
 			++ret;
 		}
