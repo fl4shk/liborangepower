@@ -197,19 +197,22 @@ protected:		// functions
 	}
 
 	inline void _tok_set_merge(TokSet& tok_set,
-		const TokSet& to_merge_from)
+		const TokSet& to_merge_from, bool find_dup=true)
 	{
-		// Check for duplicate tokens, i.e. a non-LL(1) grammar, and spit
-		// out an error if duplicate tokens were found.
-		for (const auto& outer_item: tok_set)
+		if (find_dup)
 		{
-			for (const auto& inner_item: to_merge_from)
+			// Check for duplicate tokens, i.e. a non-LL(1) grammar, and
+			// spit out an error if duplicate tokens were found.
+			for (const auto& outer_item: tok_set)
 			{
-				if (outer_item == inner_item)
+				for (const auto& inner_item: to_merge_from)
 				{
-					_internal_err("_tok_set_merge", sconcat(":  ",
-						"Duplicate token \"", _lexer->tok_to_string_map()
-						.at(outer_item), "\"."));
+					if (outer_item == inner_item)
+					{
+						_internal_err("_tok_set_merge", sconcat(":  ",
+							"Duplicate token \"", _lexer->tok_to_string_map()
+							.at(outer_item), "\"."));
+					}
 				}
 			}
 		}
@@ -430,7 +433,7 @@ protected:		// functions
 
 		if (!_inner_expect(tok_set, first_tok, rem_args...))
 		{
-			_tok_set_merge(tok_set, _wanted_tok_set);
+			_tok_set_merge(tok_set, _wanted_tok_set, false);
 			_inner_expect_fail(tok_set);
 		}
 
