@@ -430,6 +430,7 @@ protected:		// functions
 
 		if (!_inner_expect(tok_set, first_tok, rem_args...))
 		{
+			_tok_set_merge(tok_set, _wanted_tok_set);
 			_inner_expect_fail(tok_set);
 		}
 
