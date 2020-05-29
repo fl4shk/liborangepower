@@ -176,9 +176,10 @@ protected:		// functions
 		return _lexer->next_tok();
 	}
 
-	virtual inline void _pfs_internal_err(const std::string& msg="") const
+	template<typename... ArgTypes>
+	inline void _pfs_internal_err(const ArgTypes&... args) const
 	{
-		_internal_err(_parse_func_str, msg);
+		_internal_err(_parse_func_str, sconcat(args...));
 	}
 	virtual inline void _internal_err(const std::string& func_str,
 		const std::string& msg="") const
