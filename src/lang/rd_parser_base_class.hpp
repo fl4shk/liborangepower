@@ -451,15 +451,15 @@ protected:		// functions
 
 		_wanted_tok_set.clear();
 	}
-	//void _expect_wanted_tok()
-	//{
-	//	if (!_cmp_lex_tok(_wanted_tok_set))
-	//	{
-	//		_inner_expect_fail(_wanted_tok_set);
-	//	}
+	void _expect_wanted_tok()
+	{
+		if (!_cmp_lex_tok(_wanted_tok_set))
+		{
+			_inner_expect_fail(_wanted_tok_set);
+		}
 
-	//	_wanted_tok_set.clear();
-	//}
+		_wanted_tok_set.clear();
+	}
 	//inline void _expect_wanted_tok(const TokSet& extra_wanted_tok_set)
 	//{
 	//	_wanted_tok_set_merge(extra_wanted_tok_set);
