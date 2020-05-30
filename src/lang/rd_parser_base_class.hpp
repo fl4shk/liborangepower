@@ -288,7 +288,9 @@ protected:		// functions
 		_inner_get_valid_tok_set(ret, first_parse_func, rem_args...);
 		return ret;
 	}
-	inline bool _attempt_parse(const ParseFunc& parse_func)
+
+private:		// functions
+	inline bool _inner_attempt_parse(const ParseFunc& parse_func)
 	{
 		//_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
 
@@ -301,6 +303,18 @@ protected:		// functions
 		{
 			return false;
 		}
+	}
+
+protected:		// functions
+	inline bool _attempt_parse_basic(const ParseFunc& parse_func)
+	{
+		_wanted_tok_set.clear();
+		return _inner_attempt_parse(parse_func);
+	}
+	inline bool _attempt_parse_wtsm(const ParseFunc& parse_func)
+	{
+		_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
+		return _inner_attempt_parse(parse_func);
 	}
 	//inline bool _attempt_parse_opt(const ParseFunc& parse_func)
 	//{
