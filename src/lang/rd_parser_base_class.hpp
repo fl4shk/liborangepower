@@ -198,22 +198,19 @@ protected:		// functions
 	}
 
 	inline void _tok_set_merge(TokSet& tok_set,
-		const TokSet& to_merge_from, bool find_dup=true)
+		const TokSet& to_merge_from)
 	{
-		if (find_dup)
+		// Check for duplicate tokens, i.e. a non-LL(1) grammar, and
+		// spit out an error if duplicate tokens were found.
+		for (const auto& outer_item: tok_set)
 		{
-			// Check for duplicate tokens, i.e. a non-LL(1) grammar, and
-			// spit out an error if duplicate tokens were found.
-			for (const auto& outer_item: tok_set)
+			for (const auto& inner_item: to_merge_from)
 			{
-				for (const auto& inner_item: to_merge_from)
+				if (outer_item == inner_item)
 				{
-					if (outer_item == inner_item)
-					{
-						_internal_err("_tok_set_merge", sconcat(":  ",
-							"Duplicate token \"", _lexer->tok_to_string_map()
-							.at(outer_item), "\"."));
-					}
+					_internal_err("_tok_set_merge", sconcat(":  ",
+						"Duplicate token \"", _lexer->tok_to_string_map()
+						.at(outer_item), "\"."));
 				}
 			}
 		}
@@ -251,8 +248,6 @@ private:		// functions
 
 		return ret;
 	}
-
-protected:		// functions
 	inline bool _check_parse(TokSet& tok_set, const ParseFunc& parse_func)
 	{
 		const auto parse_ret = _inner_check_parse(tok_set, parse_func);
@@ -272,7 +267,6 @@ protected:		// functions
 		return _check_parse(_wanted_tok_set, parse_func);
 	}
 
-private:		// functions
 	template<typename... RemArgTypes>
 	inline void _inner_get_valid_tok_set(TokSet& ret,
 		const ParseFunc& first_parse_func, RemArgTypes&&... rem_args)
@@ -285,7 +279,7 @@ private:		// functions
 		}
 	}
 
-public:		// functions
+protected:		// functions
 	template<typename... RemArgTypes>
 	inline TokSet _get_valid_tok_set(const ParseFunc& first_parse_func,
 		RemArgTypes&&... rem_args)
@@ -294,7 +288,6 @@ public:		// functions
 		_inner_get_valid_tok_set(ret, first_parse_func, rem_args...);
 		return ret;
 	}
-
 	inline bool _attempt_parse(const ParseFunc& parse_func)
 	{
 		//_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
@@ -446,7 +439,7 @@ protected:		// functions
 
 		if (!_inner_expect(tok_set, first_tok, rem_args...))
 		{
-			_tok_set_merge(tok_set, _wanted_tok_set, false);
+			_tok_set_merge(tok_set, _wanted_tok_set);
 			_inner_expect_fail(tok_set);
 		}
 
