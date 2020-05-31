@@ -142,6 +142,10 @@ public:		// functions
 	GEN_GETTER_BY_VAL(just_get_valid_tokens);
 
 protected:		// functions
+	inline ParseRet _call_parse_func(const ParseFunc& parse_func)
+	{
+		return (_self()->*parse_func)();
+	}
 	template<typename FirstArgType, typename... RemArgTypes>
 	inline void _warn(const FilePos& some_file_pos,
 		const FirstArgType& first_arg, RemArgTypes&&... rem_args) const
@@ -241,7 +245,7 @@ private:		// functions
 	{
 		const bool old_just_get_valid_tokens = just_get_valid_tokens();
 		_just_get_valid_tokens = true;
-		const auto ret = (_self()->*parse_func)();
+		const auto ret = _call_parse_func(parse_func);
 		_just_get_valid_tokens = old_just_get_valid_tokens;
 
 		_tok_set_merge(tok_set, ret);
@@ -296,7 +300,7 @@ private:		// functions
 
 		if (_check_parse(parse_func))
 		{
-			(_self()->*parse_func)();
+			_call_parse_func(parse_func);
 			return true;
 		}
 		else
@@ -474,7 +478,7 @@ protected:		// functions
 //
 //		if (_lexer->tok() == first_tok)
 //		{
-//			(_self()->*first_parse_func)();
+//			_call_parse_func(parse_func);
 //			return true;
 //		}
 //		else if constexpr (sizeof...(rem_args) > 0)
