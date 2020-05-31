@@ -306,11 +306,11 @@ private:		// functions
 	}
 
 protected:		// functions
-	inline bool _attempt_parse_basic(const ParseFunc& parse_func)
-	{
-		_wanted_tok_set.clear();
-		return _inner_attempt_parse(parse_func);
-	}
+	//inline bool _attempt_parse_basic(const ParseFunc& parse_func)
+	//{
+	//	_wanted_tok_set.clear();
+	//	return _inner_attempt_parse(parse_func);
+	//}
 	inline bool _attempt_parse_wtsm(const ParseFunc& parse_func)
 	{
 		_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
@@ -318,21 +318,12 @@ protected:		// functions
 	}
 	//inline bool _attempt_parse_opt(const ParseFunc& parse_func)
 	//{
-	//	if (_attempt_parse_basic(parse_func))
+	//	const bool ret = _inner_attempt_parse(parse_func);
+	//	if (!ret)
 	//	{
-	//		return true;
+	//		_wanted_tok_set_merge(_get_valid_tok_set(parse_func);
 	//	}
-	//	else
-	//	{
-	//		_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
-	//		return false;
-	//	}
-	//}
-	//inline bool _attempt_parse_wtsm(const ParseFunc& parse_func)
-	//{
-	//	_wanted_tok_set_merge(_get_valid_tok_set(parse_func));
-
-	//	return _attempt_parse_basic(parse_func);
+	//	return ret;
 	//}
 
 	//inline void _fail_if_not_found_wanted_tok() const
