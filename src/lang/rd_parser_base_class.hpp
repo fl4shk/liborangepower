@@ -266,11 +266,14 @@ private:		// functions
 			return false;
 		}
 	}
+
+protected:		// functions
 	inline bool _check_parse(const ParseFunc& parse_func)
 	{
 		return _check_parse(_wanted_tok_set, parse_func);
 	}
 
+private:		// functions
 	template<typename... RemArgTypes>
 	inline void _inner_get_valid_tok_set(TokSet& ret,
 		const ParseFunc& first_parse_func, RemArgTypes&&... rem_args)
