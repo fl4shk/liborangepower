@@ -11,7 +11,7 @@
 #include "ast_visitor_base_class.hpp"
 #include "file_pos_class.hpp"
 
-#include "lang_ast_node_base_class_defines.hpp"
+#include "ast_node_base_class_defines.hpp"
 
 namespace liborangepower
 {
