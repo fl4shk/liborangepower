@@ -252,25 +252,33 @@ private:		// functions
 
 		return ret;
 	}
-	inline bool _check_parse(TokSet& tok_set, const ParseFunc& parse_func)
+	template<typename... RemArgTypes>
+	inline std::optional<ParseFunc> _check_parse(TokSet& tok_set,
+		const ParseFunc& first_func, RemArgTypes&&... rem_funcs)
 	{
-		const auto parse_ret = _inner_check_parse(tok_set, parse_func);
+		const auto parse_ret = _inner_check_parse(tok_set, first_func);
 
 		if (parse_ret->count(lex_tok()) > 0)
 		{
 			//_found_wanted_tok = true;
-			return true;
+			return first_func;
+		}
+		else if constexpr (sizeof...(rem_args) > 0)
+		{
+			return _check_parse(tok_set, rem_funcs...);
 		}
 		else
 		{
-			return false;
+			return std::nullopt;
 		}
 	}
 
 protected:		// functions
-	inline bool _check_parse(const ParseFunc& parse_func)
+	template<typename... RemArgTypes>
+	inline bool _check_parse(const ParseFunc& first_func,
+		RemArgTypes&&... rem_args)
 	{
-		return _check_parse(_wanted_tok_set, parse_func);
+		return _check_parse(_wanted_tok_set, first_func, rem_funcs...);
 	}
 
 private:		// functions
