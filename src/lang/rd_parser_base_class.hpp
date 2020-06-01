@@ -1,5 +1,5 @@
-#ifndef liborangepower_rd_parser_base_class_hpp
-#define liborangepower_rd_parser_base_class_hpp
+#ifndef liborangepower_lang_rd_parser_base_class_hpp
+#define liborangepower_lang_rd_parser_base_class_hpp
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
@@ -522,4 +522,4 @@ protected:		// functions
 } // namespace liborangepower
 
 
-#endif		// liborangepower_rd_parser_base_class_hpp
+#endif		// liborangepower_lang_rd_parser_base_class_hpp

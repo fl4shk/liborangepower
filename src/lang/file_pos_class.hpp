@@ -1,5 +1,5 @@
-#ifndef src_file_pos_class_hpp
-#define src_file_pos_class_hpp
+#ifndef liborangepower_lang_file_pos_class_hpp
+#define liborangepower_lang_file_pos_class_hpp
 
 // src/file_pos_class.hpp
 
@@ -72,4 +72,4 @@ inline std::ostream& operator << (std::ostream& os,
 		fp.line(), ":", fp.pos_in_line());
 }
 
-#endif		// src_file_pos_class_hpp
+#endif		// liborangepower_lang_file_pos_class_hpp
