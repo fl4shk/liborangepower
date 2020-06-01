@@ -82,7 +82,7 @@ public:		// functions
 
 protected:		// functions
 	static inline void _inner_accept_children
-		(AstVisitorAstNodeBase* visitor, const std::string& memb_name,
+		(AstVisitorBase* visitor, const std::string& memb_name,
 		AstNodeBaseUptr& child)
 	{
 		if (child)
@@ -92,7 +92,7 @@ protected:		// functions
 		}
 	}
 	static inline void _inner_accept_children
-		(AstVisitorAstNodeBase* visitor, const std::string& memb_name,
+		(AstVisitorBase* visitor, const std::string& memb_name,
 		AstNodeBaseUptrList& child_list)
 	{
 		size_t i = 0;
