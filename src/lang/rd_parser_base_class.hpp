@@ -252,9 +252,9 @@ private:		// functions
 
 		return ret;
 	}
-	template<typename... RemArgTypes>
+	template<typename... RemFuncTypes>
 	inline std::optional<ParseFunc> _check_parse(TokSet& tok_set,
-		const ParseFunc& first_func, RemArgTypes&&... rem_funcs)
+		const ParseFunc& first_func, RemFuncTypes&&... rem_funcs)
 	{
 		const auto parse_ret = _inner_check_parse(tok_set, first_func);
 
@@ -263,7 +263,7 @@ private:		// functions
 			//_found_wanted_tok = true;
 			return first_func;
 		}
-		else if constexpr (sizeof...(rem_args) > 0)
+		else if constexpr (sizeof...(rem_funcs) > 0)
 		{
 			return _check_parse(tok_set, rem_funcs...);
 		}
@@ -274,9 +274,9 @@ private:		// functions
 	}
 
 protected:		// functions
-	template<typename... RemArgTypes>
+	template<typename... RemFuncTypes>
 	inline bool _check_parse(const ParseFunc& first_func,
-		RemArgTypes&&... rem_args)
+		RemFuncTypes&&... rem_funcs)
 	{
 		return _check_parse(_wanted_tok_set, first_func, rem_funcs...);
 	}
