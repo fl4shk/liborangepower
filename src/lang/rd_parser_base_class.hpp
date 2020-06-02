@@ -183,7 +183,14 @@ protected:		// functions
 	template<typename... ArgTypes>
 	inline void _pfs_internal_err(const ArgTypes&... args) const
 	{
-		_internal_err(_parse_func_str, sconcat(args...));
+		if constexpr (sizeof...(args) > 0)
+		{
+			_internal_err(_parse_func_str, sconcat(args...));
+		}
+		else
+		{
+			_internal_err(_parse_func_str);
+		}
 	}
 	virtual inline void _internal_err(const std::string& func_str,
 		const std::string& msg="") const
