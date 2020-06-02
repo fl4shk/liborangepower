@@ -275,8 +275,8 @@ private:		// functions
 
 protected:		// functions
 	template<typename... RemFuncTypes>
-	inline bool _check_parse(const ParseFunc& first_func,
-		RemFuncTypes&&... rem_funcs)
+	inline std::optional<ParseFunc> _check_parse
+		(const ParseFunc& first_func, RemFuncTypes&&... rem_funcs)
 	{
 		return _check_parse(_wanted_tok_set, first_func, rem_funcs...);
 	}
