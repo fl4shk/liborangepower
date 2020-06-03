@@ -102,10 +102,9 @@
 	{ \
 	/* -------- */ \
 	EVAL(MAP(CONV_CASE, EMPTY, __VA_ARGS__)) \
-	default: \
-		return "Eek!"; \
 	/* -------- */ \
-	}
+	} \
+	return "Eek!";
 
 #define BUILD_KIND_OPERATOR_LSHIFT(type) \
 	inline std::ostream& operator << (std::ostream& os, \
