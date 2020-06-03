@@ -4,12 +4,17 @@
 #include <memory>
 #include <functional>
 
+#include "cpp_magic.hpp"
+
+
+#define _INNER_DEFER(item) \
+	item
 
 #define defer(name, ...) \
 	std::shared_ptr<void> defer_ ## name (nullptr, \
 		std::bind([&]() -> void \
 		{ \
-			__VA_ARGS__ \
+			EVAL(MAP(_INNER_DEFER, SEMICOLON, __VA_ARGS__)) \
 		}))
 
 
