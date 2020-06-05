@@ -565,7 +565,7 @@ public:		// functions
 		head()._prev = HEAD_INDEX;
 	}
 
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(IndCircLinkList);
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(IndCircLinkList);
 
 	virtual inline ~IndCircLinkList() = default;
 
