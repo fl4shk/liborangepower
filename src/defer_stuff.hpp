@@ -13,7 +13,7 @@
 
 
 #define with_defer(...) \
-	if (defer(SUFFIX, __VA_ARGS__); true)
+	if (defer(_, __VA_ARGS__); true)
 
 
 #endif		// liborangepower_defer_stuff_hpp
