@@ -479,6 +479,8 @@ protected:		// functions
 			_inner_expect_fail(tok_set);
 		}
 
+		_next_tok();
+
 		_wanted_tok_set.clear();
 	}
 	void _expect_wanted_tok()
