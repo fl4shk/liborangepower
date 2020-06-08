@@ -4,7 +4,7 @@
 // lang/ast_node_base_class.hpp
 
 #include "../misc/misc_includes.hpp"
-#include "../cpp_magic.hpp"
+#include "../metaprog_defines.hpp"
 #include "../containers/linked_list_classes.hpp"
 #include "../misc/misc_output_classes.hpp"
 

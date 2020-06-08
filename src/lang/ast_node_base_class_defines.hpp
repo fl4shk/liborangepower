@@ -16,7 +16,7 @@
 #define _PLUS_RAW_NEWLINE() + "\\n";
 
 #define DATA(...) \
-	IF (HAS_ARGS(__VA_ARGS__)) \
+	__VA_OPT__ \
 	( \
 		EVAL(MAP_PAIRS(_DECL_MEMB_VAR, SEMICOLON, __VA_ARGS__)); \
 		\
@@ -40,7 +40,7 @@
 	_inner_dup(ret_ptr, ret_ptr->name, name)
 
 #define CHILDREN(...) \
-	IF (HAS_ARGS(__VA_ARGS__)) \
+	__VA_OPT__ \
 	( \
 		EVAL(MAP_PAIRS(_DECL_MEMB_VAR, SEMICOLON, __VA_ARGS__)); \
 		\

@@ -1,7 +1,7 @@
 #ifndef liborangepower_make_deferred_restorer_class_define_hpp
 #define liborangepower_make_deferred_restorer_class_define_hpp
 
-#include "cpp_magic.hpp"
+#include "metaprog_defines.hpp"
 
 #define _INNER_MAKE_DEFERRED_RESTORER_CLASS_MEMB_VAR(type, var_name) \
 	type _saved ## var_name
