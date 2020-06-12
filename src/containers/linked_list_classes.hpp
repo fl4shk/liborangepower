@@ -818,6 +818,7 @@ private:		// functions
 		else // if (!_avail_index_stack.empty())
 		{
 			const auto ret = _avail_index_stack.back();
+			_avail_index_stack.pop_back();
 			_node_vec.at(ret) = std::move(what);
 			return ret;
 		}
