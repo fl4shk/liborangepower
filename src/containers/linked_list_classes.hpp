@@ -4,7 +4,6 @@
 //#include "misc/misc_types.hpp"
 
 #include <iostream>
-#include <stack>
 #include <vector>
 #include <stdint.h>
 #include <type_traits>
