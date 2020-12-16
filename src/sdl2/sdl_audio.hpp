@@ -16,7 +16,7 @@ namespace sdl
 class AudioDevice final
 {
 private:		// variables
-	SDL_AudioDevice _dev;
+	SDL_AudioDeviceID _dev;
 
 public:		// functions
 	inline AudioDevice(SDL_AudioDeviceID s_dev)

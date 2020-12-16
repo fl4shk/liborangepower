@@ -31,6 +31,10 @@ public:		// functions
 			SDL_HapticClose(_self);
 		}
 	}
+	inline operator SDL_Haptic* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };

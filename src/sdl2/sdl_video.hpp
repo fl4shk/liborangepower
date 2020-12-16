@@ -31,6 +31,10 @@ public:		// functions
 			SDL_DestroyWindow(_self);
 		}
 	}
+	inline operator SDL_Window* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };

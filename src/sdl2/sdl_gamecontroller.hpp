@@ -5,6 +5,7 @@
 #include "../gen_class_innards_defines.hpp"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_gamecontroller.h>
 
 namespace liborangepower
@@ -30,6 +31,10 @@ public:		// functions
 		{
 			SDL_GameControllerClose(_self);
 		}
+	}
+	inline operator SDL_GameController* ()
+	{
+		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);

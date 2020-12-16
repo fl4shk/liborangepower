@@ -31,6 +31,10 @@ public:		// functions
 			SDL_DestroyRenderer(_self);
 		}
 	}
+	inline operator SDL_Renderer* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };
@@ -52,6 +56,10 @@ public:		// functions
 		{
 			SDL_DestroyTexture(_self);
 		}
+	}
+	inline operator SDL_Texture* ()
+	{
+		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);

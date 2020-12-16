@@ -31,6 +31,10 @@ public:		// functions
 			SDL_FreeCursor(_self);
 		}
 	}
+	inline operator SDL_Cursor* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };

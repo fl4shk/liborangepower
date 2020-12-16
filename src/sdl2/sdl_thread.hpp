@@ -31,6 +31,10 @@ public:		// functions
 			SDL_DetachThread(_self);
 		}
 	}
+	inline operator SDL_Thread* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };

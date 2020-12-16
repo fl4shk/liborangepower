@@ -31,6 +31,10 @@ public:		// functions
 			SDL_FreeSurface(_self);
 		}
 	}
+	inline operator SDL_Surface* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };

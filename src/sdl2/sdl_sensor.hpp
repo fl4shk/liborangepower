@@ -31,6 +31,10 @@ public:		// functions
 			SDL_SensorClose(_self);
 		}
 	}
+	inline operator SDL_Sensor* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };

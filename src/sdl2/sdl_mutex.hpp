@@ -31,6 +31,10 @@ public:		// functions
 			SDL_DestroyCond(_self);
 		}
 	}
+	inline operator SDL_cond* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };
@@ -53,6 +57,10 @@ public:		// functions
 			SDL_DestroyMutex(_self);
 		}
 	}
+	inline operator SDL_mutex* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };
@@ -74,6 +82,10 @@ public:		// functions
 		{
 			SDL_DestroySemaphore(_self);
 		}
+	}
+	inline operator SDL_sem* ()
+	{
+		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);

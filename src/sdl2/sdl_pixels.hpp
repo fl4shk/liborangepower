@@ -31,6 +31,10 @@ public:		// functions
 			SDL_FreePalette(_self);
 		}
 	}
+	inline operator SDL_Palette* ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };
