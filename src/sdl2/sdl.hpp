@@ -2,6 +2,9 @@
 #define liborangepower_sdl2_sdl_hpp
 
 #include "../misc/misc_includes.hpp"
+#include "../gen_class_innards_defines.hpp"
+
+#include <SDL2/SDL.h>
 
 namespace liborangepower
 {
@@ -27,6 +30,18 @@ namespace sdl
 //		_dtor(_self);
 //	}
 //};
+
+class QuitUponDtor final
+{
+public:		// functions
+	inline QuitUponDtor()
+	{
+	}
+	inline ~QuitUponDtor()
+	{
+		SDL_Quit();
+	}
+};
 
 } // namespace sdl
 
