@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mutex.h>
 
@@ -23,13 +24,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Cond);
+	inline Cond(const Cond& to_copy) = delete;
+	inline Cond(Cond&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Cond()
 	{
 		if (_self != nullptr)
 		{
 			SDL_DestroyCond(_self);
 		}
+	}
+	inline Cond& operator = (const Cond& to_copy)
+		= delete;
+	inline Cond& operator = (Cond&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_cond* ()
 	{
@@ -49,13 +62,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Mutex);
+	inline Mutex(const Mutex& to_copy) = delete;
+	inline Mutex(Mutex&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Mutex()
 	{
 		if (_self != nullptr)
 		{
 			SDL_DestroyMutex(_self);
 		}
+	}
+	inline Mutex& operator = (const Mutex& to_copy)
+		= delete;
+	inline Mutex& operator = (Mutex&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_mutex* ()
 	{
@@ -75,13 +100,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Semaphore);
+	inline Semaphore(const Semaphore& to_copy) = delete;
+	inline Semaphore(Semaphore&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Semaphore()
 	{
 		if (_self != nullptr)
 		{
 			SDL_DestroySemaphore(_self);
 		}
+	}
+	inline Semaphore& operator = (const Semaphore& to_copy)
+		= delete;
+	inline Semaphore& operator = (Semaphore&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_sem* ()
 	{

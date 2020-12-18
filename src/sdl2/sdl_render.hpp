@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_render.h>
 
@@ -23,13 +24,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Renderer);
+	inline Renderer(const Renderer& to_copy) = delete;
+	inline Renderer(Renderer&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Renderer()
 	{
 		if (_self != nullptr)
 		{
 			SDL_DestroyRenderer(_self);
 		}
+	}
+	inline Renderer& operator = (const Renderer& to_copy)
+		= delete;
+	inline Renderer& operator = (Renderer&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_Renderer* ()
 	{
@@ -49,13 +62,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Texture);
+	inline Texture(const Texture& to_copy) = delete;
+	inline Texture(Texture&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Texture()
 	{
 		if (_self != nullptr)
 		{
 			SDL_DestroyTexture(_self);
 		}
+	}
+	inline Texture& operator = (const Texture& to_copy)
+		= delete;
+	inline Texture& operator = (Texture&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_Texture* ()
 	{

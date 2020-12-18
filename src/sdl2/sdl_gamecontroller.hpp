@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_gamecontroller.h>
@@ -24,13 +25,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(GameController);
+	inline GameController(const GameController& to_copy) = delete;
+	inline GameController(GameController&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~GameController()
 	{
 		if (_self != nullptr)
 		{
 			SDL_GameControllerClose(_self);
 		}
+	}
+	inline GameController& operator = (const GameController& to_copy)
+		= delete;
+	inline GameController& operator = (GameController&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_GameController* ()
 	{

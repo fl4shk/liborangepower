@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 
 namespace liborangepower
@@ -33,13 +34,29 @@ namespace sdl
 
 class QuitUponDtor final
 {
+private:		// variables
+	bool _valid;
 public:		// functions
-	inline QuitUponDtor()
+	inline QuitUponDtor(bool s_valid=true)
+		: _valid(s_valid)
 	{
+	}
+	inline QuitUponDtor(const QuitUponDtor& to_copy) = delete;
+	inline QuitUponDtor(QuitUponDtor&& to_move)
+	{
+		*this = std::move(to_move);
 	}
 	inline ~QuitUponDtor()
 	{
 		SDL_Quit();
+	}
+	inline QuitUponDtor& operator = (const QuitUponDtor& to_copy)
+		= delete;
+	inline QuitUponDtor& operator = (QuitUponDtor&& to_move)
+	{
+		std::swap(_valid, to_move._valid);
+
+		return *this;
 	}
 };
 

@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_surface.h>
 
@@ -23,13 +24,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Surface);
+	inline Surface(const Surface& to_copy) = delete;
+	inline Surface(Surface&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Surface()
 	{
 		if (_self != nullptr)
 		{
 			SDL_FreeSurface(_self);
 		}
+	}
+	inline Surface& operator = (const Surface& to_copy)
+		= delete;
+	inline Surface& operator = (Surface&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_Surface* ()
 	{

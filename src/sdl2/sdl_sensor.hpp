@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_sensor.h>
 
@@ -23,13 +24,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Sensor);
+	inline Sensor(const Sensor& to_copy) = delete;
+	inline Sensor(Sensor&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Sensor()
 	{
 		if (_self != nullptr)
 		{
 			SDL_SensorClose(_self);
 		}
+	}
+	inline Sensor& operator = (const Sensor& to_copy)
+		= delete;
+	inline Sensor& operator = (Sensor&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_Sensor* ()
 	{

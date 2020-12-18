@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 
@@ -23,13 +24,25 @@ public:		// functions
 		: _self(s_self)
 	{
 	}
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Window);
+	inline Window(const Window& to_copy) = delete;
+	inline Window(Window&& to_move)
+	{
+		*this = std::move(to_move);
+	}
 	inline ~Window()
 	{
 		if (_self != nullptr)
 		{
 			SDL_DestroyWindow(_self);
 		}
+	}
+	inline Window& operator = (const Window& to_copy)
+		= delete;
+	inline Window& operator = (Window&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
 	}
 	inline operator SDL_Window* ()
 	{
