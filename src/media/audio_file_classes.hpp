@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_types.hpp"
 #include "../misc/memwhatever_wrappers.hpp"
+#include "../misc/byte_vec_accessors.hpp"
 #include "../gen_class_innards_defines.hpp"
 
 namespace liborangepower
