@@ -119,6 +119,44 @@ public:		// functions
 	GEN_GETTER_BY_REF(dev);
 };
 
+class AudioStream final
+{
+private:		// variables
+	SDL_AudioStream* _self = nullptr;
+
+public:		// functions
+	inline AudioStream(SDL_AudioStream* s_self)
+		: _self(s_self)
+	{
+	}
+	inline AudioStream(const AudioStream& to_copy) = delete;
+	inline AudioStream(AudioStream&& to_move)
+	{
+		*this = std::move(to_move);
+	}
+	inline ~AudioStream()
+	{
+		if (_self != nullptr)
+		{
+			SDL_FreeAudioStream(_self);
+		}
+	}
+	inline AudioStream& operator = (const AudioStream& to_copy)
+		= delete;
+	inline AudioStream& operator = (AudioStream&& to_move)
+	{
+		std::swap(_self, to_move._self);
+
+		return *this;
+	}
+	inline operator SDL_AudioStream* ()
+	{
+		return _self;
+	}
+
+	GEN_GETTER_BY_REF(self);
+};
+
 } // namespace sdl
 
 } // namespace liborangepower
