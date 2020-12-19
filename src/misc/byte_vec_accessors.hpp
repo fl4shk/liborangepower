@@ -64,11 +64,12 @@ inline void byte_vec_set_u16_le(std::vector<u8>& byte_vec, size_t index,
 }
 inline void byte_vec_push_back_u16_le(std::vector<u8>& byte_vec, u16 n_val)
 {
-	for (size_t i=0; i<sizeof(n_val); ++i)
+	size_t i;
+	for (i=0; i<sizeof(n_val); ++i)
 	{
 		byte_vec.push_back(0x00);
 	}
-	byte_vec_set_u16_le(byte_vec, index, n_val);
+	byte_vec_set_u16_le(byte_vec, i, n_val);
 }
 
 inline i16 byte_vec_get_i16_le(const std::vector<u8>& byte_vec,
@@ -86,11 +87,12 @@ inline void byte_vec_set_i16_le(std::vector<u8>& byte_vec, size_t index,
 }
 inline void byte_vec_push_back_i16_le(std::vector<u8>& byte_vec, i16 n_val)
 {
-	for (size_t i=0; i<sizeof(n_val); ++i)
+	size_t i;
+	for (i=0; i<sizeof(n_val); ++i)
 	{
 		byte_vec.push_back(0x00);
 	}
-	byte_vec_set_i16_le(byte_vec, index, n_val);
+	byte_vec_set_i16_le(byte_vec, i, n_val);
 }
 
 inline u32 byte_vec_get_u32_le(const std::vector<u8>& byte_vec,
@@ -112,11 +114,12 @@ inline void byte_vec_set_u32_le(std::vector<u8>& byte_vec, size_t index,
 }
 inline void byte_vec_push_back_u32_le(std::vector<u8>& byte_vec, u32 n_val)
 {
-	for (size_t i=0; i<sizeof(n_val); ++i)
+	size_t i;
+	for (i=0; i<sizeof(n_val); ++i)
 	{
 		byte_vec.push_back(0x00);
 	}
-	byte_vec_set_u32_le(byte_vec, index, n_val);
+	byte_vec_set_u32_le(byte_vec, i, n_val);
 }
 
 inline i32 byte_vec_get_i32_le(const std::vector<u8>& byte_vec,
@@ -138,11 +141,12 @@ inline void byte_vec_set_i32_le(std::vector<u8>& byte_vec, size_t index,
 }
 inline void byte_vec_push_back_i32_le(std::vector<u8>& byte_vec, i32 n_val)
 {
-	for (size_t i=0; i<sizeof(n_val); ++i)
+	size_t i;
+	for (i=0; i<sizeof(n_val); ++i)
 	{
 		byte_vec.push_back(0x00);
 	}
-	byte_vec_set_i32_le(byte_vec, index, n_val);
+	byte_vec_set_i32_le(byte_vec, i, n_val);
 }
 
 
@@ -173,11 +177,12 @@ inline void byte_vec_set_u64_le(std::vector<u8>& byte_vec, size_t index,
 }
 inline void byte_vec_push_back_u64_le(std::vector<u8>& byte_vec, u64 n_val)
 {
-	for (size_t i=0; i<sizeof(n_val); ++i)
+	size_t i;
+	for (i=0; i<sizeof(n_val); ++i)
 	{
 		byte_vec.push_back(0x00);
 	}
-	byte_vec_set_u64_le(byte_vec, index, n_val);
+	byte_vec_set_u64_le(byte_vec, i, n_val);
 }
 
 
@@ -208,11 +213,12 @@ inline void byte_vec_set_i64_le(std::vector<u8>& byte_vec, size_t index,
 }
 inline void byte_vec_push_back_i64_le(std::vector<u8>& byte_vec, i64 n_val)
 {
-	for (size_t i=0; i<sizeof(n_val); ++i)
+	size_t i;
+	for (i=0; i<sizeof(n_val); ++i)
 	{
 		byte_vec.push_back(0x00);
 	}
-	byte_vec_set_i64_le(byte_vec, index, n_val);
+	byte_vec_set_i64_le(byte_vec, i, n_val);
 }
 
 } // namespace misc_util
