@@ -7,6 +7,8 @@
 #include "../misc/byte_vec_accessors.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <fstream>
+
 namespace liborangepower
 {
 
@@ -197,6 +199,33 @@ public:		// functions
 		//--------
 
 		return ret;
+	}
+
+	// Returns whether or not writing the file succeeded
+	inline bool write_to_file(const std::string& filename) const
+	{
+		if (auto file = std::fstream(filename, 
+			(std::ios_base::binary 
+				| std::ios_base::out
+				| std::ios_base::trunc));
+			file.is_open())
+		{
+			auto vec = as_u8_vec();
+
+			for (const auto& item: vec)
+			{
+				file.put(static_cast<char>(item));
+			}
+
+			return true;
+		}
+		else
+		{
+			//printerr("Error:  Couldn't open \"", filename,
+			//	"\" for writing.\n");
+			//exit(1);
+			return false;
+		}
 	}
 
 	GEN_GETTER_BY_VAL(sample_rate);
