@@ -161,10 +161,7 @@ public:		// functions
 
 		//--------
 		// The `data` chunk
-		ret.push_back('d');
-		ret.push_back('a');
-		ret.push_back('t');
-		ret.push_back('a');
+		byte_vec_push_back_string(ret, "data", false);
 
 		byte_vec_push_back_u32_le(ret, (sample_vec.size() * sizeof(u8)));
 
