@@ -14,6 +14,7 @@ namespace media
 {
 
 using namespace integer_types;
+using namespace misc_util;
 
 class Wav
 {
@@ -44,13 +45,15 @@ public:		// functions
 	}
 	inline Wav(bool s_stereo, u32 s_sample_rate, 
 		bool s_sixteen_bits_per_sample, const SampleVec& s_sample_vec)
-		: Wav(s_stereo, s_sample_rate, s_sixteen_bits_per_sample),
+		: _stereo(s_stereo), _sample_rate(s_sample_rate),
+		_sixteen_bits_per_sample(s_sixteen_bits_per_sample),
 		_sample_vec(s_sample_vec)
 	{
 	}
 	inline Wav(bool s_stereo, u32 s_sample_rate, 
 		bool s_sixteen_bits_per_sample, SampleVec&& s_sample_vec)
-		: Wav(s_stereo, s_sample_rate, s_sixteen_bits_per_sample),
+		: _stereo(s_stereo), _sample_rate(s_sample_rate),
+		_sixteen_bits_per_sample(s_sixteen_bits_per_sample),
 		_sample_vec(std::move(s_sample_vec))
 	{
 	}
