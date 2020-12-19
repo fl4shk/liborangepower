@@ -62,7 +62,7 @@ public:		// functions
 
 	inline u32 file_length_minus_8() const
 	{
-		return ((HEADER_LENGTH + _sample_vec.size()) - 8);
+		return ((HEADER_LENGTH + sample_vec().size()) - 8);
 	}
 
 	inline u16 channels() const
@@ -115,7 +115,7 @@ public:		// functions
 	inline i16 stereo_i16_sample(size_t index, bool channel) const
 	{
 		//return _sample_vec.at((index * 2) + (channel ? 1 : 0));
-		return mono_i16_sample
+		return mono_i16_sample((index * 2) + (channel ? 1 : 0));
 	}
 	inline void set_stereo_i16_sampe(size_t index, bool channel,
 		i16 n_sample)
@@ -168,7 +168,7 @@ public:		// functions
 		// The `data` chunk
 		byte_vec_push_back_string(ret, "data", false);
 
-		byte_vec_push_back_u32_le(ret, (sample_vec.size() * sizeof(u8)));
+		byte_vec_push_back_u32_le(ret, (sample_vec().size() * sizeof(u8)));
 
 		for (const auto& item: sample_vec())
 		{
