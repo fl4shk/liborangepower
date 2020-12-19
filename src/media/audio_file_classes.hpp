@@ -86,7 +86,7 @@ public:		// functions
 	{
 		return _sample_vec.at(index);
 	}
-	inline void set_mono_u8(size_t index, u8 n_sample)
+	inline void set_mono_u8_sample(size_t index, u8 n_sample)
 	{
 		_sample_vec.at(index) = n_sample;
 	}
