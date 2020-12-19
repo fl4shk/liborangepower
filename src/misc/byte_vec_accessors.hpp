@@ -10,6 +10,8 @@ namespace liborangepower
 namespace misc_util
 {
 
+using namespace integer_types;
+
 inline std::string byte_vec_get_string(const std::vector<u8>& byte_vec,
 	size_t index, size_t len)
 {

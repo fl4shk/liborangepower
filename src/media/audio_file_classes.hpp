@@ -13,6 +13,8 @@ namespace liborangepower
 namespace media
 {
 
+using namespace integer_types;
+
 class Wav
 {
 public:		// constants
