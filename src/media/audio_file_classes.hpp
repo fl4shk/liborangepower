@@ -90,6 +90,10 @@ public:		// functions
 	{
 		_sample_vec.at(index) = n_sample;
 	}
+	inline void push_back_mono_u8_sample(u8 n_sample)
+	{
+		_sample_vec.push_back(n_sample);
+	}
 
 	inline i16 mono_i16_sample(size_t index) const
 	{
@@ -101,6 +105,10 @@ public:		// functions
 		// Little endian
 		byte_vec_set_i16_le(_sample_vec, index, n_sample);
 	}
+	inline void push_back_mono_i16_sample(i16 n_sample)
+	{
+		byte_vec_push_back_i16_le(_sample_vec, n_sample);
+	}
 
 	inline u8 stereo_u8_sample(size_t index, bool channel) const
 	{
@@ -110,6 +118,12 @@ public:		// functions
 		u8 n_sample)
 	{
 		_sample_vec.at((index * 2) + (channel ? 1 : 0)) = n_sample;
+	}
+	inline void push_back_stereo_u8_sample_pair(u8 n_sample_0,
+		u8 n_sample_1)
+	{
+		_sample_vec.push_back(n_sample_0);
+		_sample_vec.push_back(n_sample_1);
 	}
 
 	inline i16 stereo_i16_sample(size_t index, bool channel) const
@@ -121,6 +135,12 @@ public:		// functions
 		i16 n_sample)
 	{
 		set_mono_i16_sample(((index * 2) + (channel ? 1 : 0)), n_sample);
+	}
+	inline void push_back_stereo_i16_sample_pair(i16 n_sample_0,
+		i16 n_sample_1)
+	{
+		byte_vec_push_back_i16_le(_sample_vec, n_sample_0);
+		byte_vec_push_back_i16_le(_sample_vec, n_sample_1);
 	}
 
 	inline std::vector<u8> as_u8_vec() const
