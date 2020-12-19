@@ -34,21 +34,26 @@ protected:		// variables
 	SampleVec _sample_vec;
 
 public:		// functions
-	inline Wav(bool s_stereo, u32 s_sample_rate, 
-		bool s_sixteen_bits_per_sample,
-		const SampleVec& s_sample_vec)
+	inline Wav(bool s_stereo, u32 s_sample_rate,
+		bool s_sixteen_bits_per_sample)
 		: _stereo(s_stereo), _sample_rate(s_sample_rate),
-		_sixteen_bits_per_sample(s_sixteen_bits_per_sample),
+		_sixteen_bits_per_sample(s_sixteen_bits_per_sample)
+	{
+	}
+	inline Wav(bool s_stereo, u32 s_sample_rate, 
+		bool s_sixteen_bits_per_sample, const SampleVec& s_sample_vec)
+		: Wav(s_stereo, s_sample_rate, s_sixteen_bits_per_sample),
 		_sample_vec(s_sample_vec)
 	{
 	}
-	inline Wav(bool s_stereo, u32 s_sample_rate,
+	inline Wav(bool s_stereo, u32 s_sample_rate, 
 		bool s_sixteen_bits_per_sample, SampleVec&& s_sample_vec)
-		: _stereo(s_stereo), _sample_rate(s_sample_rate),
-		_sixteen_bits_per_sample(s_sixteen_bits_per_sample),
+		: Wav(s_stereo, s_sample_rate, s_sixteen_bits_per_sample),
 		_sample_vec(std::move(s_sample_vec))
 	{
 	}
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Wav);
+	virtual inline ~Wav() = default;
 
 	inline u32 file_length_minus_8() const
 	{
@@ -174,6 +179,8 @@ public:		// functions
 
 	GEN_GETTER_BY_VAL(sample_rate);
 	GEN_GETTER_BY_CON_REF(sample_vec);
+	GEN_SETTER_BY_CON_REF(sample_vec);
+	GEN_SETTER_BY_RVAL_REF(sample_vec);
 };
 
 } // namespace media
