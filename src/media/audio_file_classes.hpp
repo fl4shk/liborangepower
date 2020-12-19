@@ -15,7 +15,7 @@ namespace media
 class Wav
 {
 public:		// constants
-	static constexpr size_t HEADER_SIZE = 44;
+	static constexpr size_t HEADER_LENGTH = 44;
 	static constexpr u32 DEFAULT_SAMPLE_RATE = 44100;
 
 public:		// types
@@ -51,7 +51,7 @@ public:		// functions
 
 	inline u32 file_length_minus_8() const
 	{
-		return (HEADER_SIZE + _sample_vec.size());
+		return ((HEADER_LENGTH + _sample_vec.size()) - 8);
 	}
 
 	inline u16 channels() const
@@ -118,63 +118,38 @@ public:		// functions
 
 		//--------
 		// RIFF header
-		ret.push_back('R');
-		ret.push_back('I');
-		ret.push_back('F');
-		ret.push_back('F');
+		byte_vec_push_back_string(ret, "RIFF", false);
 
-		ret.push_back((file_length_minus_8() >> 0) & 0xff);
-		ret.push_back((file_length_minus_8() >> 8) & 0xff);
-		ret.push_back((file_length_minus_8() >> 16) & 0xff);
-		ret.push_back((file_length_minus_8() >> 24) & 0xff);
+		byte_vec_push_back_u32_le(ret, file_length_minus_8());
 
-		ret.push_back('W');
-		ret.push_back('A');
-		ret.push_back('V');
-		ret.push_back('E');
+		byte_vec_push_back_string(ret, "WAVE", false);
 		//--------
 
 
 		//--------
 		// The `fmt` chunk
-		ret.push_back('f');
-		ret.push_back('m');
-		ret.push_back('t');
-		ret.push_back(' ');
+		byte_vec_push_back_string(ret, "fmt ", false);
 
 		// Length of the `fmt` data (16 bytes)
-		ret.push_back(0x10);
-		ret.push_back(0x00);
-		ret.push_back(0x00);
-		ret.push_back(0x00);
+		byte_vec_push_back_u32_le(ret, 0x00000010);
 
 		// Format tag:  1 = PCM
-		ret.push_back(0x01);
-		ret.push_back(0x00);
+		byte_vec_push_back_u16_le(ret, 0x0001);
 
 		// Channels:  1 = mono, 2 = stereo
-		ret.push_back((channels() >> 0) & 0xff);
-		ret.push_back((channels() >> 8) & 0xff);
+		byte_vec_push_back_u16_le(ret, channels());
 
 		// Samples per second
-		ret.push_back((sample_rate() >> 0) & 0xff);
-		ret.push_back((sample_rate() >> 8) & 0xff);
-		ret.push_back((sample_rate() >> 16) & 0xff);
-		ret.push_back((sample_rate() >> 24) & 0xff);
+		byte_vec_push_back_u32_le(ret, sample_rate());
 
 		// bytes/second
-		ret.push_back((bytes_per_second() >> 0) & 0xff);
-		ret.push_back((bytes_per_second() >> 8) & 0xff);
-		ret.push_back((bytes_per_second() >> 16) & 0xff);
-		ret.push_back((bytes_per_second() >> 24) & 0xff);
+		byte_vec_push_back_u32_le(ret, bytes_per_second());
 
 		// block align
-		ret.push_back((block_align() >> 0) & 0xff);
-		ret.push_back((block_align() >> 8) & 0xff);
+		byte_vec_push_back_u16_le(ret, block_align());
 
 		// bits/sample
-		ret.push_back((bits_per_sample() >> 0) & 0xff);
-		ret.push_back((bits_per_sample() >> 8) & 0xff);
+		byte_vec_push_back_u16_le(ret, bits_per_sample());
 		//--------
 
 
@@ -185,11 +160,7 @@ public:		// functions
 		ret.push_back('t');
 		ret.push_back('a');
 
-		const auto DATA_BLOCK_LENGTH = (sample_vec().size() * sizeof(u8);
-		ret.push_back((DATA_BLOCK_LENGTH >> 0) & 0xff);
-		ret.push_back((DATA_BLOCK_LENGTH >> 8) & 0xff);
-		ret.push_back((DATA_BLOCK_LENGTH >> 16) & 0xff);
-		ret.push_back((DATA_BLOCK_LENGTH >> 24) & 0xff);
+		byte_vec_push_back_u32_le(ret, (sample_vec.size() * sizeof(u8)));
 
 		for (const auto& item: sample_vec())
 		{
