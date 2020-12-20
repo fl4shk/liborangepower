@@ -100,16 +100,16 @@ public:		// functions
 	inline i16 mono_i16_sample(size_t index) const
 	{
 		// WAV files encode data as little endian
-		return byte_vec_get_i16_le(_sample_vec, index);
+		return get_i16_le(_sample_vec, index);
 	}
 	inline void set_mono_i16_sample(size_t index, i16 n_sample)
 	{
 		// Little endian
-		byte_vec_set_i16_le(_sample_vec, index, n_sample);
+		set_i16_le(_sample_vec, index, n_sample);
 	}
 	inline void push_back_mono_i16_sample(i16 n_sample)
 	{
-		byte_vec_push_back_i16_le(_sample_vec, n_sample);
+		push_back_i16_le(_sample_vec, n_sample);
 	}
 
 	inline u8 stereo_u8_sample(size_t index, bool channel) const
@@ -141,8 +141,8 @@ public:		// functions
 	inline void push_back_stereo_i16_sample_pair(i16 n_sample_0,
 		i16 n_sample_1)
 	{
-		byte_vec_push_back_i16_le(_sample_vec, n_sample_0);
-		byte_vec_push_back_i16_le(_sample_vec, n_sample_1);
+		push_back_i16_le(_sample_vec, n_sample_0);
+		push_back_i16_le(_sample_vec, n_sample_1);
 	}
 
 	inline std::vector<u8> as_u8_vec() const
@@ -151,46 +151,46 @@ public:		// functions
 
 		//--------
 		// RIFF header
-		byte_vec_push_back_string(ret, "RIFF", false);
+		push_back_string(ret, "RIFF", false);
 
-		byte_vec_push_back_u32_le(ret, file_length_minus_8());
+		push_back_u32_le(ret, file_length_minus_8());
 
-		byte_vec_push_back_string(ret, "WAVE", false);
+		push_back_string(ret, "WAVE", false);
 		//--------
 
 
 		//--------
 		// The `fmt` chunk
-		byte_vec_push_back_string(ret, "fmt ", false);
+		push_back_string(ret, "fmt ", false);
 
 		// Length of the `fmt` data (16 bytes)
-		byte_vec_push_back_u32_le(ret, 0x00000010);
+		push_back_u32_le(ret, 0x00000010);
 
 		// Format tag:  1 = PCM
-		byte_vec_push_back_u16_le(ret, 0x0001);
+		push_back_u16_le(ret, 0x0001);
 
 		// Channels:  1 = mono, 2 = stereo
-		byte_vec_push_back_u16_le(ret, channels());
+		push_back_u16_le(ret, channels());
 
 		// Samples per second
-		byte_vec_push_back_u32_le(ret, sample_rate());
+		push_back_u32_le(ret, sample_rate());
 
 		// bytes/second
-		byte_vec_push_back_u32_le(ret, bytes_per_second());
+		push_back_u32_le(ret, bytes_per_second());
 
 		// block align
-		byte_vec_push_back_u16_le(ret, block_align());
+		push_back_u16_le(ret, block_align());
 
 		// bits/sample
-		byte_vec_push_back_u16_le(ret, bits_per_sample());
+		push_back_u16_le(ret, bits_per_sample());
 		//--------
 
 
 		//--------
 		// The `data` chunk
-		byte_vec_push_back_string(ret, "data", false);
+		push_back_string(ret, "data", false);
 
-		byte_vec_push_back_u32_le(ret, (sample_vec().size() * sizeof(u8)));
+		push_back_u32_le(ret, (sample_vec().size() * sizeof(u8)));
 
 		for (const auto& item: sample_vec())
 		{
