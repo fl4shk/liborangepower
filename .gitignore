@@ -8,8 +8,8 @@ objs_debug/*
 objs_dis_debug/*
 asmouts_debug/*
 preprocs_debug/*
-liborangepower
-liborangepower_debug
+#liborangepower
+#liborangepower_debug
 testing/*/deps/*
 testing/*/objs/*
 testing/*/objs_dis/*
