@@ -21,7 +21,7 @@ private:		// variables
 	SDL_GameController* _self = nullptr;
 
 public:		// functions
-	inline GameController(SDL_GameController* s_self)
+	inline GameController(SDL_GameController* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

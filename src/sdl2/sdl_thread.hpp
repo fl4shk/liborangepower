@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Thread* _self = nullptr;
 
 public:		// functions
-	inline Thread(SDL_Thread* s_self)
+	inline Thread(SDL_Thread* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

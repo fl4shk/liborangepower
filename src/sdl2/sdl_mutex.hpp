@@ -20,7 +20,7 @@ private:		// variables
 	SDL_cond* _self = nullptr;
 
 public:		// functions
-	inline Cond(SDL_cond* s_self)
+	inline Cond(SDL_cond* s_self=nullptr)
 		: _self(s_self)
 	{
 	}
@@ -58,7 +58,7 @@ private:		// variables
 	SDL_mutex* _self = nullptr;
 
 public:		// functions
-	inline Mutex(SDL_mutex* s_self)
+	inline Mutex(SDL_mutex* s_self=nullptr)
 		: _self(s_self)
 	{
 	}
@@ -96,7 +96,7 @@ private:		// variables
 	SDL_sem* _self = nullptr;
 
 public:		// functions
-	inline Semaphore(SDL_sem* s_self)
+	inline Semaphore(SDL_sem* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

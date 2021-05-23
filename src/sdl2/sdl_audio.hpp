@@ -125,7 +125,7 @@ private:		// variables
 	SDL_AudioStream* _self = nullptr;
 
 public:		// functions
-	inline AudioStream(SDL_AudioStream* s_self)
+	inline AudioStream(SDL_AudioStream* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

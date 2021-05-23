@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Surface* _self = nullptr;
 
 public:		// functions
-	inline Surface(SDL_Surface* s_self)
+	inline Surface(SDL_Surface* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

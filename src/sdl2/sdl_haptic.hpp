@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Haptic* _self = nullptr;
 
 public:		// functions
-	inline Haptic(SDL_Haptic* s_self)
+	inline Haptic(SDL_Haptic* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

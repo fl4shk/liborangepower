@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Cursor* _self = nullptr;
 
 public:		// functions
-	inline Cursor(SDL_Cursor* s_self)
+	inline Cursor(SDL_Cursor* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

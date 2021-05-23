@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Renderer* _self = nullptr;
 
 public:		// functions
-	inline Renderer(SDL_Renderer* s_self)
+	inline Renderer(SDL_Renderer* s_self=nullptr)
 		: _self(s_self)
 	{
 	}
@@ -58,7 +58,7 @@ private:		// variables
 	SDL_Texture* _self = nullptr;
 
 public:		// functions
-	inline Texture(SDL_Texture* s_self)
+	inline Texture(SDL_Texture* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

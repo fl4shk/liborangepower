@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Window* _self = nullptr;
 
 public:		// functions
-	inline Window(SDL_Window* s_self)
+	inline Window(SDL_Window* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

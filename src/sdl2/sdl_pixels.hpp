@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Palette* _self = nullptr;
 
 public:		// functions
-	inline Palette(SDL_Palette* s_self)
+	inline Palette(SDL_Palette* s_self=nullptr)
 		: _self(s_self)
 	{
 	}
@@ -58,7 +58,7 @@ private:		// variables
 	SDL_PixelFormat* _self = nullptr;
 
 public:		// functions
-	inline PixelFormat(SDL_PixelFormat* s_self)
+	inline PixelFormat(SDL_PixelFormat* s_self=nullptr)
 		: _self(s_self)
 	{
 	}

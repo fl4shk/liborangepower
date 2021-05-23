@@ -20,7 +20,7 @@ private:		// variables
 	SDL_Sensor* _self = nullptr;
 
 public:		// functions
-	inline Sensor(SDL_Sensor* s_self)
+	inline Sensor(SDL_Sensor* s_self=nullptr)
 		: _self(s_self)
 	{
 	}
