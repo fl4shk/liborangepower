@@ -9,7 +9,7 @@ namespace liborangepower
 namespace sdl
 {
 
-void prevent_dpi_scaling_issues()
+inline void prevent_dpi_scaling_issues()
 {
 	#ifdef __WIN32__
 		//On Vista or newer windows, let the OS know we are DPI aware, so we
