@@ -1,6 +1,7 @@
 #ifndef liborangepower_sdl2_dpi_stuff_hpp
 #define liborangepower_sdl2_dpi_stuff_hpp
 
+#include "sdl.hpp"
 
 namespace liborangepower
 {
@@ -8,7 +9,7 @@ namespace liborangepower
 namespace sdl
 {
 
-void handle_dpi()
+void prevent_dpi_scaling_issues()
 {
 	#ifdef __WIN32__
 		//On Vista or newer windows, let the OS know we are DPI aware, so we
