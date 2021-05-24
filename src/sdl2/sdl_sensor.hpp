@@ -48,6 +48,10 @@ public:		// functions
 	{
 		return _self;
 	}
+	inline operator -> ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };

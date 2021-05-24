@@ -48,6 +48,10 @@ public:		// functions
 	{
 		return _self;
 	}
+	inline operator -> ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };
@@ -86,6 +90,10 @@ public:		// functions
 	{
 		return _self;
 	}
+	inline operator -> ()
+	{
+		return _self;
+	}
 
 	GEN_GETTER_BY_REF(self);
 };
@@ -121,6 +129,10 @@ public:		// functions
 		return *this;
 	}
 	inline operator SDL_sem* ()
+	{
+		return _self;
+	}
+	inline operator -> ()
 	{
 		return _self;
 	}
