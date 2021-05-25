@@ -34,7 +34,15 @@ public:		// functions
 
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Point);
 
+	inline operator const SDL_Point* () const
+	{
+		return &_self;
+	}
 	inline operator SDL_Point* ()
+	{
+		return &_self;
+	}
+	inline const SDL_Point* operator -> () const
 	{
 		return &_self;
 	}
@@ -65,7 +73,15 @@ public:		// functions
 
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(FPoint);
 
+	inline operator const SDL_FPoint* () const
+	{
+		return &_self;
+	}
 	inline operator SDL_FPoint* ()
+	{
+		return &_self;
+	}
+	inline const SDL_FPoint* operator -> () const
 	{
 		return &_self;
 	}
@@ -98,7 +114,15 @@ public:		// functions
 
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Rect);
 
+	inline operator const SDL_Rect* () const
+	{
+		return &_self;
+	}
 	inline operator SDL_Rect* ()
+	{
+		return &_self;
+	}
+	inline const SDL_Rect* operator -> () const
 	{
 		return &_self;
 	}
@@ -131,7 +155,15 @@ public:		// functions
 
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(FRect);
 
+	inline operator const SDL_FRect* () const
+	{
+		return &_self;
+	}
 	inline operator SDL_FRect* ()
+	{
+		return &_self;
+	}
+	inline const SDL_FRect* operator -> () const
 	{
 		return &_self;
 	}
