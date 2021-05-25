@@ -5,8 +5,8 @@
 #include "../gen_class_innards_defines.hpp"
 
 #include <algorithm>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_pixels.h>
+#include <SDL.h>
+#include <SDL_pixels.h>
 
 namespace liborangepower
 {

@@ -5,9 +5,9 @@
 #include "../gen_class_innards_defines.hpp"
 
 #include <algorithm>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_joystick.h>
-#include <SDL2/SDL_gamecontroller.h>
+#include <SDL.h>
+#include <SDL_joystick.h>
+#include <SDL_gamecontroller.h>
 
 namespace liborangepower
 {

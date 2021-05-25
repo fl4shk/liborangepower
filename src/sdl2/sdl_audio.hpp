@@ -6,8 +6,8 @@
 #include "../misc/memwhatever_wrappers.hpp"
 
 #include <algorithm>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_audio.h>
+#include <SDL.h>
+#include <SDL_audio.h>
 
 namespace liborangepower
 {
