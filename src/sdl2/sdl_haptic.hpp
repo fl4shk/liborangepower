@@ -48,7 +48,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_Haptic* operator -> ()
 	{
 		return _self;
 	}

@@ -48,7 +48,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_Cond* operator -> ()
 	{
 		return _self;
 	}
@@ -90,7 +90,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_mutex* operator -> ()
 	{
 		return _self;
 	}
@@ -132,7 +132,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_sem* operator -> ()
 	{
 		return _self;
 	}

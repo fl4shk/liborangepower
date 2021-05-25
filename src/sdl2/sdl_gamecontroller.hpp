@@ -49,7 +49,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_GameController* operator -> ()
 	{
 		return _self;
 	}

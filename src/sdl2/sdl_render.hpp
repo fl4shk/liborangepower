@@ -48,7 +48,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_Renderer* operator -> ()
 	{
 		return _self;
 	}
@@ -90,7 +90,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_Texture* operator -> ()
 	{
 		return _self;
 	}

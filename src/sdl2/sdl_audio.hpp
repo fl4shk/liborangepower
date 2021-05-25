@@ -153,7 +153,7 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline operator -> ()
+	inline SDL_AudioStream* operator -> ()
 	{
 		return _self;
 	}
