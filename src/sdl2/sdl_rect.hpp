@@ -1,5 +1,5 @@
-#ifndef liborangepower_sdl2_sdl_render_hpp
-#define liborangepower_sdl2_sdl_render_hpp
+#ifndef liborangepower_sdl2_sdl_rect_hpp
+#define liborangepower_sdl2_sdl_rect_hpp
 
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
@@ -41,3 +41,5 @@ public:		// functions
 } // namespace sdl
 
 } // namespace liborangepower
+
+#endif		// liborangepower_sdl2_sdl_rect_hpp
