@@ -44,6 +44,10 @@ public:		// functions
 
 		return *this;
 	}
+	inline bool operator ! () const
+	{
+		return (!_self);
+	}
 	inline operator SDL_Renderer* ()
 	{
 		return _self;
@@ -85,6 +89,10 @@ public:		// functions
 		std::swap(_self, to_move._self);
 
 		return *this;
+	}
+	inline bool operator ! () const
+	{
+		return (!_self);
 	}
 	inline operator SDL_Texture* ()
 	{

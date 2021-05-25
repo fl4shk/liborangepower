@@ -44,6 +44,10 @@ public:		// functions
 
 		return *this;
 	}
+	inline bool operator ! () const
+	{
+		return (!_self);
+	}
 	inline operator SDL_cond* ()
 	{
 		return _self;
@@ -86,6 +90,10 @@ public:		// functions
 
 		return *this;
 	}
+	inline bool operator ! () const
+	{
+		return (!_self);
+	}
 	inline operator SDL_mutex* ()
 	{
 		return _self;
@@ -127,6 +135,10 @@ public:		// functions
 		std::swap(_self, to_move._self);
 
 		return *this;
+	}
+	inline bool operator ! () const
+	{
+		return (!_self);
 	}
 	inline operator SDL_sem* ()
 	{

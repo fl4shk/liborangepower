@@ -44,6 +44,10 @@ public:		// functions
 
 		return *this;
 	}
+	inline bool operator ! () const
+	{
+		return (!_self);
+	}
 	inline operator SDL_Surface* ()
 	{
 		return _self;
