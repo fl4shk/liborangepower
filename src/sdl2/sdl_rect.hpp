@@ -42,7 +42,7 @@ public:		// functions
 	{
 		return &_self;
 	}
-	GEN_GETTER_BY_REF(self);
+	GEN_GETTERS_BY_CON_REF_AND_REF(self);
 };
 
 class FPoint final
@@ -73,7 +73,7 @@ public:		// functions
 	{
 		return &_self;
 	}
-	GEN_GETTER_BY_REF(self);
+	GEN_GETTERS_BY_CON_REF_AND_REF(self);
 };
 
 class Rect final
@@ -106,7 +106,7 @@ public:		// functions
 	{
 		return &_self;
 	}
-	GEN_GETTER_BY_REF(self);
+	GEN_GETTERS_BY_CON_REF_AND_REF(self);
 };
 
 class FRect final
@@ -139,7 +139,7 @@ public:		// functions
 	{
 		return &_self;
 	}
-	GEN_GETTER_BY_REF(self);
+	GEN_GETTERS_BY_CON_REF_AND_REF(self);
 };
 
 } // namespace sdl
