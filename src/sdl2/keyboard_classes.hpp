@@ -46,8 +46,7 @@ namespace sdl
 		}
 		inline KeyStatus(SDL_Keycode s_sym, Uint16 s_mod,
 			bool s_down=false)
-			: _sym(s_sym_mod_pair.sym()), _mod(s_sym_mod_pair.mod()),
-			_down(s_down)
+			: _sym_mod_pair(s_sym, s_mod), _down(s_down)
 		{
 		}
 		inline ~KeyStatus() = default;
