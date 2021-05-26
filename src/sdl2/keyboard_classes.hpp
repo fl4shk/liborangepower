@@ -4,13 +4,15 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include <functional>
+
 #include <SDL.h>
 #include <SDL_keyboard.h>
 
 namespace liborangepower
 {
 
-namespace sdl2
+namespace sdl
 {
 	class KeycModPair final
 	{
@@ -29,6 +31,7 @@ namespace sdl2
 		GEN_GETTER_AND_SETTER_BY_VAL(sym);
 		GEN_GETTER_AND_SETTER_BY_VAL(mod);
 	};
+
 	class KeyStatus final
 	{
 	private:		// variables
@@ -72,5 +75,33 @@ namespace sdl2
 } // namespace sdl2
 
 } // namespace liborangepower
+
+namespace std
+{
+	template<>
+	struct hash<liborangepower::sdl::KeycModPair>
+	{
+		std::size_t operator () 
+			(const liborangepower::sdl::KeycModPair& kmp) const noexcept
+		{
+			std::size_t h0 = std::hash<SDL_Keycode>{}(kmp.sym());
+			std::size_t h1 = std::hash<Uint16>{}(kmp.mod());
+			return (h0 ^ (h1 << static_cast<std::size_t>(1)));
+		}
+	};
+
+	template<>
+	struct hash<liborangepower::sdl::KeyStatus>
+	{
+		std::size_t operator ()
+			(const liborangepower::sdl::KeyStatus& ks) const noexcept
+		{
+			std::size_t h0 = std::hash<liborangepower::sdl::KeycModPair>{}
+				(ks.sym_mod_pair());
+			std::size_t h1 = std::hash<bool>{}(ks.down());
+			return (h0 ^ (h1 << static_cast<std::size_t>(1)));
+		}
+	};
+} // namespace std
 
 #endif		// liborangepower_sdl2_keyboard_classes_hpp
