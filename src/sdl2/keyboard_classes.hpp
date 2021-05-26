@@ -28,6 +28,22 @@ namespace sdl
 		inline ~KeycModPair() = default;
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(KeycModPair);
 
+		inline bool operator < (const KeycModPair& to_cmp) const
+		{
+			if (_sym < to_cmp._sym)
+			{
+				return true;
+			}
+			else if (_sym == to_cmp._sym)
+			{
+				return (_mod < to_cmp._mod);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		GEN_GETTER_AND_SETTER_BY_VAL(sym);
 		GEN_GETTER_AND_SETTER_BY_VAL(mod);
 	};
@@ -35,40 +51,56 @@ namespace sdl
 	class KeyStatus final
 	{
 	private:		// variables
-		KeycModPair _sym_mod_pair;
+		KeycModPair _kmp;
 		bool _down = false;
 	public:		// functions
 		inline KeyStatus() = default;
-		inline KeyStatus(const KeycModPair& s_sym_mod_pair,
+		inline KeyStatus(const KeycModPair& s_kmp,
 			bool s_down=false)
-			: _sym_mod_pair(s_sym_mod_pair), _down(s_down)
+			: _kmp(s_kmp), _down(s_down)
 		{
 		}
 		inline KeyStatus(SDL_Keycode s_sym, Uint16 s_mod,
 			bool s_down=false)
-			: _sym_mod_pair(s_sym, s_mod), _down(s_down)
+			: _kmp(s_sym, s_mod), _down(s_down)
 		{
 		}
 		inline ~KeyStatus() = default;
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(KeyStatus);
 
+		inline bool operator < (const KeyStatus& to_cmp) const
+		{
+			if (_kmp < to_cmp._kmp)
+			{
+				return true;
+			}
+			else if (_kmp == to_cmp._kmp)
+			{
+				return ((!_down) && (to_cmp._down));
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		inline SDL_Keycode sym() const
 		{
-			return _sym_mod_pair.sym();
+			return _kmp.sym();
 		}
 		inline SDL_Keycode set_sym(SDL_Keycode n_sym)
 		{
-			return _sym_mod_pair.set_sym(n_sym);
+			return _kmp.set_sym(n_sym);
 		}
 		inline Uint16 mod() const
 		{
-			return _sym_mod_pair.mod();
+			return _kmp.mod();
 		}
 		inline Uint16 set_mod(Uint16 n_mod)
 		{
-			return _sym_mod_pair.set_mod(n_mod);
+			return _kmp.set_mod(n_mod);
 		}
-		GEN_GETTER_AND_SETTER_BY_CON_REF(sym_mod_pair);
+		GEN_GETTER_AND_SETTER_BY_CON_REF(kmp);
 		GEN_GETTER_AND_SETTER_BY_VAL(down);
 	};
 } // namespace sdl2
@@ -96,7 +128,7 @@ namespace std
 			(const liborangepower::sdl::KeyStatus& ks) const noexcept
 		{
 			std::size_t h0 = std::hash<liborangepower::sdl::KeycModPair>{}
-				(ks.sym_mod_pair());
+				(ks.kmp());
 			std::size_t h1 = std::hash<bool>{}(ks.down());
 			return (h0 ^ (h1 << static_cast<std::size_t>(1)));
 		}
