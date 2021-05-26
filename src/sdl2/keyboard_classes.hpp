@@ -52,7 +52,7 @@ namespace sdl
 		GEN_GETTER_AND_SETTER_BY_VAL(mod);
 	};
 
-	class KeyStatus final
+	class KeyStatus
 	{
 	private:		// variables
 		KeycModPair _kmp;
