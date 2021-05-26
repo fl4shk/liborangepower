@@ -43,6 +43,10 @@ namespace sdl
 				return false;
 			}
 		}
+		inline bool operator == (const KeycModPair& to_cmp) const
+		{
+			return ((_sym == to_cmp._sym) && (_mod == to_cmp._mod));
+		}
 
 		GEN_GETTER_AND_SETTER_BY_VAL(sym);
 		GEN_GETTER_AND_SETTER_BY_VAL(mod);
@@ -82,6 +86,10 @@ namespace sdl
 			{
 				return false;
 			}
+		}
+		inline bool operator == (const KeyStatus& to_cmp) const
+		{
+			return ((_kmp = to_cmp._kmp) && (_down == to_cmp._down));
 		}
 
 		inline SDL_Keycode sym() const
