@@ -56,7 +56,7 @@ namespace sdl
 		{
 			return _sym_mod_pair.sym();
 		}
-		inline SDL_Keycode& set_sym(SDL_Keycode n_sym)
+		inline SDL_Keycode set_sym(SDL_Keycode n_sym)
 		{
 			return _sym_mod_pair.set_sym(n_sym);
 		}
@@ -64,7 +64,7 @@ namespace sdl
 		{
 			return _sym_mod_pair.mod();
 		}
-		inline Uint16& set_mod(Uint16 n_mod)
+		inline Uint16 set_mod(Uint16 n_mod)
 		{
 			return _sym_mod_pair.set_mod(n_mod);
 		}
