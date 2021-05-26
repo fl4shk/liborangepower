@@ -74,11 +74,11 @@ namespace sdl
 
 		inline bool operator < (const KeyStatus& to_cmp) const
 		{
-			if (kmp() < to_cmp.kmp())
+			if (_kmp < to_cmp._kmp)
 			{
 				return true;
 			}
-			else if (kmp() == to_cmp.kmp())
+			else if (_kmp == to_cmp._kmp)
 			{
 				return ((!_down) && (to_cmp._down));
 			}
@@ -89,7 +89,7 @@ namespace sdl
 		}
 		inline bool operator == (const KeyStatus& to_cmp) const
 		{
-			return ((kmp() = to_cmp.kmp()) && (_down == to_cmp._down));
+			return ((_kmp == to_cmp._kmp) && (_down == to_cmp._down));
 		}
 
 		inline SDL_Keycode sym() const
