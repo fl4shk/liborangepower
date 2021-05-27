@@ -58,23 +58,24 @@ class KeyStatus
 {
 private:		// variables
 	KeycModPair _kmp;
-	liborangepower::containers::PrevCurrPair<bool> _down;
+public:		// variables
+	liborangepower::containers::PrevCurrPair<bool> down;
 public:		// functions
 	inline KeyStatus() = default;
 	inline KeyStatus(const KeycModPair& s_kmp, bool s_down_curr=false)
 		: _kmp(s_kmp)
 	{
-		_down() = false;
-		_down.back_up();
-		_down() = s_down_curr;
+		down() = false;
+		down.back_up();
+		down() = s_down_curr;
 	}
 	inline KeyStatus(SDL_Keycode s_sym, Uint16 s_mod,
 		bool s_down_curr=false)
 		: _kmp(s_sym, s_mod)
 	{
-		_down() = false;
-		_down.back_up();
-		_down() = s_down_curr;
+		down() = false;
+		down.back_up();
+		down() = s_down_curr;
 	}
 	inline ~KeyStatus() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(KeyStatus);
@@ -87,7 +88,7 @@ public:		// functions
 		}
 		else if (_kmp == to_cmp._kmp)
 		{
-			return (_down < to_cmp._down);
+			return (down < to_cmp.down);
 		}
 		else
 		{
@@ -96,7 +97,7 @@ public:		// functions
 	}
 	inline bool operator == (const KeyStatus& to_cmp) const
 	{
-		return ((_kmp == to_cmp._kmp) && (_down == to_cmp._down));
+		return ((_kmp == to_cmp._kmp) && (down == to_cmp.down));
 	}
 
 	inline SDL_Keycode sym() const
@@ -116,7 +117,6 @@ public:		// functions
 		return _kmp.set_mod(n_mod);
 	}
 	GEN_GETTER_AND_SETTER_BY_CON_REF(kmp);
-	GEN_GETTERS_BY_CON_REF_AND_REF(down);
 };
 
 } // namespace sdl2
