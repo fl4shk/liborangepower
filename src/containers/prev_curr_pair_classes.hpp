@@ -52,6 +52,26 @@ public:		// functions
 		return (_prev != _curr);
 	}
 
+	inline bool operator < (const PrevCurrPair& to_cmp) const
+	{
+		if (_curr < to_cmp._curr)
+		{
+			return true;
+		}
+		else if (_curr == to_cmp._curr)
+		{
+			return (_prev < to_cmp._prev);
+		}
+		else // if (_curr > to_cmp._curr)
+		{
+			return false;
+		}
+	}
+	inline bool operator == (const PrevCurrPair& to_cmp) const
+	{
+		return ((_prev == to_cmp._prev) && (_curr == to_cmp._curr));
+	}
+
 	inline Type& operator () ()
 	{
 		return _curr;
