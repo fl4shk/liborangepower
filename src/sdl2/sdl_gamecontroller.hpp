@@ -53,7 +53,11 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline SDL_GameController* operator -> ()
+	inline auto* operator -> ()
+	{
+		return _self;
+	}
+	inline const auto* operator -> () const
 	{
 		return _self;
 	}

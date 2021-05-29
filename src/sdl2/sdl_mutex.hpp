@@ -52,7 +52,11 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline SDL_Cond* operator -> ()
+	inline auto* operator -> ()
+	{
+		return _self;
+	}
+	inline const auto* operator -> () const
 	{
 		return _self;
 	}
@@ -98,7 +102,11 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline SDL_mutex* operator -> ()
+	inline auto* operator -> ()
+	{
+		return _self;
+	}
+	inline const auto* operator -> () const
 	{
 		return _self;
 	}
@@ -144,7 +152,11 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline SDL_sem* operator -> ()
+	inline auto* operator -> ()
+	{
+		return _self;
+	}
+	inline const auto* operator -> () const
 	{
 		return _self;
 	}

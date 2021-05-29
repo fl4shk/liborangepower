@@ -157,7 +157,11 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline SDL_AudioStream* operator -> ()
+	inline auto* operator -> ()
+	{
+		return _self;
+	}
+	inline const auto* operator -> () const
 	{
 		return _self;
 	}

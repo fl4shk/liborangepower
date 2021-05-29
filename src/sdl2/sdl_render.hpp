@@ -52,7 +52,11 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline SDL_Renderer* operator -> ()
+	inline auto* operator -> ()
+	{
+		return _self;
+	}
+	inline const auto* operator -> () const
 	{
 		return _self;
 	}
@@ -98,7 +102,11 @@ public:		// functions
 	{
 		return _self;
 	}
-	inline SDL_Texture* operator -> ()
+	inline auto* operator -> ()
+	{
+		return _self;
+	}
+	inline const auto* operator -> () const
 	{
 		return _self;
 	}
