@@ -1,11 +1,12 @@
-#ifndef liborangepower_sdl2_keyboard_classes_hpp
-#define liborangepower_sdl2_keyboard_classes_hpp
+#ifndef liborangepower_sdl2_keyboard_stuff_hpp
+#define liborangepower_sdl2_keyboard_stuff_hpp
 
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
 
 #include <functional>
+#include <string>
 #include <map>
 
 #include <SDL.h>
@@ -17,6 +18,11 @@ namespace liborangepower
 
 namespace sdl
 {
+
+inline std::string get_key_name(SDL_Keycode sym)
+{
+	return std::string(SDL_GetKeyName(sym));
+}
 
 class KeycModPair final
 {
@@ -179,4 +185,4 @@ struct hash<liborangepower::sdl::KeyStatus>
 };
 } // namespace std
 
-#endif		// liborangepower_sdl2_keyboard_classes_hpp
+#endif		// liborangepower_sdl2_keyboard_stuff_hpp
