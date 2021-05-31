@@ -20,8 +20,7 @@ private:		// variables
 	SDL_Point _self;
 
 public:		// functions
-	inline Point() = default;
-	inline Point(int s_x, int s_y)
+	inline Point(int s_x=0, int s_y=0)
 	{
 		_self.x = s_x;
 		_self.y = s_y;
@@ -59,8 +58,7 @@ private:		// variables
 	SDL_FPoint _self;
 
 public:		// functions
-	inline FPoint() = default;
-	inline FPoint(float s_x, float s_y)
+	inline FPoint(float s_x=0.0f, float s_y=0.0f)
 	{
 		_self.x = s_x;
 		_self.y = s_y;
@@ -98,8 +96,7 @@ private:		// variables
 	SDL_Rect _self;
 
 public:		// functions
-	inline Rect() = default;
-	inline Rect(int s_x, int s_y, int s_w, int s_h)
+	inline Rect(int s_x=0, int s_y=0, int s_w=0, int s_h=0)
 	{
 		_self.x = s_x;
 		_self.y = s_y;
@@ -139,8 +136,8 @@ private:		// variables
 	SDL_FRect _self;
 
 public:		// functions
-	inline FRect() = default;
-	inline FRect(float s_x, float s_y, float s_w, float s_h)
+	inline FRect(float s_x=0.0f, float s_y=0.0f, float s_w=0.0f,
+		float s_h=0.0f)
 	{
 		_self.x = s_x;
 		_self.y = s_y;
