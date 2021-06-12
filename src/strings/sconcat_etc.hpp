@@ -12,7 +12,7 @@ namespace strings
 {
 
 template<typename FirstArgType, typename... RemArgTypes>
-std::string sconcat(const FirstArgType& first_arg, 
+inline std::string sconcat(const FirstArgType& first_arg, 
 	RemArgTypes&&... rem_args)
 {
 	std::string ret;
