@@ -13,10 +13,6 @@ CompMap& Ent::comp_map() const
 {
 	return _engine->comp_map(id());
 }
-const CompMap& comp_map() const
-{
-	return _engine->comp_map(id());
-}
 //--------
 std::string Comp::base_kind_str() const
 {

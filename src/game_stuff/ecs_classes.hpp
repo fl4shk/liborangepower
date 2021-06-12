@@ -25,7 +25,7 @@ class Engine;
 
 using EntId = integer_types::u64;
 static constexpr EntId ENT_NULL_ID
-	= static_cast<EntId>(static_cast<i64>(-1));
+	= static_cast<EntId>(static_cast<integer_types::i64>(-1));
 
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
@@ -54,7 +54,6 @@ public:		// functions
 	~Ent() = default;
 
 	CompMap& comp_map() const;
-	const CompMap& comp_map() const;
 
 	inline bool insert_comp(const std::string& key, CompUptr&& comp) const;
 	inline bool insert_or_replace_comp(const std::string& key,
@@ -90,8 +89,6 @@ public:		// functions
 class Engine
 {
 	friend class Ent;
-public:		// types
-	using Ent
 protected:		// variables
 	EntId _next_ent_id = 0;
 
@@ -111,8 +108,6 @@ public:		// functions
 		_to_destroy_set.add(id);
 	}
 	void destroy();
-
-	std::map<
 
 	template<typename... ArgTypes>
 	inline EntIdVec ent_id_vec_from_keys(ArgTypes&&... args)
