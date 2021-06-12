@@ -105,7 +105,7 @@ public:		// functions
 	EntId create();
 	inline void sched_destroy(EntId id)
 	{
-		_to_destroy_set.add(id);
+		_to_destroy_set.insert(id);
 	}
 	void destroy();
 
@@ -121,15 +121,11 @@ public:		// functions
 	EntIdVec ent_id_vec_from_keys
 		(const std::vector<std::string>& key_vec) const;
 
-	inline Ent ent_at(EntId id) const
+	inline Ent ent_at(EntId id)
 	{
 		return Ent(this, id);
 	}
 	inline CompMap& comp_map(EntId id) const
-	{
-		return *_engine_comp_map.at(id);
-	}
-	inline const CompMap& comp_map(EntId id) const
 	{
 		return *_engine_comp_map.at(id);
 	}
