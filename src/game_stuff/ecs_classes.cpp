@@ -37,6 +37,14 @@ EntId Engine::create()
 	//_ent_id_to_comp_key_map[_next_ent_id] = std::set<std::string>();
 	return (_next_ent_id++);
 }
+void Engine::destroy(EntId id)
+{
+	comp_map(id).clear();
+	if (_to_destroy_set.contains(id))
+	{
+		_to_destroy_set.erase(id);
+	}
+}
 void Engine::destroy()
 {
 	for (auto id: _to_destroy_set)

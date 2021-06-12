@@ -107,6 +107,8 @@ public:		// functions
 	{
 		_to_destroy_set.insert(id);
 	}
+	// Destroy now
+	void destroy(EntId id);
 	void destroy();
 
 	template<typename... ArgTypes>
