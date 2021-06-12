@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_types.hpp"
 #include "../strings/sconcat_etc.hpp"
+#include "../containers/vec2_classes.hpp"
 
 #include <map>
 #include <set>
@@ -29,7 +30,7 @@ static constexpr EntId ENT_NULL_ID
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
 using EntIdMap = std::map<std::string, EntIdVec2d>;
-//using EntIdMapFullIndex = std::pair<std::string, PosVec2>;
+using EntIdMapFullIndex = std::pair<std::string, containers::Vec2<size_t>>;
 
 using CompUptr = std::unique_ptr<Comp>;
 using CompMap = std::map<std::string, CompUptr>;
