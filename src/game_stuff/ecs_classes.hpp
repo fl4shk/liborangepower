@@ -26,8 +26,6 @@ class Engine;
 using EntId = integer_types::u64;
 static constexpr EntId ENT_NULL_ID
 	= static_cast<EntId>(static_cast<integer_types::i64>(-1));
-static constexpr EntId ENT_TRANSP_ID
-	= static_cast<EntId>(static_cast<integer_types::i64>(-2));
 
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
