@@ -31,6 +31,7 @@ using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
 using EntIdMap = std::map<std::string, EntIdVec2d>;
 using EntIdMapFullIndex = std::pair<std::string, containers::Vec2<size_t>>;
+using EntIdSet = std::set<EntId>;
 
 using CompUptr = std::unique_ptr<Comp>;
 using CompMap = std::map<std::string, CompUptr>;
@@ -112,16 +113,28 @@ public:		// functions
 	void destroy();
 
 	template<typename... ArgTypes>
-	inline EntIdVec ent_id_vec_from_keys(ArgTypes&&... args)
+	inline EntIdVec ent_id_vec_from_keys_v(ArgTypes&&... args)
 	{
-		std::vector<std::string> key_vec;
+		std::set<std::string> key_set;
 
-		(key_vec.push_back(strings::sconcat(args)), ...);
+		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_vec_from_keys(key_vec);
+		return ent_id_vec_from_keys(key_set);
 	}
-	EntIdVec ent_id_vec_from_keys
-		(const std::vector<std::string>& key_vec) const;
+	EntIdVec ent_id_vec_from_keys(const std::set<std::string>& key_set)
+		const;
+
+	template<typename... ArgTypes>
+	inline EntIdSet ent_id_set_from_keys_v(ArgTypes&&... args)
+	{
+		std::set<std::string> key_set;
+
+		(key_set.insert(strings::sconcat(args)), ...);
+
+		return ent_id_set_from_keys(key_set);
+	}
+	EntIdSet ent_id_set_from_keys(const std::set<std::string>& key_set)
+		const;
 
 	inline Ent ent_at(EntId id)
 	{

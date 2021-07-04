@@ -61,7 +61,7 @@ void Engine::destroy()
 }
 
 EntIdVec Engine::ent_id_vec_from_keys
-	(const std::vector<std::string>& key_vec) const
+	(const std::set<std::string>& key_set) const
 {
 	EntIdVec ret;
 
@@ -69,7 +69,7 @@ EntIdVec Engine::ent_id_vec_from_keys
 	{
 		auto& the_comp_map = comp_map(pair.first);
 
-		for (const auto& key: key_vec)
+		for (const auto& key: key_set)
 		{
 			if (the_comp_map.contains(key))
 			{
@@ -79,6 +79,20 @@ EntIdVec Engine::ent_id_vec_from_keys
 				break;
 			}
 		}
+	}
+
+	return ret;
+}
+EntIdSet Engine::ent_id_set_from_keys(const std::set<std::string>& key_set)
+	const
+{
+	const EntIdVec vec(ent_id_vec_from_keys(key_set));
+
+	EntIdSet ret;
+
+	for (const auto& ent_id: vec)
+	{
+		ret.insert(ent_id);
 	}
 
 	return ret;
