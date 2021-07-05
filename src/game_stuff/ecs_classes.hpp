@@ -128,15 +128,15 @@ public:		// functions
 		const;
 
 	template<typename... ArgTypes>
-	inline EntIdSet ent_id_set_from_keys_any_v(ArgTypes&&... args)
+	inline EntIdSet ent_id_set_from_keys_all_v(ArgTypes&&... args)
 	{
 		StrKeySet key_set;
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_set_from_keys_any(key_set);
+		return ent_id_set_from_keys_all(key_set);
 	}
-	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set) const;
+	EntIdSet ent_id_set_from_keys_all(const StrKeySet& key_set) const;
 	//--------
 	inline Ent ent_at(EntId id)
 	{
