@@ -40,6 +40,8 @@ using EngineCompMap = std::map<EntId, CompMapUptr>;
 
 using SysUptr = std::unique_ptr<Sys>;
 using SysMap = std::map<std::string, SysUptr>;
+
+using StrKeySet = std::set<std::string>;
 //--------
 class Ent final
 {
@@ -93,16 +95,17 @@ class Engine
 protected:		// variables
 	EntId _next_ent_id = 0;
 
-	std::set<EntId> _to_destroy_set;
+	EntIdSet _to_destroy_set;
 
 	EngineCompMap _engine_comp_map;
 
 	SysMap _sys_map;
 public:		// functions
+	//--------
 	Engine();
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Engine);
 	virtual ~Engine();
-
+	//--------
 	EntId create();
 	inline void sched_destroy(EntId id)
 	{
@@ -111,31 +114,30 @@ public:		// functions
 	// Destroy now
 	void destroy(EntId id);
 	void destroy();
-
+	//--------
 	template<typename... ArgTypes>
-	inline EntIdVec ent_id_vec_from_keys_v(ArgTypes&&... args)
+	inline EntIdVec ent_id_vec_from_keys_any_v(ArgTypes&&... args)
 	{
-		std::set<std::string> key_set;
+		StrKeySet key_set;
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_vec_from_keys(key_set);
+		return ent_id_vec_from_keys_any(key_set);
 	}
-	EntIdVec ent_id_vec_from_keys(const std::set<std::string>& key_set)
+	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set)
 		const;
 
 	template<typename... ArgTypes>
-	inline EntIdSet ent_id_set_from_keys_v(ArgTypes&&... args)
+	inline EntIdSet ent_id_set_from_keys_any_v(ArgTypes&&... args)
 	{
-		std::set<std::string> key_set;
+		StrKeySet key_set;
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_set_from_keys(key_set);
+		return ent_id_set_from_keys_any(key_set);
 	}
-	EntIdSet ent_id_set_from_keys(const std::set<std::string>& key_set)
-		const;
-
+	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set) const;
+	//--------
 	inline Ent ent_at(EntId id)
 	{
 		return Ent(this, id);
@@ -152,13 +154,14 @@ public:		// functions
 	bool insert_sys(const std::string& key, SysUptr&& sys);
 	bool insert_or_replace_sys(const std::string& key, SysUptr&& sys);
 	size_t erase_sys(const std::string& key);
-
+	//--------
 	void tick();
-
+	//--------
 	GEN_GETTER_BY_VAL(next_ent_id);
 	GEN_GETTER_BY_CON_REF(to_destroy_set);
 	GEN_GETTER_BY_CON_REF(engine_comp_map);
 	GEN_GETTER_BY_CON_REF(sys_map);
+	//--------
 };
 //--------
 inline bool Ent::insert_comp(const std::string& key, CompUptr&& comp) const

@@ -60,8 +60,7 @@ void Engine::destroy()
 	_to_destroy_set.clear();
 }
 
-EntIdVec Engine::ent_id_vec_from_keys
-	(const std::set<std::string>& key_set) const
+EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set) const
 {
 	EntIdVec ret;
 
@@ -75,7 +74,6 @@ EntIdVec Engine::ent_id_vec_from_keys
 			{
 				ret.push_back(pair.first);
 
-				// The `break` is there to speed 
 				break;
 			}
 		}
@@ -83,10 +81,49 @@ EntIdVec Engine::ent_id_vec_from_keys
 
 	return ret;
 }
-EntIdSet Engine::ent_id_set_from_keys(const std::set<std::string>& key_set)
-	const
+EntIdSet Engine::ent_id_set_from_keys_any(const StrKeySet& key_set) const
 {
-	const EntIdVec vec(ent_id_vec_from_keys(key_set));
+	const EntIdVec vec(ent_id_vec_from_keys_any(key_set));
+
+	EntIdSet ret;
+
+	for (const auto& ent_id: vec)
+	{
+		ret.insert(ent_id);
+	}
+
+	return ret;
+}
+
+EntIdVec Engine::ent_id_vec_from_keys_all(const StrKeySet& key_set) const
+{
+	EntIdVec ret;
+
+	for (auto&& pair: _engine_comp_map)
+	{
+		auto& the_comp_map = comp_map(pair.first);
+
+		bool all = true;
+
+		for (const auto& key: key_set)
+		{
+			if (!the_comp_map.contains(key))
+			{
+				all = false;
+				break;
+			}
+		}
+		if (all)
+		{
+			ret.push_back(pair.first);
+		}
+	}
+
+	return ret;
+}
+EntIdSet Engine::ent_id_set_from_keys_all(const StrKeySet& key_set) const
+{
+	const EntIdVec vec(ent_id_vec_from_keys_all(key_set));
 
 	EntIdSet ret;
 
