@@ -128,6 +128,29 @@ public:		// functions
 		const;
 
 	template<typename... ArgTypes>
+	inline EntIdSet ent_id_set_from_keys_any_v(ArgTypes&&... args)
+	{
+		StrKeySet key_set;
+
+		(key_set.insert(strings::sconcat(args)), ...);
+
+		return ent_id_set_from_keys_any(key_set);
+	}
+	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set) const;
+
+	template<typename... ArgTypes>
+	inline EntIdVec ent_id_vec_from_keys_all_v(ArgTypes&&... args)
+	{
+		StrKeySet key_set;
+
+		(key_set.insert(strings::sconcat(args)), ...);
+
+		return ent_id_vec_from_keys_all(key_set);
+	}
+	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set)
+		const;
+
+	template<typename... ArgTypes>
 	inline EntIdSet ent_id_set_from_keys_all_v(ArgTypes&&... args)
 	{
 		StrKeySet key_set;
