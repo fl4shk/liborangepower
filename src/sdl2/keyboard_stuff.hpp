@@ -127,7 +127,8 @@ public:		// functions
 	GEN_GETTER_AND_SETTER_BY_CON_REF(kmp);
 };
 
-using KeyStatusMap = std::map<KeycModPair, KeyStatus>;
+using KeyStatusMap = std::map<SDL_Keycode, KeyStatus>;
+
 inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map)
 {
 	if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP))
@@ -137,15 +138,15 @@ inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map)
 
 		if (!key_status_map.contains(kmp))
 		{
-			key_status_map[kmp] = KeyStatus(kmp);
+			key_status_map[keysym.sym] = KeyStatus(kmp);
 		}
 		else
 		{
-			key_status_map.at(kmp).down.back_up();
+			key_status_map.at(keysym.sym).down.back_up();
 		}
 
-		key_status_map.at(kmp).set_kmp(kmp);
-		key_status_map.at(kmp).down() = (e.type == SDL_KEYDOWN);
+		key_status_map.at(keysym.sym).set_kmp(kmp);
+		key_status_map.at(keysym.sym).down() = (e.type == SDL_KEYDOWN);
 
 		return true;
 	}
