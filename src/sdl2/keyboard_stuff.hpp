@@ -136,7 +136,7 @@ inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map)
 		const auto& keysym = e.key.keysym;
 		const KeycModPair kmp(keysym.sym, keysym.mod);
 
-		if (!key_status_map.contains(kmp))
+		if (!key_status_map.contains(keysym.sym))
 		{
 			key_status_map[keysym.sym] = KeyStatus(kmp);
 		}
