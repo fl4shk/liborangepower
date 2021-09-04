@@ -129,14 +129,6 @@ public:		// functions
 
 using KeyStatusMap = std::map<SDL_Keycode, KeyStatus>;
 
-inline void back_up_key_status_map_down(KeyStatusMap& key_status_map)
-{
-	for (auto& item: key_status_map)
-	{
-		item.second.down.back_up();
-	}
-}
-
 inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map)
 {
 	if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP))
@@ -148,10 +140,10 @@ inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map)
 		{
 			key_status_map[keysym.sym] = KeyStatus(kmp);
 		}
-		//else
-		//{
-		//	key_status_map.at(keysym.sym).down.back_up();
-		//}
+		else
+		{
+			key_status_map.at(keysym.sym).down.back_up();
+		}
 
 		key_status_map.at(keysym.sym).set_kmp(kmp);
 		key_status_map.at(keysym.sym).down() = (e.type == SDL_KEYDOWN);
