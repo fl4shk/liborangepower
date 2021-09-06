@@ -179,7 +179,7 @@ public:		// functions
 		return comp_map(id).at(key);
 	}
 	template<typename Type>
-	inline Type* comp_at(EntId id, const std::string& key)
+	inline Type* casted_comp_at(EntId id, const std::string& key)
 		const
 	{
 		return static_cast<Type*>(comp_at(id, key).get());
@@ -193,7 +193,7 @@ public:		// functions
 		const
 	{
 		return (engine_comp_map().contains(id)
-			&& comp_map(id)->contains(key));
+			&& comp_map(id).contains(key));
 	}
 	//--------
 	void tick();
