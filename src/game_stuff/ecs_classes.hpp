@@ -174,9 +174,27 @@ public:		// functions
 		CompUptr&& comp);
 	size_t erase_comp(EntId id, const std::string& key);
 
+	inline CompUptr& comp_at(EntId id, const std::string& key)
+	{
+		return comp_map(id).at(key);
+	}
+	template<typename Type>
+	inline Type* comp_at(EntId id, const std::string& key)
+		const
+	{
+		return static_cast<Type*>(comp_at(id, key).get());
+	}
+
 	bool insert_sys(const std::string& key, SysUptr&& sys);
 	bool insert_or_replace_sys(const std::string& key, SysUptr&& sys);
 	size_t erase_sys(const std::string& key);
+	//--------
+	inline bool has_ent_with_comp(EntId id, const std::string& key)
+		const
+	{
+		return (engine_comp_map().contains(id)
+			&& comp_map(id)->contains(key));
+	}
 	//--------
 	void tick();
 	//--------
