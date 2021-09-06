@@ -174,7 +174,7 @@ public:		// functions
 		CompUptr&& comp);
 	size_t erase_comp(EntId id, const std::string& key);
 
-	inline CompUptr& comp_at(EntId id, const std::string& key)
+	inline CompUptr& comp_at(EntId id, const std::string& key) const
 	{
 		return comp_map(id).at(key);
 	}
