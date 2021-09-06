@@ -169,10 +169,6 @@ public:		// functions
 	{
 		return *_engine_comp_map.at(id);
 	}
-	bool insert_comp(EntId id, const std::string& key, CompUptr&& comp);
-	bool insert_or_replace_comp(EntId id, const std::string& key,
-		CompUptr&& comp);
-	size_t erase_comp(EntId id, const std::string& key);
 
 	inline CompUptr& comp_at(EntId id, const std::string& key) const
 	{
@@ -184,6 +180,11 @@ public:		// functions
 	{
 		return static_cast<Type*>(comp_at(id, key).get());
 	}
+
+	bool insert_comp(EntId id, const std::string& key, CompUptr&& comp);
+	bool insert_or_replace_comp(EntId id, const std::string& key,
+		CompUptr&& comp);
+	size_t erase_comp(EntId id, const std::string& key);
 
 	bool insert_sys(const std::string& key, SysUptr&& sys);
 	bool insert_or_replace_sys(const std::string& key, SysUptr&& sys);
