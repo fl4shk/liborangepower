@@ -175,10 +175,20 @@ public:		// functions
 		return comp_map(id).at(key);
 	}
 	template<typename Type>
+	inline CompUptr& comp_at(EntId id) const
+	{
+		return comp_map(id).at(Type::KIND_STR);
+	}
+	template<typename Type>
 	inline Type* casted_comp_at(EntId id, const std::string& key)
 		const
 	{
 		return static_cast<Type*>(comp_at(id, key).get());
+	}
+	template<typename Type>
+	inline Type* casted_comp_at(EntId id) const
+	{
+		return casted_comp_at<Type>(id, Type::KIND_STR);
 	}
 
 	bool insert_comp(EntId id, const std::string& key, CompUptr&& comp);
