@@ -86,6 +86,7 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
 
+	virtual std::string kind_str() const;
 	virtual void tick(Engine* engine);
 };
 //--------
@@ -192,13 +193,43 @@ public:		// functions
 	}
 
 	bool insert_comp(EntId id, const std::string& key, CompUptr&& comp);
+	inline bool insert_comp(EntId id, CompUptr&& comp)
+	{
+		const std::string& KIND_STR = comp->kind_str();
+		return insert_comp(id, KIND_STR, std::move(comp));
+	}
 	bool insert_or_replace_comp(EntId id, const std::string& key,
 		CompUptr&& comp);
+	inline bool insert_or_replace_comp(EntId id, CompUptr&& comp)
+	{
+		const std::string& KIND_STR = comp->kind_str();
+		return insert_or_replace_comp(id, KIND_STR, std::move(comp));
+	}
 	size_t erase_comp(EntId id, const std::string& key);
+	template<typename Type>
+	inline size_t erase_comp(EntId id)
+	{
+		return erase_comp(id, Type::KIND_STR);
+	}
 
 	bool insert_sys(const std::string& key, SysUptr&& sys);
+	inline bool insert_sys(SysUptr&& sys)
+	{
+		const std::string& KIND_STR = sys->kind_str();
+		return insert_sys(KIND_STR, std::move(sys));
+	}
 	bool insert_or_replace_sys(const std::string& key, SysUptr&& sys);
+	inline bool insert_or_replace_sys(SysUptr&& sys)
+	{
+		const std::string& KIND_STR = sys->kind_str();
+		return insert_or_replace_sys(KIND_STR, std::move(sys));
+	}
 	size_t erase_sys(const std::string& key);
+	template<typename Type>
+	inline size_t erase_sys()
+	{
+		return erase_sys(Type::KIND_STR);
+	}
 	//--------
 	inline bool has_ent_with_comp(EntId id, const std::string& key)
 		const

@@ -19,6 +19,10 @@ std::string Comp::kind_str() const
 	return "";
 }
 //--------
+std::string Sys::kind_str() const
+{
+	return "";
+}
 void Sys::tick(Engine* engine)
 {
 	// This should be implemented by derived classes
