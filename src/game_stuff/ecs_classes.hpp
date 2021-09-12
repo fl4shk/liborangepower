@@ -237,6 +237,11 @@ public:		// functions
 		return (engine_comp_map().contains(id)
 			&& comp_map(id).contains(key));
 	}
+	template<typename Type>
+	inline bool has_ent_with_comp(EntId id) const
+	{
+		return has_ent_with_comp(id, Type::KIND_STR);
+	}
 	//--------
 	void tick();
 	//--------
