@@ -129,8 +129,21 @@ public:		// functions
 
 using KeyStatusMap = std::map<SDL_Keycode, KeyStatus>;
 
-inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map)
+// Set `perf_total_back_up` to `true` before the loop that polls SDL
+// events.
+inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map,
+	bool& perf_total_back_up)
 {
+	if (perf_total_back_up)
+	{
+		for (const auto& item: key_status_map)
+		{
+			key_status_map.at(item.first).down().back_up();
+		}
+	}
+
+	perf_total_back_up = false;
+
 	if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP))
 	{
 		const auto& keysym = e.key.keysym;
@@ -139,11 +152,13 @@ inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map)
 		if (!key_status_map.contains(keysym.sym))
 		{
 			key_status_map[keysym.sym] = KeyStatus(kmp);
-		}
-		else
-		{
+			key_status_map.at(keysym.sym).down() = false;
 			key_status_map.at(keysym.sym).down.back_up();
 		}
+		//else
+		//{
+		//	key_status_map.at(keysym.sym).down.back_up();
+		//}
 
 		key_status_map.at(keysym.sym).set_kmp(kmp);
 		key_status_map.at(keysym.sym).down() = (e.type == SDL_KEYDOWN);
