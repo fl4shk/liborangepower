@@ -138,7 +138,7 @@ inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map,
 	{
 		for (const auto& item: key_status_map)
 		{
-			key_status_map.at(item.first).down().back_up();
+			key_status_map.at(item.first).down.back_up();
 		}
 	}
 
