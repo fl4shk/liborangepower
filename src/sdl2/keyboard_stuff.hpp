@@ -138,7 +138,21 @@ inline bool handle_key_events(SDL_Event& e, KeyStatusMap& key_status_map,
 	{
 		for (const auto& item: key_status_map)
 		{
+			//if (item.first == SDLK_s)
+			//{
+			//	fprintf(stdout, "handle_key_events() before: %i %i\n",
+			//		key_status_map.at(item.first).down.prev(),
+			//		key_status_map.at(item.first).down());
+			//}
+
 			key_status_map.at(item.first).down.back_up();
+
+			//if (item.first == SDLK_s)
+			//{
+			//	fprintf(stdout, "handle_key_events() after: %i %i\n",
+			//		key_status_map.at(item.first).down.prev(),
+			//		key_status_map.at(item.first).down());
+			//}
 		}
 	}
 
