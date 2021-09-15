@@ -7,6 +7,13 @@
 	inline Type& operator = (const Type& to_copy) = copy_dd; \
 	inline Type& operator = (Type&& to_move) = move_dd;
 
+#define GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, \
+	move_dd) \
+	constexpr inline Type(const Type& to_copy) = copy_dd; \
+	constexpr inline Type(Type&& to_move) = move_dd; \
+	constexpr inline Type& operator = (const Type& to_copy) = copy_dd; \
+	constexpr inline Type& operator = (Type&& to_move) = move_dd;
+
 
 /*
 #define GEN_COPY_CONSTRUCTOR_AND_ASSIGN(Type) \
@@ -25,6 +32,20 @@
 
 #define GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Type) \
 	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, default)
+
+
+#define GEN_CONSTEXPR_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
+	GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, delete)
+
+#define GEN_CONSTEXPR_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
+	GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, delete, default)
+
+#define GEN_CONSTEXPR_NO_CM_CONSTRUCTORS_AND_ASSIGN(Type) \
+	GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, delete, delete)
+
+#define GEN_CONSTEXPR_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Type) \
+	GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, \
+		default)
 
 
 /*
