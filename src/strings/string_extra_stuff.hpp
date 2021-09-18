@@ -4,7 +4,6 @@
 
 #include "../misc/misc_includes.hpp"
 #include <cctype>
-#include <cstring>
 #include <libgen.h>
 
 namespace liborangepower
@@ -69,8 +68,8 @@ inline std::string strip_file_ext(const std::string& path,
 	return ret;
 }
 
-inline std::vector<std::string> split_str_by_whitespace
-	(const std::string& to_split)
+inline std::vector<std::string> split_str
+	(const std::string& to_split, const std::function<int(int)>& eat_func)
 {
 	std::vector<std::string> ret;
 
@@ -78,8 +77,9 @@ inline std::vector<std::string> split_str_by_whitespace
 	{
 		auto c = to_split.at(i);
 
-		// Eat whitespace
-		while (std::isspace(c) && (i < to_split.size()))
+		// Eat whatever
+		//while (std::isspace(c) && (i < to_split.size()))
+		while (eat_func(c) && (i < to_split.size()))
 		{
 			++i;
 			c = to_split.at(i);
@@ -87,7 +87,8 @@ inline std::vector<std::string> split_str_by_whitespace
 
 		bool did_first_push_back = false;
 
-		while ((!std::isspace(c)) && (i < to_split.size()))
+		//while ((!std::isspace(c)) && (i < to_split.size()))
+		while ((!eat_func(c)) && (i < to_split.size()))
 		{
 			if (!did_first_push_back)
 			{
@@ -103,6 +104,11 @@ inline std::vector<std::string> split_str_by_whitespace
 	}
 
 	return ret;
+}
+inline std::vector<std::string> split_str_by_whitespace
+	(const std::string& to_split)
+{
+	return split_str(to_split, &std::isspace);
 }
 
 } // namespace strings
