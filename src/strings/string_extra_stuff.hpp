@@ -82,7 +82,11 @@ inline std::vector<std::string> split_str
 		while (eat_func(c) && (i < to_split.size()))
 		{
 			++i;
-			c = to_split.at(i);
+
+			if (i < to_split.size())
+			{
+				c = to_split.at(i);
+			}
 		}
 
 		bool did_first_push_back = false;
@@ -99,7 +103,11 @@ inline std::vector<std::string> split_str
 			ret.back() += c;
 
 			++i;
-			c = to_split.at(i);
+
+			if (i < to_split.size())
+			{
+				c = to_split.at(i);
+			}
 		}
 	}
 
