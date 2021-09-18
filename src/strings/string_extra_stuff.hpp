@@ -3,7 +3,8 @@
 
 
 #include "../misc/misc_includes.hpp"
-#include <string.h>
+#include <cctype>
+#include <cstring>
 #include <libgen.h>
 
 namespace liborangepower
@@ -63,6 +64,42 @@ inline std::string strip_file_ext(const std::string& path,
 	if (how_many > 1)
 	{
 		return strip_file_ext(ret, how_many - 1);
+	}
+
+	return ret;
+}
+
+inline std::vector<std::string> split_str_by_any_whitespace
+	(const std::string& to_split)
+{
+	std::vector<std::string> ret;
+
+	for (size_t i=0; i<to_split.size(); ++i)
+	{
+		auto c = to_split.at(i);
+
+		// Eat whitespace
+		while (std::isspace(c) && (i < to_split.size()))
+		{
+			++i;
+			c = to_split.at(i);
+		}
+
+		bool did_first_push_back = false;
+
+		while ((!std::isspace(c)) && (i < to_split.size()))
+		{
+			if (!did_first_push_back)
+			{
+				did_first_push_back = true;
+				ret.push_back(std::string());
+			}
+
+			ret.back() += c;
+
+			++i;
+			c = to_split.at(i);
+		}
 	}
 
 	return ret;
