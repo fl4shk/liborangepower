@@ -108,7 +108,7 @@ inline std::vector<std::string> split_str
 inline std::vector<std::string> split_str_by_whitespace
 	(const std::string& to_split)
 {
-	return split_str(to_split, &std::isspace);
+	return split_str(to_split, static_cast<int(*)(int)>(&std::isspace));
 }
 
 } // namespace strings
