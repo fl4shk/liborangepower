@@ -69,7 +69,7 @@ inline std::string strip_file_ext(const std::string& path,
 	return ret;
 }
 
-inline std::vector<std::string> split_str_by_any_whitespace
+inline std::vector<std::string> split_str_by_whitespace
 	(const std::string& to_split)
 {
 	std::vector<std::string> ret;
