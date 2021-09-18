@@ -111,6 +111,18 @@ inline std::vector<std::string> split_str_by_whitespace
 	return split_str(to_split, static_cast<int(*)(int)>(&std::isspace));
 }
 
+inline std::string spaces_str(size_t length)
+{
+	std::string ret;
+
+	for (size_t i=0; i<length; ++i)
+	{
+		ret += " ";
+	}
+
+	return ret;
+}
+
 } // namespace strings
 
 } // namespace liborangepower
