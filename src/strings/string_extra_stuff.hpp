@@ -69,7 +69,8 @@ inline std::string strip_file_ext(const std::string& path,
 }
 
 inline std::vector<std::string> split_str
-	(const std::string& to_split, const std::function<int(int)>& eat_func)
+	(const std::string& to_split, const std::function<int(int)>& sep_func,
+	bool keep_sep=false)
 {
 	std::vector<std::string> ret;
 
@@ -77,10 +78,24 @@ inline std::vector<std::string> split_str
 	{
 		auto c = to_split.at(i);
 
-		// Eat whatever
+		bool did_first_push_back = false;
+
+		std::string ret_back;
+
 		//while (std::isspace(c) && (i < to_split.size()))
-		while (eat_func(c) && (i < to_split.size()))
+		while (sep_func(c) && (i < to_split.size()))
 		{
+			if (keep_sep)
+			{
+				if (!did_first_push_back)
+				{
+					did_first_push_back = true;
+					ret.push_back(std::string());
+				}
+
+				ret_back += c;
+			}
+
 			++i;
 
 			if (i < to_split.size())
@@ -89,18 +104,20 @@ inline std::vector<std::string> split_str
 			}
 		}
 
-		bool did_first_push_back = false;
+		bool do_add_to_ret_back = false;
 
 		//while ((!std::isspace(c)) && (i < to_split.size()))
-		while ((!eat_func(c)) && (i < to_split.size()))
+		while ((!sep_func(c)) && (i < to_split.size()))
 		{
+			do_add_to_ret_back = true;
+
 			if (!did_first_push_back)
 			{
 				did_first_push_back = true;
 				ret.push_back(std::string());
 			}
 
-			ret.back() += c;
+			ret_back += c;
 
 			++i;
 
@@ -109,14 +126,87 @@ inline std::vector<std::string> split_str
 				c = to_split.at(i);
 			}
 		}
+
+		if (do_add_to_ret_back)
+		{
+			ret.back() += ret_back;
+		}
 	}
 
 	return ret;
 }
 inline std::vector<std::string> split_str_by_whitespace
-	(const std::string& to_split)
+	(const std::string& to_split, bool keep_sep=false)
 {
-	return split_str(to_split, static_cast<int(*)(int)>(&std::isspace));
+	return split_str(to_split, static_cast<int(*)(int)>(&std::isspace),
+		keep_sep);
+}
+
+inline std::vector<std::vector<std::string>> wrap_str
+	(const std::string& to_wrap, const std::function<int(int)>& sep_func,
+	size_t row_length, bool keep_sep=false)
+{
+	std::vector<std::vector<std::string>> ret;
+
+	if (to_wrap.size() == 0)
+	{
+		return ret;
+	}
+
+	std::vector<std::string> split_string(split_str(to_wrap, sep_func,
+		keep_sep));
+
+	if (split_string.size() == 0)
+	{
+		return ret;
+	}
+
+	ret.push_back(std::vector<std::string>());
+
+	size_t col = 0;
+
+	bool added_str = false;
+
+	for (size_t i=0; i<split_string.size(); ++i)
+	{
+		auto& s = split_string.at(i);
+
+		col += s.size();
+
+		if ((!added_str) && (col > row_length))
+		{
+			ret.push_back(std::vector<std::string>());
+			col = 0;
+		}
+
+		added_str = false;
+
+		ret.back().push_back(std::move(s));
+
+		if (((i + 1) < split_string.size())
+			&& ((col + split_string.at(i + 1).size()) > row_length))
+		{
+			ret.push_back(std::vector<std::string>());
+			col = 0;
+			added_str = true;
+		}
+
+		if (!keep_sep)
+		{
+			if (col > 0)
+			{
+				++col;
+			}
+		}
+	}
+
+	return ret;
+}
+inline std::vector<std::vector<std::string>> wrap_str_by_whitespace
+	(const std::string& to_wrap, bool keep_sep=false)
+{
+	return wrap_str(to_split, static_cast<int(*)(int)>(&std::isspace),
+		keep_sep);
 }
 
 inline std::string spaces_str(size_t length)
