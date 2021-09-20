@@ -191,12 +191,9 @@ inline std::vector<std::vector<std::string>> wrap_str
 			added_str = true;
 		}
 
-		if (!keep_sep)
+		if ((!keep_sep) && (col > 0))
 		{
-			if (col > 0)
-			{
-				++col;
-			}
+			++col;
 		}
 	}
 
