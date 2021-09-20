@@ -202,7 +202,7 @@ inline std::vector<std::vector<std::string>> wrap_str
 inline std::vector<std::vector<std::string>> wrap_str_by_whitespace
 	(const std::string& to_wrap, bool keep_sep=false)
 {
-	return wrap_str(to_split, static_cast<int(*)(int)>(&std::isspace),
+	return wrap_str(to_wrap, static_cast<int(*)(int)>(&std::isspace),
 		keep_sep);
 }
 
