@@ -49,7 +49,7 @@ concept HasKindStr
 	= requires(Type obj)
 {
 	{ Type::KIND_STR } -> std::same_as<std::string>;
-}
+};
 //--------
 class Ent final
 {
