@@ -44,13 +44,6 @@ using SysMap = std::map<std::string, SysUptr>;
 
 using StrKeySet = std::set<std::string>;
 //--------
-template<typename Type>
-concept HasKindStr
-	= requires(Type obj)
-{
-	{ obj.KIND_STR } -> std::same_as<std::string>;
-};
-//--------
 class Ent final
 {
 private:		// variables
@@ -183,7 +176,7 @@ public:		// functions
 	{
 		return comp_map(id).at(key);
 	}
-	template<HasKindStr Type>
+	template<typename Type>
 	inline CompUptr& comp_at(EntId id) const
 	{
 		return comp_map(id).at(Type::KIND_STR);
@@ -194,7 +187,7 @@ public:		// functions
 	{
 		return static_cast<Type*>(comp_at(id, key).get());
 	}
-	template<HasKindStr Type>
+	template<typename Type>
 	inline Type* casted_comp_at(EntId id) const
 	{
 		return casted_comp_at<Type>(id, Type::KIND_STR);
@@ -214,7 +207,7 @@ public:		// functions
 		return insert_or_replace_comp(id, KIND_STR, std::move(comp));
 	}
 	size_t erase_comp(EntId id, const std::string& key);
-	template<HasKindStr Type>
+	template<typename Type>
 	inline size_t erase_comp(EntId id)
 	{
 		return erase_comp(id, Type::KIND_STR);
@@ -233,7 +226,7 @@ public:		// functions
 		return insert_or_replace_sys(KIND_STR, std::move(sys));
 	}
 	size_t erase_sys(const std::string& key);
-	template<HasKindStr Type>
+	template<typename Type>
 	inline size_t erase_sys()
 	{
 		return erase_sys(Type::KIND_STR);
@@ -245,7 +238,7 @@ public:		// functions
 		return (engine_comp_map().contains(id)
 			&& comp_map(id).contains(key));
 	}
-	template<HasKindStr Type>
+	template<typename Type>
 	inline bool has_ent_with_comp(EntId id) const
 	{
 		return has_ent_with_comp(id, Type::KIND_STR);
