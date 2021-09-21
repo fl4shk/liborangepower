@@ -48,7 +48,7 @@ template<typename Type>
 concept HasKindStr
 	= requires(Type obj)
 {
-	{ Type::KIND_STR } -> std::same_as<std::string>;
+	{ obj.KIND_STR } -> std::same_as<std::string>;
 };
 //--------
 class Ent final
