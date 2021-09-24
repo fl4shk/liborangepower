@@ -88,7 +88,7 @@ public:		// functions
 	virtual ~Sys() = default;
 
 	virtual std::string kind_str() const;
-	virtual void tick(Engine* engine);
+	virtual void tick(Engine* ecs_engine);
 };
 //--------
 class Engine

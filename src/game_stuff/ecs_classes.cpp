@@ -23,7 +23,7 @@ std::string Sys::kind_str() const
 {
 	return "";
 }
-void Sys::tick(Engine* engine)
+void Sys::tick(Engine* ecs_engine)
 {
 	// This should be implemented by derived classes
 }
