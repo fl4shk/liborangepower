@@ -74,7 +74,7 @@ inline std::vector<std::string> split_str
 {
 	std::vector<std::string> ret;
 
-	for (size_t i=0; i<to_split.size(); ++i)
+	for (size_t i=0; i<to_split.size();)
 	{
 		auto c = to_split.at(i);
 
