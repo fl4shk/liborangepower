@@ -82,6 +82,8 @@ public:		// functions
 //--------
 class Sys
 {
+public:		// variables
+	bool did_init = false;
 public:		// functions
 	Sys() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
