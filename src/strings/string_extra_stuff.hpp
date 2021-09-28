@@ -184,7 +184,7 @@ inline std::vector<std::vector<std::string>> wrap_str
 		ret.back().push_back(std::move(s));
 
 		if (((i + 1) < split_string.size())
-			&& ((col + split_string.at(i + 1).size()) >= row_length))
+			&& ((col + split_string.at(i + 1).size()) > row_length))
 		{
 			ret.push_back(std::vector<std::string>());
 			col = 0;
