@@ -84,13 +84,9 @@ public:		// functions
 class Sys
 {
 public:		// variables
-	containers::PrevCurrPair<bool> did_init;
+	bool did_init = false;
 public:		// functions
-	inline Sys()
-	{
-		did_init() = false;
-		did_init.back_up();
-	}
+	inline Sys() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
 
