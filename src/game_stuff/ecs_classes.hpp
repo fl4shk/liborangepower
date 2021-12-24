@@ -83,19 +83,21 @@ public:		// functions
 //--------
 class Sys
 {
-protected:		// variables
-	bool _did_init = false, _active = false;
+public:		// variables
+	bool did_init = false;
+	containers::PrevCurrPair<bool> active;
 public:		// functions
-	inline Sys() = default;
+	inline Sys()
+	{
+		active.back_up_and_update(false);
+		active.back_up();
+	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
 
 	virtual std::string kind_str() const;
 	virtual void init(Engine* ecs_engine);
 	virtual void tick(Engine* ecs_engine);
-
-	GEN_SETTER_BY_VAL(did_init);
-	GEN_SETTER_BY_VAL(active);
 };
 //--------
 class Engine
