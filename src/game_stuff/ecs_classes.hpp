@@ -84,7 +84,7 @@ public:		// functions
 class Sys
 {
 public:		// variables
-	PrevCurrPair<bool> did_init;
+	containers::PrevCurrPair<bool> did_init;
 public:		// functions
 	inline Sys()
 	{
