@@ -83,8 +83,8 @@ public:		// functions
 //--------
 class Sys
 {
-public:		// variables
-	bool did_init = false;
+protected:		// variables
+	bool _did_init = false, _active = false;
 public:		// functions
 	inline Sys() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
@@ -93,6 +93,9 @@ public:		// functions
 	virtual std::string kind_str() const;
 	virtual void init(Engine* ecs_engine);
 	virtual void tick(Engine* ecs_engine);
+
+	GEN_SETTER_BY_VAL(did_init);
+	GEN_SETTER_BY_VAL(active);
 };
 //--------
 class Engine
