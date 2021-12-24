@@ -5,6 +5,7 @@
 #include "../misc/misc_types.hpp"
 #include "../strings/sconcat_etc.hpp"
 #include "../containers/vec2_classes.hpp"
+#include "../containers/prev_curr_pair_classes.hpp"
 
 #include <map>
 #include <set>
@@ -83,9 +84,13 @@ public:		// functions
 class Sys
 {
 public:		// variables
-	bool did_init = false;
+	PrevCurrPair<bool> did_init;
 public:		// functions
-	Sys() = default;
+	inline Sys()
+	{
+		did_init() = false;
+		did_init.back_up();
+	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
 
