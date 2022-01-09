@@ -35,6 +35,8 @@ inline void print_json_value_type(Json::Value* iter,
 		get_json_value_type_as_str(iter));
 }
 
+// Errors from the `parse_json()` family of functions only happened if the
+// return value is false.
 bool parse_json(Json::CharReaderBuilder* rbuilder, std::istream& is,
 	Json::Value* root, std::string* errs);
 bool parse_json(Json::CharReaderBuilder* rbuilder, 
