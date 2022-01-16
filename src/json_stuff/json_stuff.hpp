@@ -149,8 +149,8 @@ inline Type get_jv_memb(const Json::Value& jv,
 	{
 		Type ret = 0;
 
-		ret = static_cast<Type>(val_from_jv<uint>
-			(jv[sconcat(name, ".high")]) << static_cast<uint64_t>(32u))
+		ret = (static_cast<Type>(val_from_jv<uint>
+			(jv[sconcat(name, ".high")])) << static_cast<uint64_t>(32u))
 			| static_cast<Type>(val_from_jv<uint>
 				(jv[sconcat(name, ".low")]));
 
