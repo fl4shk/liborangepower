@@ -13,6 +13,8 @@ namespace containers
 template<typename Type>
 class Vec3
 {
+public:		// types
+	using ElemType = Type;
 public:		// variables
 	Type x, y, z;
 public:		// functions

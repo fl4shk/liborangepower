@@ -14,9 +14,10 @@ namespace containers
 template<typename Type>
 class Vec2
 {
+public:		// types
+	using ElemType = Type;
 public:		// variables
 	Type x, y;
-
 public:		// functions
 	//--------
 	inline Vec2() = default;
