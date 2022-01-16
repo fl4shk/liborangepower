@@ -3,18 +3,216 @@
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
+#include "../containers/vec2_classes.hpp"
+#include "../containers/vec3_classes.hpp"
 
 // jsoncpp headers
 #include <json/value.h>
 #include <json/reader.h>
 #include <json/writer.h>
 
+#include <cstdint>
 
 namespace liborangepower
 {
-
 namespace json
 {
+
+template<typename Type>
+extern uint32_t _is_std_vec_func(const std::vector<Type>&);
+template<typename Type>
+extern uint8_t _is_std_vec_func(const Type&);
+
+template<typename Type>
+constexpr inline bool is_std_vec()
+{
+	return (sizeof(_is_std_vec_func(std::declval<Type>()))
+		== sizeof(uint32_t));
+}
+
+template<typename Type>
+inline containers::Vec2<Type> vec2_from_jv(const Json::Value& jv)
+{
+	return
+		containers::Vec2<Type>
+	(
+		val_from_jv<Type>(jv["x"]),
+		val_from_jv<Type>(jv["y"])
+	);
+}
+template<typename Type>
+inline Json::Value vec2_to_jv(const containers::Vec2<Type>& vec)
+{
+	Json::Value ret;
+
+	ret["x"] = vec.x;
+	ret["y"] = vec.y;
+
+	return ret;
+}
+
+template<typename Type>
+inline containers::Vec3<Type> vec3_from_jv(const Json::Value& jv)
+{
+	return
+		containers::Vec3<Type>
+	(
+		val_from_jv<Type>(jv["x"]),
+		val_from_jv<Type>(jv["y"]),
+		val_from_jv<Type>(jv["z"])
+	);
+}
+template<typename Type>
+inline Json::Value vec3_to_jv(const containers::Vec3<Type>& vec)
+{
+	Json::Value ret;
+
+	ret["x"] = vec.x;
+	ret["y"] = vec.y;
+	ret["z"] = vec.z;
+
+	return ret;
+}
+
+template<typename Type>
+inline Type val_from_jv(const Json::Value& jv)
+{
+	//--------
+	if constexpr (std::is_same<Type, int>())
+	{
+		return jv.asInt();
+	}
+	else if constexpr (std::is_same<Type, uint>())
+	{
+		return jv.asUInt();
+	}
+	else if constexpr (std::is_same<Type, float>())
+	{
+		return jv.asFloat();
+	}
+	else if constexpr (std::is_same<Type, double>())
+	{
+		return jv.asDouble();
+	}
+	else if constexpr (std::is_same<Type, bool>())
+	{
+		return jv.asBool();
+	}
+	else if constexpr (std::is_same<Type, std::string>())
+	{
+		return jv.asString();
+	}
+	//--------
+	else if constexpr (containers::is_vec2<Type>())
+	{
+		return vec2_from_jv<decltype(Type().x)>(jv);
+	}
+	else if constexpr (containers::is_vec3<Type>())
+	{
+		return vec3_from_jv<decltype(Type().x)>(jv);
+	}
+	//--------
+	else if constexpr (is_std_vec(Type))
+	{
+		Type ret;
+
+		for (Json::ArrayIndex i=0; i<jv.size(); ++i)
+		{
+			ret.push_back(val_from_jv<decltype(Type().at(0))>(jv[i]));
+		}
+
+		return ret;
+	}
+	//--------
+	else if constexpr (std::is_constructible<Type, const Json::Value&>())
+	{
+		return Type(jv);
+	}
+	else
+	{
+		// Assume a static member function called `from_jv` exists
+		return Type::from_jv(jv);
+	}
+	//--------
+}
+
+template<typename Type>
+inline Type get_jv_memb(const Json::Value& jv,
+	const std::string& name)
+{
+	if constexpr (std::is_same<Type, i64>()
+		|| std::is_same<Type, u64>())
+	{
+		Type ret = 0;
+
+		ret = static_cast<Type>(val_from_jv<uint>
+			(jv[sconcat(name, ".high")]) << static_cast<u64>(32u))
+			| static_cast<Type>(val_from_jv<uint>
+				(jv[sconcat(name, ".low")]));
+
+		return ret;
+	}
+	else
+	{
+		return val_from_jv<Type>(jv[name]);
+	}
+}
+
+template<typename Type>
+inline void _set_jv(Json::Value& jv, const Type& val)
+{
+	static_assert((!std::is_same<Type, i64>())
+		&& (!std::is_same<Type, u64>()));
+
+	//--------
+	if constexpr (containers::is_vec2<Type>())
+	{
+		jv = vec2_to_jv(val);
+	}
+	else if constexpr (containers::is_vec3<Type>())
+	{
+		jv = vec3_to_jv(val);
+	}
+	//--------
+	else if constexpr (is_std_vec<Type>())
+	{
+		for (Json::ArrayIndex i=0; i<val.size(); ++i)
+		{
+			jv[i] = val.at(i);
+		}
+	}
+	//--------
+	else
+	{
+		jv = val;
+	}
+	//--------
+}
+
+template<typename Type>
+inline void set_jv_memb(Json::Value& jv, const std::string& name,
+	const Type& val)
+{
+	//--------
+	//if constexpr (std::is_same<Type, int>()
+	//	|| std::is_same<Type, uint>()
+	//	|| std::is_same<Type, float>()
+	//	|| std::is_same<Type, double>())
+	if constexpr (std::is_same<Type, i64>()
+		|| std::is_same<Type, u64>())
+	{
+		jv[sconcat(name, ".high")] 
+			= static_cast<u32>(static_cast<u64>(val)
+				>> static_cast<u64>(32u));
+		jv[sconcat(name, ".low")]
+			= static_cast<u32>(static_cast<u64>(val)
+				& static_cast<u64>(0xffffffffu));
+	}
+	else
+	{
+		_set_jv(jv[name], val);
+	}
+}
 
 std::string get_json_value_type_as_str(const Json::Value& some_value);
 inline std::string get_json_value_type_as_str(Json::Value* iter)
@@ -85,7 +283,6 @@ inline void debug_print_json(Json::Value* iter,
 }
 
 } // namespace json
-
 } // namespace liborangepower
 
 #endif		// liborangepower_json_stuff_json_stuff_hpp

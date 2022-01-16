@@ -4,6 +4,8 @@
 #include "../gen_class_innards_defines.hpp"
 #include "vec2_classes.hpp"
 
+#include <cstdint>
+
 namespace liborangepower
 {
 
@@ -137,6 +139,18 @@ public:		// functions
 	}
 	//--------
 };
+
+template<typename Type>
+extern uint32_t _is_vec3_func(const Vec3<Type>&);
+template<typename Type>
+extern uint8_t _is_vec3_func(const Type&);
+
+template<typename Type>
+constexpr inline bool is_vec3()
+{
+	return (sizeof(_is_vec3_func(std::declval<Type>()))
+		== sizeof(uint32_t));
+}
 
 } // namespace containers
 
