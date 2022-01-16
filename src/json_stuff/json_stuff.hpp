@@ -5,6 +5,7 @@
 #include "../misc/misc_output_classes.hpp"
 #include "../containers/vec2_classes.hpp"
 #include "../containers/vec3_classes.hpp"
+#include "../strings/sconcat_etc.hpp"
 
 // jsoncpp headers
 #include <json/value.h>
@@ -15,6 +16,9 @@
 
 namespace liborangepower
 {
+
+using strings::sconcat;
+
 namespace json
 {
 
