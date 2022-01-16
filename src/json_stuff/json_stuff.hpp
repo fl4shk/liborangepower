@@ -112,7 +112,7 @@ inline Type val_from_jv(const Json::Value& jv)
 		return vec3_from_jv<decltype(Type().x)>(jv);
 	}
 	//--------
-	else if constexpr (is_std_vec(Type))
+	else if constexpr (is_std_vec<Type>())
 	{
 		Type ret;
 
