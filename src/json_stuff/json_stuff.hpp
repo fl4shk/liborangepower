@@ -261,7 +261,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 			{
 				Json::Value inner_jv;
 
-				_set_jv(inner_jv, key)
+				_set_jv(inner_jv, key);
 
 				jv[i++] = inner_jv;
 			}
