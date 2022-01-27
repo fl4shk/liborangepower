@@ -5,6 +5,7 @@
 #include "../misc/misc_output_classes.hpp"
 #include "../containers/vec2_classes.hpp"
 #include "../containers/vec3_classes.hpp"
+#include "../containers/prev_curr_pair_classes.hpp"
 #include "../containers/std_container_id_funcs.hpp"
 #include "../strings/sconcat_etc.hpp"
 
@@ -124,6 +125,21 @@ inline Type val_from_jv(const Json::Value& jv)
 			val_from_jv<decltype(NonCvrefType().z)>(jv["z"]),
 		);
 	}
+	else if constexpr
+	(
+		containers::is_prev_curr_pair<Type>()
+		|| containers::is_move_only_prev_curr_pair<Type>()
+	)
+	{
+		NonCvrefType ret;
+
+		using ElemOfNonCvrefType
+			= std::remove_cvref_t<decltype(NonCvrefType()())>;
+
+		ret() = val_from_jv<ElemOfNonCvrefType>(jv["_prev"]);
+		ret.back_up_and_update(val_from_jv<ElemOfNonCvrefType>
+			(jv["_curr"]));
+	}
 	//--------
 	else if constexpr (containers::is_basic_std_container<Type>())
 	{
@@ -187,6 +203,8 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 {
 	using NonCvrefType = std::remove_cvref_t<Type>;
 
+	jv = Json::Value();
+
 	static_assert((!std::is_same<Type, int64_t>())
 		&& (!std::is_same<Type, uint64_t>()));
 
@@ -198,6 +216,15 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 	else if constexpr (containers::is_vec3<Type>())
 	{
 		jv = vec3_to_jv(val);
+	}
+	else if constexpr
+	(
+		containers::is_prev_curr_pair<Type>()
+		|| containers::is_move_only_prev_curr_pair<Type>()
+	)
+	{
+		_set_jv(jv["_prev"] = val.prev());
+		_set_jv(jv["_curr"] = val.curr());
 	}
 	//--------
 	else if constexpr
