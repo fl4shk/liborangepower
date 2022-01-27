@@ -122,7 +122,7 @@ inline Type val_from_jv(const Json::Value& jv)
 		(
 			val_from_jv<decltype(NonCvrefType().x)>(jv["x"]),
 			val_from_jv<decltype(NonCvrefType().y)>(jv["y"]),
-			val_from_jv<decltype(NonCvrefType().z)>(jv["z"]),
+			val_from_jv<decltype(NonCvrefType().z)>(jv["z"])
 		);
 	}
 	else if constexpr
