@@ -104,43 +104,45 @@ template<typename Type>
 inline Type val_from_jv(const Json::Value& jv)
 {
 	//--------
-	if constexpr (std::is_same<Type, int>())
+	using NonCvrefType = typename std::remove_cvref<Type>::type;
+	//--------
+	if constexpr (std::is_same<NonCvrefType, int>())
 	{
 		return jv.asInt();
 	}
-	else if constexpr (std::is_same<Type, uint>())
+	else if constexpr (std::is_same<NonCvrefType, uint>())
 	{
 		return jv.asUInt();
 	}
-	else if constexpr (std::is_same<Type, float>())
+	else if constexpr (std::is_same<NonCvrefType, float>())
 	{
 		return jv.asFloat();
 	}
-	else if constexpr (std::is_same<Type, double>())
+	else if constexpr (std::is_same<NonCvrefType, double>())
 	{
 		return jv.asDouble();
 	}
-	else if constexpr (std::is_same<Type, bool>())
+	else if constexpr (std::is_same<NonCvrefType, bool>())
 	{
 		return jv.asBool();
 	}
-	else if constexpr (std::is_same<Type, std::string>())
+	else if constexpr (std::is_same<NonCvrefType, std::string>())
 	{
 		return jv.asString();
 	}
 	//--------
-	else if constexpr (containers::is_vec2<Type>())
+	else if constexpr (containers::is_vec2<NonCvrefType>())
 	{
-		return vec2_from_jv<decltype(Type().x)>(jv);
+		return vec2_from_jv<decltype(NonCvrefType().x)>(jv);
 	}
-	else if constexpr (containers::is_vec3<Type>())
+	else if constexpr (containers::is_vec3<NonCvrefType>())
 	{
-		return vec3_from_jv<decltype(Type().x)>(jv);
+		return vec3_from_jv<decltype(NonCvrefType().x)>(jv);
 	}
 	//--------
-	else if constexpr (is_std_vector<Type>() || is_std_deque<Type>())
+	else if constexpr (is_std_vector<NonCvrefType>()
+		|| is_std_deque<NonCvrefType>())
 	{
-		using NonCvrefType = typename std::remove_cvref<Type>::type;
 		NonCvrefType ret;
 
 		for (Json::ArrayIndex i=0; i<jv.size(); ++i)
@@ -152,14 +154,14 @@ inline Type val_from_jv(const Json::Value& jv)
 		return ret;
 	}
 	//--------
-	else if constexpr (std::is_constructible<Type, Json::Value>())
+	else if constexpr (std::is_constructible<NonCvrefType, Json::Value>())
 	{
-		return Type(jv);
+		return NonCvrefType(jv);
 	}
 	else
 	{
 		// Assume a static member function called `from_jv` exists
-		return Type::from_jv(jv);
+		return NonCvrefType::from_jv(jv);
 	}
 	//--------
 }
