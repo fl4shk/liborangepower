@@ -5,15 +5,13 @@
 #include "../misc/misc_output_classes.hpp"
 #include "../containers/vec2_classes.hpp"
 #include "../containers/vec3_classes.hpp"
+#include "../containers/std_container_id_funcs.hpp"
 #include "../strings/sconcat_etc.hpp"
 
 // jsoncpp headers
 #include <json/value.h>
 #include <json/reader.h>
 #include <json/writer.h>
-
-#include <cstdint>
-#include <deque>
 
 namespace liborangepower
 {
@@ -32,40 +30,16 @@ namespace json
 #define MEMB_FROM_JV_DESERIALIZE(name) \
 	ret.name = get_jv_memb<decltype(ret.name)>(jv, #name);
 
-template<typename Type>
-extern uint32_t _is_std_vector_func(const std::vector<Type>&);
-template<typename Type>
-extern uint8_t _is_std_vector_func(const Type&);
-
-template<typename Type>
-constexpr inline bool is_std_vector()
-{
-	return (sizeof(_is_std_vector_func(std::declval<Type>()))
-		== sizeof(uint32_t));
-}
-
-template<typename Type>
-extern uint32_t _is_std_deque_func(const std::deque<Type>&);
-template<typename Type>
-extern uint8_t _is_std_deque_func(const Type&);
-
-template<typename Type>
-constexpr inline bool is_std_deque()
-{
-	return (sizeof(_is_std_deque_func(std::declval<Type>()))
-		== sizeof(uint32_t));
-}
-
-template<typename Type>
-inline containers::Vec2<Type> vec2_from_jv(const Json::Value& jv)
-{
-	return
-		containers::Vec2<Type>
-	(
-		val_from_jv<Type>(jv["x"]),
-		val_from_jv<Type>(jv["y"])
-	);
-}
+//template<typename Type>
+//inline containers::Vec2<Type> vec2_from_jv(const Json::Value& jv)
+//{
+//	return
+//		containers::Vec2<Type>
+//	(
+//		val_from_jv<Type>(jv["x"]),
+//		val_from_jv<Type>(jv["y"])
+//	);
+//}
 template<typename Type>
 inline Json::Value vec2_to_jv(const containers::Vec2<Type>& vec)
 {
@@ -76,18 +50,18 @@ inline Json::Value vec2_to_jv(const containers::Vec2<Type>& vec)
 
 	return ret;
 }
-
-template<typename Type>
-inline containers::Vec3<Type> vec3_from_jv(const Json::Value& jv)
-{
-	return
-		containers::Vec3<Type>
-	(
-		val_from_jv<Type>(jv["x"]),
-		val_from_jv<Type>(jv["y"]),
-		val_from_jv<Type>(jv["z"])
-	);
-}
+//
+//template<typename Type>
+//inline containers::Vec3<Type> vec3_from_jv(const Json::Value& jv)
+//{
+//	return
+//		containers::Vec3<Type>
+//	(
+//		val_from_jv<Type>(jv["x"]),
+//		val_from_jv<Type>(jv["y"]),
+//		val_from_jv<Type>(jv["z"])
+//	);
+//}
 template<typename Type>
 inline Json::Value vec3_to_jv(const containers::Vec3<Type>& vec)
 {
@@ -104,7 +78,7 @@ template<typename Type>
 inline Type val_from_jv(const Json::Value& jv)
 {
 	//--------
-	using NonCvrefType = typename std::remove_cvref<Type>::type;
+	using NonCvrefType = std::remove_cvref_t<Type>;
 	//--------
 	if constexpr (std::is_same<Type, int>())
 	{
@@ -133,22 +107,42 @@ inline Type val_from_jv(const Json::Value& jv)
 	//--------
 	else if constexpr (containers::is_vec2<Type>())
 	{
-		return vec2_from_jv<decltype(NonCvrefType().x)>(jv);
+		//return vec2_from_jv<decltype(NonCvrefType().x)>(jv);
+		return NonCvrefType
+		(
+			val_from_jv<decltype(NonCvrefType().x)>(jv["x"]),
+			val_from_jv<decltype(NonCvrefType().y)>(jv["y"])
+		);
 	}
 	else if constexpr (containers::is_vec3<Type>())
 	{
-		return vec3_from_jv<decltype(NonCvrefType().x)>(jv);
+		//return vec3_from_jv<decltype(NonCvrefType().x)>(jv);
+		return NonCvrefType
+		(
+			val_from_jv<decltype(NonCvrefType().x)>(jv["x"]),
+			val_from_jv<decltype(NonCvrefType().y)>(jv["y"]),
+			val_from_jv<decltype(NonCvrefType().z)>(jv["z"]),
+		);
 	}
 	//--------
-	else if constexpr (is_std_vector<Type>()
-		|| is_std_deque<Type>())
+	else if constexpr (containers::is_basic_std_container<Type>())
 	{
 		NonCvrefType ret;
 
 		for (Json::ArrayIndex i=0; i<jv.size(); ++i)
 		{
-			ret.push_back(val_from_jv<decltype(NonCvrefType().at(0))>
-				(jv[i]));
+			//if constexpr (!is_std_set<Type>())
+			if constexpr (containers::is_std_vector<Type>()
+				|| containers::is_std_deque<Type>())
+			{
+				ret.push_back(val_from_jv<decltype(NonCvrefType().at(0))>
+					(jv[i]));
+			}
+			else // if constexpr (containers::is_std_set<Type>())
+			{
+				ret.insert(val_from_jv<typename NonCvrefType::key_type>
+					(jv[i]));
+			}
 		}
 
 		return ret;
@@ -191,6 +185,8 @@ inline Type get_jv_memb(const Json::Value& jv,
 template<typename Type>
 inline void _set_jv(Json::Value& jv, const Type& val)
 {
+	using NonCvrefType = std::remove_cvref_t<Type>;
+
 	static_assert((!std::is_same<Type, int64_t>())
 		&& (!std::is_same<Type, uint64_t>()));
 
@@ -204,13 +200,16 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		jv = vec3_to_jv(val);
 	}
 	//--------
-	else if constexpr (is_std_vector<Type>() || is_std_deque<Type>())
+	else if constexpr
+	(
+		containers::is_std_vector<Type>()
+		|| containers::is_std_deque<Type>()
+	)
 	{
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
-			using NonCvrefType = typename std::remove_cvref<Type>::type;
-			if constexpr (is_std_vector<decltype(NonCvrefType().at(0))>()
-				|| is_std_deque<decltype(NonCvrefType().at(0))>())
+			if constexpr (containers::is_basic_std_container
+				<decltype(NonCvrefType().at(0))>())
 			{
 				Json::Value inner_jv;
 
@@ -221,6 +220,27 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 			else
 			{
 				jv[i] = val.at(i);
+			}
+		}
+	}
+	else if constexpr (containers::is_std_set<Type>())
+	{
+		Json::ArrayIndex i = 0;
+
+		for (const auto& key: val)
+		{
+			if constexpr (containers::is_basic_std_container
+				<typename NonCvrefType::key_type>())
+			{
+				Json::Value inner_jv;
+
+				_set_jv(inner_jv, key)
+
+				jv[i++] = inner_jv;
+			}
+			else
+			{
+				jv[i++] = key;
 			}
 		}
 	}
