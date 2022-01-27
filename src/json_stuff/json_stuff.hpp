@@ -140,7 +140,7 @@ inline Type val_from_jv(const Json::Value& jv)
 	//--------
 	else if constexpr (is_std_vector<Type>() || is_std_deque<Type>())
 	{
-		Type ret;
+		std::remove_cv<Type>::type ret;
 
 		for (Json::ArrayIndex i=0; i<jv.size(); ++i)
 		{
@@ -204,7 +204,18 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 	{
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
-			jv[i] = val.at(i);
+			if constexpr (is_std_vector<decltype(Type().at(0))>()
+				|| is_std_deque<decltype(Type().at(0))>())
+			{
+				Json::Value inner_jv;
+				_set_jv(inner_jv, val.at(i));
+
+				jv[i] = inner_jv;
+			}
+			else
+			{
+				jv[i] = val.at(i);
+			}
 		}
 	}
 	//--------
