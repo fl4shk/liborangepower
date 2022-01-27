@@ -13,6 +13,7 @@
 #include <json/writer.h>
 
 #include <cstdint>
+#include <deque>
 
 namespace liborangepower
 {
@@ -32,14 +33,26 @@ namespace json
 	ret.name = get_jv_memb<decltype(ret.name)>(jv, #name);
 
 template<typename Type>
-extern uint32_t _is_std_vec_func(const std::vector<Type>&);
+extern uint32_t _is_std_vector_func(const std::vector<Type>&);
 template<typename Type>
-extern uint8_t _is_std_vec_func(const Type&);
+extern uint8_t _is_std_vector_func(const Type&);
 
 template<typename Type>
-constexpr inline bool is_std_vec()
+constexpr inline bool is_std_vector()
 {
-	return (sizeof(_is_std_vec_func(std::declval<Type>()))
+	return (sizeof(_is_std_vector_func(std::declval<Type>()))
+		== sizeof(uint32_t));
+}
+
+template<typename Type>
+extern uint32_t _is_std_deque_func(const std::deque<Type>&);
+template<typename Type>
+extern uint8_t _is_std_deque_func(const Type&);
+
+template<typename Type>
+constexpr inline bool is_std_deque()
+{
+	return (sizeof(_is_std_deque_func(std::declval<Type>()))
 		== sizeof(uint32_t));
 }
 
@@ -125,7 +138,7 @@ inline Type val_from_jv(const Json::Value& jv)
 		return vec3_from_jv<decltype(Type().x)>(jv);
 	}
 	//--------
-	else if constexpr (is_std_vec<Type>())
+	else if constexpr (is_std_vector<Type>() || is_std_deque<Type>())
 	{
 		Type ret;
 
@@ -187,7 +200,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		jv = vec3_to_jv(val);
 	}
 	//--------
-	else if constexpr (is_std_vec<Type>())
+	else if constexpr (is_std_vector<Type>() || is_std_deque<Type>())
 	{
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
