@@ -152,7 +152,7 @@ inline Type val_from_jv(const Json::Value& jv)
 		return ret;
 	}
 	//--------
-	else if constexpr (std::is_constructible<Type, const Json::Value&>())
+	else if constexpr (std::is_constructible<Type, Json::Value>())
 	{
 		return Type(jv);
 	}
