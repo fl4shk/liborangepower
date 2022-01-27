@@ -131,17 +131,17 @@ inline Type val_from_jv(const Json::Value& jv)
 		return jv.asString();
 	}
 	//--------
-	else if constexpr (containers::is_vec2<NonCvrefType>())
+	else if constexpr (containers::is_vec2<Type>())
 	{
 		return vec2_from_jv<decltype(NonCvrefType().x)>(jv);
 	}
-	else if constexpr (containers::is_vec3<NonCvrefType>())
+	else if constexpr (containers::is_vec3<Type>())
 	{
 		return vec3_from_jv<decltype(NonCvrefType().x)>(jv);
 	}
 	//--------
-	else if constexpr (is_std_vector<NonCvrefType>()
-		|| is_std_deque<NonCvrefType>())
+	else if constexpr (is_std_vector<Type>()
+		|| is_std_deque<Type>())
 	{
 		NonCvrefType ret;
 
