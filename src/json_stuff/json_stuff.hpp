@@ -140,7 +140,7 @@ inline Type val_from_jv(const Json::Value& jv)
 	//--------
 	else if constexpr (is_std_vector<Type>() || is_std_deque<Type>())
 	{
-		typename std::remove_cv<Type>::type ret;
+		typename std::remove_cvref<Type>::type ret;
 
 		for (Json::ArrayIndex i=0; i<jv.size(); ++i)
 		{
