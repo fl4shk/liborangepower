@@ -106,27 +106,27 @@ inline Type val_from_jv(const Json::Value& jv)
 	//--------
 	using NonCvrefType = typename std::remove_cvref<Type>::type;
 	//--------
-	if constexpr (std::is_same<NonCvrefType, int>())
+	if constexpr (std::is_same<Type, int>())
 	{
 		return jv.asInt();
 	}
-	else if constexpr (std::is_same<NonCvrefType, uint>())
+	else if constexpr (std::is_same<Type, uint>())
 	{
 		return jv.asUInt();
 	}
-	else if constexpr (std::is_same<NonCvrefType, float>())
+	else if constexpr (std::is_same<Type, float>())
 	{
 		return jv.asFloat();
 	}
-	else if constexpr (std::is_same<NonCvrefType, double>())
+	else if constexpr (std::is_same<Type, double>())
 	{
 		return jv.asDouble();
 	}
-	else if constexpr (std::is_same<NonCvrefType, bool>())
+	else if constexpr (std::is_same<Type, bool>())
 	{
 		return jv.asBool();
 	}
-	else if constexpr (std::is_same<NonCvrefType, std::string>())
+	else if constexpr (std::is_same<Type, std::string>())
 	{
 		return jv.asString();
 	}
@@ -156,12 +156,12 @@ inline Type val_from_jv(const Json::Value& jv)
 	//--------
 	else if constexpr (std::is_constructible<NonCvrefType, Json::Value>())
 	{
-		return NonCvrefType(jv);
+		return Type(jv);
 	}
 	else
 	{
 		// Assume a static member function called `from_jv` exists
-		return NonCvrefType::from_jv(jv);
+		return Type::from_jv(jv);
 	}
 	//--------
 }
