@@ -76,7 +76,7 @@ inline Json::Value vec3_to_jv(const containers::Vec3<Type>& vec)
 }
 
 template<typename Type>
-inline Type val_from_jv(const Json::Value& jv)
+inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 {
 	//--------
 	using NonCvrefType = std::remove_cvref_t<Type>;
