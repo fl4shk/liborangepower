@@ -113,9 +113,9 @@ public:		// functions
 };
 //--------
 template<typename Type>
-concept HasConstKindStr = requires(Type c)
+concept HasConstKindStr = requires
 {
-	{ Type::KIND_STR } -> std::same_as<static const std::string>;
+	{ Type::KIND_STR } -> std::same_as<const std::string>;
 };
 
 template<typename Type>
