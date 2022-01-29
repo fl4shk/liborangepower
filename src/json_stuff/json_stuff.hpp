@@ -89,6 +89,14 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 	{
 		return jv.asUInt();
 	}
+	else if constexpr (std::is_same<Type, int64_t>())
+	{
+		return jv.asInt64();
+	}
+	else if constexpr (std::is_same<Type, uint64_t>())
+	{
+		return jv.asUInt64();
+	}
 	else if constexpr (std::is_same<Type, float>())
 	{
 		return jv.asFloat();
@@ -182,24 +190,24 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 template<typename Type>
 inline Type get_jv_memb(const Json::Value& jv, const std::string& name)
 {
-	if constexpr (std::is_same<std::remove_cvref_t<Type>, int64_t>()
-		|| std::is_same<std::remove_cvref_t<Type>, uint64_t>()
-		|| std::is_same<std::remove_cvref_t<Type>, long int>()
-		|| std::is_same<std::remove_cvref_t<Type>, long unsigned int>())
-	{
-		Type ret = 0;
+	//if constexpr (std::is_same<std::remove_cvref_t<Type>, int64_t>()
+	//	|| std::is_same<std::remove_cvref_t<Type>, uint64_t>()
+	//	|| std::is_same<std::remove_cvref_t<Type>, long int>()
+	//	|| std::is_same<std::remove_cvref_t<Type>, long unsigned int>())
+	//{
+	//	Type ret = 0;
 
-		ret = (static_cast<Type>(val_from_jv<uint>
-			(jv[sconcat(name, ".high")])) << static_cast<uint64_t>(32u))
-			| static_cast<Type>(val_from_jv<uint>
-				(jv[sconcat(name, ".low")]));
+	//	ret = (static_cast<Type>(val_from_jv<uint>
+	//		(jv[sconcat(name, ".high")])) << static_cast<uint64_t>(32u))
+	//		| static_cast<Type>(val_from_jv<uint>
+	//			(jv[sconcat(name, ".low")]));
 
-		return ret;
-	}
-	else
-	{
-		return val_from_jv<Type>(jv[name]);
-	}
+	//	return ret;
+	//}
+	//else
+	//{
+	//}
+	return val_from_jv<Type>(jv[name]);
 }
 
 template<typename Type>
@@ -209,8 +217,8 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 
 	jv = Json::Value();
 
-	static_assert((!std::is_same<Type, int64_t>())
-		&& (!std::is_same<Type, uint64_t>()));
+	//static_assert((!std::is_same<Type, int64_t>())
+	//	&& (!std::is_same<Type, uint64_t>()));
 
 	//--------
 	if constexpr (containers::is_vec2<Type>())
@@ -292,20 +300,20 @@ inline void set_jv_memb(Json::Value& jv, const std::string& name,
 	//	|| std::is_same<Type, uint>()
 	//	|| std::is_same<Type, float>()
 	//	|| std::is_same<Type, double>())
-	if constexpr (std::is_same<Type, int64_t>()
-		|| std::is_same<Type, uint64_t>())
-	{
-		jv[sconcat(name, ".high")] 
-			= static_cast<uint32_t>(static_cast<uint64_t>(val)
-				>> static_cast<uint64_t>(32u));
-		jv[sconcat(name, ".low")]
-			= static_cast<uint32_t>(static_cast<uint64_t>(val)
-				& static_cast<uint64_t>(0xffffffffu));
-	}
-	else
-	{
-		_set_jv(jv[name], val);
-	}
+	//if constexpr (std::is_same<Type, int64_t>()
+	//	|| std::is_same<Type, uint64_t>())
+	//{
+	//	jv[sconcat(name, ".high")] 
+	//		= static_cast<uint32_t>(static_cast<uint64_t>(val)
+	//			>> static_cast<uint64_t>(32u));
+	//	jv[sconcat(name, ".low")]
+	//		= static_cast<uint32_t>(static_cast<uint64_t>(val)
+	//			& static_cast<uint64_t>(0xffffffffu));
+	//}
+	//else
+	//{
+	//}
+	_set_jv(jv[name], val);
 }
 
 std::string get_json_value_type_as_str(const Json::Value& some_value);
