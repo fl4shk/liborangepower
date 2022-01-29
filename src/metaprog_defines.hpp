@@ -104,10 +104,10 @@
 #define MAP(m, sep, first, ...) \
 	m(first) \
 	\
-	WHEN(HAS_ARGS(__VA_ARGS__)) \
+	__VA_OPT__ \
 	( \
-		OBSTRUCT(sep)() \
-		OBSTRUCT(MAP_INDIRECT)()(m, sep, __VA_ARGS__) \
+		DEFER(sep)() \
+		DEFER(MAP_INDIRECT)()(m, sep, __VA_ARGS__) \
 	)
 #define MAP_INDIRECT() MAP
 // Here is an alternative version of `MAP` that could have been adapted to
