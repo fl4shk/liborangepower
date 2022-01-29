@@ -223,8 +223,8 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		|| containers::is_move_only_prev_curr_pair<Type>()
 	)
 	{
-		_set_jv(jv["_prev"] = val.prev());
-		_set_jv(jv["_curr"] = val.curr());
+		_set_jv(jv["_prev"], val.prev());
+		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
 	else if constexpr
