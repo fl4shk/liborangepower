@@ -139,6 +139,8 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 		ret() = val_from_jv<ElemOfNonCvrefType>(jv["_prev"]);
 		ret.back_up_and_update(val_from_jv<ElemOfNonCvrefType>
 			(jv["_curr"]));
+
+		return ret;
 	}
 	//--------
 	else if constexpr (containers::is_basic_std_container<Type>())
@@ -181,7 +183,9 @@ template<typename Type>
 inline Type get_jv_memb(const Json::Value& jv, const std::string& name)
 {
 	if constexpr (std::is_same<Type, int64_t>()
-		|| std::is_same<Type, uint64_t>())
+		|| std::is_same<Type, uint64_t>()
+		|| std::is_same<Type, long int>()
+		|| std::is_same<Type, long unsigned int>())
 	{
 		Type ret = 0;
 
