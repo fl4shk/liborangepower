@@ -113,13 +113,13 @@
 // Here is an alternative version of `MAP` that could have been adapted to
 // use with the following macros that are called `MAP_\d` were it being
 // used.
-//#define MAP(m, sep, first, ...) \
-//	m(first) \
-//	\
-//	WHEN(HAS_ARGS(__VA_ARGS__)) \
-//	( \
-//		OBSTRUCT(sep)() \
-//		OBSTRUCT(MAP_INDIRECT)()(m, sep, __VA_ARGS__) \
+//#define MAP(m, sep, first, ...)
+//	m(first)
+//
+//	WHEN(HAS_ARGS(__VA_ARGS__))
+//	(
+//		OBSTRUCT(sep)()
+//		OBSTRUCT(MAP_INDIRECT)()(m, sep, __VA_ARGS__)
 //	)
 
 #define MAP_2(m, sep, first, second, ...) \
@@ -152,8 +152,7 @@
 	)
 #define MAP_4_INDIRECT() MAP_4
 
-//#define DEF_VAR(type, name) \
-//	type name
+//#define DEF_VAR(type, name) type name
 //EVAL(MAP_2(DEF_VAR, SEMICOLON,
 //	int, x,
 //	Vec2<int>, y,
@@ -162,19 +161,13 @@
 
 // There are two ways to define `LIST` for use with `MAP` or
 // `MAP_INDIRECT`.
-//#define LIST(X, sep) \
-//	EVAL(MAP(X, sep, a, b, c, d))
+//#define LIST(X, sep) EVAL(MAP(X, sep, a, b, c, d))
 //
 // The workaround is to use `DEFER(MAP_INDIRECT)()` instead of `MAP`
-//#define LIST \
-//	a, \
-//	b, \
-//	c, \
-//	d
+//#define LIST a, b, c, d
 //EVAL(DEFER(MAP_INDIRECT)()(STRINGIFY, SEMICOLON, LIST))
 
-//#define PLUS_3(x) \
-//	((x) + 3)
+//#define PLUS_3(x) ((x) + 3)
 
 //EVAL(MAP(STRINGIFY, SEMICOLON, a, b, c, d))
 

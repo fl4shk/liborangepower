@@ -120,11 +120,11 @@ concept HasConstKindStr = requires(Type c)
 
 template<typename Type>
 concept EngineDerivedFromComp 
-	= std::derived_from<Comp, Type> && HasConstKindStr<Type>;
+	= std::derived_from<Type, Comp> && HasConstKindStr<Type>;
 
 template<typename Type>
 concept EngineDerivedFromSys
-	= std::derived_from<Sys, Type> && HasConstKindStr<Type>;
+	= std::derived_from<Type, Sys> && HasConstKindStr<Type>;
 
 class Engine
 {
