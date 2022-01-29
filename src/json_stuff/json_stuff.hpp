@@ -108,21 +108,21 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 	//--------
 	else if constexpr (containers::is_vec2<Type>())
 	{
-		//return vec2_from_jv<decltype(NonCvrefType().x)>(jv);
+		//return vec2_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
 		return NonCvrefType
 		(
-			val_from_jv<decltype(NonCvrefType().x)>(jv["x"]),
-			val_from_jv<decltype(NonCvrefType().y)>(jv["y"])
+			val_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv["x"]),
+			val_from_jv<decltype(std::declval<NonCvrefType>().y)>(jv["y"])
 		);
 	}
 	else if constexpr (containers::is_vec3<Type>())
 	{
-		//return vec3_from_jv<decltype(NonCvrefType().x)>(jv);
+		//return vec3_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
 		return NonCvrefType
 		(
-			val_from_jv<decltype(NonCvrefType().x)>(jv["x"]),
-			val_from_jv<decltype(NonCvrefType().y)>(jv["y"]),
-			val_from_jv<decltype(NonCvrefType().z)>(jv["z"])
+			val_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv["x"]),
+			val_from_jv<decltype(std::declval<NonCvrefType>().y)>(jv["y"]),
+			val_from_jv<decltype(std::declval<NonCvrefType>().z)>(jv["z"])
 		);
 	}
 	else if constexpr
@@ -134,7 +134,7 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 		NonCvrefType ret;
 
 		using ElemOfNonCvrefType
-			= std::remove_cvref_t<decltype(NonCvrefType()())>;
+			= std::remove_cvref_t<decltype(std::declval<NonCvrefType>()())>;
 
 		ret() = val_from_jv<ElemOfNonCvrefType>(jv["_prev"]);
 		ret.back_up_and_update(val_from_jv<ElemOfNonCvrefType>
@@ -151,7 +151,8 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 			if constexpr (containers::is_std_vector<Type>()
 				|| containers::is_std_deque<Type>())
 			{
-				ret.push_back(val_from_jv<decltype(NonCvrefType().at(0))>
+				ret.push_back(val_from_jv
+					<decltype(std::declval<NonCvrefType>().at(0))>
 					(jv[i]));
 			}
 			else // if constexpr (containers::is_std_set<Type>())
@@ -177,8 +178,7 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 }
 
 template<typename Type>
-inline Type get_jv_memb(const Json::Value& jv,
-	const std::string& name)
+inline Type get_jv_memb(const Json::Value& jv, const std::string& name)
 {
 	if constexpr (std::is_same<Type, int64_t>()
 		|| std::is_same<Type, uint64_t>())
@@ -236,7 +236,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
 			if constexpr (containers::is_basic_std_container
-				<decltype(NonCvrefType().at(0))>())
+				<decltype(std::declval<NonCvrefType>().at(0))>())
 			{
 				Json::Value inner_jv;
 

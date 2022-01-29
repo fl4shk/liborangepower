@@ -5,12 +5,22 @@
 #include "vec2_classes.hpp"
 
 #include <cstdint>
+#include <concepts>
 
 namespace liborangepower
 {
-
 namespace containers
 {
+
+template<typename Vec3Type, typename OtherVec3Type>
+concept LikeVec3 
+	= HasElemType<Vec3Type> 
+	&& requires(OtherVec3Type other)
+{
+	{ other.x } -> std::convertible_to<typename Vec3Type::ElemType>;
+	{ other.y } -> std::convertible_to<typename Vec3Type::ElemType>;
+	{ other.z } -> std::convertible_to<typename Vec3Type::ElemType>;
+};
 
 template<typename Type>
 class Vec3
@@ -30,25 +40,29 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Vec3);
 	virtual inline ~Vec3() = default;
 	//--------
-	template<typename OtherType>
-	inline Vec3 operator + (const Vec3<OtherType>& other) const
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline Vec3 operator + (const OtherVec3Type& other) const
 	{
 		return Vec3<Type>(x + other.x, y + other.y, z + other.z);
 	}
-	template<typename OtherType>
-	inline Vec3& operator += (const Vec3<OtherType>& other) const
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline Vec3& operator += (const OtherVec3& other) const
 	{
 		*this = (*this) + other;
 		return *this;
 	}
 
-	template<typename OtherType>
-	inline Vec3 operator - (const Vec3<OtherType>& other) const
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline Vec3 operator - (const OtherVec3Type& other) const
 	{
 		return Vec3<Type>(x - other.x, y - other.y, z - other.z);
 	}
-	template<typename OtherType>
-	inline Vec3& operator -= (const Vec3<OtherType>& other) const
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline Vec3& operator -= (const OtherVec3Type& other) const
 	{
 		*this = (*this) - other;
 		return *this;
@@ -59,24 +73,24 @@ public:		// functions
 		return Vec3(-x, -y, -z);
 	}
 
-	template<typename OtherType>
+	template<std::convertible_to<Type> OtherType>
 	inline Vec3 operator * (const OtherType& scale) const
 	{
 		return Vec3(x * scale, y * scale, z * scale);
 	}
-	template<typename OtherType>
+	template<std::convertible_to<Type> OtherType>
 	inline Vec3& operator *= (const OtherType& other) const
 	{
 		*this = (*this) * other;
 		return *this;
 	}
 
-	template<typename OtherType>
+	template<std::convertible_to<Type> OtherType>
 	inline Vec3 operator / (const OtherType& scale) const
 	{
 		return Vec3<Type>(x / scale, y / scale, z / scale);
 	}
-	template<typename OtherType>
+	template<std::convertible_to<Type> OtherType>
 	inline Vec3& operator /= (const OtherType& scale) const
 	{
 		*this = (*this) / scale;
@@ -84,15 +98,17 @@ public:		// functions
 	}
 	//--------
 	// Dot product
-	template<typename OtherType>
-	inline Type dot_prod(const Vec3<OtherType>& other) const
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline Type dot_prod(const OtherVec3Type& other) const
 	{
 		return ((x * other.x) + (y * other.y) + (z * other.z));
 	}
 
 	// Cross product
-	template<typename OtherType>
-	inline Vec3 cross_prod(const Vec3<OtherType>& other) const
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline Vec3 cross_prod(const OtherVec3Type& other) const
 	{
 		return Vec3<Type>((y * other.z) - (z * other.y),
 			(z * other.x) - (x * other.z),
@@ -104,39 +120,49 @@ public:		// functions
 		return std::sqrt(dot_prod(*this));
 	}
 	//--------
-	template<typename OtherType>
-	inline bool operator == (const Vec3<OtherType>& other) const
-	{
-		return ((x == other.x) && (y == other.y) && (z == other.z));
-	}
-	template<typename OtherType>
-	inline bool operator != (const Vec3<OtherType>& other) const
-	{
-		return (!((*this) == other));
-	}
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline auto operator <=> (const OtherVec3Type& other) const
+		= default;
+	//template<typename OtherVec3Type>
+	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	//inline bool operator == (const OtherVec3Type& other) const
+	//{
+	//	return ((x == other.x) && (y == other.y) && (z == other.z));
+	//}
+	//template<typename OtherVec3Type>
+	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	//inline bool operator != (const OtherVec3Type& other) const
+	//{
+	//	return (!((*this) == other));
+	//}
 
-	template<typename OtherType>
-	inline bool operator < (const Vec3<OtherType>& other) const
-	{
-		return ((z < other.z)
-			|| ((z == other.z) && (Vec2(x, y) < Vec2(other.x, other.y))));
-	}
-	template<typename OtherType>
-	inline bool operator > (const Vec3<OtherType>& other) const
-	{
-		return ((z > other.z)
-			|| ((z == other.z) && (Vec2(x, y) > Vec2(other.x, other.y))));
-	}
-	template<typename OtherType>
-	inline bool operator <= (const Vec3<OtherType>& other) const
-	{
-		return (!((*this) > other));
-	}
-	template<typename OtherType>
-	inline bool operator >= (const Vec3<OtherType>& other) const
-	{
-		return (!((*this) < other));
-	}
+	//template<typename OtherVec3Type>
+	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	//inline bool operator < (const OtherVec3Type& other) const
+	//{
+	//	return ((z < other.z)
+	//		|| ((z == other.z) && (Vec2(x, y) < Vec2(other.x, other.y))));
+	//}
+	//template<typename OtherVec3Type>
+	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	//inline bool operator > (const OtherVec3Type& other) const
+	//{
+	//	return ((z > other.z)
+	//		|| ((z == other.z) && (Vec2(x, y) > Vec2(other.x, other.y))));
+	//}
+	//template<typename OtherVec3Type>
+	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	//inline bool operator <= (const OtherVec3Type& other) const
+	//{
+	//	return (!((*this) > other));
+	//}
+	//template<typename OtherVec3Type>
+	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	//inline bool operator >= (const OtherVec3Type& other) const
+	//{
+	//	return (!((*this) < other));
+	//}
 	//--------
 };
 
@@ -153,7 +179,6 @@ constexpr inline bool is_vec3()
 }
 
 } // namespace containers
-
 } // namespace liborangepower
 #endif		// liborangepower_containers_vec3_classes_hpp
 

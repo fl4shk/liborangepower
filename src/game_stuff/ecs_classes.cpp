@@ -1,11 +1,12 @@
 #include "ecs_classes.hpp"
+#include "../metaprog_defines.hpp"
+
+using namespace liborangepower::json;
 
 namespace liborangepower
 {
-
 namespace game
 {
-
 namespace ecs
 {
 //--------
@@ -18,11 +19,32 @@ std::string Comp::kind_str() const
 {
 	return "";
 }
+Comp::operator Json::Value () const
+{
+	Json::Value ret;
+
+	MEMB_LIST_ECS_COMP(MEMB_SERIALIZE, SEMICOLON);
+
+	return ret;
+}
 //--------
+Sys::Sys(const Json::Value& jv)
+{
+	MEMB_LIST_ECS_SYS(MEMB_DESERIALIZE, SEMICOLON);
+}
 std::string Sys::kind_str() const
 {
 	return "";
 }
+Sys::operator Json::Value () const
+{
+	Json::Value ret;
+
+	MEMB_LIST_ECS_SYS(MEMB_SERIALIZE, SEMICOLON);
+
+	return ret;
+}
+
 void Sys::init(Engine* ecs_engine)
 {
 	// This should be implemented by derived classes
@@ -38,10 +60,39 @@ Engine::Engine()
 Engine::~Engine()
 {
 }
+//--------
+Engine::operator Json::Value () const
+{
+	Json::Value ret;
 
+	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_SERIALIZE, SEMICOLON);
+
+	for (const auto& ent_pair: _engine_comp_map)
+	{
+		Json::Value& ent_jv = ret["_engine_comp_map"]
+			[sconcat(ent_pair.first)];
+
+		for (const auto& comp_pair: *ent_pair.second)
+		{
+			set_jv_memb(ent_jv, comp_pair.first, *comp_pair.second);
+		}
+	}
+
+	return ret;
+}
+//--------
+void Engine::_autoser_deserialize(const Json::Value& jv)
+{
+	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_DESERIALIZE, SEMICOLON);
+}
+//--------
+void Engine::_inner_create(EntId id)
+{
+	_engine_comp_map[id] = CompMapUptr(new CompMap());
+}
 EntId Engine::create()
 {
-	_engine_comp_map[_next_ent_id] = CompMapUptr(new CompMap());
+	_inner_create(_next_ent_id);
 	//_ent_id_to_comp_key_map[_next_ent_id] = std::set<std::string>();
 	return (_next_ent_id++);
 }
@@ -202,7 +253,5 @@ void Engine::tick()
 }
 //--------
 } // namespace ecs
-
 } // namespace game
-
 } // namespace liborangepower

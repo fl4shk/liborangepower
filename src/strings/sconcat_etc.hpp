@@ -7,10 +7,9 @@
 
 namespace liborangepower
 {
-
 namespace strings
 {
-
+//--------
 template<typename FirstArgType, typename... RemArgTypes>
 inline std::string sconcat(const FirstArgType& first_arg, 
 	RemArgTypes&&... rem_args)
@@ -86,10 +85,8 @@ inline std::string strappcom2(ArgTypes&&... args)
 {
 	return strjoin2(", ", args...);
 }
-
-
+//--------
 } // namespace strings
-
 } // namespace liborangepower
 
 #endif		// liborangepower_strings_sconcat_etc_hpp

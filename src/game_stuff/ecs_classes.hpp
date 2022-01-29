@@ -6,17 +6,17 @@
 #include "../strings/sconcat_etc.hpp"
 #include "../containers/vec2_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
+#include "../json_stuff/json_stuff.hpp"
 
 #include <map>
 #include <set>
+#include <sstream>
 #include <concepts>
 
 namespace liborangepower
 {
-
 namespace game
 {
-
 namespace ecs
 {
 //--------
@@ -71,6 +71,8 @@ public:		// functions
 //--------
 class Comp
 {
+public:		// misc.
+	#define MEMB_LIST_ECS_COMP(X, sep)
 public:		// functions
 	Comp() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Comp);
@@ -79,11 +81,18 @@ public:		// functions
 	// This is used as the key for individual `CompMap` elements of an
 	// `Ent`.
 	virtual std::string kind_str() const;
+
+	virtual operator Json::Value () const;
 };
 //--------
 class Sys
 {
 public:		// variables
+	#define MEMB_LIST_ECS_SYS(X, sep) \
+	EVAL(MAP(X, sep, \
+		did_init, \
+		active))
+
 	bool did_init = false;
 	containers::PrevCurrPair<bool> active;
 public:		// functions
@@ -92,22 +101,45 @@ public:		// functions
 		active.back_up_and_update(false);
 		active.back_up();
 	}
+	Sys(const Json::Value& jv);
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
+
+	operator Json::Value () const;
 
 	virtual std::string kind_str() const;
 	virtual void init(Engine* ecs_engine);
 	virtual void tick(Engine* ecs_engine);
 };
 //--------
+template<typename Type>
+concept HasConstKindStr = requires(Type c)
+{
+	{ Type::KIND_STR } -> std::same_as<const std::string>;
+};
+
+template<typename Type>
+concept EngineDerivedFromComp 
+	= std::derived_from<Comp, Type> && HasConstKindStr<Type>;
+
+template<typename Type>
+concept EngineDerivedFromSys
+	= std::derived_from<Sys, Type> && HasConstKindStr<Type>;
+
 class Engine
 {
 	friend class Ent;
 protected:		// variables
+	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X, sep) \
+		EVAL(MAP(X, sep, \
+			_next_ent_id, \
+			_to_destroy_set))
 	EntId _next_ent_id = 0;
 
 	EntIdSet _to_destroy_set;
 
+	// All `EntId` are stored as just the keys of `_engine_comp_map`, with
+	// no other storage for them.
 	EngineCompMap _engine_comp_map;
 
 	SysMap _sys_map;
@@ -117,6 +149,95 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Engine);
 	virtual ~Engine();
 	//--------
+	operator Json::Value () const;
+	//--------
+	void _autoser_deserialize(const Json::Value& jv);
+	//--------
+private:		// functions
+	//--------
+	template<EngineDerivedFromComp FirstCompType,
+		EngineDerivedFromComp... RemCompTypes>
+	inline void _inner_ent_deserialize(EntId id,
+		const Json::Value& comp_jv, const Json::String& comp_name)
+	{
+		if (comp_name == FirstCompType::KIND_STR)
+		{
+			insert_comp(id, comp_name, CompUptr(new
+				FirstCompType(comp_jv)));
+		}
+		// Cut off the search early if we found it, hence the use of the
+		// `else if` statement
+		else if constexpr (sizeof...(RemCompTypes) > 0)
+		{
+			_inner_ent_deserialize<RemCompTypes...>(id, comp_jv,
+				comp_name);
+		}
+	}
+
+	template<EngineDerivedFromSys FirstSysType,
+		EngineDerivedFromSys... RemSysTypes>
+	inline void _inner_sys_deserialize(const Json::Value& sys_jv,
+		const Json::String& sys_name)
+	{
+		if (sys_name == FirstSysType::KIND_STR)
+		{
+			insert_sys(sys_name, SysUptr(new FirstSysType(sys_jv)));
+		}
+		// Cut off the search early if we found it, hence the use of the
+		// `else if` statement
+		else if constexpr (sizeof...(RemSysTypes) > 0)
+		{
+			_inner_sys_deserialize<RemSysTypes...>(sys_jv, sys_name);
+		}
+	}
+	//--------
+public:		// functions
+	//--------
+	template<EngineDerivedFromComp FirstCompType,
+		EngineDerivedFromComp... RemCompTypes>
+	void ent_deserialize(const Json::Value& jv)
+	{
+		_engine_comp_map.clear();
+		const auto& ent_name_vec
+			= jv["_engine_comp_map"].getMemberNames();
+		for (const auto& ent_name: ent_name_vec)
+		{
+			EntId id = 0;
+
+			std::stringstream sstm;
+			sstm << ent_name;
+			sstm >> id;
+
+			_inner_create(id);
+
+			const Json::Value& comp_jv = jv["_engine_comp_map"][ent_name];
+			const auto& comp_name_vec
+				= comp_jv.getMemberNames();
+
+			for (const auto& comp_name: comp_name_vec)
+			{
+				_inner_ent_deserialize<FirstCompType, RemCompTypes..>
+					(id, comp_jv, comp_name);
+			}
+		}
+	}
+
+	template<EngineDerivedFromSys FirstSysType,
+		EngineDerivedFromSys... RemSysTypes>
+	void sys_deserialize(const Json::Value& jv)
+	{
+		_sys_map.clear();
+		const auto& sys_name_vec = jv["_sys_map"].getMemberNames();
+		for (const auto& sys_name: sys_name_vec)
+		{
+			_inner_sys_deserialize<FirstSysType, RemSysTypes...>
+				(jv["_sys_map"][sys_name], sys_name);
+		}
+	}
+	//--------
+private:		// functions
+	void _inner_create(EntId id);
+public:		// functions
 	EntId create();
 	inline void sched_destroy(EntId id)
 	{
@@ -138,8 +259,7 @@ public:		// functions
 	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set)
 		const;
 
-	template<typename... ArgTypes>
-	inline EntIdSet ent_id_set_from_keys_any_v(ArgTypes&&... args)
+	inline EntIdSet ent_id_set_from_keys_any_v(auto&&... args)
 	{
 		StrKeySet key_set;
 
@@ -149,8 +269,7 @@ public:		// functions
 	}
 	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set) const;
 
-	template<typename... ArgTypes>
-	inline EntIdVec ent_id_vec_from_keys_all_v(ArgTypes&&... args)
+	inline EntIdVec ent_id_vec_from_keys_all_v(auto&&... args)
 	{
 		StrKeySet key_set;
 
@@ -161,8 +280,7 @@ public:		// functions
 	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set)
 		const;
 
-	template<typename... ArgTypes>
-	inline EntIdSet ent_id_set_from_keys_all_v(ArgTypes&&... args)
+	inline EntIdSet ent_id_set_from_keys_all_v(auto&&... args)
 	{
 		StrKeySet key_set;
 
@@ -185,18 +303,18 @@ public:		// functions
 	{
 		return comp_map(id).at(key);
 	}
-	template<typename Type>
+	template<EngineDerivedFromComp Type>
 	inline CompUptr& comp_at(EntId id) const
 	{
 		return comp_map(id).at(Type::KIND_STR);
 	}
-	template<typename Type>
+	template<EngineDerivedFromComp Type>
 	inline Type* casted_comp_at(EntId id, const std::string& key)
 		const
 	{
 		return static_cast<Type*>(comp_at(id, key).get());
 	}
-	template<typename Type>
+	template<EngineDerivedFromComp Type>
 	inline Type* casted_comp_at(EntId id) const
 	{
 		return casted_comp_at<Type>(id, Type::KIND_STR);
@@ -216,7 +334,7 @@ public:		// functions
 		return insert_or_replace_comp(id, KIND_STR, std::move(comp));
 	}
 	size_t erase_comp(EntId id, const std::string& key);
-	template<typename Type>
+	template<EngineDerivedFromComp Type>
 	inline size_t erase_comp(EntId id)
 	{
 		return erase_comp(id, Type::KIND_STR);
@@ -235,7 +353,7 @@ public:		// functions
 		return insert_or_replace_sys(KIND_STR, std::move(sys));
 	}
 	size_t erase_sys(const std::string& key);
-	template<typename Type>
+	template<EngineDerivedFromSys Type>
 	inline size_t erase_sys()
 	{
 		return erase_sys(Type::KIND_STR);
@@ -247,7 +365,7 @@ public:		// functions
 		return (engine_comp_map().contains(id)
 			&& comp_map(id).contains(key));
 	}
-	template<typename Type>
+	template<EngineDerivedFromComp Type>
 	inline bool has_ent_with_comp(EntId id) const
 	{
 		return has_ent_with_comp(id, Type::KIND_STR);
@@ -277,9 +395,7 @@ inline size_t Ent::erase_comp(const std::string& key) const
 }
 //--------
 } // namespace ecs
-
 } // namespace game
-
 } // namespace liborangepower
 
 #endif		// liborangepower_game_stuff_ecs_classes_hpp
