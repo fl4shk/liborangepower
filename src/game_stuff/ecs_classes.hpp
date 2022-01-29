@@ -112,19 +112,25 @@ public:		// functions
 	virtual void tick(Engine* ecs_engine);
 };
 //--------
-template<typename Type>
-concept HasConstKindStr = requires
-{
-	{ Type::KIND_STR } -> std::same_as<std::string>;
-};
+//template<typename Type>
+//concept HasConstKindStr = requires
+//{
+//	{ Type::KIND_STR } -> std::same_as<std::string>;
+//};
 
+//template<typename Type>
+//concept EngineDerivedFromComp 
+//	= std::derived_from<Type, Comp> && HasConstKindStr<Type>;
 template<typename Type>
 concept EngineDerivedFromComp 
-	= std::derived_from<Type, Comp> && HasConstKindStr<Type>;
+	= std::derived_from<Type, Comp>;
 
+//template<typename Type>
+//concept EngineDerivedFromSys
+//	= std::derived_from<Type, Sys> && HasConstKindStr<Type>;
 template<typename Type>
 concept EngineDerivedFromSys
-	= std::derived_from<Type, Sys> && HasConstKindStr<Type>;
+	= std::derived_from<Type, Sys>;
 
 class Engine
 {
