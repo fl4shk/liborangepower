@@ -216,7 +216,7 @@ public:		// functions
 
 			for (const auto& comp_name: comp_name_vec)
 			{
-				_inner_ent_deserialize<FirstCompType, RemCompTypes..>
+				_inner_ent_deserialize<FirstCompType, RemCompTypes...>
 					(id, comp_jv, comp_name);
 			}
 		}

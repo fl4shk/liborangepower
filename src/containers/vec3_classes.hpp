@@ -48,7 +48,7 @@ public:		// functions
 	}
 	template<typename OtherVec3Type>
 		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline Vec3& operator += (const OtherVec3& other) const
+	inline Vec3& operator += (const OtherVec3Type& other) const
 	{
 		*this = (*this) + other;
 		return *this;
@@ -120,49 +120,50 @@ public:		// functions
 		return std::sqrt(dot_prod(*this));
 	}
 	//--------
+	// Templates can't be defaulted for some reason
+	//template<typename OtherVec3Type>
+	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	//inline auto operator <=> (const OtherVec3Type& other) const
+	//	= default;
 	template<typename OtherVec3Type>
 		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline auto operator <=> (const OtherVec3Type& other) const
-		= default;
-	//template<typename OtherVec3Type>
-	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	//inline bool operator == (const OtherVec3Type& other) const
-	//{
-	//	return ((x == other.x) && (y == other.y) && (z == other.z));
-	//}
-	//template<typename OtherVec3Type>
-	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	//inline bool operator != (const OtherVec3Type& other) const
-	//{
-	//	return (!((*this) == other));
-	//}
+	inline bool operator == (const OtherVec3Type& other) const
+	{
+		return ((x == other.x) && (y == other.y) && (z == other.z));
+	}
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline bool operator != (const OtherVec3Type& other) const
+	{
+		return (!((*this) == other));
+	}
 
-	//template<typename OtherVec3Type>
-	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	//inline bool operator < (const OtherVec3Type& other) const
-	//{
-	//	return ((z < other.z)
-	//		|| ((z == other.z) && (Vec2(x, y) < Vec2(other.x, other.y))));
-	//}
-	//template<typename OtherVec3Type>
-	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	//inline bool operator > (const OtherVec3Type& other) const
-	//{
-	//	return ((z > other.z)
-	//		|| ((z == other.z) && (Vec2(x, y) > Vec2(other.x, other.y))));
-	//}
-	//template<typename OtherVec3Type>
-	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	//inline bool operator <= (const OtherVec3Type& other) const
-	//{
-	//	return (!((*this) > other));
-	//}
-	//template<typename OtherVec3Type>
-	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	//inline bool operator >= (const OtherVec3Type& other) const
-	//{
-	//	return (!((*this) < other));
-	//}
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline bool operator < (const OtherVec3Type& other) const
+	{
+		return ((z < other.z)
+			|| ((z == other.z) && (Vec2(x, y) < Vec2(other.x, other.y))));
+	}
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline bool operator > (const OtherVec3Type& other) const
+	{
+		return ((z > other.z)
+			|| ((z == other.z) && (Vec2(x, y) > Vec2(other.x, other.y))));
+	}
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline bool operator <= (const OtherVec3Type& other) const
+	{
+		return (!((*this) > other));
+	}
+	template<typename OtherVec3Type>
+		requires LikeVec3<Vec3<Type>, OtherVec3Type>
+	inline bool operator >= (const OtherVec3Type& other) const
+	{
+		return (!((*this) < other));
+	}
 	//--------
 };
 
