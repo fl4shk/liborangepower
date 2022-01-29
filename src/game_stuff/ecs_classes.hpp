@@ -115,8 +115,7 @@ public:		// functions
 template<typename Type>
 concept HasConstKindStr = requires
 {
-	{ decltype(std::declval<Type>())::KIND_STR }
-		-> std::same_as<const std::string>;
+	{ Type::KIND_STR } -> std::same_as<std::string>;
 };
 
 template<typename Type>
