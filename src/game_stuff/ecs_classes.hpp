@@ -162,8 +162,8 @@ private:		// functions
 	{
 		if (comp_name == FirstCompType::KIND_STR)
 		{
-			insert_comp(id, comp_name, CompUptr(new
-				FirstCompType(comp_jv)));
+			insert_comp(id, comp_name,
+				CompUptr(new FirstCompType(comp_jv)));
 		}
 		// Cut off the search early if we found it, hence the use of the
 		// `else if` statement
