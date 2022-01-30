@@ -7,11 +7,11 @@
 #include "../containers/vec2_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
 #include "../json_stuff/json_stuff.hpp"
+#include "../json_stuff/from_jv_factory_stuff.hpp"
 
 #include <map>
 #include <set>
 #include <sstream>
-#include <concepts>
 
 namespace liborangepower
 {
@@ -113,18 +113,12 @@ public:		// functions
 };
 //--------
 template<typename Type>
-concept HasStaticKindStr = requires
-{
-	{ Type::KIND_STR } -> std::convertible_to<std::string>;
-};
-
-template<typename Type>
 concept EngineDerivedFromComp 
-	= std::derived_from<Type, Comp> && HasStaticKindStr<Type>;
+	= json::IsValidFromJvFactoryType<Type, Comp>;
 
 template<typename Type>
 concept EngineDerivedFromSys
-	= std::derived_from<Type, Sys> && HasStaticKindStr<Type>;
+	= json::IsValidFromJvFactoryType<Type, Sys>;
 
 class Engine
 {
@@ -143,6 +137,10 @@ protected:		// variables
 	EngineCompMap _engine_comp_map;
 
 	SysMap _sys_map;
+
+	json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
+	json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
+
 public:		// functions
 	//--------
 	Engine();
@@ -155,85 +153,73 @@ public:		// functions
 	//--------
 private:		// functions
 	//--------
-	template<EngineDerivedFromComp FirstCompType,
-		EngineDerivedFromComp... RemCompTypes>
-	inline void _inner_ent_deserialize(EntId id,
-		const Json::Value& comp_jv, const Json::String& comp_name)
-	{
-		if (comp_name == FirstCompType::KIND_STR)
-		{
-			insert_comp(id, comp_name,
-				CompUptr(new FirstCompType(comp_jv)));
-		}
-		// Cut off the search early if we found it, hence the use of the
-		// `else if` statement
-		else if constexpr (sizeof...(RemCompTypes) > 0)
-		{
-			_inner_ent_deserialize<RemCompTypes...>(id, comp_jv,
-				comp_name);
-		}
-	}
+	//// The speed of these two functions could be improved by use of two
+	//// factory functions that, respectively, construct a `CompUptr` or
+	//// `SysUptr` with the constructor argument for the `...Uptr` being 
+	//// `new Whatever(..._jv)`.
+	//// I'll come back to this if I deem deserialization too slow.
+	//template<EngineDerivedFromComp FirstCompType,
+	//	EngineDerivedFromComp... RemCompTypes>
+	//inline void _inner_ent_deserialize(EntId id,
+	//	const Json::Value& comp_jv, const Json::String& comp_name)
+	//{
+	//	if (comp_name == FirstCompType::KIND_STR)
+	//	{
+	//		insert_comp(id, comp_name,
+	//			CompUptr(new FirstCompType(comp_jv)));
+	//	}
+	//	// Cut off the search early if we found it, hence the use of the
+	//	// `else if` statement
+	//	else if constexpr (sizeof...(RemCompTypes) > 0)
+	//	{
+	//		_inner_ent_deserialize<RemCompTypes...>(id, comp_jv,
+	//			comp_name);
+	//	}
+	//}
 
-	template<EngineDerivedFromSys FirstSysType,
-		EngineDerivedFromSys... RemSysTypes>
-	inline void _inner_sys_deserialize(const Json::Value& sys_jv,
-		const Json::String& sys_name)
-	{
-		if (sys_name == FirstSysType::KIND_STR)
-		{
-			insert_sys(sys_name, SysUptr(new FirstSysType(sys_jv)));
-		}
-		// Cut off the search early if we found it, hence the use of the
-		// `else if` statement
-		else if constexpr (sizeof...(RemSysTypes) > 0)
-		{
-			_inner_sys_deserialize<RemSysTypes...>(sys_jv, sys_name);
-		}
-	}
+	//template<EngineDerivedFromSys FirstSysType,
+	//	EngineDerivedFromSys... RemSysTypes>
+	//inline void _inner_sys_deserialize(const Json::Value& sys_jv,
+	//	const Json::String& sys_name)
+	//{
+	//	if (sys_name == FirstSysType::KIND_STR)
+	//	{
+	//		insert_sys(sys_name, SysUptr(new FirstSysType(sys_jv)));
+	//	}
+	//	// Cut off the search early if we found it, hence the use of the
+	//	// `else if` statement
+	//	else if constexpr (sizeof...(RemSysTypes) > 0)
+	//	{
+	//		_inner_sys_deserialize<RemSysTypes...>(sys_jv, sys_name);
+	//	}
+	//}
 	//--------
 public:		// functions
 	//--------
 	template<EngineDerivedFromComp FirstCompType,
 		EngineDerivedFromComp... RemCompTypes>
-	void ent_deserialize(const Json::Value& jv)
+	void init_comp_deserialize()
 	{
-		_engine_comp_map.clear();
-		const auto& ent_name_vec
-			= jv["_engine_comp_map"].getMemberNames();
-		for (const auto& ent_name: ent_name_vec)
-		{
-			EntId id = 0;
-
-			std::stringstream sstm;
-			sstm << ent_name;
-			sstm >> id;
-
-			_inner_create(id);
-
-			const Json::Value& comp_jv = jv["_engine_comp_map"][ent_name];
-			const auto& comp_name_vec
-				= comp_jv.getMemberNames();
-
-			for (const auto& comp_name: comp_name_vec)
-			{
-				_inner_ent_deserialize<FirstCompType, RemCompTypes...>
-					(id, comp_jv, comp_name);
-			}
-		}
+		_comp_deser_func_map 
+			= json::FromJvFactory<Comp>::gen_func_map
+				<FirstCompType, RemCompTypes...>();
 	}
 
 	template<EngineDerivedFromSys FirstSysType,
 		EngineDerivedFromSys... RemSysTypes>
-	void sys_deserialize(const Json::Value& jv)
+	void init_sys_deserialize()
 	{
-		_sys_map.clear();
-		const auto& sys_name_vec = jv["_sys_map"].getMemberNames();
-		for (const auto& sys_name: sys_name_vec)
-		{
-			_inner_sys_deserialize<FirstSysType, RemSysTypes...>
-				(jv["_sys_map"][sys_name], sys_name);
-		}
+		_sys_deser_func_map 
+			= json::FromJvFactory<Sys>::gen_func_map
+				<FirstSysType, RemSysTypes...>();
 	}
+	//template<EngineDerivedFromComp FirstCompType,
+	//	EngineDerivedFromComp... RemCompTypes>
+	void ent_deserialize(const Json::Value& jv);
+
+	//template<EngineDerivedFromSys FirstSysType,
+	//	EngineDerivedFromSys... RemSysTypes>
+	void sys_deserialize(const Json::Value& jv);
 	//--------
 private:		// functions
 	void _inner_create(EntId id);

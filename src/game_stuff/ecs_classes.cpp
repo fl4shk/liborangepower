@@ -86,6 +86,57 @@ void Engine::_autoser_deserialize(const Json::Value& jv)
 	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_DESERIALIZE, SEMICOLON);
 }
 //--------
+//template<EngineDerivedFromComp FirstCompType,
+//	EngineDerivedFromComp... RemCompTypes>
+void Engine::ent_deserialize(const Json::Value& jv)
+{
+	_engine_comp_map.clear();
+	const auto& ent_name_vec
+		= jv["_engine_comp_map"].getMemberNames();
+	for (const auto& ent_name: ent_name_vec)
+	{
+		EntId id = 0;
+
+		std::stringstream sstm;
+		sstm << ent_name;
+		sstm >> id;
+
+		_inner_create(id);
+
+		const Json::Value& comp_jv = jv["_engine_comp_map"][ent_name];
+		const auto& comp_name_vec
+			= comp_jv.getMemberNames();
+
+		for (const auto& comp_name: comp_name_vec)
+		{
+			//_inner_ent_deserialize<FirstCompType, RemCompTypes...>
+			//	(id, comp_jv, comp_name);
+			//insert_comp(id, comp_name,
+			//	CompUptr(new FirstCompType(comp_jv)));
+			insert_comp(id, comp_name,
+				_comp_deser_func_map.at(comp_name)(comp_jv));
+		}
+	}
+}
+//template<EngineDerivedFromSys FirstSysType,
+//	EngineDerivedFromSys... RemSysTypes>
+void Engine::sys_deserialize(const Json::Value& jv)
+{
+	_sys_map.clear();
+
+	const auto& sys_name_vec = jv["_sys_map"].getMemberNames();
+	for (const auto& sys_name: sys_name_vec)
+	{
+		const Json::Value& sys_jv = jv["_sys_map"][sys_name];
+
+		//_inner_sys_deserialize<FirstSysType, RemSysTypes...>
+		//	(sys_jv, sys_name);
+		//insert_sys(sys_name, SysUptr(new FirstSysType(sys_jv)));
+		insert_sys(sys_name,
+			_sys_deser_func_map.at(
+	}
+}
+//--------
 void Engine::_inner_create(EntId id)
 {
 	_engine_comp_map[id] = CompMapUptr(new CompMap());

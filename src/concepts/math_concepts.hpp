@@ -6,7 +6,7 @@
 
 namespace liborangepower
 {
-namespace math
+namespace concepts
 {
 
 template<typename Type, typename OtherType>
@@ -39,7 +39,7 @@ concept HasBitwiseUnops = requires(Type c)
 	{ ~c } -> std::convertible_to<Type>;
 };
 
-} // namespace math
+} // namespace concepts
 } // namespace liborangepower
 
 #endif		// liborangepower_concepts_math_concepts_hpp
