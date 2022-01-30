@@ -133,7 +133,7 @@ void Engine::sys_deserialize(const Json::Value& jv)
 		//	(sys_jv, sys_name);
 		//insert_sys(sys_name, SysUptr(new FirstSysType(sys_jv)));
 		insert_sys(sys_name,
-			_sys_deser_func_map.at(
+			_sys_deser_func_map.at(sys_name)(sys_jv));
 	}
 }
 //--------
