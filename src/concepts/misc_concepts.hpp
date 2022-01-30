@@ -16,7 +16,8 @@ concept HasStaticKindStr = requires
 
 template<typename DerivedType, typename BaseType>
 concept DerivedAndHasStaticKindStr 
-	= std::derived_from<DerivedType, BaseType> && HasStaticKindStr<
+	= std::derived_from<DerivedType, BaseType>
+	&& HasStaticKindStr<DerivedType>;
 
 } // namespace concepts
 } // namespace liborangepower
