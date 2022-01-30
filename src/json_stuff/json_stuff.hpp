@@ -206,6 +206,7 @@ inline Type get_jv_memb(const Json::Value& jv, const std::string& name)
 	//}
 	//else
 	//{
+	//	return val_from_jv<Type>(jv[name]);
 	//}
 	return val_from_jv<Type>(jv[name]);
 }
@@ -312,6 +313,7 @@ inline void set_jv_memb(Json::Value& jv, const std::string& name,
 	//}
 	//else
 	//{
+	//	_set_jv(jv[name], val);
 	//}
 	_set_jv(jv[name], val);
 }

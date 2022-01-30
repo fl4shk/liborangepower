@@ -100,7 +100,8 @@
 
 // `__VA_OPT__` makes it so that its arguments expand only when there's at
 // least one argument to `__VA_ARGS__`. It is almost the same as
-// `WHEN(HAS_ARGS(__VA_ARGS__))(...OBSTRUCT(...))`
+// `WHEN(HAS_ARGS(__VA_ARGS__))`, but uses of `DEFER` are replaced with
+// uses of `OBSTRUCT`
 #define MAP(m, sep, first, ...) \
 	m(first) \
 	\
