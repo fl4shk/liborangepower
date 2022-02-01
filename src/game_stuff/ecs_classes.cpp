@@ -85,10 +85,10 @@ void Engine::_autoser_deserialize(const Json::Value& jv)
 {
 	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_DESERIALIZE, SEMICOLON);
 }
-//--------
+
 //template<EngineDerivedFromComp FirstCompType,
 //	EngineDerivedFromComp... RemCompTypes>
-void Engine::ent_deserialize(const Json::Value& jv)
+void Engine::_ent_deserialize(const Json::Value& jv)
 {
 	_engine_comp_map.clear();
 	const auto& ent_name_vec
@@ -120,7 +120,7 @@ void Engine::ent_deserialize(const Json::Value& jv)
 }
 //template<EngineDerivedFromSys FirstSysType,
 //	EngineDerivedFromSys... RemSysTypes>
-void Engine::sys_deserialize(const Json::Value& jv)
+void Engine::_sys_deserialize(const Json::Value& jv)
 {
 	_sys_map.clear();
 

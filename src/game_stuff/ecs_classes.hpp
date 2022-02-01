@@ -149,52 +149,12 @@ public:		// functions
 	//--------
 	operator Json::Value () const;
 	//--------
-	void _autoser_deserialize(const Json::Value& jv);
-	//--------
-private:		// functions
-	//--------
-	//// The speed of these two functions could be improved by use of two
-	//// factory functions that, respectively, construct a `CompUptr` or
-	//// `SysUptr` with the constructor argument for the `...Uptr` being 
-	//// `new Whatever(..._jv)`.
-	//// I'll come back to this if I deem deserialization too slow.
-	//template<EngineDerivedFromComp FirstCompType,
-	//	EngineDerivedFromComp... RemCompTypes>
-	//inline void _inner_ent_deserialize(EntId id,
-	//	const Json::Value& comp_jv, const Json::String& comp_name)
-	//{
-	//	if (comp_name == FirstCompType::KIND_STR)
-	//	{
-	//		insert_comp(id, comp_name,
-	//			CompUptr(new FirstCompType(comp_jv)));
-	//	}
-	//	// Cut off the search early if we found it, hence the use of the
-	//	// `else if` statement
-	//	else if constexpr (sizeof...(RemCompTypes) > 0)
-	//	{
-	//		_inner_ent_deserialize<RemCompTypes...>(id, comp_jv,
-	//			comp_name);
-	//	}
-	//}
-
-	//template<EngineDerivedFromSys FirstSysType,
-	//	EngineDerivedFromSys... RemSysTypes>
-	//inline void _inner_sys_deserialize(const Json::Value& sys_jv,
-	//	const Json::String& sys_name)
-	//{
-	//	if (sys_name == FirstSysType::KIND_STR)
-	//	{
-	//		insert_sys(sys_name, SysUptr(new FirstSysType(sys_jv)));
-	//	}
-	//	// Cut off the search early if we found it, hence the use of the
-	//	// `else if` statement
-	//	else if constexpr (sizeof...(RemSysTypes) > 0)
-	//	{
-	//		_inner_sys_deserialize<RemSysTypes...>(sys_jv, sys_name);
-	//	}
-	//}
-	//--------
-public:		// functions
+	inline void deserialize(const Json::Value& jv)
+	{
+		_autoser_deserialize(jv);
+		_ent_deserialize(jv);
+		_sys_deserialize(jv);
+	}
 	//--------
 	template<EngineDerivedFromComp FirstCompType,
 		EngineDerivedFromComp... RemCompTypes>
@@ -213,16 +173,21 @@ public:		// functions
 			= json::FromJvFactory<Sys>::gen_func_map
 				<FirstSysType, RemSysTypes...>();
 	}
+	//--------
+private:		// functions
+	//--------
+	void _autoser_deserialize(const Json::Value& jv);
+
 	//template<EngineDerivedFromComp FirstCompType,
 	//	EngineDerivedFromComp... RemCompTypes>
-	void ent_deserialize(const Json::Value& jv);
+	void _ent_deserialize(const Json::Value& jv);
 
 	//template<EngineDerivedFromSys FirstSysType,
 	//	EngineDerivedFromSys... RemSysTypes>
-	void sys_deserialize(const Json::Value& jv);
+	void _sys_deserialize(const Json::Value& jv);
 	//--------
-private:		// functions
 	void _inner_create(EntId id);
+	//--------
 public:		// functions
 	EntId create();
 	inline void sched_destroy(EntId id)
