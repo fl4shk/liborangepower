@@ -113,7 +113,7 @@ public:		// functions
 protected:		// functions
 	// The derived class should call this function at the beginning of its
 	// `init()` implementation.
-	inline void _init_start(Engine* ecs_engine)
+	inline void _init_start()
 	{
 		did_init = true;
 	}
