@@ -108,8 +108,8 @@ public:		// functions
 	operator Json::Value () const;
 
 	virtual std::string kind_str() const;
-	virtual void init();
-	virtual void tick();
+	virtual void init(Engine* ecs_engine);
+	virtual void tick(Engine* ecs_engine);
 protected:		// functions
 	// The derived class should call this function at the beginning of its
 	// `init()` implementation.
