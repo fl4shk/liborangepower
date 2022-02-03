@@ -108,8 +108,18 @@ public:		// functions
 	operator Json::Value () const;
 
 	virtual std::string kind_str() const;
-	virtual void init(Engine* ecs_engine);
-	virtual void tick(Engine* ecs_engine);
+	virtual void init();
+	virtual void tick();
+protected:		// functions
+	// The derived class should call this function at the beginning of its
+	// `init()` implementation.
+	inline void _init_start(Engine* ecs_engine)
+	{
+		did_init = true;
+	}
+	// Returns true when the derived class should run its unique `tick()`
+	// functionality
+	void _tick_helper(Engine* ecs_engine, bool cond);
 };
 //--------
 template<typename Type>

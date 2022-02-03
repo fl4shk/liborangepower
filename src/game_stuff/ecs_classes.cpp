@@ -48,10 +48,46 @@ Sys::operator Json::Value () const
 void Sys::init(Engine* ecs_engine)
 {
 	// This should be implemented by derived classes
+
+	// Example:
+	//	_init_start(ecs_engine);
+	//	// unique logic for the derived class goes here
 }
 void Sys::tick(Engine* ecs_engine)
 {
 	// This should be implemented by derived classes
+
+	// Example:
+	//	if (_tick_helper(ecs_engine, true))
+	//	{
+	//		// unique logic for the derived class goes here
+	//	}
+}
+
+void Sys::_tick_helper(Engine* ecs_engine, bool cond)
+{
+	if (cond)
+	{
+		if (active() && active.has_changed())
+		{
+			active.back_up();
+
+			return false;
+		}
+		else if (active())
+		{
+			if (!did_init)
+			{
+				init(ecs_engine);
+			}
+
+			return true;
+		}
+	}
+	else
+	{
+		return false;
+	}
 }
 //--------
 Engine::Engine()
