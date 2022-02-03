@@ -64,7 +64,7 @@ void Sys::tick(Engine* ecs_engine)
 	//	}
 }
 
-void Sys::_tick_helper(Engine* ecs_engine, bool cond)
+bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 {
 	if (cond)
 	{

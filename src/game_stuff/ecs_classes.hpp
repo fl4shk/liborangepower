@@ -119,7 +119,7 @@ protected:		// functions
 	}
 	// Returns true when the derived class should run its unique `tick()`
 	// functionality
-	void _tick_helper(Engine* ecs_engine, bool cond);
+	bool _tick_helper(Engine* ecs_engine, bool cond);
 };
 //--------
 template<typename Type>
