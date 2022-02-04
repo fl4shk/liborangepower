@@ -23,14 +23,14 @@ Comp::operator Json::Value () const
 {
 	Json::Value ret;
 
-	MEMB_LIST_ECS_COMP(MEMB_SERIALIZE, SEMICOLON);
+	MEMB_LIST_ECS_COMP(MEMB_SERIALIZE);
 
 	return ret;
 }
 //--------
 Sys::Sys(const Json::Value& jv)
 {
-	MEMB_LIST_ECS_SYS(MEMB_DESERIALIZE, SEMICOLON);
+	MEMB_LIST_ECS_SYS(MEMB_DESERIALIZE);
 }
 std::string Sys::kind_str() const
 {
@@ -40,11 +40,17 @@ Sys::operator Json::Value () const
 {
 	Json::Value ret;
 
-	MEMB_LIST_ECS_SYS(MEMB_SERIALIZE, SEMICOLON);
+	MEMB_LIST_ECS_SYS(MEMB_SERIALIZE);
 
 	return ret;
 }
 
+void Sys::prep_init()
+{
+	_did_init = false;
+	active.back_up_and_update(false);
+	active.back_up_and_update(true);
+}
 void Sys::init(Engine* ecs_engine)
 {
 	// This should be implemented by derived classes
@@ -76,7 +82,7 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 		}
 		else if (active())
 		{
-			if (!did_init)
+			if (!_did_init)
 			{
 				init(ecs_engine);
 			}
@@ -101,7 +107,7 @@ Engine::operator Json::Value () const
 {
 	Json::Value ret;
 
-	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_SERIALIZE, SEMICOLON);
+	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_SERIALIZE);
 
 	for (const auto& ent_pair: _engine_comp_map)
 	{
@@ -119,7 +125,7 @@ Engine::operator Json::Value () const
 //--------
 void Engine::_autoser_deserialize(const Json::Value& jv)
 {
-	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_DESERIALIZE, SEMICOLON);
+	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_DESERIALIZE);
 }
 
 //template<EngineDerivedFromComp FirstCompType,

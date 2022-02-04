@@ -72,7 +72,7 @@ public:		// functions
 class Comp
 {
 public:		// misc.
-	#define MEMB_LIST_ECS_COMP(X, sep)
+	#define MEMB_LIST_ECS_COMP(X)
 public:		// functions
 	Comp() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Comp);
@@ -87,13 +87,14 @@ public:		// functions
 //--------
 class Sys
 {
-public:		// variables
-	#define MEMB_LIST_ECS_SYS(X, sep) \
-	EVAL(MAP(X, sep, \
-		did_init, \
-		active))
+public:		// serialization stuff
+	#define MEMB_LIST_ECS_SYS(X) \
+		X(_did_init) \
+		X(active) \
 
-	bool did_init = false;
+private:		// variables
+	bool _did_init = false;
+public:		// variables
 	containers::PrevCurrPair<bool> active;
 public:		// functions
 	inline Sys()
@@ -105,17 +106,21 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
 
+	virtual std::string kind_str() const;
+
 	operator Json::Value () const;
 
-	virtual std::string kind_str() const;
+	void prep_init();
 	virtual void init(Engine* ecs_engine);
 	virtual void tick(Engine* ecs_engine);
+
+	GEN_GETTER_BY_VAL(did_init);
 protected:		// functions
 	// The derived class should call this function at the beginning of its
 	// `init()` implementation.
 	inline void _init_start()
 	{
-		did_init = true;
+		_did_init = true;
 	}
 	// Returns true when the derived class should run its unique `tick()`
 	// functionality
@@ -133,24 +138,23 @@ concept EngineDerivedFromSys
 class Engine
 {
 	friend class Ent;
-protected:		// variables
-	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X, sep) \
-		EVAL(MAP(X, sep, \
-			_next_ent_id, \
-			_to_destroy_set))
+protected:		// auto-serialized variables
+	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X) \
+		X(_next_ent_id) \
+		X(_to_destroy_set) \
+
 	EntId _next_ent_id = 0;
 
 	EntIdSet _to_destroy_set;
-
+protected:		// non-auto-serialized serialized variables
 	// All `EntId` are stored as just the keys of `_engine_comp_map`, with
 	// no other storage for them.
 	EngineCompMap _engine_comp_map;
 
 	SysMap _sys_map;
-
+private:		// variables
 	json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
 	json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
-
 public:		// functions
 	//--------
 	Engine();
