@@ -31,6 +31,25 @@ namespace json
 #define MEMB_FROM_JV_DESERIALIZE(name) \
 	ret.name = get_jv_memb<decltype(ret.name)>(jv, #name);
 
+class BlankValue final
+{
+public:		// functions
+	constexpr inline BlankValue() = default;
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(BlankValue);
+	constexpr inline BlankValue(const Json::Value& jv)
+	{
+	}
+
+	inline operator Json::Value () const
+	{
+		Json::Value ret;
+
+		set_jv_memb(ret, "<is_blank_value>", true);
+
+		return ret;
+	}
+};
+
 //template<typename Type>
 //inline containers::Vec2<Type> vec2_from_jv(const Json::Value& jv)
 //{
@@ -155,7 +174,7 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 	{
 		NonCvrefType ret;
 
-		for (Json::ArrayIndex i=0; i<jv.size(); ++i)
+		for (Json::ArrayIndex i=1; i<jv.size(); ++i)
 		{
 			//if constexpr (!is_std_set<Type>())
 			if constexpr (containers::is_std_vector<Type>()
@@ -222,7 +241,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 	//	&& (!std::is_same<Type, uint64_t>()));
 
 	//--------
-	if constexpr (containers::is_vec2<Type>())
+	else if constexpr (containers::is_vec2<Type>())
 	{
 		jv = vec2_to_jv(val);
 	}
@@ -246,6 +265,8 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		|| containers::is_std_deque<Type>()
 	)
 	{
+		jv[0] = BlankValue();
+
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
 			if constexpr (containers::is_basic_std_container
@@ -255,17 +276,19 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 
 				_set_jv(inner_jv, val.at(i));
 
-				jv[i] = inner_jv;
+				jv[i + 1] = inner_jv;
 			}
 			else
 			{
-				jv[i] = val.at(i);
+				jv[i + 1] = val.at(i);
 			}
 		}
 	}
 	else if constexpr (containers::is_std_set<Type>())
 	{
 		Json::ArrayIndex i = 0;
+
+		jv[i++] = BlankValue();
 
 		for (const auto& key: val)
 		{
