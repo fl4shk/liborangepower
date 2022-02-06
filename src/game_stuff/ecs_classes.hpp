@@ -102,13 +102,13 @@ public:		// functions
 		game_mode_active.back_up_and_update(false);
 		game_mode_active.back_up();
 	}
-	Sys(const Json::Value& jv);
+	//Sys(const Json::Value& jv);
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
 
 	virtual std::string kind_str() const;
 
-	operator Json::Value () const;
+	//operator Json::Value () const;
 
 	void prep_init();
 	virtual void init(Engine* ecs_engine);
@@ -167,7 +167,7 @@ public:		// functions
 	{
 		_autoser_deserialize(jv);
 		_ent_deserialize(jv);
-		_sys_deserialize(jv);
+		//_sys_deserialize(jv);
 	}
 	//--------
 	template<EngineDerivedFromComp FirstCompType,
@@ -196,9 +196,9 @@ private:		// functions
 	//	EngineDerivedFromComp... RemCompTypes>
 	void _ent_deserialize(const Json::Value& jv);
 
-	//template<EngineDerivedFromSys FirstSysType,
-	//	EngineDerivedFromSys... RemSysTypes>
-	void _sys_deserialize(const Json::Value& jv);
+	////template<EngineDerivedFromSys FirstSysType,
+	////	EngineDerivedFromSys... RemSysTypes>
+	//void _sys_deserialize(const Json::Value& jv);
 	//--------
 	void _inner_create(EntId id);
 	//--------
