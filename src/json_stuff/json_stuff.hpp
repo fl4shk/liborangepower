@@ -83,35 +83,35 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 	//--------
 	using NonCvrefType = std::remove_cvref_t<Type>;
 	//--------
-	if constexpr (std::is_same<Type, int>())
+	if constexpr (std::is_same<NonCvrefType, int>())
 	{
 		return jv.asInt();
 	}
-	else if constexpr (std::is_same<Type, uint>())
+	else if constexpr (std::is_same<NonCvrefType, uint>())
 	{
 		return jv.asUInt();
 	}
-	else if constexpr (std::is_same<Type, int64_t>())
+	else if constexpr (std::is_same<NonCvrefType, int64_t>())
 	{
 		return jv.asInt64();
 	}
-	else if constexpr (std::is_same<Type, uint64_t>())
+	else if constexpr (std::is_same<NonCvrefType, uint64_t>())
 	{
 		return jv.asUInt64();
 	}
-	else if constexpr (std::is_same<Type, float>())
+	else if constexpr (std::is_same<NonCvrefType, float>())
 	{
 		return jv.asFloat();
 	}
-	else if constexpr (std::is_same<Type, double>())
+	else if constexpr (std::is_same<NonCvrefType, double>())
 	{
 		return jv.asDouble();
 	}
-	else if constexpr (std::is_same<Type, bool>())
+	else if constexpr (std::is_same<NonCvrefType, bool>())
 	{
 		return jv.asBool();
 	}
-	else if constexpr (std::is_same<Type, std::string>())
+	else if constexpr (std::is_same<NonCvrefType, std::string>())
 	{
 		return jv.asString();
 	}
