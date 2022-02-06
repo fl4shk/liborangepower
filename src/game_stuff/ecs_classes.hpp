@@ -154,7 +154,7 @@ protected:		// non-auto-serialized serialized variables
 	SysMap _sys_map;
 private:		// variables
 	json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
-	json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
+	//json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
 public:		// functions
 	//--------
 	Engine();
@@ -179,14 +179,14 @@ public:		// functions
 				<FirstCompType, RemCompTypes...>();
 	}
 
-	template<EngineDerivedFromSys FirstSysType,
-		EngineDerivedFromSys... RemSysTypes>
-	void init_sys_deserialize()
-	{
-		_sys_deser_func_map 
-			= json::FromJvFactory<Sys>::gen_func_map
-				<FirstSysType, RemSysTypes...>();
-	}
+	//template<EngineDerivedFromSys FirstSysType,
+	//	EngineDerivedFromSys... RemSysTypes>
+	//void init_sys_deserialize()
+	//{
+	//	_sys_deser_func_map 
+	//		= json::FromJvFactory<Sys>::gen_func_map
+	//			<FirstSysType, RemSysTypes...>();
+	//}
 	//--------
 private:		// functions
 	//--------
