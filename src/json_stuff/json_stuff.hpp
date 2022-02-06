@@ -31,24 +31,7 @@ namespace json
 #define MEMB_FROM_JV_DESERIALIZE(name) \
 	ret.name = get_jv_memb<decltype(ret.name)>(jv, #name);
 
-class BlankValue final
-{
-public:		// functions
-	constexpr inline BlankValue() = default;
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(BlankValue);
-	constexpr inline BlankValue(const Json::Value& jv)
-	{
-	}
-
-	inline operator Json::Value () const
-	{
-		Json::Value ret;
-
-		set_jv_memb(ret, "<is_blank_value>", true);
-
-		return ret;
-	}
-};
+class BlankValue;
 
 //template<typename Type>
 //inline containers::Vec2<Type> vec2_from_jv(const Json::Value& jv)
@@ -408,6 +391,25 @@ inline void debug_print_json(Json::Value* iter,
 {
 	debug_print_json(*iter, os, tabs_level);
 }
+
+class BlankValue final
+{
+public:		// functions
+	constexpr inline BlankValue() = default;
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(BlankValue);
+	constexpr inline BlankValue(const Json::Value& jv)
+	{
+	}
+
+	inline operator Json::Value () const
+	{
+		Json::Value ret;
+
+		set_jv_memb(ret, "<is_blank_value>", true);
+
+		return ret;
+	}
+};
 
 } // namespace json
 } // namespace liborangepower
