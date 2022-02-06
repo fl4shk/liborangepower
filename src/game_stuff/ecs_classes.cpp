@@ -108,7 +108,7 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 	}
 }
 //--------
-Engine::Engine(size_t s_num_files=DEFAULT_NUM_FILES)
+Engine::Engine(size_t s_num_files)
 	: _next_ent_id_vec(s_num_files, 0),
 	_to_destroy_set_vec(s_num_files, EntIdSet()),
 	_num_files(s_num_files),
@@ -121,8 +121,6 @@ Engine::~Engine()
 //--------
 Engine::operator Json::Value () const
 {
-	static_assert(false, "Need to finish this function!");
-
 	Json::Value ret;
 
 	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_SERIALIZE);
@@ -193,7 +191,6 @@ void Engine::_ent_deserialize(const Json::Value& jv)
 			//	= jv["_engine_comp_map"][ent_name];
 			const Json::Value& comp_jv = inner_jv[ent_name];
 			const auto& comp_name_vec = comp_jv.getMemberNames();
-			curr_file_num
 
 			for (const auto& comp_name: comp_name_vec)
 			{
