@@ -158,7 +158,8 @@ private:		// variables
 public:		// functions
 	//--------
 	Engine();
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Engine);
+	//GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Engine);
+	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Engine);
 	virtual ~Engine();
 	//--------
 	operator Json::Value () const;
