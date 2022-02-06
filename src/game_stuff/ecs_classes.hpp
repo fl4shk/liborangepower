@@ -162,8 +162,7 @@ public:		// misc.
 	#define MEMB_LIST_ECS_COMP(X)
 public:		// functions
 	Comp() = default;
-	//GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Comp);
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Comp);
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Comp);
 	virtual ~Comp() = default;
 
 	// This is used as the key for individual `CompMap` elements of an
