@@ -90,17 +90,16 @@ class Sys
 public:		// serialization stuff
 	#define MEMB_LIST_ECS_SYS(X) \
 		X(_did_init) \
-		X(active) \
-
+		X(game_mode_active) \
 private:		// variables
 	bool _did_init = false;
 public:		// variables
-	containers::PrevCurrPair<bool> active;
+	containers::PrevCurrPair<bool> game_mode_active;
 public:		// functions
 	inline Sys()
 	{
-		active.back_up_and_update(false);
-		active.back_up();
+		game_mode_active.back_up_and_update(false);
+		game_mode_active.back_up();
 	}
 	Sys(const Json::Value& jv);
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);

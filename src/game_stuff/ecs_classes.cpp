@@ -48,8 +48,8 @@ Sys::operator Json::Value () const
 void Sys::prep_init()
 {
 	_did_init = false;
-	active.back_up_and_update(false);
-	active.back_up_and_update(true);
+	game_mode_active.back_up_and_update(false);
+	game_mode_active.back_up_and_update(true);
 }
 void Sys::init(Engine* ecs_engine)
 {
@@ -74,13 +74,13 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 {
 	if (cond)
 	{
-		if (active() && active.has_changed())
+		if (game_mode_active() && game_mode_active.has_changed())
 		{
-			active.back_up();
+			game_mode_active.back_up();
 
 			return false;
 		}
-		else if (active())
+		else if (game_mode_active())
 		{
 			if (!_did_init)
 			{
