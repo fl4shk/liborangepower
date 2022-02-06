@@ -301,7 +301,7 @@ public:		// functions
 	EntId create();
 	inline void sched_destroy(EntId id)
 	{
-		_to_destroy_set.insert(id);
+		to_destroy_set().insert(id);
 	}
 	// Destroy now
 	void destroy(EntId id);
