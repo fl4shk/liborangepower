@@ -91,6 +91,7 @@ public:		// serialization stuff
 	#define MEMB_LIST_ECS_SYS(X) \
 		X(_did_init) \
 		X(game_mode_active) \
+
 private:		// variables
 	bool _did_init = false;
 public:		// variables
