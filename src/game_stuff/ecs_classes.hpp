@@ -25,9 +25,58 @@ class Comp;
 class Sys;
 class Engine;
 
-using EntId = integer_types::u64;
+//using EntId = integer_types::u64;
+//static constexpr EntId ENT_NULL_ID
+//	= static_cast<EntId>(static_cast<integer_types::i64>(-1));
+class EntId final
+{
+public:		// variables
+	int file_num;
+	integer_types::u64 val;
+public:		// functions
+	constexpr inline EntId operator + (integer_types::u64 other) const
+	{
+		return {.file_num=file_num, .val=val + other};
+	}
+	constexpr inline EntId operator - (integer_types::u64 other) const
+	{
+		return {.file_num=file_num, .val=val - other};
+	}
+	constexpr inline EntId& operator += (integer_types::u64 other)
+	{
+		*this = *this + other;
+		return *this;
+	}
+	constexpr inline EntId& operator -= (integer_types::u64 other)
+	{
+		*this = *this - other;
+		return *this;
+	}
+	constexpr inline EntId& operator ++ ()
+	{
+		*this += 1;
+		return *this;
+	}
+	constexpr inline EntId& operator ++ ()
+	{
+		*this -= 1;
+		return *this;
+	}
+
+	constexpr inline auto operator <=> (const EntId& other) const
+		= default;
+	//constexpr inline auto operator <=> (integer_types::u64 other) const
+	//{
+	//	return *this <=> EntId{.file_num=file_num, .val=other};
+	//}
+};
 static constexpr EntId ENT_NULL_ID
-	= static_cast<EntId>(static_cast<integer_types::i64>(-1));
+	= EntId
+	{
+		.file_num=-1,
+		.val=static_cast<integer_types::u64>
+			(static_cast<integer_types::i64>(-1))
+	};
 
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
