@@ -224,7 +224,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 	//	&& (!std::is_same<Type, uint64_t>()));
 
 	//--------
-	else if constexpr (containers::is_vec2<Type>())
+	if constexpr (containers::is_vec2<Type>())
 	{
 		jv = vec2_to_jv(val);
 	}
