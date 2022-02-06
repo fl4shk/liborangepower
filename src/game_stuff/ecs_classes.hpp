@@ -25,80 +25,84 @@ class Comp;
 class Sys;
 class Engine;
 
-//using EntId = integer_types::u64;
-//static constexpr EntId ENT_NULL_ID
-//	= static_cast<EntId>(static_cast<integer_types::i64>(-1));
-class EntId final
-{
-public:		// types
-	class CtorArgs final
-	{
-	public:		// variables
-		int file_num;
-		integer_types::u64 val;
-	};
-public:		// variables
-	int file_num;
-	integer_types::u64 val;
-public:		// functions
-	constexpr inline EntId();
-	constexpr inline EntId(const CtorArgs& ctor_args)
-		: file_num(ctor_args.file_num), val(ctor_args.val)
-	{
-	}
-	constexpr inline EntId(int s_file_num, integer_types::u64 s_val)
-		: file_num(s_file_num), val(s_val)
-	{
-	}
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EntId);
-
-	constexpr inline EntId operator + (integer_types::u64 other) const
-	{
-		return {.file_num=file_num, .val=val + other};
-	}
-	constexpr inline EntId operator - (integer_types::u64 other) const
-	{
-		return {.file_num=file_num, .val=val - other};
-	}
-	constexpr inline EntId& operator += (integer_types::u64 other)
-	{
-		*this = *this + other;
-		return *this;
-	}
-	constexpr inline EntId& operator -= (integer_types::u64 other)
-	{
-		*this = *this - other;
-		return *this;
-	}
-	constexpr inline EntId& operator ++ ()
-	{
-		*this += 1;
-		return *this;
-	}
-	constexpr inline EntId& operator -- ()
-	{
-		*this -= 1;
-		return *this;
-	}
-
-	constexpr inline auto operator <=> (const EntId& other) const
-		= default;
-	//constexpr inline auto operator <=> (integer_types::u64 other) const
-	//{
-	//	return *this <=> EntId{.file_num=file_num, .val=other};
-	//}
-};
+using EntId = integer_types::u64;
 static constexpr EntId ENT_NULL_ID
-	= {
-		.file_num=-1,
-		.val=static_cast<integer_types::u64>
-			(static_cast<integer_types::i64>(-1))
-	};
-
-constexpr inline EntId::EntId()
-{
-	*this = ENT_NULL_ID;
-}
+	= static_cast<EntId>(static_cast<integer_types::i64>(-1));
+//class EntId final
+//{
+//public:		// types
+//	class CtorArgs final
+//	{
+//	public:		// variables
+//		int file_num;
+//		integer_types::u64 val;
+//	};
+//public:		// variables
+//	int file_num;
+//	integer_types::u64 val;
+//public:		// functions
+//	constexpr inline EntId();
+//	constexpr inline EntId(const CtorArgs& ctor_args)
+//		: file_num(ctor_args.file_num), val(ctor_args.val)
+//	{
+//	}
+//	constexpr inline EntId(int s_file_num, integer_types::u64 s_val)
+//		: file_num(s_file_num), val(s_val)
+//	{
+//	}
+//	constexpr inline EntId(integer_types::u64 s_val)
+//		: file_num(-1), val(s_val)
+//	{
+//	}
+//	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EntId);
+//
+//	constexpr inline EntId operator + (integer_types::u64 other) const
+//	{
+//		return {.file_num=file_num, .val=val + other};
+//	}
+//	constexpr inline EntId operator - (integer_types::u64 other) const
+//	{
+//		return {.file_num=file_num, .val=val - other};
+//	}
+//	constexpr inline EntId& operator += (integer_types::u64 other)
+//	{
+//		*this = *this + other;
+//		return *this;
+//	}
+//	constexpr inline EntId& operator -= (integer_types::u64 other)
+//	{
+//		*this = *this - other;
+//		return *this;
+//	}
+//	constexpr inline EntId& operator ++ ()
+//	{
+//		*this += 1;
+//		return *this;
+//	}
+//	constexpr inline EntId& operator -- ()
+//	{
+//		*this -= 1;
+//		return *this;
+//	}
+//
+//	constexpr inline auto operator <=> (const EntId& other) const
+//		= default;
+//	//constexpr inline auto operator <=> (integer_types::u64 other) const
+//	//{
+//	//	return *this <=> EntId{.file_num=file_num, .val=other};
+//	//}
+//};
+//static constexpr EntId ENT_NULL_ID
+//	= {
+//		.file_num=-1,
+//		.val=static_cast<integer_types::u64>
+//			(static_cast<integer_types::i64>(-1))
+//	};
+//
+//constexpr inline EntId::EntId()
+//{
+//	*this = ENT_NULL_ID;
+//}
 
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
@@ -109,6 +113,18 @@ using EntIdSet = std::set<EntId>;
 using CompUptr = std::unique_ptr<Comp>;
 using CompMap = std::map<std::string, CompUptr>;
 using CompMapUptr = std::unique_ptr<CompMap>;
+
+//class EngineCompMapValue final
+//{
+//public:		// variables
+//	int file_num = -1;
+//	CompMapUptr comp_map_uptr;
+//public:		// functions
+//	EngineCompMapValue();
+//	EngineCompMapValue(int s_file_num, CompMapUptr&& s_comp_map_uptr);
+//	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(EngineCompMapValue);
+//	~EngineCompMapValue();
+//};
 using EngineCompMap = std::map<EntId, CompMapUptr>;
 
 using SysUptr = std::unique_ptr<Sys>;
@@ -209,26 +225,33 @@ concept EngineDerivedFromSys
 class Engine
 {
 	friend class Ent;
+public:		// constants
+	static constexpr size_t
+		DEFAULT_NUM_FILES = 9;
 protected:		// auto-serialized variables
 	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X) \
-		X(_next_ent_id) \
-		X(_to_destroy_set) \
+		X(_next_ent_id_vec) \
+		X(_to_destroy_set_vec) \
 
-	EntId _next_ent_id = 0;
+	std::vector<EntId> _next_ent_id_vec;
 
-	EntIdSet _to_destroy_set;
+	std::vector<EntIdSet> _to_destroy_set_vec;
 protected:		// non-auto-serialized serialized variables
+	size_t _num_files = DEFAULT_NUM_FILES;
+
 	// All `EntId` are stored as just the keys of `_engine_comp_map`, with
 	// no other storage for them.
-	EngineCompMap _engine_comp_map;
+	std::vector<EngineCompMap> _engine_comp_map_vec;
 
 	SysMap _sys_map;
 private:		// variables
 	json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
 	//json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
+public:		// variables
+	int curr_file_num = 0;
 public:		// functions
 	//--------
-	Engine();
+	Engine(size_t s_num_files=DEFAULT_NUM_FILES);
 	//GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Engine);
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Engine);
 	virtual ~Engine();
@@ -333,7 +356,7 @@ public:		// functions
 	}
 	inline CompMap& comp_map(EntId id) const
 	{
-		return *_engine_comp_map.at(id);
+		return *engine_comp_map().at(id);
 	}
 
 	inline CompUptr& comp_at(EntId id, const std::string& key) const
@@ -410,9 +433,37 @@ public:		// functions
 	//--------
 	void tick();
 	//--------
-	GEN_GETTER_BY_VAL(next_ent_id);
-	GEN_GETTER_BY_CON_REF(to_destroy_set);
-	GEN_GETTER_BY_CON_REF(engine_comp_map);
+	inline EntId& next_ent_id()
+	{
+		return _next_ent_id_vec.at(curr_file_num);
+	}
+	inline EntId next_ent_id() const
+	{
+		return _next_ent_id_vec.at(curr_file_num);
+	}
+
+	inline EntIdSet& to_destroy_set()
+	{
+		return _to_destroy_set_vec.at(curr_file_num);
+	}
+	inline const EntIdSet& to_destroy_set() const
+	{
+		return _to_destroy_set_vec.at(curr_file_num);
+	}
+
+	inline EngineCompMap& engine_comp_map()
+	{
+		return _engine_comp_map_vec.at(curr_file_num);
+	}
+	inline const EngineCompMap& engine_comp_map() const
+	{
+		return _engine_comp_map_vec.at(curr_file_num);
+	}
+	//--------
+	GEN_GETTER_BY_VAL(next_ent_id_vec);
+	GEN_GETTER_BY_CON_REF(to_destroy_set_vec);
+	GEN_GETTER_BY_VAL(num_files);
+	GEN_GETTER_BY_CON_REF(engine_comp_map_vec);
 	GEN_GETTER_BY_CON_REF(sys_map);
 	//--------
 };

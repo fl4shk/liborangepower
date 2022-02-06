@@ -10,6 +10,18 @@ namespace game
 namespace ecs
 {
 //--------
+//EngineCompMapValue::EngineCompMapValue()
+//{
+//}
+//EngineCompMapValue::EngineCompMapValue(int s_file_num,
+//	CompMapUptr&& s_comp_map_uptr)
+//	: file_num(s_file_num), comp_map_uptr(std::move(s_comp_map_uptr))
+//{
+//}
+//EngineCompMapValue::~EngineCompMapValue()
+//{
+//}
+//--------
 CompMap& Ent::comp_map() const
 {
 	return _engine->comp_map(id());
@@ -96,7 +108,11 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 	}
 }
 //--------
-Engine::Engine()
+Engine::Engine(size_t s_num_files=DEFAULT_NUM_FILES)
+	: _next_ent_id_vec(s_num_files, 0),
+	_to_destroy_set_vec(s_num_files, EntIdSet()),
+	_num_files(s_num_files),
+	_engine_comp_map_vec(s_num_files, EngineCompMap())
 {
 }
 Engine::~Engine()
@@ -105,18 +121,28 @@ Engine::~Engine()
 //--------
 Engine::operator Json::Value () const
 {
+	static_assert(false, "Need to finish this function!");
+
 	Json::Value ret;
 
 	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_SERIALIZE);
 
-	for (const auto& ent_pair: _engine_comp_map)
+	for (Json::ArrayIndex i=0;
+		i<static_cast<Json::ArrayIndex>(_num_files);
+		++i)
 	{
-		Json::Value& ent_jv = ret["_engine_comp_map"]
-			[sconcat(ent_pair.first)];
+		Json::Value& inner_jv = ret["_engine_comp_map_vec"][i];
 
-		for (const auto& comp_pair: *ent_pair.second)
+		for (const auto& ent_pair: _engine_comp_map_vec.at(i))
 		{
-			set_jv_memb(ent_jv, comp_pair.first, *comp_pair.second);
+			//Json::Value& ent_jv = ret["_engine_comp_map"]
+			//	[sconcat(ent_pair.first)];
+			Json::Value& ent_jv = inner_jv[sconcat(ent_pair.first)];
+
+			for (const auto& comp_pair: *ent_pair.second)
+			{
+				set_jv_memb(ent_jv, comp_pair.first, *comp_pair.second);
+			}
 		}
 	}
 
@@ -132,33 +158,55 @@ void Engine::_autoser_deserialize(const Json::Value& jv)
 //	EngineDerivedFromComp... RemCompTypes>
 void Engine::_ent_deserialize(const Json::Value& jv)
 {
-	_engine_comp_map.clear();
-	const auto& ent_name_vec
-		= jv["_engine_comp_map"].getMemberNames();
-	for (const auto& ent_name: ent_name_vec)
+	const int old_curr_file_num = curr_file_num;
+
+	_num_files = jv["_engine_comp_map_vec"].size();
+
+	_engine_comp_map_vec.clear();
+	for (size_t i=0; i<_num_files; ++i)
 	{
-		EntId id = 0;
+		_engine_comp_map_vec.push_back(EngineCompMap());
+	}
 
-		std::stringstream sstm;
-		sstm << ent_name;
-		sstm >> id;
+	for (Json::ArrayIndex i=0; i<jv["_engine_comp_map_vec"].size(); ++i)
+	{
+		const Json::Value& inner_jv
+			= jv["_engine_comp_map_vec"][i];
 
-		_inner_create(id);
+		curr_file_num = i;
 
-		const Json::Value& comp_jv = jv["_engine_comp_map"][ent_name];
-		const auto& comp_name_vec
-			= comp_jv.getMemberNames();
+		//const auto& ent_name_vec
+		//	= jv["_engine_comp_map"].getMemberNames();
+		const auto& ent_name_vec = inner_jv.getMemberNames();
 
-		for (const auto& comp_name: comp_name_vec)
+		for (const auto& ent_name: ent_name_vec)
 		{
-			//_inner_ent_deserialize<FirstCompType, RemCompTypes...>
-			//	(id, comp_jv, comp_name);
-			//insert_comp(id, comp_name,
-			//	CompUptr(new FirstCompType(comp_jv)));
-			insert_comp(id, comp_name,
-				_comp_deser_func_map.at(comp_name)(comp_jv));
+			EntId id = 0;
+
+			std::stringstream sstm;
+			sstm << ent_name;
+			sstm >> id;
+
+			_inner_create(id);
+
+			//const Json::Value& comp_jv
+			//	= jv["_engine_comp_map"][ent_name];
+			const Json::Value& comp_jv = inner_jv[ent_name];
+			const auto& comp_name_vec = comp_jv.getMemberNames();
+			curr_file_num
+
+			for (const auto& comp_name: comp_name_vec)
+			{
+				//_inner_ent_deserialize<FirstCompType, RemCompTypes...>
+				//	(id, comp_jv, comp_name);
+				//insert_comp(id, comp_name,
+				//	CompUptr(new FirstCompType(comp_jv)));
+				insert_comp(id, comp_name,
+					_comp_deser_func_map.at(comp_name)(comp_jv));
+			}
 		}
 	}
+	curr_file_num = old_curr_file_num;
 }
 ////template<EngineDerivedFromSys FirstSysType,
 ////	EngineDerivedFromSys... RemSysTypes>
@@ -181,25 +229,25 @@ void Engine::_ent_deserialize(const Json::Value& jv)
 //--------
 void Engine::_inner_create(EntId id)
 {
-	_engine_comp_map[id] = CompMapUptr(new CompMap());
+	engine_comp_map()[id] = CompMapUptr(new CompMap());
 }
 EntId Engine::create()
 {
-	_inner_create(_next_ent_id);
-	//_ent_id_to_comp_key_map[_next_ent_id] = std::set<std::string>();
-	return (_next_ent_id++);
+	_inner_create(next_ent_id());
+	//_ent_id_to_comp_key_map[next_ent_id()] = std::set<std::string>();
+	return (next_ent_id()++);
 }
 void Engine::destroy(EntId id)
 {
 	comp_map(id).clear();
-	if (_to_destroy_set.contains(id))
+	if (to_destroy_set().contains(id))
 	{
-		_to_destroy_set.erase(id);
+		to_destroy_set().erase(id);
 	}
 }
 void Engine::destroy()
 {
-	for (auto id: _to_destroy_set)
+	for (auto id: to_destroy_set())
 	{
 		comp_map(id).clear();
 
@@ -209,14 +257,14 @@ void Engine::destroy()
 		//}
 		//_ent_id_to_comp_key_map.erase(id);
 	}
-	_to_destroy_set.clear();
+	to_destroy_set().clear();
 }
 
 EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set) const
 {
 	EntIdVec ret;
 
-	for (auto&& pair: _engine_comp_map)
+	for (auto&& pair: engine_comp_map())
 	{
 		auto& the_comp_map = comp_map(pair.first);
 
@@ -251,7 +299,7 @@ EntIdVec Engine::ent_id_vec_from_keys_all(const StrKeySet& key_set) const
 {
 	EntIdVec ret;
 
-	for (auto&& pair: _engine_comp_map)
+	for (auto&& pair: engine_comp_map())
 	{
 		auto& the_comp_map = comp_map(pair.first);
 
