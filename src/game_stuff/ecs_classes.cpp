@@ -102,10 +102,7 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 			return true;
 		}
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 //--------
 Engine::Engine(size_t s_num_files)
