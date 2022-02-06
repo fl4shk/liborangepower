@@ -109,8 +109,12 @@ Engine::Engine(size_t s_num_files)
 	: _next_ent_id_vec(s_num_files, 0),
 	_to_destroy_set_vec(s_num_files, EntIdSet()),
 	_num_files(s_num_files),
-	_engine_comp_map_vec(s_num_files, EngineCompMap())
+	//_engine_comp_map_vec(s_num_files, EngineCompMap())
 {
+	for (size_t i=0; i<_num_files; ++i)
+	{
+		_engine_comp_map_vec.push_back(EngineCompMap());
+	}
 }
 Engine::~Engine()
 {
