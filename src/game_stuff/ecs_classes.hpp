@@ -28,81 +28,6 @@ class Engine;
 using EntId = integer_types::u64;
 static constexpr EntId ENT_NULL_ID
 	= static_cast<EntId>(static_cast<integer_types::i64>(-1));
-//class EntId final
-//{
-//public:		// types
-//	class CtorArgs final
-//	{
-//	public:		// variables
-//		int file_num;
-//		integer_types::u64 val;
-//	};
-//public:		// variables
-//	int file_num;
-//	integer_types::u64 val;
-//public:		// functions
-//	constexpr inline EntId();
-//	constexpr inline EntId(const CtorArgs& ctor_args)
-//		: file_num(ctor_args.file_num), val(ctor_args.val)
-//	{
-//	}
-//	constexpr inline EntId(int s_file_num, integer_types::u64 s_val)
-//		: file_num(s_file_num), val(s_val)
-//	{
-//	}
-//	constexpr inline EntId(integer_types::u64 s_val)
-//		: file_num(-1), val(s_val)
-//	{
-//	}
-//	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EntId);
-//
-//	constexpr inline EntId operator + (integer_types::u64 other) const
-//	{
-//		return {.file_num=file_num, .val=val + other};
-//	}
-//	constexpr inline EntId operator - (integer_types::u64 other) const
-//	{
-//		return {.file_num=file_num, .val=val - other};
-//	}
-//	constexpr inline EntId& operator += (integer_types::u64 other)
-//	{
-//		*this = *this + other;
-//		return *this;
-//	}
-//	constexpr inline EntId& operator -= (integer_types::u64 other)
-//	{
-//		*this = *this - other;
-//		return *this;
-//	}
-//	constexpr inline EntId& operator ++ ()
-//	{
-//		*this += 1;
-//		return *this;
-//	}
-//	constexpr inline EntId& operator -- ()
-//	{
-//		*this -= 1;
-//		return *this;
-//	}
-//
-//	constexpr inline auto operator <=> (const EntId& other) const
-//		= default;
-//	//constexpr inline auto operator <=> (integer_types::u64 other) const
-//	//{
-//	//	return *this <=> EntId{.file_num=file_num, .val=other};
-//	//}
-//};
-//static constexpr EntId ENT_NULL_ID
-//	= {
-//		.file_num=-1,
-//		.val=static_cast<integer_types::u64>
-//			(static_cast<integer_types::i64>(-1))
-//	};
-//
-//constexpr inline EntId::EntId()
-//{
-//	*this = ENT_NULL_ID;
-//}
 
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
@@ -114,17 +39,6 @@ using CompUptr = std::unique_ptr<Comp>;
 using CompMap = std::map<std::string, CompUptr>;
 using CompMapUptr = std::unique_ptr<CompMap>;
 
-//class EngineCompMapValue final
-//{
-//public:		// variables
-//	int file_num = -1;
-//	CompMapUptr comp_map_uptr;
-//public:		// functions
-//	EngineCompMapValue();
-//	EngineCompMapValue(int s_file_num, CompMapUptr&& s_comp_map_uptr);
-//	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(EngineCompMapValue);
-//	~EngineCompMapValue();
-//};
 using EngineCompMap = std::map<EntId, CompMapUptr>;
 
 using SysUptr = std::unique_ptr<Sys>;
@@ -151,6 +65,8 @@ public:		// functions
 	inline bool insert_or_replace_comp(const std::string& key,
 		CompUptr&& comp) const;
 	inline size_t erase_comp(const std::string& key) const;
+
+	inline int file_num() const;
 
 	GEN_GETTER_AND_SETTER_BY_VAL(id);
 	GEN_GETTER_AND_SETTER_BY_VAL(engine);
@@ -480,6 +396,10 @@ inline bool Ent::insert_or_replace_comp(const std::string& key,
 inline size_t Ent::erase_comp(const std::string& key) const
 {
 	return _engine->erase_comp(id(), key);
+}
+inline int Ent::file_num() const
+{
+	return _engine->curr_file_num;
 }
 //--------
 } // namespace ecs
