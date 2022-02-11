@@ -153,8 +153,6 @@ void Engine::_autoser_deserialize(const Json::Value& jv)
 //	EngineDerivedFromComp... RemCompTypes>
 void Engine::_ent_deserialize(const Json::Value& jv)
 {
-	const int old_curr_file_num = curr_file_num;
-
 	_num_files = jv["_engine_comp_map_vec"].size();
 
 	_engine_comp_map_vec.clear();
@@ -163,12 +161,12 @@ void Engine::_ent_deserialize(const Json::Value& jv)
 		_engine_comp_map_vec.push_back(EngineCompMap());
 	}
 
-	for (Json::ArrayIndex i=0; i<jv["_engine_comp_map_vec"].size(); ++i)
+	for (Json::ArrayIndex file_num=0;
+		file_num<jv["_engine_comp_map_vec"].size();
+		++file_num)
 	{
 		const Json::Value& inner_jv
-			= jv["_engine_comp_map_vec"][i];
-
-		curr_file_num = i;
+			= jv["_engine_comp_map_vec"][file_num];
 
 		//const auto& ent_name_vec
 		//	= jv["_engine_comp_map"].getMemberNames();
@@ -182,7 +180,7 @@ void Engine::_ent_deserialize(const Json::Value& jv)
 			sstm << ent_name;
 			sstm >> id;
 
-			_inner_create(id);
+			_inner_create(id, file_num);
 
 			//const Json::Value& comp_jv
 			//	= jv["_engine_comp_map"][ent_name];
@@ -196,11 +194,10 @@ void Engine::_ent_deserialize(const Json::Value& jv)
 				//insert_comp(id, comp_name,
 				//	CompUptr(new FirstCompType(comp_jv)));
 				insert_comp(id, comp_name,
-					_comp_deser_func_map.at(comp_name)(comp_jv));
+					_comp_deser_func_map.at(comp_name)(comp_jv), file_num);
 			}
 		}
 	}
-	curr_file_num = old_curr_file_num;
 }
 ////template<EngineDerivedFromSys FirstSysType,
 ////	EngineDerivedFromSys... RemSysTypes>
