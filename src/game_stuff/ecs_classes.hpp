@@ -393,7 +393,7 @@ public:		// functions
 	}
 
 	inline bool insert_comp_cfn(EntId id, const std::string& key,
-		CompUptr&& comp);
+		CompUptr&& comp)
 	{
 		return insert_comp(id, key, std::move(comp), curr_file_num);
 	}
