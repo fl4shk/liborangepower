@@ -22,10 +22,6 @@ namespace ecs
 //{
 //}
 //--------
-CompMap& Ent::comp_map() const
-{
-	return _engine->comp_map(id());
-}
 //--------
 std::string Comp::kind_str() const
 {
@@ -225,46 +221,43 @@ void Engine::_ent_deserialize(const Json::Value& jv)
 //	}
 //}
 //--------
-void Engine::_inner_create(EntId id)
+void Engine::_inner_create(EntId id, int file_num)
 {
-	engine_comp_map()[id] = CompMapUptr(new CompMap());
+	engine_comp_map(file_num)[id] = CompMapUptr(new CompMap());
 }
-EntId Engine::create()
+EntId Engine::create(int file_num)
 {
-	_inner_create(next_ent_id());
-	//_ent_id_to_comp_key_map[next_ent_id()] = std::set<std::string>();
-	return (next_ent_id()++);
+	_inner_create(next_ent_id(file_num), file_num);
+	//_ent_id_to_comp_key_map[next_ent_id(file_num)]
+	//	= std::set<std::string>();
+	return (next_ent_id(file_num)++);
 }
-void Engine::destroy(EntId id)
+void Engine::destroy(EntId id, int file_num)
 {
-	comp_map(id).clear();
-	if (to_destroy_set().contains(id))
+	comp_map(id, file_num).clear();
+	if (to_destroy_set(file_num).contains(id))
 	{
-		to_destroy_set().erase(id);
+		to_destroy_set(file_num).erase(id);
 	}
 }
-void Engine::destroy()
+void Engine::destroy(int file_num)
 {
-	for (auto id: to_destroy_set())
+	for (auto id: to_destroy_set(file_num))
 	{
-		comp_map(id).clear();
-
-		//for (const auto& key: _ent_id_to_comp_key_map.at(id))
-		//{
-		//	_comp_key_to_ent_id_map.at(key).erase(id);
-		//}
-		//_ent_id_to_comp_key_map.erase(id);
+		comp_map(id, file_num).clear();
 	}
-	to_destroy_set().clear();
+	to_destroy_set(file_num).clear();
 }
 
-EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set) const
+//--------
+EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set,
+	int file_num) const
 {
 	EntIdVec ret;
 
-	for (auto&& pair: engine_comp_map())
+	for (auto&& pair: engine_comp_map(file_num))
 	{
-		auto& the_comp_map = comp_map(pair.first);
+		auto& the_comp_map = comp_map(pair.first, file_num);
 
 		for (const auto& key: key_set)
 		{
@@ -279,9 +272,10 @@ EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set) const
 
 	return ret;
 }
-EntIdSet Engine::ent_id_set_from_keys_any(const StrKeySet& key_set) const
+EntIdSet Engine::ent_id_set_from_keys_any(const StrKeySet& key_set,
+	int file_num) const
 {
-	const EntIdVec vec(ent_id_vec_from_keys_any(key_set));
+	const EntIdVec vec(ent_id_vec_from_keys_any(key_set, file_num));
 
 	EntIdSet ret;
 
@@ -293,13 +287,14 @@ EntIdSet Engine::ent_id_set_from_keys_any(const StrKeySet& key_set) const
 	return ret;
 }
 
-EntIdVec Engine::ent_id_vec_from_keys_all(const StrKeySet& key_set) const
+EntIdVec Engine::ent_id_vec_from_keys_all(const StrKeySet& key_set,
+	int file_num) const
 {
 	EntIdVec ret;
 
-	for (auto&& pair: engine_comp_map())
+	for (auto&& pair: engine_comp_map(file_num))
 	{
-		auto& the_comp_map = comp_map(pair.first);
+		auto& the_comp_map = comp_map(pair.first, file_num);
 
 		bool all = true;
 
@@ -319,9 +314,10 @@ EntIdVec Engine::ent_id_vec_from_keys_all(const StrKeySet& key_set) const
 
 	return ret;
 }
-EntIdSet Engine::ent_id_set_from_keys_all(const StrKeySet& key_set) const
+EntIdSet Engine::ent_id_set_from_keys_all(const StrKeySet& key_set,
+	int file_num) const
 {
-	const EntIdVec vec(ent_id_vec_from_keys_all(key_set));
+	const EntIdVec vec(ent_id_vec_from_keys_all(key_set, file_num));
 
 	EntIdSet ret;
 
@@ -332,10 +328,12 @@ EntIdSet Engine::ent_id_set_from_keys_all(const StrKeySet& key_set) const
 
 	return ret;
 }
-
-bool Engine::insert_comp(EntId id, const std::string& key, CompUptr&& comp)
+//--------
+bool Engine::insert_comp(EntId id, const std::string& key, CompUptr&& comp,
+	int file_num)
 {
-	auto& the_comp_map = comp_map(id);
+	auto& the_comp_map = comp_map(id, file_num);
+
 	if (!the_comp_map.contains(key))
 	{
 		the_comp_map[key] = std::move(comp);
@@ -345,24 +343,24 @@ bool Engine::insert_comp(EntId id, const std::string& key, CompUptr&& comp)
 	return true;
 }
 bool Engine::insert_or_replace_comp(EntId id, const std::string& key,
-	CompUptr&& comp)
+	CompUptr&& comp, int file_num)
 {
-	auto& the_comp_map = comp_map(id);
+	auto& the_comp_map = comp_map(id, file_num);
 	//_ent_id_to_comp_key_map.at(id).insert(key);
 
 	const bool ret = the_comp_map.contains(key);
 	the_comp_map[key] = std::move(comp);
 	return ret;
 }
-size_t Engine::erase_comp(EntId id, const std::string& key)
+size_t Engine::erase_comp(EntId id, const std::string& key, int file_num)
 {
-	auto& the_comp_map = comp_map(id);
+	auto& the_comp_map = comp_map(id, file_num);
 	// A bad key will be handled by the `erase()` call itself.
 	const auto ret = the_comp_map.erase(key);
 	//_ent_id_to_comp_key_map.at(id).erase(key);
 	return ret;
 }
-
+//--------
 bool Engine::insert_sys(const std::string& key, SysUptr&& sys)
 {
 	if (!_sys_map.contains(key))
