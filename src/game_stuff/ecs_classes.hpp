@@ -241,14 +241,8 @@ public:		// functions
 		destroy(curr_file_num);
 	}
 	//--------
-	inline EntIdVec ent_id_vec_from_keys_any_cfn_v(auto&&... args)
-	{
-		StrKeySet key_set;
-
-		(key_set.insert(strings::sconcat(args)), ...);
-
-		return ent_id_vec_from_keys_any(key_set);
-	}
+	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set,
+		int file_num=USE_CURR_FILE_NUM) const;
 	inline EntIdVec ent_id_vec_from_keys_any_v(int file_num,
 		auto&&... args)
 	{
@@ -258,17 +252,13 @@ public:		// functions
 
 		return ent_id_vec_from_keys_any(key_set, file_num);
 	}
-	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set,
-		int file_num) const;
-
-	inline EntIdSet ent_id_set_from_keys_any_cfn_v(auto&&... args)
+	inline EntIdVec ent_id_vec_from_keys_any_cfn_v(auto&&... args)
 	{
-		StrKeySet key_set;
-
-		(key_set.insert(strings::sconcat(args)), ...);
-
-		return ent_id_set_from_keys_any(key_set);
+		return ent_id_vec_from_keys_any_v(curr_file_num, args...);
 	}
+	//--------
+	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set,
+		int file_num=USE_CURR_FILE_NUM) const;
 	inline EntIdSet ent_id_set_from_keys_any_v(int file_num,
 		auto&&... args)
 	{
@@ -278,17 +268,13 @@ public:		// functions
 
 		return ent_id_set_from_keys_any(key_set, file_num);
 	}
-	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set,
-		int file_num) const;
-
-	inline EntIdVec ent_id_vec_from_keys_all_cfg_v(auto&&... args)
+	inline EntIdSet ent_id_set_from_keys_any_cfn_v(auto&&... args)
 	{
-		StrKeySet key_set;
-
-		(key_set.insert(strings::sconcat(args)), ...);
-
-		return ent_id_vec_from_keys_all(key_set);
+		return ent_id_set_from_keys_any_v(curr_file_num, args...);
 	}
+	//--------
+	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set,
+		int file_num=USE_CURR_FILE_NUM) const;
 	inline EntIdVec ent_id_vec_from_keys_all_v(int file_num,
 		auto&&... args)
 	{
@@ -296,19 +282,15 @@ public:		// functions
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_vec_from_keys_all(file_num, key_set);
+		return ent_id_vec_from_keys_all(key_set, file_num);
 	}
-	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set,
-		int file_num) const;
-
-	inline EntIdSet ent_id_set_from_keys_all_cfn_v(auto&&... args)
+	inline EntIdVec ent_id_vec_from_keys_all_cfn_v(auto&&... args)
 	{
-		StrKeySet key_set;
-
-		(key_set.insert(strings::sconcat(args)), ...);
-
-		return ent_id_set_from_keys_all(key_set);
+		return ent_id_vec_from_keys_all_v(curr_file_num, args...);
 	}
+	//--------
+	EntIdSet ent_id_set_from_keys_all(const StrKeySet& key_set,
+		int file_num=USE_CURR_FILE_NUM) const;
 	inline EntIdSet ent_id_set_from_keys_all_v(int file_num,
 		auto&&... args)
 	{
@@ -318,8 +300,10 @@ public:		// functions
 
 		return ent_id_set_from_keys_all(key_set, file_num);
 	}
-	EntIdSet ent_id_set_from_keys_all(const StrKeySet& key_set,
-		int file_num) const;
+	inline EntIdSet ent_id_set_from_keys_all_cfn_v(auto&&... args)
+	{
+		return ent_id_set_from_keys_all_v(curr_file_num, args...);
+	}
 	//--------
 	inline Ent ent_at(EntId id, int file_num)
 	{
