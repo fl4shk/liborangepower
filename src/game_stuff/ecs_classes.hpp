@@ -232,7 +232,14 @@ public:		// functions
 	void destroy(EntId id, int file_num);
 	void destroy(int file_num);
 
-	inline void destroy_cfn
+	inline void destroy_cfn(EntId id)
+	{
+		destroy(id, curr_file_num);
+	}
+	inline void destroy_cfn()
+	{
+		destroy(curr_file_num);
+	}
 	//--------
 	inline EntIdVec ent_id_vec_from_keys_any_cfn_v(auto&&... args)
 	{
