@@ -246,7 +246,7 @@ constexpr inline bool is_prev_curr_pair
 template<typename Type>
 constexpr inline bool is_move_only_prev_curr_pair
 	= misc_util::is_specialization<Type, MoveOnlyPrevCurrPair>;
-template<typename Type>
+//template<typename Type>
 //constexpr inline bool is_cx_move_only_prev_curr_pair
 //	= misc_util::is_specialization<Type, CxMoveOnlyPrevCurrPair>;
 //--------
