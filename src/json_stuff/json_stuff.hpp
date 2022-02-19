@@ -116,7 +116,7 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 		return jv.asString();
 	}
 	//--------
-	else if constexpr (containers::is_vec2<Type>)
+	else if constexpr (containers::is_vec2<Type>())
 	{
 		//return vec2_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
 		return NonCvrefType
@@ -125,7 +125,7 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 			val_from_jv<decltype(std::declval<NonCvrefType>().y)>(jv["y"])
 		);
 	}
-	else if constexpr (containers::is_vec3<Type>)
+	else if constexpr (containers::is_vec3<Type>())
 	{
 		//return vec3_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
 		return NonCvrefType
@@ -137,8 +137,8 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 	}
 	else if constexpr
 	(
-		containers::is_prev_curr_pair<Type>
-		|| containers::is_move_only_prev_curr_pair<Type>
+		containers::is_prev_curr_pair<Type>()
+		|| containers::is_move_only_prev_curr_pair<Type>()
 	)
 	{
 		NonCvrefType ret;
@@ -153,20 +153,20 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 		return ret;
 	}
 	//--------
-	else if constexpr (containers::is_basic_std_container<Type>)
+	else if constexpr (containers::is_basic_std_container<Type>())
 	{
 		NonCvrefType ret;
 
 		for (Json::ArrayIndex i=1; i<jv.size(); ++i)
 		{
 			//if constexpr (!is_std_set<Type>)
-			if constexpr (containers::is_vec_like_std_container<Type>)
+			if constexpr (containers::is_vec_like_std_container<Type>())
 			{
 				ret.push_back(val_from_jv
 					<decltype(std::declval<NonCvrefType>().at(0))>
 					(jv[i]));
 			}
-			else // if constexpr (containers::is_std_set<Type>)
+			else // if constexpr (containers::is_std_set<Type>())
 			{
 				ret.insert(val_from_jv<typename NonCvrefType::key_type>
 					(jv[i]));
@@ -223,38 +223,38 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 	//	&& (!std::is_same<Type, uint64_t>()));
 
 	//--------
-	if constexpr (containers::is_vec2<Type>)
+	if constexpr (containers::is_vec2<Type>())
 	{
 		jv = vec2_to_jv(val);
 	}
-	else if constexpr (containers::is_vec3<Type>)
+	else if constexpr (containers::is_vec3<Type>())
 	{
 		jv = vec3_to_jv(val);
 	}
 	else if constexpr
 	(
-		containers::is_prev_curr_pair<Type>
-		|| containers::is_move_only_prev_curr_pair<Type>
+		containers::is_prev_curr_pair<Type>()
+		|| containers::is_move_only_prev_curr_pair<Type>()
 	)
 	{
 		_set_jv(jv["_prev"], val.prev());
 		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
-	else if constexpr (containers::is_vec_like_std_container<Type>)
+	else if constexpr (containers::is_vec_like_std_container<Type>())
 	{
 		jv[0] = BlankValue();
 
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
 			//if constexpr (containers::is_std_vector
-			//	<decltype(std::declval<NonCvrefType>().at(0))>
+			//	<decltype(std::declval<NonCvrefType>().at(0))>()
 			//	|| containers::is_std_deque
-			//		<decltype(std::declval<NonCvrefType>().at(0))>
+			//		<decltype(std::declval<NonCvrefType>().at(0))>()
 			//	|| containers::is_std_set
-			//		<decltype(std::declval<NonCvrefType>().at(0))>)
+			//		<decltype(std::declval<NonCvrefType>().at(0))>())
 			if constexpr (containers::is_basic_std_container
-				<decltype(std::declval<NonCvrefType>().at(0))>)
+				<decltype(std::declval<NonCvrefType>().at(0))>())
 			{
 				Json::Value inner_jv;
 
@@ -268,7 +268,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 			}
 		}
 	}
-	else if constexpr (containers::is_std_set<Type>)
+	else if constexpr (containers::is_std_set<Type>())
 	{
 		Json::ArrayIndex i = 0;
 
@@ -277,13 +277,13 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		for (const auto& key: val)
 		{
 			//if constexpr (containers::is_std_vector
-			//	<typename NonCvrefType::key_type>
+			//	<typename NonCvrefType::key_type>()
 			//	|| containers::is_std_deque
-			//		<typename NonCvrefType::key_type>
+			//		<typename NonCvrefType::key_type>()
 			//	|| containers::is_std_set
-			//		<typename NonCvrefType::key_type>)
+			//		<typename NonCvrefType::key_type>())
 			if constexpr (containers::is_basic_std_container
-				<typename NonCvrefType::key_type>)
+				<typename NonCvrefType::key_type>())
 			{
 				Json::Value inner_jv;
 

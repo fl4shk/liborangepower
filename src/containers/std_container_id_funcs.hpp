@@ -13,7 +13,7 @@ namespace containers
 {
 
 template<typename Type>
-constexpr inline bool is_std_vector
+constexpr inline bool is_std_vector()
 {
 	return misc_util::is_specialization<Type, std::vector>();
 }

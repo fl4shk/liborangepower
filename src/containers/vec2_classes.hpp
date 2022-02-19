@@ -181,7 +181,10 @@ public:		// functions
 //		== sizeof(uint32_t));
 //}
 template<typename Type>
-constexpr inline bool is_vec2 = misc_util::is_specialization<Type, Vec2>();
+constexpr inline bool is_vec2()
+{
+	return misc_util::is_specialization<Type, Vec2>();
+}
 
 } // namespace containers
 } // namespace liborangepower

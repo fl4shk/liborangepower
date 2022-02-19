@@ -180,7 +180,10 @@ public:		// functions
 //		== sizeof(uint32_t));
 //}
 template<typename Type>
-constexpr inline bool is_vec3 = misc_util::is_specialization<Type, Vec3>();
+constexpr inline bool is_vec3()
+{
+	return misc_util::is_specialization<Type, Vec3>;
+}
 
 } // namespace containers
 } // namespace liborangepower

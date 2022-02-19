@@ -237,18 +237,26 @@ public:		// functions
 //};
 //--------
 template<typename Type>
-constexpr inline bool is_prev_curr_pair
-	= misc_util::is_specialization<Type, PrevCurrPair>();
+constexpr inline bool is_prev_curr_pair()
+{
+	return misc_util::is_specialization<Type, PrevCurrPair>();
+}
 //template<typename Type>
-//constexpr inline bool is_cx_prev_curr_pair
-//	= misc_util::is_specialization<Type, CxPrevCurrPair>();
+//constexpr inline bool is_cx_prev_curr_pair()
+//{
+//	return misc_util::is_specialization<Type, CxPrevCurrPair>();
+//}
 
 template<typename Type>
-constexpr inline bool is_move_only_prev_curr_pair
-	= misc_util::is_specialization<Type, MoveOnlyPrevCurrPair>();
+constexpr inline bool is_move_only_prev_curr_pair()
+{
+	return misc_util::is_specialization<Type, MoveOnlyPrevCurrPair>();
+}
 //template<typename Type>
-//constexpr inline bool is_cx_move_only_prev_curr_pair
-//	= misc_util::is_specialization<Type, CxMoveOnlyPrevCurrPair>();
+//constexpr inline bool is_cx_move_only_prev_curr_pair()
+//{
+//	return misc_util::is_specialization<Type, CxMoveOnlyPrevCurrPair>();
+//}
 //--------
 } // namespace containers
 
