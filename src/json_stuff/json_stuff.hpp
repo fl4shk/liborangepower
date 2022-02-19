@@ -247,12 +247,14 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
-			if constexpr (containers::is_std_vector
-				<decltype(std::declval<NonCvrefType>().at(0))>
-				|| containers::is_std_deque
-					<decltype(std::declval<NonCvrefType>().at(0))>
-				|| containers::is_std_set
-					<decltype(std::declval<NonCvrefType>().at(0))>)
+			//if constexpr (containers::is_std_vector
+			//	<decltype(std::declval<NonCvrefType>().at(0))>
+			//	|| containers::is_std_deque
+			//		<decltype(std::declval<NonCvrefType>().at(0))>
+			//	|| containers::is_std_set
+			//		<decltype(std::declval<NonCvrefType>().at(0))>)
+			if constexpr (containers::is_basic_std_container
+				<decltype(std::declval<NonCvrefType>().at(0))>)
 			{
 				Json::Value inner_jv;
 
@@ -274,12 +276,14 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 
 		for (const auto& key: val)
 		{
-			if constexpr (containers::is_std_vector
-				<typename NonCvrefType::key_type>
-				|| containers::is_std_deque
-					<typename NonCvrefType::key_type>
-				|| containers::is_std_set
-					<typename NonCvrefType::key_type>)
+			//if constexpr (containers::is_std_vector
+			//	<typename NonCvrefType::key_type>
+			//	|| containers::is_std_deque
+			//		<typename NonCvrefType::key_type>
+			//	|| containers::is_std_set
+			//		<typename NonCvrefType::key_type>)
+			if constexpr (containers::is_basic_std_container
+				<typename NonCvrefType::key_type>)
 			{
 				Json::Value inner_jv;
 

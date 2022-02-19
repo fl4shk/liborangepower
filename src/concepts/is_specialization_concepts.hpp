@@ -49,6 +49,7 @@ template<typename FirstArgType,
 	template<typename...> typename ContainerEtcType,
 	typename RemArgTypes...>
 extern uint8_t is_specialization(const FirstArgType&);
+
 template<typename FirstArgType,
 	template<typename...> typename ContainerEtcType,
 	typename RemArgTypes...>
