@@ -63,7 +63,7 @@ constexpr inline bool is_specialization()
 {
     return (sizeof(is_specialization
 		<FirstArgType, ContainerEtcType, RemArgTypes...>
-		(std::declval<Type>()))
+		(std::declval<FirstArgType>()))
 		== sizeof(uint32_t));
 }
 
