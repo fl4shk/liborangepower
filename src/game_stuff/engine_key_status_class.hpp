@@ -5,6 +5,8 @@
 #include "../gen_class_innards_defines.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
 
+#include <map>
+
 namespace liborangepower
 {
 
@@ -91,7 +93,7 @@ public:		// functions
 	template<typename KeycType, typename KeyStatusType>
 	inline void update
 		(const std::map<KeycType, KeyStatusType>& key_status_map,
-		const std::vector<KeycodeType>& keyc_vec)
+		const std::vector<KeycType>& keyc_vec)
 	{
 		//auto update_key_status
 		//	= [](PrevCurrPair<bool>& key_status_down, SDL_Keycode sym)
