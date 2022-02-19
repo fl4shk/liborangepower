@@ -2,6 +2,7 @@
 #define liborangepower_containers_vec2_classes_hpp
 
 #include "../gen_class_innards_defines.hpp"
+#include "../concepts/is_specialization_concepts.hpp"
 
 #include <cmath>
 #include <cstdint>
@@ -168,17 +169,19 @@ public:		// functions
 	//--------
 };
 
+//template<typename Type>
+//extern uint32_t _is_vec2_func(const Vec2<Type>&);
+//template<typename Type>
+//extern uint8_t _is_vec2_func(const Type&);
+//
+//template<typename Type>
+//constexpr inline bool is_vec2()
+//{
+//	return (sizeof(_is_vec2_func(std::declval<Type>()))
+//		== sizeof(uint32_t));
+//}
 template<typename Type>
-extern uint32_t _is_vec2_func(const Vec2<Type>&);
-template<typename Type>
-extern uint8_t _is_vec2_func(const Type&);
-
-template<typename Type>
-constexpr inline bool is_vec2()
-{
-	return (sizeof(_is_vec2_func(std::declval<Type>()))
-		== sizeof(uint32_t));
-}
+constexpr inline bool is_vec2 = misc_util::is_specialization<Type, Vec2>;
 
 } // namespace containers
 } // namespace liborangepower

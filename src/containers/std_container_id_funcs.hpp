@@ -5,6 +5,7 @@
 #include <deque>
 #include <map>
 #include <set>
+#include "../misc/is_specialization_concepts.hpp"
 
 namespace liborangepower
 {
@@ -12,48 +13,28 @@ namespace containers
 {
 
 template<typename Type>
-extern uint32_t _is_std_vector_func(const std::vector<Type>&);
+constexpr inline bool is_std_vector
+	= misc_util::is_specialization<Type, std::vector>;
 template<typename Type>
-extern uint8_t _is_std_vector_func(const Type&);
+constexpr inline bool is_std_deque
+	=  misc_util::is_specialization<Type, std::deque>;
+template<typename Type>
+constexpr inline bool is_std_set
+	= misc_util::is_specialization<Type, std::set>;
 
 template<typename Type>
-constexpr inline bool is_std_vector()
-{
-	return (sizeof(_is_std_vector_func(std::declval<Type>()))
-		== sizeof(uint32_t));
-}
+constexpr inline bool is_vec_like_std_container
+	= (
+		is_std_vector<Type>
+		|| is_std_deque<Type>
+	);
 
 template<typename Type>
-extern uint32_t _is_std_deque_func(const std::deque<Type>&);
-template<typename Type>
-extern uint8_t _is_std_deque_func(const Type&);
-
-template<typename Type>
-constexpr inline bool is_std_deque()
-{
-	return (sizeof(_is_std_deque_func(std::declval<Type>()))
-		== sizeof(uint32_t));
-}
-
-template<typename Type>
-extern uint32_t _is_std_set_func(const std::set<Type>&);
-template<typename Type>
-extern uint8_t _is_std_set_func(const Type&);
-
-template<typename Type>
-constexpr inline bool is_std_set()
-{
-	return (sizeof(_is_std_set_func(std::declval<Type>()))
-		== sizeof(uint32_t));
-}
-
-template<typename Type>
-constexpr inline bool is_basic_std_container()
-{
-	return (containers::is_std_vector<Type>()
-		|| containers::is_std_deque<Type>()
-		|| containers::is_std_set<Type>());
-}
+constexpr inline bool is_basic_std_container
+	= (
+		is_vec_like_std_container<Type>
+		|| is_std_set<Type>
+	);
 
 } // namespace containers
 } // namespace liborangepower

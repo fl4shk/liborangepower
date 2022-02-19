@@ -8,6 +8,7 @@
 #include <functional>
 #include <string>
 #include <map>
+#include <concepts>
 
 #include <SDL.h>
 #include <SDL_events.h>
@@ -15,6 +16,8 @@
 
 namespace liborangepower
 {
+
+using liborangepower::containers::PrevCurrPair;
 
 namespace sdl
 {
@@ -38,25 +41,26 @@ public:		// function
 	inline ~KeycModPair() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(KeycModPair);
 
-	inline bool operator < (const KeycModPair& to_cmp) const
-	{
-		if (_sym < to_cmp._sym)
-		{
-			return true;
-		}
-		else if (_sym == to_cmp._sym)
-		{
-			return (_mod < to_cmp._mod);
-		}
-		else
-		{
-			return false;
-		}
-	}
-	inline bool operator == (const KeycModPair& to_cmp) const
-	{
-		return ((_sym == to_cmp._sym) && (_mod == to_cmp._mod));
-	}
+	//inline bool operator < (const KeycModPair& to_cmp) const
+	//{
+	//	if (_sym < to_cmp._sym)
+	//	{
+	//		return true;
+	//	}
+	//	else if (_sym == to_cmp._sym)
+	//	{
+	//		return (_mod < to_cmp._mod);
+	//	}
+	//	else
+	//	{
+	//		return false;
+	//	}
+	//}
+	//inline bool operator == (const KeycModPair& to_cmp) const
+	//{
+	//	return ((_sym == to_cmp._sym) && (_mod == to_cmp._mod));
+	//}
+	inline auto operator <=> (const KeycModPair& to_cmp) const = default;
 
 	GEN_GETTER_AND_SETTER_BY_VAL(sym);
 	GEN_GETTER_AND_SETTER_BY_VAL(mod);
@@ -67,7 +71,7 @@ class KeyStatus
 private:		// variables
 	KeycModPair _kmp;
 public:		// variables
-	liborangepower::containers::PrevCurrPair<bool> down;
+	PrevCurrPair<bool> down;
 public:		// functions
 	inline KeyStatus() = default;
 	inline KeyStatus(const KeycModPair& s_kmp, bool s_down_curr=false)
@@ -88,25 +92,26 @@ public:		// functions
 	inline ~KeyStatus() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(KeyStatus);
 
-	inline bool operator < (const KeyStatus& to_cmp) const
-	{
-		if (_kmp < to_cmp._kmp)
-		{
-			return true;
-		}
-		else if (_kmp == to_cmp._kmp)
-		{
-			return (down < to_cmp.down);
-		}
-		else
-		{
-			return false;
-		}
-	}
-	inline bool operator == (const KeyStatus& to_cmp) const
-	{
-		return ((_kmp == to_cmp._kmp) && (down == to_cmp.down));
-	}
+	//inline bool operator < (const KeyStatus& to_cmp) const
+	//{
+	//	if (_kmp < to_cmp._kmp)
+	//	{
+	//		return true;
+	//	}
+	//	else if (_kmp == to_cmp._kmp)
+	//	{
+	//		return (down < to_cmp.down);
+	//	}
+	//	else
+	//	{
+	//		return false;
+	//	}
+	//}
+	//inline bool operator == (const KeyStatus& to_cmp) const
+	//{
+	//	return ((_kmp == to_cmp._kmp) && (down == to_cmp.down));
+	//}
+	inline auto operator <=> (const KeyStatus& to_cmp) const = default;
 
 	inline SDL_Keycode sym() const
 	{
@@ -128,6 +133,117 @@ public:		// functions
 };
 
 using KeyStatusMap = std::map<SDL_Keycode, KeyStatus>;
+
+//template<typename KeyKind>
+//using EngineKeycMap = std::map<KeyKind, SDL_Keycode>;
+using KeycVec = std::vector<SDL_Keycode>;
+
+class EngineKeyStatus final
+{
+public:		// types
+	using StateVec = std::vector<PrevCurrPair<bool>>;
+	using StateVecSizeType = typename StateVec::size_type;
+private:		// variables
+	//std::map<KeyKind, PrevCurrPair<bool>> state_map;
+	StateVec _state_vec;
+public:		// functions
+	inline EngineKeyStatus() = default;
+	EngineKeyStatus(StateVecSizeType state_vec_size)
+		: _state_vec(state_vec_size, PrevCurrPair<bool>(false, false))
+	{
+		//for (StateVecSizeType i=0; i<state_vec_size; ++i)
+		//{
+		//	//_state_vec[key_kind] = PrevCurrPair<bool>();
+		//	//_state_vec.at(key_kind)() = false;
+		//	//_state_vec.at(key_kind).back_up();
+		//}
+	}
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EngineKeyStatus);
+	inline ~EngineKeyStatus() = default;
+
+	inline PrevCurrPair<bool>& at(const auto& key_kind)
+	{
+		return _state_vec.at(static_cast<StateVecSizeType>(key_kind));
+	}
+	inline const PrevCurrPair<bool>& at(const auto& key_kind) const
+	{
+		return _state_vec.at(static_cast<StateVecSizeType>(key_kind));
+	}
+
+	inline bool key_went_up_just_now(const auto& key_kind) const
+	{
+		return (at(key_kind).prev() && (!at(key_kind)()));
+	}
+	inline bool key_went_down_just_now(const auto& key_kind) const
+	{
+		return ((!at(key_kind).prev()) && at(key_kind)());
+	}
+
+	inline bool any_key_went_up_just_now() const
+	{
+		for (const auto& item: _state_vec)
+		{
+			if (item.prev() && (!item()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	inline bool any_key_went_down_just_now() const
+	{
+		for (const auto& item: _state_vec)
+		{
+			if ((!item.prev()) && item())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	inline bool has_changed() const
+	{
+		for (const auto& item: _state_vec)
+		{
+			if (item.has_changed())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	inline bool update(const KeyStatusMap& key_status_map,
+		const KeycVec& keyc_vec)
+	{
+		//auto update_key_status
+		//	= [](PrevCurrPair<bool>& key_status_down, SDL_Keycode sym)
+		//	-> void
+		//{
+		//	if (key_status_map.contains(sym))
+		//	{
+		//		//key_status_down() = _key_status_map.at(sym).down.prev();
+		//		key_status_down.back_up_and_update
+		//			(key_status_map.at(sym).down());
+		//	}
+		//};
+		//for (const auto& pair: engine_keyc_map)
+		for (StateVecSizeType key_kind=0;
+			key_kind<keyc_vec.size();
+			++key_kind)
+		{
+			//const auto& sym = pair.second;
+			const auto& sym = keyc_vec.at(key_kind);
+			if (key_status_map.contains(sym))
+			{
+				at(key_kind).back_up_and_update
+					(key_status_map.at(sym).down());
+			}
+		}
+	}
+
+	GEN_GETTER_BY_CON_REF(state_vec);
+}; 
 
 // Set `perf_total_back_up` to `true` before the loop that polls SDL
 // events.
@@ -192,7 +308,7 @@ namespace std
 template<>
 struct hash<liborangepower::sdl::KeycModPair>
 {
-	std::size_t operator () 
+	std::size_t operator ()
 		(const liborangepower::sdl::KeycModPair& kmp) const noexcept
 	{
 		std::size_t h0 = std::hash<SDL_Keycode>{}(kmp.sym());

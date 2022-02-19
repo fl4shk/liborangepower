@@ -2,17 +2,19 @@
 #define liborangepower_gen_class_innards_defines_hpp
 
 #define GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, move_dd) \
-	inline Type(const Type& to_copy) = copy_dd; \
-	inline Type(Type&& to_move) = move_dd; \
-	inline Type& operator = (const Type& to_copy) = copy_dd; \
-	inline Type& operator = (Type&& to_move) = move_dd;
+	constexpr inline Type(const Type& to_copy) = copy_dd; \
+	constexpr inline Type(Type&& to_move) = move_dd; \
+	constexpr inline Type& operator = (const Type& to_copy) = copy_dd; \
+	constexpr inline Type& operator = (Type&& to_move) = move_dd;
 
+/*
 #define GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, \
 	move_dd) \
 	constexpr inline Type(const Type& to_copy) = copy_dd; \
 	constexpr inline Type(Type&& to_move) = move_dd; \
 	constexpr inline Type& operator = (const Type& to_copy) = copy_dd; \
 	constexpr inline Type& operator = (Type&& to_move) = move_dd;
+*/
 
 
 /*
@@ -33,7 +35,7 @@
 #define GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Type) \
 	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, default)
 
-
+/*
 #define GEN_CONSTEXPR_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
 	GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, delete)
 
@@ -46,18 +48,18 @@
 #define GEN_CONSTEXPR_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Type) \
 	GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, default, \
 		default)
-
+*/
 
 /*
 #define GEN_COPY_CONSTRUCTOR(Type, dd) \
-	inline Type(const Type& to_copy) = dd;
+	constexpr inline Type(const Type& to_copy) = dd;
 #define GEN_MOVE_CONSTRUCTOR(Type, dd) \
-	inline Type(Type&& to_move) = dd;
+	constexpr inline Type(Type&& to_move) = dd;
 
 #define GEN_COPY_ASSIGN_OP(Type, dd) \
-	inline Type& operator = (const Type& to_copy) = dd;
+	constexpr inline Type& operator = (const Type& to_copy) = dd;
 #define GEN_MOVE_ASSIGN_OP(Type, dd) \
-	inline Type& operator = (Type&& to_move) = dd;
+	constexpr inline Type& operator = (Type&& to_move) = dd;
 */
 
 // Getters
@@ -65,7 +67,7 @@
 #ifndef GEN_GENERIC_GETTER_BY_VAL
 // By value
 #define GEN_GENERIC_GETTER_BY_VAL(prefix, suffix) \
-inline decltype(prefix##suffix) suffix() const \
+constexpr inline decltype(prefix##suffix) suffix() const \
 { \
 	return prefix##suffix; \
 }
@@ -74,7 +76,7 @@ inline decltype(prefix##suffix) suffix() const \
 #ifndef GEN_GENERIC_GETTER_AS_POINTER
 // As a pointer
 #define GEN_GENERIC_GETTER_AS_POINTER(prefix, suffix) \
-inline decltype(prefix##suffix)* suffix() \
+constexpr inline decltype(prefix##suffix)* suffix() \
 { \
 	return &prefix##suffix; \
 }
@@ -98,7 +100,7 @@ GEN_GENERIC_GETTER_AS_POINTER(_, suffix)
 #ifndef GEN_GENERIC_GETTER_BY_CON_REF
 // By constant reference
 #define GEN_GENERIC_GETTER_BY_CON_REF(prefix, suffix) \
-inline const decltype(prefix##suffix)& suffix() const \
+constexpr inline const decltype(prefix##suffix)& suffix() const \
 { \
 	return prefix##suffix; \
 }
@@ -115,7 +117,7 @@ GEN_GENERIC_GETTER_BY_CON_REF(_, suffix)
 #ifndef GEN_GENERIC_GETTER_BY_REF
 // By reference
 #define GEN_GENERIC_GETTER_BY_REF(prefix, suffix) \
-inline decltype(prefix##suffix)& suffix() \
+constexpr inline decltype(prefix##suffix)& suffix() \
 { \
 	return prefix##suffix; \
 }
@@ -138,7 +140,7 @@ GEN_GETTER_BY_REF(suffix)
 #ifndef GEN_STATIC_GENERIC_GETTER_BY_VAL
 // By value
 #define GEN_STATIC_GENERIC_GETTER_BY_VAL(prefix, suffix) \
-static inline decltype(prefix##suffix) suffix() const \
+static constexpr inline decltype(prefix##suffix) suffix() const \
 { \
 	return prefix##suffix; \
 }
@@ -155,7 +157,7 @@ GEN_STATIC_GENERIC_GETTER_BY_VAL(_, suffix)
 #ifndef GEN_STATIC_GENERIC_GETTER_BY_CON_REF
 // By constant reference
 #define GEN_STATIC_GENERIC_GETTER_BY_CON_REF(prefix, suffix) \
-static inline const decltype(prefix##suffix)& suffix() const \
+static constexpr inline const decltype(prefix##suffix)& suffix() const \
 { \
 	return prefix##suffix; \
 }
@@ -172,7 +174,7 @@ GEN_STATIC_GENERIC_GETTER_BY_CON_REF(_, suffix)
 #ifndef GEN_STATIC_GENERIC_GETTER_BY_REF
 // By reference
 #define GEN_STATIC_GENERIC_GETTER_BY_REF(prefix, suffix) \
-static inline decltype(prefix##suffix)& suffix() \
+static constexpr inline decltype(prefix##suffix)& suffix() \
 { \
 	return prefix##suffix; \
 }
@@ -191,7 +193,7 @@ GEN_STATIC_GENERIC_GETTER_BY_REF(_, suffix)
 // By value
 #define GEN_GENERIC_SETTER_BY_VAL(prefix, suffix) \
 template<typename Type> \
-inline decltype(prefix##suffix) set_##suffix(Type to_copy) \
+constexpr inline decltype(prefix##suffix) set_##suffix(Type to_copy) \
 { \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
@@ -210,7 +212,7 @@ GEN_GENERIC_SETTER_BY_VAL(_, suffix)
 // By const reference
 #define GEN_GENERIC_SETTER_BY_CON_REF(prefix, suffix) \
 template<typename Type> \
-inline const decltype(prefix##suffix)& set_##suffix(const Type& to_copy) \
+constexpr inline const decltype(prefix##suffix)& set_##suffix(const Type& to_copy) \
 { \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
@@ -229,7 +231,7 @@ GEN_GENERIC_SETTER_BY_CON_REF(_, suffix)
 // By rvalue reference
 #define GEN_GENERIC_SETTER_BY_RVAL_REF(prefix, suffix) \
 template<typename Type> \
-inline const decltype(prefix##suffix)& set_##suffix(Type&& to_move) \
+constexpr inline const decltype(prefix##suffix)& set_##suffix(Type&& to_move) \
 { \
 	prefix##suffix = std::move(to_move); \
 	return prefix##suffix; \
@@ -248,7 +250,7 @@ GEN_GENERIC_SETTER_BY_RVAL_REF(_, suffix)
 // By value
 #define GEN_STATIC_GENERIC_SETTER_BY_VAL(prefix, suffix) \
 template<typename Type> \
-static inline decltype(prefix##suffix) set_##suffix(Type to_copy) \
+static constexpr inline decltype(prefix##suffix) set_##suffix(Type to_copy) \
 { \
 	prefix##suffix = to_copy; \
 	return prefix##suffix; \
@@ -267,7 +269,7 @@ GEN_STATIC_GENERIC_SETTER_BY_VAL(_, suffix)
 // By const reference
 #define GEN_STATIC_GENERIC_SETTER_BY_CON_REF(prefix, suffix) \
 template<typename Type> \
-static inline const decltype(prefix##suffix)& set_##suffix \
+static constexpr inline const decltype(prefix##suffix)& set_##suffix \
 	(const Type& to_copy) \
 { \
 	prefix##suffix = to_copy; \
@@ -286,7 +288,7 @@ GEN_STATIC_GENERIC_SETTER_BY_CON_REF(_, suffix)
 #ifndef GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF
 // By rvalue reference
 #define GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF(prefix, suffix) \
-static inline const decltype(prefix##suffix)& set_##suffix \
+static constexpr inline const decltype(prefix##suffix)& set_##suffix \
 	(decltype(prefix##suffix)&& to_move) \
 { \
 	prefix##suffix = std::move(to_move); \
