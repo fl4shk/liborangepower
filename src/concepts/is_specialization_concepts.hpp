@@ -8,21 +8,17 @@ namespace liborangepower
 namespace concepts
 {
 
-#define GEN_IS_SPECIALIZATION_FUNCS(func_name, ContainerEtcType) \
-	template<typename FirstType, typename... RemTypes> \
-	extern uint8_t _ ## func_name ## _check (const FirstType&); \
+#define GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, ContainerEtcType) \
+	template<typename Type> \
+	extern uint8_t _ ## func_name ## _check (const Type&); \
 	\
-	template<typename FirstType, typename... RemTypes> \
+	template<typename Type> \
 	extern uint32_t _ ## func_name ## _check \
-		(const ContainerEtcType<FirstType, RemTypes...>&); \
-	\
-	template<typename FirstType> \
-	constexpr inline bool func_name () \
-	{ \
-		return (sizeof(_ ## func_name ## _check \
-			(std::declval<FirstType>())) \
-			== sizeof(uint32_t)); \
-	}
+		(const ContainerEtcType<Type>&) \
+
+#define GEN_IS_SPECIALIZATION_FUNC_CONTENTS(func_name) \
+	return (sizeof(_ ## func_name ## _check (std::declval<Type>())) \
+		== sizeof(uint32_t)) \
 
 //template<typename, template<typename...> typename>
 //constexpr inline bool is_specialization = false;

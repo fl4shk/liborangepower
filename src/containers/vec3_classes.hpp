@@ -185,7 +185,12 @@ public:		// functions
 //	return misc_util::is_specialization<Type, Vec3>();
 //}
 
-GEN_IS_SPECIALIZATION_FUNCS(is_vec3, Vec3);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_vec3, Vec3);
+template<typename Type>
+constexpr inline bool is_vec3()
+{
+	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_vec3);
+}
 } // namespace containers
 } // namespace liborangepower
 #endif		// liborangepower_containers_vec3_classes_hpp

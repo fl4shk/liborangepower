@@ -30,21 +30,38 @@ namespace containers
 //	return misc_util::is_specialization
 //		<FirstType, std::set, RemTypes...>();
 //}
-GEN_IS_SPECIALIZATION_FUNCS(is_std_vector, std::vector);
-GEN_IS_SPECIALIZATION_FUNCS(is_std_deque, std::deque);
-GEN_IS_SPECIALIZATION_FUNCS(is_std_set, std::set);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_std_vector, std::vector);
+template<typename Type>
+constexpr inline bool is_std_vector()
+{
+	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_vector);
+}
 
-template<typename FirstType, typename... RemTypes>
+GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_std_deque, std::deque);
+template<typename Type>
+constexpr inline bool is_std_deque()
+{
+	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_deque);
+}
+
+GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_std_set, std::set);
+template<typename Type>
+constexpr inline bool is_std_set()
+{
+	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_set);
+}
+
+template<typename Type>
 constexpr inline bool is_vec_like_std_container()
 {
 	return
 	(
-		is_std_vector<FirstType, RemTypes...>()
-		|| is_std_deque<FirstType, RemTypes...>()
+		is_std_vector<Type>()
+		|| is_std_deque<Type>()
 	);
 }
 
-template<typename FirstType>
+template<typename Type>
 constexpr inline bool is_basic_std_container()
 {
 	return
