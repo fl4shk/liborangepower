@@ -257,7 +257,7 @@ GEN_GENERIC_SETTER_BY_VAL(0, _, suffix)
 
 #ifndef GEN_CX_SETTER_BY_VAL
 // By value
-#define GEN_SETTER_BY_VAL(suffix) \
+#define GEN_CX_SETTER_BY_VAL(suffix) \
 GEN_GENERIC_SETTER_BY_VAL(1, _, suffix)
 #endif
 
