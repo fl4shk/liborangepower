@@ -32,7 +32,7 @@ class KeycModPair final
 private:		// variables
 	SDL_Keycode _sym;
 	Uint16 _mod;
-public:		// function
+public:		// functions
 	inline KeycModPair() = default;
 	inline KeycModPair(SDL_Keycode s_sym, Uint16 s_mod)
 		: _sym(s_sym), _mod(s_mod)
@@ -138,112 +138,6 @@ using KeyStatusMap = std::map<SDL_Keycode, KeyStatus>;
 //using EngineKeycMap = std::map<KeyKind, SDL_Keycode>;
 using KeycVec = std::vector<SDL_Keycode>;
 
-class EngineKeyStatus final
-{
-public:		// types
-	using StateVec = std::vector<PrevCurrPair<bool>>;
-	using StateVecSizeType = typename StateVec::size_type;
-private:		// variables
-	//std::map<KeyKind, PrevCurrPair<bool>> state_map;
-	StateVec _state_vec;
-public:		// functions
-	inline EngineKeyStatus() = default;
-	EngineKeyStatus(StateVecSizeType state_vec_size)
-		: _state_vec(state_vec_size, PrevCurrPair<bool>(false, false))
-	{
-		//for (StateVecSizeType i=0; i<state_vec_size; ++i)
-		//{
-		//	//_state_vec[key_kind] = PrevCurrPair<bool>();
-		//	//_state_vec.at(key_kind)() = false;
-		//	//_state_vec.at(key_kind).back_up();
-		//}
-	}
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EngineKeyStatus);
-	inline ~EngineKeyStatus() = default;
-
-	inline PrevCurrPair<bool>& at(const auto& key_kind)
-	{
-		return _state_vec.at(static_cast<StateVecSizeType>(key_kind));
-	}
-	inline const PrevCurrPair<bool>& at(const auto& key_kind) const
-	{
-		return _state_vec.at(static_cast<StateVecSizeType>(key_kind));
-	}
-
-	inline bool key_went_up_just_now(const auto& key_kind) const
-	{
-		return (at(key_kind).prev() && (!at(key_kind)()));
-	}
-	inline bool key_went_down_just_now(const auto& key_kind) const
-	{
-		return ((!at(key_kind).prev()) && at(key_kind)());
-	}
-
-	inline bool any_key_went_up_just_now() const
-	{
-		for (const auto& item: _state_vec)
-		{
-			if (item.prev() && (!item()))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	inline bool any_key_went_down_just_now() const
-	{
-		for (const auto& item: _state_vec)
-		{
-			if ((!item.prev()) && item())
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	inline bool has_changed() const
-	{
-		for (const auto& item: _state_vec)
-		{
-			if (item.has_changed())
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	inline void update(const KeyStatusMap& key_status_map,
-		const KeycVec& keyc_vec)
-	{
-		//auto update_key_status
-		//	= [](PrevCurrPair<bool>& key_status_down, SDL_Keycode sym)
-		//	-> void
-		//{
-		//	if (key_status_map.contains(sym))
-		//	{
-		//		//key_status_down() = _key_status_map.at(sym).down.prev();
-		//		key_status_down.back_up_and_update
-		//			(key_status_map.at(sym).down());
-		//	}
-		//};
-		//for (const auto& pair: engine_keyc_map)
-		for (StateVecSizeType key_kind=0;
-			key_kind<keyc_vec.size();
-			++key_kind)
-		{
-			//const auto& sym = pair.second;
-			const auto& sym = keyc_vec.at(key_kind);
-			if (key_status_map.contains(sym))
-			{
-				at(key_kind).back_up_and_update
-					(key_status_map.at(sym).down());
-			}
-		}
-	}
-
-	GEN_GETTER_BY_CON_REF(state_vec);
-}; 
 
 // Set `perf_total_back_up` to `true` before the loop that polls SDL
 // events.
