@@ -43,8 +43,8 @@ constexpr inline bool is_basic_std_container()
 {
 	return
 	(
-		is_vec_like_std_container<Type>
-		|| is_std_set<Type>
+		is_vec_like_std_container<Type>()
+		|| is_std_set<Type>()
 	);
 }
 
