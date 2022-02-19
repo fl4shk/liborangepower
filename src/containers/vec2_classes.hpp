@@ -180,11 +180,12 @@ public:		// functions
 //	return (sizeof(_is_vec2_func(std::declval<Type>()))
 //		== sizeof(uint32_t));
 //}
-template<typename Type>
-constexpr inline bool is_vec2()
-{
-	return misc_util::is_specialization<Type, Vec2>();
-}
+//template<typename Type>
+//constexpr inline bool is_vec2()
+//{
+//	return misc_util::is_specialization<Type, Vec2>();
+//}
+GEN_IS_SPECIALIZATION_FUNCS(is_vec2, Vec2);
 
 } // namespace containers
 } // namespace liborangepower

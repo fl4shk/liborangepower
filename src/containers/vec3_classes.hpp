@@ -179,12 +179,13 @@ public:		// functions
 //	return (sizeof(_is_vec3_func(std::declval<Type>()))
 //		== sizeof(uint32_t));
 //}
-template<typename Type>
-constexpr inline bool is_vec3()
-{
-	return misc_util::is_specialization<Type, Vec3>();
-}
+//template<typename Type>
+//constexpr inline bool is_vec3()
+//{
+//	return misc_util::is_specialization<Type, Vec3>();
+//}
 
+GEN_IS_SPECIALIZATION_FUNCS(is_vec3, Vec3);
 } // namespace containers
 } // namespace liborangepower
 #endif		// liborangepower_containers_vec3_classes_hpp
