@@ -134,9 +134,9 @@ public:		// functions
 
 using KeyStatusMap = std::map<SDL_Keycode, KeyStatus>;
 
-//template<typename KeyKind>
-//using EngineKeycMap = std::map<KeyKind, SDL_Keycode>;
-using KeycVec = std::vector<SDL_Keycode>;
+template<typename KeyKind>
+using EngineKeycMap = std::map<KeyKind, SDL_Keycode>;
+//using KeycVec = std::vector<SDL_Keycode>;
 
 
 // Set `perf_total_back_up` to `true` before the loop that polls SDL

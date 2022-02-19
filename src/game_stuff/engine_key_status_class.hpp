@@ -90,10 +90,10 @@ public:		// functions
 		return false;
 	}
 
-	template<typename KeycType, typename KeyStatusType>
+	template<typename KeyKind, typename KeycType, typename KeyStatusType>
 	inline void update
 		(const std::map<KeycType, KeyStatusType>& key_status_map,
-		const std::vector<KeycType>& keyc_vec)
+		const std::map<KeyKind, KeycType>& keyc_map)
 	{
 		//auto update_key_status
 		//	= [](PrevCurrPair<bool>& key_status_down, SDL_Keycode sym)
@@ -106,13 +106,16 @@ public:		// functions
 		//			(key_status_map.at(sym).down());
 		//	}
 		//};
-		//for (const auto& pair: engine_keyc_map)
-		for (StateVecSizeType key_kind=0;
-			key_kind<keyc_vec.size();
-			++key_kind)
+		for (const auto& pair: keyc_map)
+		//for (StateVecSizeType key_kind=0;
+		//	key_kind<keyc_vec.size();
+		//	++key_kind)
 		{
-			//const auto& sym = pair.second;
-			const auto& sym = keyc_vec.at(key_kind);
+			const auto& key_kind = pair.first;
+			const auto& sym = pair.second;
+
+			//const auto& sym = keyc_vec.at(key_kind);
+
 			if (key_status_map.contains(sym))
 			{
 				at(key_kind).back_up_and_update
