@@ -213,7 +213,7 @@ public:		// functions
 		return false;
 	}
 
-	inline bool update(const KeyStatusMap& key_status_map,
+	inline void update(const KeyStatusMap& key_status_map,
 		const KeycVec& keyc_vec)
 	{
 		//auto update_key_status

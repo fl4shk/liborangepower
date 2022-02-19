@@ -392,25 +392,23 @@ GEN_STATIC_GENERIC_SETTER_BY_RVAL_REF(1, _, suffix)
 #define GEN_GETTER_AND_SETTER_BY_CON_REF(stuff) \
 	GEN_GETTER_BY_CON_REF(stuff) \
 	GEN_SETTER_BY_CON_REF(stuff)
-
-#define GEN_GETTER_AND_CX_SETTER_BY_CON_REF(stuff) \
-	GEN_GETTER_BY_CON_REF(stuff) \
+#define GEN_CX_GETTER_AND_CX_SETTER_BY_CON_REF(stuff) \
+	GEN_CX_GETTER_BY_CON_REF(stuff) \
 	GEN_CX_SETTER_BY_CON_REF(stuff)
 
 #define GEN_GETTER_AND_SETTER_BY_VAL(stuff) \
 	GEN_GETTER_BY_VAL(stuff) \
 	GEN_SETTER_BY_VAL(stuff)
-
-#define GEN_GETTER_AND_CX_SETTER_BY_VAL(stuff) \
-	GEN_GETTER_BY_VAL(stuff) \
+#define GEN_CX_GETTER_AND_CX_SETTER_BY_VAL(stuff) \
+	GEN_CX_GETTER_BY_VAL(stuff) \
 	GEN_CX_SETTER_BY_VAL(stuff)
 
 
 #define GEN_GETTER_BCR_AND_SETTER_BRR(stuff) \
 	GEN_GETTER_BY_CON_REF(stuff) \
 	GEN_SETTER_BY_RVAL_REF(stuff)
-#define GEN_GETTER_BCR_AND_SETTER_BRR(stuff) \
-	GEN_GETTER_BY_CON_REF(stuff) \
+#define GEN_CX_GETTER_BCR_AND_CX_SETTER_BRR(stuff) \
+	GEN_CX_GETTER_BY_CON_REF(stuff) \
 	GEN_CX_SETTER_BY_RVAL_REF(stuff)
 //--------
 #endif		// liborangepower_gen_class_innards_defines_hpp
