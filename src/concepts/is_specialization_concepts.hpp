@@ -46,46 +46,45 @@ namespace misc_util
 //		== sizeof(uint32_t));
 
 
-// This would be my choice if it worked
-//template<typename FirstArgType,
-//	template<typename...> typename ContainerEtcType,
-//	typename... RemArgTypes>
-//extern uint8_t is_specialization(const FirstArgType&);
-//
-//template<typename FirstArgType,
-//	template<typename...> typename ContainerEtcType,
-//	typename... RemArgTypes>
-//extern uint32_t is_specialization
-//	(const ContainerEtcType<FirstArgType, RemArgTypes...>&);
-//
-//template<typename FirstArgType,
-//	template<typename...> typename ContainerEtcType,
-//	typename... RemArgTypes>
-//constexpr inline bool is_specialization()
-//{
-//    return (sizeof(is_specialization
-//		<FirstArgType, ContainerEtcType, RemArgTypes...>
-//		(std::declval<FirstArgType>()))
-//		== sizeof(uint32_t));
-//}
-
 template<typename FirstArgType,
-	template<typename> typename ContainerEtcType>
+	template<typename...> typename ContainerEtcType,
+	typename... RemArgTypes>
 extern uint8_t is_specialization(const FirstArgType&);
 
 template<typename FirstArgType,
-	template<typename> typename ContainerEtcType>
+	template<typename...> typename ContainerEtcType,
+	typename... RemArgTypes>
 extern uint32_t is_specialization
-	(const ContainerEtcType<FirstArgType>&);
+	(const ContainerEtcType<FirstArgType, RemArgTypes...>&);
 
 template<typename FirstArgType,
-	template<typename> typename ContainerEtcType>
+	template<typename...> typename ContainerEtcType,
+	typename... RemArgTypes>
 constexpr inline bool is_specialization()
 {
-    return (sizeof(is_specialization<FirstArgType, ContainerEtcType>
+	return (sizeof(is_specialization
+		<FirstArgType, ContainerEtcType, RemArgTypes...>
 		(std::declval<FirstArgType>()))
 		== sizeof(uint32_t));
 }
+
+//template<typename FirstArgType,
+//	template<typename> typename ContainerEtcType>
+//extern uint8_t is_specialization(const FirstArgType&);
+//
+//template<typename FirstArgType,
+//	template<typename> typename ContainerEtcType>
+//extern uint32_t is_specialization
+//	(const ContainerEtcType<FirstArgType>&);
+//
+//template<typename FirstArgType,
+//	template<typename> typename ContainerEtcType>
+//constexpr inline bool is_specialization()
+//{
+//	return (sizeof(is_specialization<FirstArgType, ContainerEtcType>
+//		(std::declval<FirstArgType>()))
+//		== sizeof(uint32_t));
+//}
 
 template<typename Type, template<typename...> typename NonSpecType>
 concept IsSpecialization = is_specialization<Type, NonSpecType>();
