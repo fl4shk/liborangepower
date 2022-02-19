@@ -14,10 +14,10 @@ namespace liborangepower
 namespace json
 {
 
-using liborangepower::concepts::DerivedAndHasStaticKindStr;
+using liborangepower::concepts::IsDerivedAndHasStaticKindStr;
 template<typename DerivedType, typename BaseType>
 concept IsValidFromJvFactoryType
-	= DerivedAndHasStaticKindStr<DerivedType, BaseType> 
+	= IsDerivedAndHasStaticKindStr<DerivedType, BaseType> 
 	&& requires(const Json::Value& jv)
 {
 	DerivedType(jv);

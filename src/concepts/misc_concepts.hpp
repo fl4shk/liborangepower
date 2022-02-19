@@ -15,9 +15,16 @@ concept HasStaticKindStr = requires
 };
 
 template<typename DerivedType, typename BaseType>
-concept DerivedAndHasStaticKindStr 
+concept IsDerivedAndHasStaticKindStr 
 	= std::derived_from<DerivedType, BaseType>
 	&& HasStaticKindStr<DerivedType>;
+
+template<typename Type>
+concept IsConstexpr = requires()
+{
+	{ std::bool_constant<(Type{}, true)>() }
+		-> std::same_as<std::true_type>;
+};
 
 } // namespace concepts
 } // namespace liborangepower

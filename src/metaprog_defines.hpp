@@ -1,6 +1,6 @@
 #ifndef liborangepower_metaprog_defines_h
 #define liborangepower_metaprog_defines_h
-
+//--------
 #define PARENS() () // Note space before (), so object-like macro
 #define EMPTY()
 #define COMMA() ,
@@ -180,7 +180,7 @@
 //DEFER(A)()
 //// Expands to `123`, because the `EVAL` macro forces another scan
 //EVAL(DEFER(A)())
-
-
-
+//--------
+#define CX_WHEN(cx_cond) WHEN(cx_cond)(constexpr)
+//--------
 #endif		// liborangepower_metaprog_defines_h
