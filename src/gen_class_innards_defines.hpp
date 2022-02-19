@@ -74,8 +74,8 @@
 //--------
 #ifndef GEN_GENERIC_GETTER_BY_VAL
 // By value
-#define GEN_GENERIC_GETTER_BY_VAL(prefix, suffix) \
-constexpr inline decltype(prefix ## suffix) suffix () const \
+#define GEN_GENERIC_GETTER_BY_VAL(cx_cond, prefix, suffix) \
+CX_WHEN(cx_cond) inline decltype(prefix ## suffix) suffix () const \
 { \
 	return prefix ## suffix; \
 }
@@ -83,8 +83,8 @@ constexpr inline decltype(prefix ## suffix) suffix () const \
 
 #ifndef GEN_GENERIC_GETTER_AS_PTR
 // As a pointer
-#define GEN_GENERIC_GETTER_AS_PTR(prefix, suffix) \
-constexpr inline decltype(prefix ## suffix)* suffix () \
+#define GEN_GENERIC_GETTER_AS_PTR(cx_cond, prefix, suffix) \
+CX_WHEN(cx_cond) inline decltype(prefix ## suffix)* suffix () \
 { \
 	return & prefix ## suffix; \
 }
@@ -93,6 +93,12 @@ constexpr inline decltype(prefix ## suffix)* suffix () \
 #ifndef GEN_GETTER_BY_VAL
 // By value
 #define GEN_GETTER_BY_VAL(suffix) \
+GEN_GENERIC_GETTER_BY_VAL(0, _, suffix)
+#endif
+
+#ifndef GEN_CX_GETTER_BY_VAL
+// By value
+#define GEN_CX_GETTER_BY_VAL(suffix) \
 GEN_GENERIC_GETTER_BY_VAL(1, _, suffix)
 #endif
 
@@ -100,13 +106,19 @@ GEN_GENERIC_GETTER_BY_VAL(1, _, suffix)
 #ifndef GEN_GETTER_AS_PTR
 // As a pointer
 #define GEN_GETTER_AS_PTR(suffix) \
+GEN_GENERIC_GETTER_AS_PTR(0, _, suffix)
+#endif
+
+#ifndef GEN_CX_GETTER_AS_PTR
+// As a pointer
+#define GEN_CX_GETTER_AS_PTR(suffix) \
 GEN_GENERIC_GETTER_AS_PTR(1, _, suffix)
 #endif
 //--------
 #ifndef GEN_GENERIC_GETTER_BY_CON_REF
 // By constant reference
-#define GEN_GENERIC_GETTER_BY_CON_REF(prefix, suffix) \
-constexpr inline const decltype(prefix ## suffix) & suffix () const \
+#define GEN_GENERIC_GETTER_BY_CON_REF(cx_cond, prefix, suffix) \
+CX_WHEN(cx_cond) inline const decltype(prefix ## suffix) & suffix () const \
 { \
 	return prefix ## suffix; \
 }
@@ -115,15 +127,21 @@ constexpr inline const decltype(prefix ## suffix) & suffix () const \
 #ifndef GEN_GETTER_BY_CON_REF
 // By constant reference
 #define GEN_GETTER_BY_CON_REF(suffix) \
-GEN_GENERIC_GETTER_BY_CON_REF(_, suffix)
+GEN_GENERIC_GETTER_BY_CON_REF(0, _, suffix)
+#endif
+
+#ifndef GEN_CX_GETTER_BY_CON_REF
+// By constant reference
+#define GEN_CX_GETTER_BY_CON_REF(suffix) \
+GEN_GENERIC_GETTER_BY_CON_REF(1, _, suffix)
 #endif
 
 
 
 #ifndef GEN_GENERIC_GETTER_BY_REF
 // By reference
-#define GEN_GENERIC_GETTER_BY_REF(prefix, suffix) \
-constexpr inline decltype(prefix ## suffix)& suffix () \
+#define GEN_GENERIC_GETTER_BY_REF(cx_cond, prefix, suffix) \
+CX_WHEN(cx_cond) inline decltype(prefix ## suffix)& suffix () \
 { \
 	return prefix ## suffix; \
 }
@@ -132,7 +150,13 @@ constexpr inline decltype(prefix ## suffix)& suffix () \
 #ifndef GEN_GETTER_BY_REF
 // By reference
 #define GEN_GETTER_BY_REF(suffix) \
-GEN_GENERIC_GETTER_BY_REF(_, suffix)
+GEN_GENERIC_GETTER_BY_REF(0, _, suffix)
+#endif
+
+#ifndef GEN_CX_GETTER_BY_REF
+// By reference
+#define GEN_CX_GETTER_BY_REF(suffix) \
+GEN_GENERIC_GETTER_BY_REF(1, _, suffix)
 #endif
 
 #ifndef GEN_GETTERS_BY_CON_REF_AND_REF
@@ -145,8 +169,8 @@ GEN_GETTER_BY_REF(suffix)
 
 #ifndef GEN_STATIC_GENERIC_GETTER_BY_VAL
 // By value
-#define GEN_STATIC_GENERIC_GETTER_BY_VAL(prefix, suffix) \
-static constexpr inline decltype(prefix ## suffix) suffix () const \
+#define GEN_STATIC_GENERIC_GETTER_BY_VAL(cx_cond, prefix, suffix) \
+static CX_WHEN(cx_cond) inline decltype(prefix ## suffix) suffix () const \
 { \
 	return prefix ## suffix; \
 }
@@ -155,7 +179,13 @@ static constexpr inline decltype(prefix ## suffix) suffix () const \
 #ifndef GEN_STATIC_GETTER_BY_VAL
 // By value
 #define GEN_STATIC_GETTER_BY_VAL(suffix) \
-GEN_STATIC_GENERIC_GETTER_BY_VAL(_, suffix)
+GEN_STATIC_GENERIC_GETTER_BY_VAL(0, _, suffix)
+#endif
+
+#ifndef GEN_STATIC_CX_GETTER_BY_VAL
+// By value
+#define GEN_STATIC_CX_GETTER_BY_VAL(suffix) \
+GEN_STATIC_GENERIC_GETTER_BY_VAL(1, _, suffix)
 #endif
 
 
@@ -163,7 +193,8 @@ GEN_STATIC_GENERIC_GETTER_BY_VAL(_, suffix)
 #ifndef GEN_STATIC_GENERIC_GETTER_BY_CON_REF
 // By constant reference
 #define GEN_STATIC_GENERIC_GETTER_BY_CON_REF(prefix, suffix) \
-static constexpr inline const decltype(prefix ## suffix) & suffix () const \
+static CX_WHEN(cx_cond) inline const decltype(prefix ## suffix) & \
+	suffix () const \
 { \
 	return prefix ## suffix; \
 }
@@ -172,7 +203,13 @@ static constexpr inline const decltype(prefix ## suffix) & suffix () const \
 #ifndef GEN_STATIC_GETTER_BY_CON_REF
 // By constant reference
 #define GEN_STATIC_GETTER_BY_CON_REF(suffix) \
-GEN_STATIC_GENERIC_GETTER_BY_CON_REF(_, suffix)
+GEN_STATIC_GENERIC_GETTER_BY_CON_REF(0, _, suffix)
+#endif
+
+#ifndef GEN_STATIC_CX_GETTER_BY_CON_REF
+// By constant reference
+#define GEN_STATIC_CX_GETTER_BY_CON_REF(suffix) \
+GEN_STATIC_GENERIC_GETTER_BY_CON_REF(1, _, suffix)
 #endif
 
 
@@ -180,7 +217,7 @@ GEN_STATIC_GENERIC_GETTER_BY_CON_REF(_, suffix)
 #ifndef GEN_STATIC_GENERIC_GETTER_BY_REF
 // By reference
 #define GEN_STATIC_GENERIC_GETTER_BY_REF(prefix, suffix) \
-static constexpr inline decltype(prefix ## suffix)& suffix () \
+static CX_WHEN(cx_cond) inline decltype(prefix ## suffix)& suffix () \
 { \
 	return prefix ## suffix; \
 }
@@ -189,7 +226,13 @@ static constexpr inline decltype(prefix ## suffix)& suffix () \
 #ifndef GEN_STATIC_GETTER_BY_REF
 // By reference
 #define GEN_STATIC_GETTER_BY_REF(suffix) \
-GEN_STATIC_GENERIC_GETTER_BY_REF(_, suffix)
+GEN_STATIC_GENERIC_GETTER_BY_REF(0, _, suffix)
+#endif
+
+#ifndef GEN_STATIC_CX_GETTER_BY_REF
+// By reference
+#define GEN_STATIC_CX_GETTER_BY_REF(suffix) \
+GEN_STATIC_GENERIC_GETTER_BY_REF(1, _, suffix)
 #endif
 //--------
 // Setters
