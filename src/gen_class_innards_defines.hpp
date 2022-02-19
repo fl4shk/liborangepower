@@ -2,10 +2,10 @@
 #define liborangepower_gen_class_innards_defines_hpp
 
 #define GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, move_dd) \
-	constexpr inline Type(const Type& to_copy) = copy_dd; \
-	constexpr inline Type(Type&& to_move) = move_dd; \
-	constexpr inline Type& operator = (const Type& to_copy) = copy_dd; \
-	constexpr inline Type& operator = (Type&& to_move) = move_dd;
+	inline Type(const Type& to_copy) = copy_dd; \
+	inline Type(Type&& to_move) = move_dd; \
+	inline Type& operator = (const Type& to_copy) = copy_dd; \
+	inline Type& operator = (Type&& to_move) = move_dd;
 
 /*
 #define GEN_CONSTEXPR_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, \
