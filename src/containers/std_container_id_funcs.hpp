@@ -5,7 +5,7 @@
 #include <deque>
 #include <map>
 #include <set>
-#include "../misc/is_specialization_concepts.hpp"
+#include "../concepts/is_specialization_concepts.hpp"
 
 namespace liborangepower
 {
