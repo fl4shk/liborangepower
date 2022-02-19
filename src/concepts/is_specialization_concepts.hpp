@@ -47,18 +47,18 @@ namespace misc_util
 
 template<typename FirstArgType,
 	template<typename...> typename ContainerEtcType,
-	typename RemArgTypes...>
+	typename... RemArgTypes>
 extern uint8_t is_specialization(const FirstArgType&);
 
 template<typename FirstArgType,
 	template<typename...> typename ContainerEtcType,
-	typename RemArgTypes...>
+	typename... RemArgTypes>
 extern uint32_t is_specialization
 	(const ContainerEtcType<FirstArgType, RemArgTypes...>&);
 
 template<typename FirstArgType,
 	template<typename...> typename ContainerEtcType,
-	typename RemArgTypes...>
+	typename... RemArgTypes>
 constexpr inline bool is_specialization()
 {
     return (sizeof(is_specialization
