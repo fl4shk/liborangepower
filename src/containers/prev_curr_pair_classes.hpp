@@ -238,17 +238,17 @@ public:		// functions
 //--------
 template<typename Type>
 constexpr inline bool is_prev_curr_pair
-	= misc_util::is_specialization<Type, PrevCurrPair>;
+	= misc_util::is_specialization<Type, PrevCurrPair>();
 //template<typename Type>
 //constexpr inline bool is_cx_prev_curr_pair
-//	= misc_util::is_specialization<Type, CxPrevCurrPair>;
+//	= misc_util::is_specialization<Type, CxPrevCurrPair>();
 
 template<typename Type>
 constexpr inline bool is_move_only_prev_curr_pair
-	= misc_util::is_specialization<Type, MoveOnlyPrevCurrPair>;
+	= misc_util::is_specialization<Type, MoveOnlyPrevCurrPair>();
 //template<typename Type>
 //constexpr inline bool is_cx_move_only_prev_curr_pair
-//	= misc_util::is_specialization<Type, CxMoveOnlyPrevCurrPair>;
+//	= misc_util::is_specialization<Type, CxMoveOnlyPrevCurrPair>();
 //--------
 } // namespace containers
 
