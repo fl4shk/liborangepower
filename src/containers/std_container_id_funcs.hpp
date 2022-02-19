@@ -14,13 +14,13 @@ namespace containers
 
 template<typename Type>
 constexpr inline bool is_std_vector
-	= misc_util::is_specialization<Type, std::vector>;
+	= misc_util::is_specialization<Type, std::vector>();
 template<typename Type>
 constexpr inline bool is_std_deque
-	=  misc_util::is_specialization<Type, std::deque>;
+	=  misc_util::is_specialization<Type, std::deque>();
 template<typename Type>
 constexpr inline bool is_std_set
-	= misc_util::is_specialization<Type, std::set>;
+	= misc_util::is_specialization<Type, std::set>();
 
 template<typename Type>
 constexpr inline bool is_vec_like_std_container
