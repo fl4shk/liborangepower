@@ -185,7 +185,7 @@ public:		// functions
 //	return misc_util::is_specialization<Type, Vec3>();
 //}
 
-GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_vec3, Vec3);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_vec3, Vec3);
 template<typename Type>
 constexpr inline bool is_vec3()
 {

@@ -1,11 +1,12 @@
 #ifndef liborangepower_containers_std_container_id_funcs_hpp
 #define liborangepower_containers_std_container_id_funcs_hpp
 
-#include <cstdint>
+#include "../misc/misc_includes.hpp"
+#include "../concepts/is_specialization_concepts.hpp"
+
 #include <deque>
 #include <map>
 #include <set>
-#include "../concepts/is_specialization_concepts.hpp"
 
 namespace liborangepower
 {
@@ -30,21 +31,28 @@ namespace containers
 //	return misc_util::is_specialization
 //		<FirstType, std::set, RemTypes...>();
 //}
-GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_std_vector, std::vector);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(is_std_array, std::array);
+template<typename Type>
+constexpr inline bool is_std_array()
+{
+	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_array);
+}
+
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_std_vector, std::vector);
 template<typename Type>
 constexpr inline bool is_std_vector()
 {
 	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_vector);
 }
 
-GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_std_deque, std::deque);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_std_deque, std::deque);
 template<typename Type>
 constexpr inline bool is_std_deque()
 {
 	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_deque);
 }
 
-GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_std_set, std::set);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_std_set, std::set);
 template<typename Type>
 constexpr inline bool is_std_set()
 {

@@ -257,14 +257,14 @@ public:		// functions
 //{
 //	return misc_util::is_specialization<Type, CxMoveOnlyPrevCurrPair>();
 //}
-GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_prev_curr_pair, PrevCurrPair);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_prev_curr_pair, PrevCurrPair);
 template<typename Type>
 constexpr inline bool is_prev_curr_pair()
 {
 	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_prev_curr_pair);
 }
 
-GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_move_only_prev_curr_pair,
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_move_only_prev_curr_pair,
 	MoveOnlyPrevCurrPair);
 template<typename Type>
 constexpr inline bool is_move_only_prev_curr_pair()
