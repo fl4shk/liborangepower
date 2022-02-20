@@ -55,29 +55,29 @@ constexpr inline bool is_specialization()
 //--------
 template<template<typename, auto...> typename ContainerEtcType,
 	typename ArgType>
-extern uint8_t _is_specialization_rtargs_check(const ArgType&);
+extern uint8_t _is_specialization_check(const ArgType&, bool);
 
 template<template<typename, auto...> typename ContainerEtcType,
 	typename ArgType, auto... RemArgs>
-extern uint32_t _is_specialization_rtargs_check
-	(const ContainerEtcType<ArgType, RemArgs...>&);
+extern uint32_t _is_specialization_check
+	(const ContainerEtcType<ArgType, RemArgs...>&, bool);
 
 template<typename ToCheckType,
 	template<typename, auto...> typename ContainerEtcType>
-constexpr inline bool is_specialization_rtargs()
+constexpr inline bool is_specialization()
 {
-	return (sizeof(_is_specialization_rtargs_check<ContainerEtcType>
-		(std::declval<ToCheckType>()))
+	return (sizeof(_is_specialization_check<ContainerEtcType>
+		(std::declval<ToCheckType>(), true))
 		== sizeof(uint32_t));
 }
 //--------
 template<typename Type, template<typename...> typename ContainerEtcType>
 concept IsSpecialization = is_specialization<Type, ContainerEtcType>();
 
-template<typename Type,
-	template<typename, auto...> typename ContainerEtcType>
-concept IsSpecializationRtArgs
-	= is_specialization_rtargs<Type, ContainerEtcType>();
+//template<typename Type,
+//	template<typename, auto...> typename ContainerEtcType>
+//concept IsSpecializationRtArgs
+//	= is_specialization_rtargs<Type, ContainerEtcType>();
 //--------
 } // namespace concepts
 } // namespace liborangepower

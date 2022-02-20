@@ -20,8 +20,8 @@ template<typename Type>
 constexpr inline bool is_std_array()
 {
 	//return IS_SPECIALIZATION_MACRO(is_std_array);
-	//return concepts::is_specialization<Type, std::array>();
-	return concepts::is_specialization_rtargs<Type, std::array>();
+	return concepts::is_specialization<Type, std::array>();
+	//return concepts::is_specialization_rtargs<Type, std::array>();
 }
 //--------
 template<typename Type>
