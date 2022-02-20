@@ -2,6 +2,7 @@
 #define liborangepower_misc_is_specialization_concepts_hpp
 
 #include <concepts>
+#include <cstdint>
 
 namespace liborangepower
 {
@@ -12,13 +13,12 @@ namespace concepts
 	template<typename Type> \
 	extern uint8_t _ ## func_name ## _check (const Type&); \
 	\
-	template<typename FirstType, typename... RemTypes> \
+	template<auto FirstArg, auto... RemTmplArgs> \
 	extern uint32_t _ ## func_name ## _check \
-		(const ContainerEtcType<FirstType, RemTypes...>&) \
+		(const ContainerEtcType<FirstArg, RemTmplArgs...>&) \
 
 #define GEN_IS_SPECIALIZATION_FUNC_CONTENTS(func_name) \
-	return (sizeof(_ ## func_name ## _check<Type> \
-		(std::declval<Type>())) \
+	return (sizeof(_ ## func_name ## _check(std::declval<Type>())) \
 		== sizeof(uint32_t))
 
 //template<typename, template<typename...> typename>
