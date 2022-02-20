@@ -186,7 +186,7 @@ public:		// functions
 //	return misc_util::is_specialization<Type, Vec2>();
 //}
 GEN_IS_SPECIALIZATION_CHECK_FUNCS(is_vec2, Vec2);
-template<typename Type>
+template<typename FirstType, typename... RemTypes>
 constexpr inline bool is_vec2()
 {
 	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_vec2);
