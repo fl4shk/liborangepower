@@ -1,6 +1,8 @@
 #ifndef liborangepower_misc_is_specialization_concepts_hpp
 #define liborangepower_misc_is_specialization_concepts_hpp
 
+#include "../metaprog_defines.hpp"
+
 #include <concepts>
 #include <cstdint>
 
@@ -9,23 +11,25 @@ namespace liborangepower
 namespace concepts
 {
 
+#define _INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
+	ContainerEtcType, rem_cond) \
+	template<typename Type> \
+	extern uint8_t _ ## func_name ## _check (const Type&); \
+	\
+	template<typename Type, \
+		IF(rem_cond)(typename... RemTypes, auto... RemTargs)> \
+	extern uint32_t _ ## func_name ## _check \
+		(const ContainerEtcType<Type, \
+		IF(rem_cond)(RemTypes, RemTargs)...>&) \
+
 #define GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(func_name, \
 	ContainerEtcType) \
-	template<typename Type> \
-	extern uint8_t _ ## func_name ## _check (const Type&); \
-	\
-	template<typename FirstArg, typename... RemTypes> \
-	extern uint32_t _ ## func_name ## _check \
-		(const ContainerEtcType<FirstArg, RemTypes...>&) \
-
+	_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
+		ContainerEtcType, 1)
 #define GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(func_name, \
 	ContainerEtcType) \
-	template<typename Type> \
-	extern uint8_t _ ## func_name ## _check (const Type&); \
-	\
-	template<typename FirstArg, auto... RemTargs> \
-	extern uint32_t _ ## func_name ## _check \
-		(const ContainerEtcType<FirstArg, RemTargs...>&) \
+	_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
+		ContainerEtcType, 0)
 
 #define GEN_IS_SPECIALIZATION_FUNC_CONTENTS(func_name) \
 	return (sizeof(_ ## func_name ## _check(std::declval<Type>())) \
