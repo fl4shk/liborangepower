@@ -66,7 +66,7 @@ template<typename ToCheckType,
 	template<typename, size_t...> typename ContainerEtcType>
 constexpr inline bool is_specialization_rtargs()
 {
-	return (sizeof(_is_specialization_check_rtargs<ContainerEtcType>
+	return (sizeof(_is_specialization_rtargs_check<ContainerEtcType>
 		(std::declval<ToCheckType>()))
 		== sizeof(uint32_t));
 }
