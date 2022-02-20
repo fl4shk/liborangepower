@@ -15,13 +15,13 @@ namespace liborangepower
 namespace containers
 {
 //--------
-//GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(is_std_array, std::array);
+GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(is_std_array, std::array);
 template<typename Type>
 constexpr inline bool is_std_array()
 {
-	//return IS_SPECIALIZATION_MACRO(is_std_array);
+	return IS_SPECIALIZATION_MACRO(is_std_array);
 	//return concepts::is_specialization<Type, std::array>();
-	return concepts::is_specialization_rtargs<Type, std::array>();
+	//return concepts::is_specialization_rtargs<Type, std::array>();
 }
 //--------
 template<typename Type>
