@@ -9,16 +9,16 @@ namespace concepts
 {
 
 #define GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, ContainerEtcType) \
-	template<typename FirstType, typename... RemTypes> \
-	extern uint8_t _ ## func_name ## _check (const FirstType&); \
+	template<typename Type> \
+	extern uint8_t _ ## func_name ## _check (const Type&); \
 	\
 	template<typename FirstType, typename... RemTypes> \
 	extern uint32_t _ ## func_name ## _check \
 		(const ContainerEtcType<FirstType, RemTypes...>&) \
 
 #define GEN_IS_SPECIALIZATION_FUNC_CONTENTS(func_name) \
-	return (sizeof(_ ## func_name ## _check<FirstType, RemTypes...> \
-		(std::declval<FirstType>())) \
+	return (sizeof(_ ## func_name ## _check<Type> \
+		(std::declval<Type>())) \
 		== sizeof(uint32_t))
 
 //template<typename, template<typename...> typename>
