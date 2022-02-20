@@ -5,60 +5,35 @@
 #include "../concepts/is_specialization_concepts.hpp"
 
 #include <deque>
-#include <map>
 #include <set>
+#include <unordered_set>
+#include <map>
+#include <unordered_map>
 
 namespace liborangepower
 {
 namespace containers
 {
-
-//template<typename FirstType, typename... RemTypes>
-//constexpr inline bool is_std_vector()
-//{
-//	return misc_util::is_specialization
-//		<FirstType, std::vector, RemTypes...>();
-//}
-//template<typename FirstType, typename... RemTypes>
-//constexpr inline bool is_std_deque()
-//{
-//	return misc_util::is_specialization
-//		<FirstType, std::deque, RemTypes...>();
-//}
-//template<typename FirstType, typename... RemTypes>
-//constexpr inline bool is_std_set()
-//{
-//	return misc_util::is_specialization
-//		<FirstType, std::set, RemTypes...>();
-//}
-GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(is_std_array, std::array);
+//--------
+//GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(is_std_array, std::array);
 template<typename Type>
 constexpr inline bool is_std_array()
 {
-	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_array);
+	//GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_array);
+	return concepts::is_specialization<Type, std::array>();
 }
-
-GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_std_vector, std::vector);
+//--------
 template<typename Type>
 constexpr inline bool is_std_vector()
 {
-	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_vector);
+	return concepts::is_specialization<Type, std::vector>();
 }
 
-GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_std_deque, std::deque);
 template<typename Type>
 constexpr inline bool is_std_deque()
 {
-	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_deque);
+	return concepts::is_specialization<Type, std::deque>();
 }
-
-GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_std_set, std::set);
-template<typename Type>
-constexpr inline bool is_std_set()
-{
-	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_std_set);
-}
-
 template<typename Type>
 constexpr inline bool is_vec_like_std_container()
 {
@@ -68,17 +43,62 @@ constexpr inline bool is_vec_like_std_container()
 		|| is_std_deque<Type>()
 	);
 }
+//--------
+template<typename Type>
+constexpr inline bool is_std_set()
+{
+	return concepts::is_specialization<Type, std::set>();
+}
+template<typename Type>
+constexpr inline bool is_std_unordered_set()
+{
+	return concepts::is_specialization<Type, std::unordered_set>();
+}
 
+template<typename Type>
+constexpr inline bool is_set_like_std_container()
+{
+	return
+	(
+		is_std_set<Type>()
+		|| is_std_unordered_set<Type>()
+	);
+}
+//--------
+template<typename Type>
+constexpr inline bool is_std_map()
+{
+	return concepts::is_specialization<Type, std::map>();
+}
+
+template<typename Type>
+constexpr inline bool is_std_unordered_map()
+{
+	//return(is_std_set);
+	return concepts::is_specialization<Type, std::unordered_map>();
+}
+
+template<typename Type>
+constexpr inline bool is_map_like_std_container()
+{
+	return
+	(
+		is_std_map<Type>()
+		|| is_std_unordered_map<Type>()
+	);
+}
+//--------
 template<typename Type>
 constexpr inline bool is_basic_std_container()
 {
 	return
 	(
 		is_vec_like_std_container<Type>()
-		|| is_std_set<Type>()
+		|| is_set_like_std_container<Type>()
+		|| is_map_like_std_container<Type>()
 	);
 }
-
+//--------
 } // namespace containers
 } // namespace liborangepower
 

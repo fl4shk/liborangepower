@@ -236,40 +236,16 @@ public:		// functions
 //	GEN_GETTER_BY_CON_REF(curr);
 //};
 //--------
-//template<typename Type>
-//constexpr inline bool is_prev_curr_pair()
-//{
-//	return misc_util::is_specialization<Type, PrevCurrPair>();
-//}
-//template<typename Type>
-//constexpr inline bool is_cx_prev_curr_pair()
-//{
-//	return misc_util::is_specialization<Type, CxPrevCurrPair>();
-//}
-//
-//template<typename Type>
-//constexpr inline bool is_move_only_prev_curr_pair()
-//{
-//	return misc_util::is_specialization<Type, MoveOnlyPrevCurrPair>();
-//}
-//template<typename Type>
-//constexpr inline bool is_cx_move_only_prev_curr_pair()
-//{
-//	return misc_util::is_specialization<Type, CxMoveOnlyPrevCurrPair>();
-//}
-GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_prev_curr_pair, PrevCurrPair);
 template<typename Type>
 constexpr inline bool is_prev_curr_pair()
 {
-	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_prev_curr_pair);
+	return concepts::is_specialization<Type, PrevCurrPair>();
 }
 
-GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_move_only_prev_curr_pair,
-	MoveOnlyPrevCurrPair);
 template<typename Type>
 constexpr inline bool is_move_only_prev_curr_pair()
 {
-	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_move_only_prev_curr_pair);
+	return concepts::is_specialization<Type, MoveOnlyPrevCurrPair>();
 }
 //--------
 } // namespace containers
