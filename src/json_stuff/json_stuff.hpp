@@ -8,6 +8,7 @@
 #include "../containers/prev_curr_pair_classes.hpp"
 #include "../containers/std_container_id_funcs.hpp"
 #include "../strings/sconcat_etc.hpp"
+#include "../metaprog_defines.hpp"
 
 // jsoncpp headers
 #include <json/value.h>
@@ -19,15 +20,44 @@ namespace liborangepower
 
 using strings::sconcat;
 
+using concepts::is_specialization;
+
+using containers::is_vec2;
+using containers::is_vec3;
+
+using containers::is_prev_curr_pair;
+using containers::is_move_only_prev_curr_pair;
+
+//using containers::is_non_arr_std_unique_ptr;
+using containers::is_std_array;
+using containers::is_std_vector;
+using containers::is_std_deque;
+using containers::is_vec_like_std_container;
+
+using containers::is_std_set;
+using containers::is_std_unordered_set;
+using containers::is_set_like_std_container;
+
+using containers::is_std_map;
+using containers::is_std_unordered_map;
+
+using containers::is_map_like_std_container;
+
+using containers::is_pseudo_vec_like_std_container;
+
 namespace json
 {
 
 // These are for use with X macros that call a macro on at least some
 // members of a class to serialize or deserialize
-#define MEMB_SERIALIZE(name) \
+#define MEMB_SERIALIZE(name, unused_arg) \
 	set_jv_memb(ret, #name, name);
-#define MEMB_DESERIALIZE(name) \
-	name = get_jv_memb<decltype(name)>(jv, #name);
+#define MEMB_DESERIALIZE(name, use_func_cond) \
+	IF(use_func_cond) \
+	( \
+		name.deserialize(jv[#name]);, \
+		name = get_jv_memb<decltype(name)>(jv, #name); \
+	)
 #define MEMB_FROM_JV_DESERIALIZE(name) \
 	ret.name = get_jv_memb<decltype(ret.name)>(jv, #name);
 
@@ -111,12 +141,13 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 	{
 		return jv.asBool();
 	}
-	else if constexpr (std::is_same<NonCvrefType, std::string>())
+	else if constexpr 
+		(is_specialization<NonCvrefType, std::basic_string>())
 	{
 		return jv.asString();
 	}
 	//--------
-	else if constexpr (containers::is_vec2<Type>())
+	else if constexpr (is_vec2<Type>())
 	{
 		//return vec2_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
 		return NonCvrefType
@@ -125,7 +156,7 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 			val_from_jv<decltype(std::declval<NonCvrefType>().y)>(jv["y"])
 		);
 	}
-	else if constexpr (containers::is_vec3<Type>())
+	else if constexpr (is_vec3<Type>())
 	{
 		//return vec3_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
 		return NonCvrefType
@@ -137,8 +168,8 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 	}
 	else if constexpr
 	(
-		containers::is_prev_curr_pair<Type>()
-		|| containers::is_move_only_prev_curr_pair<Type>()
+		is_prev_curr_pair<Type>()
+		|| is_move_only_prev_curr_pair<Type>()
 	)
 	{
 		NonCvrefType ret;
@@ -153,24 +184,50 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 		return ret;
 	}
 	//--------
-	else if constexpr (containers::is_basic_std_container<Type>())
+	//else if constexpr (is_non_arr_std_unique_ptr<Type>())
+	//{
+	//	using ElemType = typename NonCvrefType::element_type;
+
+	//	return NonCvrefType(new ElemType(val_from_jv<ElemType>
+	//		(jv["obj"])));
+	//}
+	else if constexpr (is_pseudo_vec_like_std_container<Type>())
 	{
 		NonCvrefType ret;
 
 		for (Json::ArrayIndex i=1; i<jv.size(); ++i)
 		{
-			//if constexpr (!is_std_set<Type>)
-			if constexpr (containers::is_vec_like_std_container<Type>())
+			if constexpr (is_std_array<Type>())
+			{
+				ret[i] = val_from_jv
+					<decltype(std::declval<NonCvrefType>().at(0))>
+					(jv[i])
+			}
+			else if constexpr (is_vec_like_std_container<Type>())
 			{
 				ret.push_back(val_from_jv
 					<decltype(std::declval<NonCvrefType>().at(0))>
 					(jv[i]));
 			}
-			else // if constexpr (containers::is_std_set<Type>())
+			else // if constexpr (is_set_like_std_container<Type>())
 			{
 				ret.insert(val_from_jv<typename NonCvrefType::key_type>
 					(jv[i]));
 			}
+		}
+
+		return ret;
+	}
+	else if constexpr (is_map_like_std_container<Type>())
+	{
+		NonCvrefType ret;
+
+		for (Json::ArrayIndex i=1; i<jv.size(); ++i)
+		{
+			//ret[i]["key"] = val_from_jv
+			ret[val_from_jv<typename NonCvrefType::key_type>(jv[i]["key"])]
+				= val_from_jv<typename NonCvrefType::value_type>
+					(jv[i]["value"]);
 		}
 
 		return ret;
@@ -223,37 +280,32 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 	//	&& (!std::is_same<Type, uint64_t>()));
 
 	//--------
-	if constexpr (containers::is_vec2<Type>())
+	if constexpr (is_vec2<Type>())
 	{
 		jv = vec2_to_jv(val);
 	}
-	else if constexpr (containers::is_vec3<Type>())
+	else if constexpr (is_vec3<Type>())
 	{
 		jv = vec3_to_jv(val);
 	}
 	else if constexpr
 	(
-		containers::is_prev_curr_pair<Type>()
-		|| containers::is_move_only_prev_curr_pair<Type>()
+		is_prev_curr_pair<Type>()
+		|| is_move_only_prev_curr_pair<Type>()
 	)
 	{
 		_set_jv(jv["_prev"], val.prev());
 		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
-	else if constexpr (containers::is_vec_like_std_container<Type>())
+	else if constexpr (is_std_array<Type>()
+		|| is_vec_like_std_container<Type>())
 	{
 		jv[0] = BlankValue();
 
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
-			//if constexpr (containers::is_std_vector
-			//	<decltype(std::declval<NonCvrefType>().at(0))>()
-			//	|| containers::is_std_deque
-			//		<decltype(std::declval<NonCvrefType>().at(0))>()
-			//	|| containers::is_std_set
-			//		<decltype(std::declval<NonCvrefType>().at(0))>())
-			if constexpr (containers::is_basic_std_container
+			if constexpr (is_basic_indexable_std_container
 				<decltype(std::declval<NonCvrefType>().at(0))>())
 			{
 				Json::Value inner_jv;
@@ -268,7 +320,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 			}
 		}
 	}
-	else if constexpr (containers::is_std_set<Type>())
+	else if constexpr (is_set_like_std_container<Type>())
 	{
 		Json::ArrayIndex i = 0;
 
@@ -276,13 +328,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 
 		for (const auto& key: val)
 		{
-			//if constexpr (containers::is_std_vector
-			//	<typename NonCvrefType::key_type>()
-			//	|| containers::is_std_deque
-			//		<typename NonCvrefType::key_type>()
-			//	|| containers::is_std_set
-			//		<typename NonCvrefType::key_type>())
-			if constexpr (containers::is_basic_std_container
+			if constexpr (is_basic_indexable_std_container
 				<typename NonCvrefType::key_type>())
 			{
 				Json::Value inner_jv;
@@ -295,6 +341,22 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 			{
 				jv[i++] = key;
 			}
+		}
+	}
+	else if constexpr (is_map_like_std_container<Type>())
+	{
+		Json::ArrayIndex i = 0;
+
+		jv[i++] = BlankValue();
+
+		for (const auto& pair: val)
+		{
+			Json::Value inner_jv;
+
+			_set_jv(inner_jv["key"], pair.first);
+			_set_jv(inner_jv["value"], pair.second);
+
+			jv[i++] = inner_jv;
 		}
 	}
 	//--------

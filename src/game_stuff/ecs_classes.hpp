@@ -89,8 +89,8 @@ class Sys
 {
 public:		// serialization stuff
 	#define MEMB_LIST_ECS_SYS(X) \
-		X(_did_init) \
-		X(game_mode_active) \
+		X(_did_init, 0) \
+		X(game_mode_active, 0) \
 
 private:		// variables
 	bool _did_init = false;
@@ -98,9 +98,8 @@ public:		// variables
 	containers::PrevCurrPair<bool> game_mode_active;
 public:		// functions
 	inline Sys()
+		: game_mode_active(false, false)
 	{
-		game_mode_active.back_up_and_update(false);
-		game_mode_active.back_up();
 	}
 	//Sys(const Json::Value& jv);
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
@@ -145,28 +144,28 @@ public:		// constants
 		USE_CURR_FILE_NUM = -1;
 protected:		// auto-serialized variables
 	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X) \
-		X(_next_ent_id_vec) \
-		X(_to_destroy_set_vec) \
+		X(_next_ent_id_vec, 0) \
+		X(_to_destroy_set_vec, 0) \
 
 	std::vector<EntId> _next_ent_id_vec;
 
 	std::vector<EntIdSet> _to_destroy_set_vec;
 protected:		// non-auto-serialized serialized variables
-	size_t _num_files = DEFAULT_NUM_FILES;
+	u64 _num_files = DEFAULT_NUM_FILES;
 
 	// All `EntId` are stored as just the keys of `_engine_comp_map`, with
 	// no other storage for them.
 	std::vector<EngineCompMap> _engine_comp_map_vec;
-
+protected:		// non-serialized variables
 	SysMap _sys_map;
-private:		// variables
+private:		// non-serialized variables
 	json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
 	//json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
 public:		// variables
 	int curr_file_num = 0;
 public:		// functions
 	//--------
-	Engine(size_t s_num_files=DEFAULT_NUM_FILES);
+	Engine(u64 s_num_files=DEFAULT_NUM_FILES);
 	//GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Engine);
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Engine);
 	virtual ~Engine();

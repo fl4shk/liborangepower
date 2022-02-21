@@ -101,13 +101,13 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 	return false;
 }
 //--------
-Engine::Engine(size_t s_num_files)
+Engine::Engine(u64 s_num_files)
 	: _next_ent_id_vec(s_num_files, 0),
 	_to_destroy_set_vec(s_num_files, EntIdSet()),
 	_num_files(s_num_files)
 	//_engine_comp_map_vec(s_num_files, EngineCompMap())
 {
-	for (size_t i=0; i<_num_files; ++i)
+	for (u64 i=0; i<_num_files; ++i)
 	{
 		_engine_comp_map_vec.push_back(EngineCompMap());
 	}
@@ -144,6 +144,10 @@ Engine::operator Json::Value () const
 	return ret;
 }
 //--------
+//void Engine::deserialize(const Json::Value& jv)
+//{
+//	MEMB_LIST_ECS_ENGINE(MEMB_DESERIALIZE);
+//}
 void Engine::_autoser_deserialize(const Json::Value& jv)
 {
 	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_DESERIALIZE);
