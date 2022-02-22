@@ -45,6 +45,7 @@ using containers::is_std_unordered_map;
 using containers::is_map_like_std_container;
 
 using containers::is_pseudo_vec_like_std_container;
+using containers::is_basic_indexable_std_container;
 
 namespace json
 {
