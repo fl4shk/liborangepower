@@ -28,11 +28,12 @@ using containers::is_vec3;
 using containers::is_prev_curr_pair;
 using containers::is_move_only_prev_curr_pair;
 
-//using containers::is_non_arr_std_unique_ptr;
+using containers::is_non_arr_std_unique_ptr;
 using containers::is_std_array;
 using containers::is_std_vector;
 using containers::is_std_deque;
 using containers::is_vec_like_std_container;
+using containers::is_arr_like_std_container;
 
 using containers::is_std_set;
 using containers::is_std_unordered_set;
