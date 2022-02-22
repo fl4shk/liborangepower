@@ -60,7 +60,7 @@ namespace json
 		name.deserialize(jv[#name]);, \
 		name = get_jv_memb<decltype(name)>(jv, #name); \
 	)
-#define MEMB_FROM_JV_DESERIALIZE(name) \
+#define MEMB_FROM_JV_DESERIALIZE(name, unused_arg) \
 	ret.name = get_jv_memb<decltype(ret.name)>(jv, #name);
 
 class BlankValue;
