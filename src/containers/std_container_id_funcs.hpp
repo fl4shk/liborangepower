@@ -54,7 +54,7 @@ constexpr inline bool is_std_array()
 {
 	//return IS_SPECIALIZATION_MACRO(is_std_array);
 	//return concepts::is_specialization<Type, std::array>();
-	return is_specialization_rtargs<Type, std::array>();
+	return is_specialization<Type, std::array>();
 }
 //--------
 template<typename Type>
@@ -136,8 +136,8 @@ constexpr inline bool is_pseudo_vec_like_std_container()
 {
 	return
 	(
-		//is_arr_like_std_container<Type>()
-		is_vec_like_std_container<Type>()
+		is_arr_like_std_container<Type>()
+		//is_vec_like_std_container<Type>()
 		|| is_set_like_std_container<Type>()
 	);
 }
