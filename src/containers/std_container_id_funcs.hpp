@@ -77,6 +77,15 @@ constexpr inline bool is_vec_like_std_container()
 		|| is_std_deque<Type>()
 	);
 }
+template<typename Type>
+constexpr inline bool is_arr_like_std_container()
+{
+	return
+	(
+		is_std_array<Type>()
+		|| is_vec_like_std_container<Type>()
+	);
+}
 //--------
 template<typename Type>
 constexpr inline bool is_std_set()
@@ -127,8 +136,7 @@ constexpr inline bool is_pseudo_vec_like_std_container()
 {
 	return
 	(
-		is_std_array<Type>()
-		|| is_vec_like_std_container<Type>()
+		is_arr_like_std_container<Type>()
 		|| is_set_like_std_container<Type>()
 	);
 }
