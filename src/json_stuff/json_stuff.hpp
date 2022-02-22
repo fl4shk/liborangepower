@@ -298,8 +298,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
-	else if constexpr (is_std_array<Type>()
-		|| is_vec_like_std_container<Type>())
+	else if constexpr (is_vec_like_std_container<Type>())
 	{
 		jv[0] = BlankValue();
 
