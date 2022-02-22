@@ -201,7 +201,7 @@ inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
 			{
 				ret[i] = val_from_jv
 					<decltype(std::declval<NonCvrefType>().at(0))>
-					(jv[i])
+					(jv[i]);
 			}
 			else if constexpr (is_vec_like_std_container<Type>())
 			{
