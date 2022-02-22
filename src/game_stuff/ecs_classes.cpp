@@ -101,13 +101,13 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 	return false;
 }
 //--------
-Engine::Engine(u64 s_num_files)
+Engine::Engine(integer_types::u64 s_num_files)
 	: _next_ent_id_vec(s_num_files, 0),
 	_to_destroy_set_vec(s_num_files, EntIdSet()),
 	_num_files(s_num_files)
 	//_engine_comp_map_vec(s_num_files, EngineCompMap())
 {
-	for (u64 i=0; i<_num_files; ++i)
+	for (integer_types::u64 i=0; i<_num_files; ++i)
 	{
 		_engine_comp_map_vec.push_back(EngineCompMap());
 	}
@@ -160,7 +160,7 @@ void Engine::_ent_deserialize(const Json::Value& jv)
 	_num_files = jv["_engine_comp_map_vec"].size();
 
 	_engine_comp_map_vec.clear();
-	for (size_t i=0; i<_num_files; ++i)
+	for (integer_types::u64 i=0; i<_num_files; ++i)
 	{
 		_engine_comp_map_vec.push_back(EngineCompMap());
 	}

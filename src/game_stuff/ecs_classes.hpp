@@ -151,7 +151,7 @@ protected:		// auto-serialized variables
 
 	std::vector<EntIdSet> _to_destroy_set_vec;
 protected:		// non-auto-serialized serialized variables
-	u64 _num_files = DEFAULT_NUM_FILES;
+	integer_types::u64 _num_files = DEFAULT_NUM_FILES;
 
 	// All `EntId` are stored as just the keys of `_engine_comp_map`, with
 	// no other storage for them.
@@ -165,7 +165,7 @@ public:		// variables
 	int curr_file_num = 0;
 public:		// functions
 	//--------
-	Engine(u64 s_num_files=DEFAULT_NUM_FILES);
+	Engine(integer_types::u64 s_num_files=DEFAULT_NUM_FILES);
 	//GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Engine);
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Engine);
 	virtual ~Engine();
