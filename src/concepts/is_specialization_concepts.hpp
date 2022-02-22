@@ -76,7 +76,7 @@ concept IsSpecialization = is_specialization<Type, ContainerEtcType>();
 
 template<typename Type,
 	template<typename, auto, auto...> typename ContainerEtcType>
-concept IsSpecialization
+concept IsSpecializationRtArgs
 	= is_specialization<Type, ContainerEtcType>();
 //--------
 } // namespace concepts
