@@ -60,7 +60,7 @@ extern uint8_t _is_specialization_check(const Type&);
 template<template<typename, auto, auto...> typename ContainerEtcType,
 	typename Type, auto FirstAutoArg, auto... RemAutoArgs>
 extern uint32_t _is_specialization_check
-	(const ContainerEtcType<Type, FirstAutoArg, RemArgs...>&);
+	(const ContainerEtcType<Type, FirstAutoArg, RemAutoArgs...>&);
 
 template<typename ToCheckType,
 	template<typename, auto, auto...> typename ContainerEtcType>

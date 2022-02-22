@@ -32,15 +32,13 @@ extern uint32_t _is_std_unique_ptr_check
 template<typename ToCheckType>
 constexpr inline bool is_non_arr_std_unique_ptr()
 {
-	return (sizeof(_is_std_unique_ptr_check<ContainerEtcType>
-		(std::declval<ToCheckType>()))
+	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckType>()))
 		== sizeof(uint16_t));
 }
 template<typename ToCheckType>
 constexpr inline bool is_arr_std_unique_ptr()
 {
-	return (sizeof(_is_std_unique_ptr_check<ContainerEtcType>
-		(std::declval<ToCheckType>()))
+	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckType>()))
 		== sizeof(uint32_t));
 }
 template<typename ToCheckType>
