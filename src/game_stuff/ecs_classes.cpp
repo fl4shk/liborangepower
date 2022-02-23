@@ -31,14 +31,14 @@ Comp::operator Json::Value () const
 {
 	Json::Value ret;
 
-	MEMB_LIST_ECS_COMP(MEMB_SERIALIZE);
+	MEMB_LIST_ECS_COMP(JSON_MEMB_SERIALIZE);
 
 	return ret;
 }
 //--------
 //Sys::Sys(const Json::Value& jv)
 //{
-//	MEMB_LIST_ECS_SYS(MEMB_DESERIALIZE);
+//	MEMB_LIST_ECS_SYS(JSON_MEMB_DESERIALIZE);
 //}
 std::string Sys::kind_str() const
 {
@@ -48,7 +48,7 @@ std::string Sys::kind_str() const
 //{
 //	Json::Value ret;
 //
-//	MEMB_LIST_ECS_SYS(MEMB_SERIALIZE);
+//	MEMB_LIST_ECS_SYS(JSON_MEMB_SERIALIZE);
 //
 //	return ret;
 //}
@@ -120,7 +120,7 @@ Engine::operator Json::Value () const
 {
 	Json::Value ret;
 
-	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_SERIALIZE);
+	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	for (Json::ArrayIndex i=0;
 		i<static_cast<Json::ArrayIndex>(_num_files);
@@ -146,11 +146,11 @@ Engine::operator Json::Value () const
 //--------
 //void Engine::deserialize(const Json::Value& jv)
 //{
-//	MEMB_LIST_ECS_ENGINE(MEMB_DESERIALIZE);
+//	MEMB_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 //}
 void Engine::_autoser_deserialize(const Json::Value& jv)
 {
-	MEMB_AUTOSER_LIST_ECS_ENGINE(MEMB_DESERIALIZE);
+	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 }
 
 //template<EngineDerivedFromComp FirstCompType,

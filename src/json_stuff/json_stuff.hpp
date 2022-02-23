@@ -52,15 +52,15 @@ namespace json
 
 // These are for use with X macros that call a macro on at least some
 // members of a class to serialize or deserialize
-#define MEMB_SERIALIZE(name, unused_arg) \
+#define JSON_MEMB_SERIALIZE(name, unused_arg) \
 	set_jv_memb(ret, #name, name);
-#define MEMB_DESERIALIZE(name, use_func_cond) \
+#define JSON_MEMB_DESERIALIZE(name, use_func_cond) \
 	IF(use_func_cond) \
 	( \
 		name.deserialize(jv[#name]);, \
 		name = get_jv_memb<decltype(name)>(jv, #name); \
 	)
-#define MEMB_FROM_JV_DESERIALIZE(name, unused_arg) \
+#define JSON_MEMB_FROM_JV_DESERIALIZE(name, unused_arg) \
 	ret.name = get_jv_memb<decltype(ret.name)>(jv, #name);
 
 class BlankValue;
