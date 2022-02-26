@@ -90,24 +90,28 @@ public:		// functions
 		}
 		return true;
 	}
-	inline bool key_set_up_prev(const KeySet<auto, auto...>& key_set) const
+	template<typename T, typename... RemTs>
+	inline bool key_set_up_prev(const KeySet<T, RemTs...>& key_set) const
 	{
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_up_prev, this));
 	}
-	inline bool key_set_down_prev(const KeySet<auto, auto...>& key_set)
+	template<typename T, typename... RemTs>
+	inline bool key_set_down_prev(const KeySet<T, RemTs...>& key_set)
 		const
 	{
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_down_prev, this));
 	}
 
-	inline bool key_set_up_now(const KeySet<auto, auto...>& key_set) const
+	template<typename T, typename... RemTs>
+	inline bool key_set_up_now(const KeySet<T, RemTs...>& key_set) const
 	{
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_up_now, this));
 	}
-	inline bool key_set_down_now(const KeySet<auto, auto...>& key_set)
+	template<typename T, typename... RemTs>
+	inline bool key_set_down_now(const KeySet<T, RemTs...>& key_set)
 		const
 	{
 		return generic_key_set_func(key_set,
