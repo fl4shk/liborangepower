@@ -148,15 +148,19 @@ Engine::operator Json::Value () const
 //{
 //	MEMB_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 //}
-void Engine::_autoser_deserialize(const Json::Value& jv)
-{
-	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
-}
+//void Engine::_autoser_deserialize(const Json::Value& jv)
+//{
+//}
 
 //template<EngineDerivedFromComp FirstCompT,
 //	EngineDerivedFromComp... RemCompTs>
-void Engine::_ent_deserialize(const Json::Value& jv)
+//void Engine::_ent_deserialize(const Json::Value& jv)
+void Engine::deserialize(const Json::Value& jv)
 {
+	destroy_all();
+
+	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
+
 	_num_files = jv["_engine_comp_map_vec"].size();
 
 	_engine_comp_map_vec.clear();
@@ -258,7 +262,7 @@ void Engine::destroy_all(int file_num)
 
 void Engine::destroy_all()
 {
-	for (int i=0; i<num_files; ++i)
+	for (integer_types::u64 i=0; i<num_files(); ++i)
 	{
 		destroy_all(i);
 	}

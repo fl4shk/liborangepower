@@ -172,12 +172,12 @@ public:		// functions
 	//--------
 	operator Json::Value () const;
 	//--------
-	inline void deserialize(const Json::Value& jv)
-	{
-		_autoser_deserialize(jv);
-		_ent_deserialize(jv);
-		//_sys_deserialize(jv);
-	}
+	void deserialize(const Json::Value& jv);
+	//{
+	//	_autoser_deserialize(jv);
+	//	_ent_deserialize(jv);
+	//	//_sys_deserialize(jv);
+	//}
 	//--------
 	template<EngineDerivedFromComp FirstCompT,
 		EngineDerivedFromComp... RemCompTs>
