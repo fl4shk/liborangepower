@@ -219,7 +219,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 		{
 			//ret[i]["key"] = val_from_jv
 			typename NonCvrefT::key_type key;
-			val_from_jv(key, jv[i]["key"])
+			val_from_jv(key, jv[i]["key"]);
 
 			typename NonCvrefT::value_type value;
 			val_from_jv(value, jv[i]["value"]);
