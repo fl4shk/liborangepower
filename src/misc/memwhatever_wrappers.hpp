@@ -14,16 +14,16 @@ namespace liborangepower
 namespace misc_util
 {
 
-template<typename Type>
-inline void* arr_memcpy(Type* dst, const void* src, size_t num_elems)
+template<typename T>
+inline void* arr_memcpy(T* dst, const void* src, size_t num_elems)
 {
-	return memcpy((void*)dst, src, num_elems * sizeof(Type) 
+	return memcpy((void*)dst, src, num_elems * sizeof(T) 
 		/ sizeof(integer_types::u8));
 }
-template<typename Type>
-inline void* arr_memset(Type* dst, int c, size_t num_elems)
+template<typename T>
+inline void* arr_memset(T* dst, int c, size_t num_elems)
 {
-	return memset((void*)dst, c, num_elems * sizeof(Type) 
+	return memset((void*)dst, c, num_elems * sizeof(T) 
 		/ sizeof(integer_types::u8));
 }
 
@@ -35,15 +35,15 @@ inline void* arr_memcpy(std::array<dst_type, size>& dst,
 {
 	return arr_memcpy<dst_type>(dst.data(), src.data(), size);
 }
-template<typename Type, size_t size>
-inline void* arr_memcpy(std::array<Type, size>& dst, const void* src)
+template<typename T, size_t size>
+inline void* arr_memcpy(std::array<T, size>& dst, const void* src)
 {
-	return arr_memcpy<Type>(dst.data(), src, size);
+	return arr_memcpy<T>(dst.data(), src, size);
 }
-template<typename Type, size_t size>
-inline void* arr_memset(std::array<Type, size>& dst, size_t src)
+template<typename T, size_t size>
+inline void* arr_memset(std::array<T, size>& dst, size_t src)
 {
-	return arr_memset<Type>(dst.data(), src, size);
+	return arr_memset<T>(dst.data(), src, size);
 }
 
 } // namespace misc_util

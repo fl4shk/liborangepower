@@ -13,16 +13,16 @@ namespace liborangepower
 namespace sdl
 {
 
-//template<typename Type>
+//template<typename T>
 //class StructWrapper
 //{
 //public:		// typedefs
-//	using Dtor = void (*)(Type* self);
+//	using Dtor = void (*)(T* self);
 //private:		// variables
-//	Type* _self;
+//	T* _self;
 //	Dtor _dtor;
 //public:		// functions
-//	inline StructWrapper(Type* self, Dtor dtor)
+//	inline StructWrapper(T* self, Dtor dtor)
 //		: _self(self), _dtor(dtor)
 //	{
 //	}

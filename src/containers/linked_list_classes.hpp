@@ -15,7 +15,7 @@ namespace liborangepower
 namespace containers
 {
 
-template<typename Type>
+template<typename T>
 class PtrCircLinkList
 {
 public:		// types
@@ -24,35 +24,35 @@ public:		// types
 		friend class PtrCircLinkList;
 
 	public:		// types
-		template<typename OtherType>
+		template<typename OtherT>
 		using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
-			<OtherType>::value, Node>;
+			<OtherT>::value, Node>;
 
-		template<typename OtherType>
+		template<typename OtherT>
 		using MoveConstructEnIf = std::enable_if<std::is_move_assignable
-			<OtherType>::value, Node>;
+			<OtherT>::value, Node>;
 
 	private:		// variables
 		Node * _next = nullptr, * _prev = nullptr;
 
 	public:		// variables
-		Type data;
+		T data;
 
 	public:		// functions
 		Node() = default;
 
-		template<typename OtherType=Type>
-		static inline CopyConstructEnIf<OtherType>::type construct
-			(const OtherType& s_data)
+		template<typename OtherT=T>
+		static inline CopyConstructEnIf<OtherT>::type construct
+			(const OtherT& s_data)
 		{
 			Node ret;
 			ret.data = s_data;
 			return ret;
 		}
 
-		template<typename OtherType=Type>
-		static inline MoveConstructEnIf<OtherType>::type construct
-			(OtherType&& s_data)
+		template<typename OtherT=T>
+		static inline MoveConstructEnIf<OtherT>::type construct
+			(OtherT&& s_data)
 		{
 			Node ret;
 			ret.data = std::move(s_data);
@@ -108,7 +108,7 @@ public:		// types
 			return _node;
 		}
 
-		//inline Type& operator * () const
+		//inline T& operator * () const
 		//inline Node& operator * ()
 		//{
 		//	return *_node;
@@ -134,12 +134,12 @@ public:		// types
 		}
 	};
 
-	template<bool _reverse, typename OtherType>
+	template<bool _reverse, typename OtherT>
 	using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;
-	template<bool _reverse, typename OtherType>
+		<OtherT>::value, NodeIterator<_reverse>>;
+	template<bool _reverse, typename OtherT>
 	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;
+		<OtherT>::value, NodeIterator<_reverse>>;
 
 private:		// variables
 	Node _head;
@@ -273,30 +273,30 @@ public:		// functions
 		return NodeIterator<reverse>(_head._prev);
 	}
 
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type push_front
-		(const OtherType& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type push_front
+		(const OtherT& to_push)
 	{
-		return insert_after<reverse, OtherType>(head(), to_push);
+		return insert_after<reverse, OtherT>(head(), to_push);
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type push_front
-		(OtherType&& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type push_front
+		(OtherT&& to_push)
 	{
-		return insert_after<reverse, OtherType>(head(),
+		return insert_after<reverse, OtherT>(head(),
 			std::move(to_push));
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type push_back
-		(const OtherType& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type push_back
+		(const OtherT& to_push)
 	{
-		return insert_before<reverse, OtherType>(head(), to_push);
+		return insert_before<reverse, OtherT>(head(), to_push);
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type push_back
-		(OtherType&& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type push_back
+		(OtherT&& to_push)
 	{
-		return insert_before<reverse, Type>(head(), std::move(to_push));
+		return insert_before<reverse, T>(head(), std::move(to_push));
 	}
 	inline void pop_front()
 	{
@@ -308,34 +308,34 @@ public:		// functions
 	}
 
 
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type insert_before
-		(Node* where, const OtherType& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_before
+		(Node* where, const OtherT& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_before<reverse>(where, node);
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type insert_before
-		(Node* where, OtherType&& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_before
+		(Node* where, OtherT&& to_insert)
 	{
 		Node* node = new Node();
 		node->data = std::move(to_insert);
 		return _inner_insert_before<reverse>(where, node);
 	}
 
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type insert_after
-		(Node* where, const OtherType& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_after
+		(Node* where, const OtherT& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_after<reverse>(where, node);
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type insert_after
-		(Node* where, OtherType&& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_after
+		(Node* where, OtherT&& to_insert)
 	{
 		Node* node = new Node();
 		node->data = std::move(to_insert);
@@ -406,7 +406,7 @@ private:		// functions
 	}
 };
 
-template<typename Type, typename ArgIndexT=int64_t>
+template<typename T, typename ArgIndexT=int64_t>
 class IndCircLinkList
 {
 public:		// types
@@ -422,36 +422,36 @@ public:		// types
 		friend class IndCircLinkList;
 
 	public:		// types
-		template<typename OtherType>
+		template<typename OtherT>
 		using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
-			<OtherType>::value, Node>;
+			<OtherT>::value, Node>;
 
-		template<typename OtherType>
+		template<typename OtherT>
 		using MoveConstructEnIf = std::enable_if<std::is_move_assignable
-			<OtherType>::value, Node>;
+			<OtherT>::value, Node>;
 
 	private:		// variables
 		ArgIndexT _next = NULL_INDEX, _prev = NULL_INDEX;
 
 	public:		// variables
-		Type data;
+		T data;
 
 
 	public:		// functions
 		Node() = default;
 
-		template<typename OtherType=Type>
-		static inline CopyConstructEnIf<OtherType>::type construct
-			(const OtherType& s_data)
+		template<typename OtherT=T>
+		static inline CopyConstructEnIf<OtherT>::type construct
+			(const OtherT& s_data)
 		{
 			Node ret;
 			ret.data = s_data;
 			return ret;
 		}
 
-		template<typename OtherType=Type>
-		static inline MoveConstructEnIf<OtherType>::type construct
-			(OtherType&& s_data)
+		template<typename OtherT=T>
+		static inline MoveConstructEnIf<OtherT>::type construct
+			(OtherT&& s_data)
 		{
 			Node ret;
 			ret.data = std::move(s_data);
@@ -542,13 +542,13 @@ public:		// types
 		}
 	};
 
-	template<bool _reverse, typename OtherType>
+	template<bool _reverse, typename OtherT>
 	using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;
+		<OtherT>::value, NodeIterator<_reverse>>;
 
-	template<bool _reverse, typename OtherType>
+	template<bool _reverse, typename OtherT>
 	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
-		<OtherType>::value, NodeIterator<_reverse>>;
+		<OtherT>::value, NodeIterator<_reverse>>;
 
 public:		// constants
 	static constexpr IndexT HEAD_INDEX = 0;
@@ -666,30 +666,30 @@ public:		// functions
 		return NodeIterator<reverse>(this, head().prev());
 	}
 
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type push_front
-		(const OtherType& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type push_front
+		(const OtherT& to_push)
 	{
-		return insert_after<reverse, OtherType>(HEAD_INDEX, to_push);
+		return insert_after<reverse, OtherT>(HEAD_INDEX, to_push);
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type push_front
-		(OtherType&& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type push_front
+		(OtherT&& to_push)
 	{
-		return insert_after<reverse, OtherType>(HEAD_INDEX,
+		return insert_after<reverse, OtherT>(HEAD_INDEX,
 			std::move(to_push));
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type push_back
-		(const OtherType& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type push_back
+		(const OtherT& to_push)
 	{
-		return insert_before<reverse, OtherType>(HEAD_INDEX, to_push);
+		return insert_before<reverse, OtherT>(HEAD_INDEX, to_push);
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type push_back
-		(OtherType&& to_push)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type push_back
+		(OtherT&& to_push)
 	{
-		return insert_before<reverse, OtherType>(HEAD_INDEX,
+		return insert_before<reverse, OtherT>(HEAD_INDEX,
 			std::move(to_push));
 	}
 	inline void pop_front()
@@ -701,31 +701,31 @@ public:		// functions
 		remove_before(HEAD_INDEX);
 	}
 
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type insert_before
-		(IndexT where, const OtherType& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_before
+		(IndexT where, const OtherT& to_insert)
 	{
 		return _inner_insert_before<reverse>(where,
 			Node::construct(to_insert));
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type insert_before
-		(IndexT where, OtherType&& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_before
+		(IndexT where, OtherT&& to_insert)
 	{
 		return _inner_insert_before<reverse>(where,
 			Node::construct(std::move(to_insert)));
 	}
 
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByCopyEnIf<reverse, OtherType>::type insert_after
-		(IndexT where, const OtherType& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_after
+		(IndexT where, const OtherT& to_insert)
 	{
 		return _inner_insert_after<reverse>(where,
 			Node::construct(to_insert));
 	}
-	template<bool reverse=false, typename OtherType=Type>
-	inline UpdateByMoveEnIf<reverse, OtherType>::type insert_after
-		(IndexT where, OtherType&& to_insert)
+	template<bool reverse=false, typename OtherT=T>
+	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_after
+		(IndexT where, OtherT&& to_insert)
 	{
 		return _inner_insert_after<reverse>(where,
 			Node::construct(std::move(to_insert)));
@@ -741,7 +741,7 @@ public:		// functions
 
 		at(old_prev)._next = NULL_INDEX;
 		at(old_prev)._prev = NULL_INDEX;
-		at(old_prev).data = Type();
+		at(old_prev).data = T();
 		_avail_index_stack.push_back(old_prev);
 	}
 	inline void remove_after(IndexT where)
@@ -754,7 +754,7 @@ public:		// functions
 
 		at(old_next)._next = NULL_INDEX;
 		at(old_next)._prev = NULL_INDEX;
-		at(old_next).data = Type();
+		at(old_next).data = T();
 		_avail_index_stack.push_back(old_next);
 	}
 	inline void remove(IndexT where)
@@ -767,7 +767,7 @@ public:		// functions
 
 		at(where)._next = NULL_INDEX;
 		at(where)._prev = NULL_INDEX;
-		at(where).data = Type();
+		at(where).data = T();
 		_avail_index_stack.push_back(where);
 	}
 
@@ -829,9 +829,9 @@ private:		// functions
 
 } // namespace liborangepower
 
-template<typename Type>
+template<typename T>
 std::ostream& operator << (std::ostream& os,
-	const liborangepower::containers::PtrCircLinkList<Type>& to_print)
+	const liborangepower::containers::PtrCircLinkList<T>& to_print)
 {
 	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
 	{
@@ -848,9 +848,9 @@ std::ostream& operator << (std::ostream& os,
 	}
 	return os;
 }
-template<typename Type>
+template<typename T>
 std::ostream& operator << (std::ostream& os,
-	const liborangepower::containers::IndCircLinkList<Type>& to_print)
+	const liborangepower::containers::IndCircLinkList<T>& to_print)
 {
 	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
 	{

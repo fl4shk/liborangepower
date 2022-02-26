@@ -14,13 +14,13 @@ using misc_output::sconcat;
 namespace lang
 {
 
-template<typename LexerType>
+template<typename LexerT>
 class StatefulParserBase
 {
 public:		// types
-	using TokType = typename LexerType::TokType;
-	using LexerState = typename LexerType::State;
-	using TokToStringMap = std::map<TokType, std::string>;
+	using TokT = typename LexerT::TokT;
+	using LexerState = typename LexerT::State;
+	using TokToStringMap = std::map<TokT, std::string>;
 	using ParseRet = bool;
 
 
@@ -29,7 +29,7 @@ public:		// types
 	public:		// variables
 		std::set<LexerState> found_set, dup_set;
 		LexerState first_dup;
-		TokType end;
+		TokT end;
 
 	public:		// functions
 		LexStateSets()
@@ -45,7 +45,7 @@ public:		// types
 			return (dup_set.size() == 0);
 		}
 
-		inline bool find_found(TokType tok, LexerState& ret) const
+		inline bool find_found(TokT tok, LexerState& ret) const
 		{
 			for (const auto& iter : found_set)
 			{
@@ -57,7 +57,7 @@ public:		// types
 			}
 			return false;
 		}
-		inline LexerState find_found(TokType tok) const
+		inline LexerState find_found(TokT tok) const
 		{
 			LexerState ret;
 			find_found(tok, ret);
@@ -67,7 +67,7 @@ public:		// types
 		{
 			return find_found(end);
 		}
-		inline bool find_dup(TokType tok, LexerState& ret) const
+		inline bool find_dup(TokT tok, LexerState& ret) const
 		{
 			for (const auto& iter : dup_set)
 			{
@@ -79,7 +79,7 @@ public:		// types
 			}
 			return false;
 		}
-		inline LexerState find_dup(TokType tok) const
+		inline LexerState find_dup(TokT tok) const
 		{
 			LexerState ret;
 			find_dup(tok, ret);
@@ -94,11 +94,11 @@ public:		// types
 	{
 	private:		// variables
 		StatefulParserBase* _parser = nullptr;
-		LexerType* _lexer = nullptr;
+		LexerT* _lexer = nullptr;
 	public:		// functions
-		WExpect(StatefulParserBase* s_parser, TokType tok,
+		WExpect(StatefulParserBase* s_parser, TokT tok,
 			const TokToStringMap& some_tok_ident_map,
-			LexerType* s_lexer=nullptr)
+			LexerT* s_lexer=nullptr)
 			: _parser(s_parser), _lexer(s_lexer)
 		{
 			_parser->_expect(tok, some_tok_ident_map, _lexer, false);
@@ -111,24 +111,24 @@ public:		// types
 	};
 
 
-	template<typename DerivedType>
+	template<typename DerivedT>
 	friend class UnitParse;
 
-	template<typename DerivedType>
+	template<typename DerivedT>
 	class UnitParse final
 	{
 	public:		// types
 		using ParseRet = bool;
-		using ParseFunc = bool (DerivedType::*)();
+		using ParseFunc = bool (DerivedT::*)();
 
 	private:		// variables
-		DerivedType* _self = nullptr;
+		DerivedT* _self = nullptr;
 		std::string _parse_func_str;
 		ParseFunc _parse_func = nullptr;
 		bool _optional = false;
 
 	public:		// functions
-		UnitParse(DerivedType* s_self, const std::string& s_parse_func_str,
+		UnitParse(DerivedT* s_self, const std::string& s_parse_func_str,
 			ParseFunc s_parse_func, bool s_optional=false)
 			: _self(s_self), _parse_func_str(s_parse_func_str),
 			_parse_func(s_parse_func), _optional(s_optional)
@@ -155,16 +155,16 @@ public:		// types
 
 
 	// Perform a parsing sequence using member function pointers
-	template<typename DerivedType>
+	template<typename DerivedT>
 	friend class SeqParse;
 
-	template<typename DerivedType>
+	template<typename DerivedT>
 	class SeqParse
 	{
 	public:		// types
-		using TheUnitParse = UnitParse<DerivedType>;
+		using TheUnitParse = UnitParse<DerivedT>;
 		using ParseRet = typename TheUnitParse::ParseRet;
-		using TheSeqParse = std::shared_ptr<SeqParse<DerivedType>>;
+		using TheSeqParse = std::shared_ptr<SeqParse<DerivedT>>;
 		using OneInst = std::variant<bool, TheUnitParse, TheSeqParse>;
 		using Vec = std::vector<OneInst>;
 
@@ -179,13 +179,13 @@ public:		// types
 		static inline const TokToStringMap* debug_tok_ident_map = nullptr;
 
 	protected:		// variables
-		DerivedType* _self = nullptr;
+		DerivedT* _self = nullptr;
 		Vec _vec;
 		bool _optional = false;
 
 	public:		// functions
 		SeqParse() = default;
-		SeqParse(DerivedType* s_self, Vec&& s_vec, bool s_optional=false)
+		SeqParse(DerivedT* s_self, Vec&& s_vec, bool s_optional=false)
 			: _self(s_self), _vec(std::move(s_vec)), _optional(s_optional)
 		{
 		}
@@ -388,24 +388,24 @@ public:		// types
 		}
 	};
 
-	template<typename SomeSeqParseType>
-	using MapSeqParse = std::map<std::string, SomeSeqParseType>;
+	template<typename SomeSeqParseT>
+	using MapSeqParse = std::map<std::string, SomeSeqParseT>;
 
 
 	// Find the first valid parsing sequence and execute it.  Choose from a
 	// list separated by pipes (|).
-	template<typename DerivedType>
-	class OrParse : public SeqParse<DerivedType>
+	template<typename DerivedT>
+	class OrParse : public SeqParse<DerivedT>
 	{
 	public:		// typedefs
-		using Base = SeqParse<DerivedType>;
+		using Base = SeqParse<DerivedT>;
 		using TheUnitParse = typename Base::TheUnitParse;
 		using TheSeqParse = typename Base::TheSeqParse;
 		using ParseRet = typename Base::ParseRet;
 		using Vec = typename Base::Vec;
 
 	public:		// functions
-		OrParse(DerivedType* s_self, Vec&& s_vec, bool s_optional=false)
+		OrParse(DerivedT* s_self, Vec&& s_vec, bool s_optional=false)
 			: Base(s_self, std::move(s_vec), s_optional)
 		{
 		}
@@ -444,18 +444,18 @@ public:		// types
 		}
 	};
 
-	template<typename DerivedType>
-	class ListParse : public SeqParse<DerivedType>
+	template<typename DerivedT>
+	class ListParse : public SeqParse<DerivedT>
 	{
 	public:		// typedefs
-		using Base = SeqParse<DerivedType>;
+		using Base = SeqParse<DerivedT>;
 		using TheUnitParse = typename Base::TheUnitParse;
 		using TheSeqParse = typename Base::TheSeqParse;
 		using ParseRet = typename Base::ParseRet;
 		using Vec = typename Base::Vec;
 
 	public:		// functions
-		ListParse(DerivedType* s_self, Vec&& s_vec,
+		ListParse(DerivedT* s_self, Vec&& s_vec,
 			bool s_optional=false)
 			: Base(s_self, std::move(s_vec), s_optional)
 		{
@@ -519,25 +519,25 @@ public:		// types
 		}
 	};
 
-	template<typename DerivedType>
+	template<typename DerivedT>
 	class MultiParse
 	{
 	public:		// types
-		using TheUnitParse = UnitParse<DerivedType>;
+		using TheUnitParse = UnitParse<DerivedT>;
 		using ParseRet = typename TheUnitParse::ParseRet;
 		using ParseFunc = typename TheUnitParse::ParseFunc;
-		using TheSeqParse = SeqParse<DerivedType>;
-		using TheOrParse = OrParse<DerivedType>;
-		using TheListParse = ListParse<DerivedType>;
+		using TheSeqParse = SeqParse<DerivedT>;
+		using TheOrParse = OrParse<DerivedT>;
+		using TheListParse = ListParse<DerivedT>;
 		using Vec = typename TheSeqParse::Vec;
 
 	public:		// functions
-		template<typename SomeMapSeqParseType, typename FirstArgType,
-			typename...  RemArgTypes>
+		template<typename SomeMapSeqParseT, typename FirstArgT,
+			typename...  RemArgTs>
 		static inline void _append_msp
-			(SomeMapSeqParseType& map_seq_parse,
-			const std::string& first_key, FirstArgType&& first_seq,
-			RemArgTypes&&... rem_args)
+			(SomeMapSeqParseT& map_seq_parse,
+			const std::string& first_key, FirstArgT&& first_seq,
+			RemArgTs&&... rem_args)
 		{
 			map_seq_parse[first_key] = std::move(first_seq);
 
@@ -547,7 +547,7 @@ public:		// types
 			}
 		}
 
-		static inline TheUnitParse _unit_parse(DerivedType* self,
+		static inline TheUnitParse _unit_parse(DerivedT* self,
 			const std::string& s_parse_func_str, ParseFunc s_parse_func,
 			bool s_optional)
 		{
@@ -555,48 +555,48 @@ public:		// types
 				s_optional);
 		}
 
-		template<typename FirstArgType, typename... RemArgTypes>
+		template<typename FirstArgT, typename... RemArgTs>
 		static inline void _inner_seq_parse(Vec& ret,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			using NoRefFirstArgType
-				= typename std::remove_reference<FirstArgType>::type;
-			using TrueFirstArgType
-				= typename std::remove_cv<NoRefFirstArgType>::type;
-			static_assert((std::is_same<TrueFirstArgType, TheUnitParse>()
-				|| std::is_same<TrueFirstArgType, TheSeqParse>()
-				|| std::is_same<TrueFirstArgType, TheOrParse>()
-				|| std::is_same<TrueFirstArgType, TheListParse>()),
+			using NoRefFirstArgT
+				= typename std::remove_reference<FirstArgT>::type;
+			using TrueFirstArgT
+				= typename std::remove_cv<NoRefFirstArgT>::type;
+			static_assert((std::is_same<TrueFirstArgT, TheUnitParse>()
+				|| std::is_same<TrueFirstArgT, TheSeqParse>()
+				|| std::is_same<TrueFirstArgT, TheOrParse>()
+				|| std::is_same<TrueFirstArgT, TheListParse>()),
 				"Invalid _inner_seq_parse() first arg");
 
 			typename TheSeqParse::OneInst to_push;
 
-			if constexpr (std::is_same<TrueFirstArgType, TheUnitParse>())
+			if constexpr (std::is_same<TrueFirstArgT, TheUnitParse>())
 			{
 				to_push = first_arg;
 			}
-			else if constexpr (std::is_same<TrueFirstArgType,
+			else if constexpr (std::is_same<TrueFirstArgT,
 				TheSeqParse>())
 			{
-				using TempTheSeqParse = typename SeqParse<DerivedType>
+				using TempTheSeqParse = typename SeqParse<DerivedT>
 					::TheSeqParse;
-				to_push = TempTheSeqParse(new SeqParse<DerivedType>
+				to_push = TempTheSeqParse(new SeqParse<DerivedT>
 					(first_arg));
 			}
-			else if constexpr (std::is_same<TrueFirstArgType,
+			else if constexpr (std::is_same<TrueFirstArgT,
 				TheOrParse>())
 			{
-				using TempTheSeqParse = typename SeqParse<DerivedType>
+				using TempTheSeqParse = typename SeqParse<DerivedT>
 					::TheSeqParse;
-				to_push = TempTheSeqParse(new OrParse<DerivedType>
+				to_push = TempTheSeqParse(new OrParse<DerivedT>
 					(first_arg));
 			}
-			else if constexpr (std::is_same<TrueFirstArgType,
+			else if constexpr (std::is_same<TrueFirstArgT,
 				TheListParse>())
 			{
-				using TempTheSeqParse = typename SeqParse<DerivedType>
+				using TempTheSeqParse = typename SeqParse<DerivedT>
 					::TheSeqParse;
-				to_push = TempTheSeqParse(new ListParse<DerivedType>
+				to_push = TempTheSeqParse(new ListParse<DerivedT>
 					(first_arg));
 			}
 			ret.push_back(to_push);
@@ -607,54 +607,54 @@ public:		// types
 			}
 		}
 
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheSeqParse _opt_seq_parse(DerivedType* s_self,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline TheSeqParse _opt_seq_parse(DerivedT* s_self,
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
 			typename TheSeqParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return TheSeqParse(s_self, std::move(s_vec), true);
 		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheSeqParse _req_seq_parse(DerivedType* s_self,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline TheSeqParse _req_seq_parse(DerivedT* s_self,
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
 			typename TheSeqParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return TheSeqParse(s_self, std::move(s_vec), false);
 		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheOrParse _opt_or_parse(DerivedType* s_self,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline TheOrParse _opt_or_parse(DerivedT* s_self,
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
 			typename TheOrParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return TheOrParse(s_self, std::move(s_vec), true);
 		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheOrParse _req_or_parse(DerivedType* s_self,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline TheOrParse _req_or_parse(DerivedT* s_self,
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
 			typename TheOrParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return TheOrParse(s_self, std::move(s_vec), false);
 		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheListParse _opt_list_parse(DerivedType* s_self,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline TheListParse _opt_list_parse(DerivedT* s_self,
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
 			typename TheListParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return TheListParse(s_self, std::move(s_vec), true);
 		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline TheListParse _req_list_parse(DerivedType* s_self,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline TheListParse _req_list_parse(DerivedT* s_self,
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
 			typename TheListParse::Vec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
@@ -670,7 +670,7 @@ protected:		// variables
 	size_t _curr_file_index = 0;
 	std::vector<std::string> _filename_vec;
 	std::vector<std::unique_ptr<std::string>> _text_vec;
-	std::vector<LexerType> _lexer_vec;
+	std::vector<LexerT> _lexer_vec;
 
 public:		// functions
 	StatefulParserBase(std::vector<std::string>&& s_filename_vec)
@@ -684,7 +684,7 @@ public:		// functions
 					std::string(liborangepower::misc_input
 						::get_istream_as_str(f))));
 			}
-			_lexer_vec.push_back(LexerType(filename,
+			_lexer_vec.push_back(LexerT(filename,
 				_text_vec.back().get()));
 			_next_tok(&_lexer_vec.back());
 		}
@@ -706,19 +706,19 @@ public:		// functions
 	//{
 	//	return _lexer().src_code_chunk();
 	//}
-	//inline bool cmp_lex_tok(TokType tok) const
+	//inline bool cmp_lex_tok(TokT tok) const
 	//{
 	//	return (lex_tok() == tok);
 	//}
 
 
 	//// Order does not matter
-	//inline bool cmp_prefix_tok_list(const std::set<TokType>& prefix_set,
-	//	TokType end, bool& found_dup) const
+	//inline bool cmp_prefix_tok_list(const std::set<TokT>& prefix_set,
+	//	TokT end, bool& found_dup) const
 	//{
 	//	found_dup = false;
 
-	//	std::set<TokType> found_prefix_set;
+	//	std::set<TokT> found_prefix_set;
 	//	Lexer temp_lexer(_lexer());
 	//	auto* lexer = &temp_lexer;
 
@@ -729,7 +729,7 @@ public:		// functions
 	//	}
 	//}
 
-	inline bool cmp_lex_tok(TokType to_cmp) const
+	inline bool cmp_lex_tok(TokT to_cmp) const
 	{
 		return (_lexer().tok() == to_cmp);
 	}
@@ -754,11 +754,11 @@ public:		// functions
 	GEN_GETTER_BY_CON_REF(lss)
 
 protected:		// functions
-	const LexerType& _lexer() const
+	const LexerT& _lexer() const
 	{
 		return _lexer_vec.at(curr_file_index());
 	}
-	LexerType& _lexer()
+	LexerT& _lexer()
 	{
 		return _lexer_vec.at(curr_file_index());
 	}
@@ -772,7 +772,7 @@ protected:		// functions
 	{
 		std::vector<LexerState> ret;
 
-		LexerType temp_lexer(_lexer());
+		LexerT temp_lexer(_lexer());
 
 		auto& lexer = affect_lexer ? _lexer() : temp_lexer;
 
@@ -786,8 +786,8 @@ protected:		// functions
 	}
 
 	// Duplicates are banned.
-	bool _check_prefixed_tok_seq(const std::set<TokType>& prefix_set,
-		TokType end)
+	bool _check_prefixed_tok_seq(const std::set<TokT>& prefix_set,
+		TokT end)
 	{
 		_lss.found_set.clear();
 		_lss.dup_set.clear();
@@ -833,9 +833,9 @@ protected:		// functions
 
 		return false;
 	}
-	bool _check_prefixed_tok_seq(TokType end)
+	bool _check_prefixed_tok_seq(TokT end)
 	{
-		return _check_prefixed_tok_seq(std::set<TokType>(), end);
+		return _check_prefixed_tok_seq(std::set<TokT>(), end);
 	}
 	inline void _next_lss_tokens(const TokToStringMap& some_tok_ident_map)
 	{
@@ -852,7 +852,7 @@ protected:		// functions
 		}
 	}
 
-	inline auto _next_tok(LexerType* lexer=nullptr)
+	inline auto _next_tok(LexerT* lexer=nullptr)
 	{
 		if (lexer == nullptr)
 		{
@@ -865,10 +865,10 @@ protected:		// functions
 	}
 
 
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
-	static auto _check_parse(DerivedType* self, FirstFuncType&& first_func,
-		RemFuncTypes&&... rem_funcs)
+	template<typename DerivedT, typename FirstFuncT,
+		typename... RemFuncTs>
+	static auto _check_parse(DerivedT* self, FirstFuncT&& first_func,
+		RemFuncTs&&... rem_funcs)
 	{
 		self->_just_test = true;
 		if ((self->*first_func)())
@@ -879,11 +879,11 @@ protected:		// functions
 		{
 			return _check_parse(self, rem_funcs...);
 		}
-		return static_cast<FirstFuncType>(nullptr);
+		return static_cast<FirstFuncT>(nullptr);
 	}
-	template<typename DerivedType, typename FuncType>
-	static auto _check_parse(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+	template<typename DerivedT, typename FuncT>
+	static auto _check_parse(DerivedT* self,
+		const std::vector<FuncT>& func_vec)
 	{
 		for (const auto& iter : func_vec)
 		{
@@ -893,13 +893,13 @@ protected:		// functions
 				return iter;
 			}
 		}
-		return static_cast<FuncType>(nullptr);
+		return static_cast<FuncT>(nullptr);
 	}
 
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
-	static bool _opt_parse(DerivedType* self, FirstFuncType&& first_func,
-		RemFuncTypes&&... rem_funcs)
+	template<typename DerivedT, typename FirstFuncT,
+		typename... RemFuncTs>
+	static bool _opt_parse(DerivedT* self, FirstFuncT&& first_func,
+		RemFuncTs&&... rem_funcs)
 	{
 		self->_just_test = true;
 		if ((self->*first_func)())
@@ -915,9 +915,9 @@ protected:		// functions
 		}
 		return false;
 	}
-	template<typename DerivedType, typename FuncType>
-	static bool _opt_parse(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+	template<typename DerivedT, typename FuncT>
+	static bool _opt_parse(DerivedT* self,
+		const std::vector<FuncT>& func_vec)
 	{
 		for (const auto& iter : func_vec)
 		{
@@ -932,10 +932,10 @@ protected:		// functions
 		}
 		return false;
 	}
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
-	static bool _opt_parse_loop(DerivedType* self,
-		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
+	template<typename DerivedT, typename FirstFuncT,
+		typename... RemFuncTs>
+	static bool _opt_parse_loop(DerivedT* self,
+		FirstFuncT&& first_func, RemFuncTs&&... rem_funcs)
 	{
 		bool found = false;
 		while (_opt_parse(self, first_func, rem_funcs...))
@@ -944,9 +944,9 @@ protected:		// functions
 		}
 		return found;
 	}
-	template<typename DerivedType, typename FuncType>
-	static bool _opt_parse_loop(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+	template<typename DerivedT, typename FuncT>
+	static bool _opt_parse_loop(DerivedT* self,
+		const std::vector<FuncT>& func_vec)
 	{
 		bool found = false;
 		while (_opt_parse(self, func_vec))
@@ -956,19 +956,19 @@ protected:		// functions
 		return found;
 	}
 
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
-	static void _req_parse(DerivedType* self,
-		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
+	template<typename DerivedT, typename FirstFuncT,
+		typename... RemFuncTs>
+	static void _req_parse(DerivedT* self,
+		FirstFuncT&& first_func, RemFuncTs&&... rem_funcs)
 	{
 		if (!_opt_parse(self, first_func, rem_funcs...))
 		{
 			self->_unexpected();
 		}
 	}
-	template<typename DerivedType, typename FuncType>
-	static void _req_parse(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+	template<typename DerivedT, typename FuncT>
+	static void _req_parse(DerivedT* self,
+		const std::vector<FuncT>& func_vec)
 	{
 		if (!_opt_parse(self, func_vec))
 		{
@@ -976,10 +976,10 @@ protected:		// functions
 		}
 	}
 
-	template<typename DerivedType, typename FirstFuncType,
-		typename... RemFuncTypes>
-	static void _req_parse_loop(DerivedType* self,
-		FirstFuncType&& first_func, RemFuncTypes&&... rem_funcs)
+	template<typename DerivedT, typename FirstFuncT,
+		typename... RemFuncTs>
+	static void _req_parse_loop(DerivedT* self,
+		FirstFuncT&& first_func, RemFuncTs&&... rem_funcs)
 	{
 		bool found = false;
 		while (_opt_parse(self, first_func, rem_funcs...))
@@ -991,9 +991,9 @@ protected:		// functions
 			self->_unexpected();
 		}
 	}
-	template<typename DerivedType, typename FuncType>
-	static void _req_parse_loop(DerivedType* self,
-		const std::vector<FuncType>& func_vec)
+	template<typename DerivedT, typename FuncT>
+	static void _req_parse_loop(DerivedT* self,
+		const std::vector<FuncT>& func_vec)
 	{
 		bool found = false;
 		while (_opt_parse(self, func_vec))
@@ -1011,28 +1011,28 @@ protected:		// functions
 	//{
 	//	lex_src_code_chunk().syntax_error(msg);
 	//}
-	template<typename... ArgTypes>
-	inline void _err(const LexerState* lex_state, ArgTypes&&... args)
+	template<typename... ArgTs>
+	inline void _err(const LexerState* lex_state, ArgTs&&... args)
 	{
 		_lexer().src_code_chunk(lex_state).err(sconcat(args...));
 	}
-	template<typename... ArgTypes>
-	inline void _err(ArgTypes&&... args) const
+	template<typename... ArgTs>
+	inline void _err(ArgTs&&... args) const
 	{
 		_lexer().src_code_chunk().err(sconcat(args...));
 	}
-	template<typename... ArgTypes>
-	inline void _warn(const LexerState* lex_state, ArgTypes&&... args)
+	template<typename... ArgTs>
+	inline void _warn(const LexerState* lex_state, ArgTs&&... args)
 	{
 		_lexer().src_code_chunk(lex_state).warn(sconcat(args...));
 	}
-	template<typename... ArgTypes>
-	inline void _warn(ArgTypes&&... args) const
+	template<typename... ArgTs>
+	inline void _warn(ArgTs&&... args) const
 	{
 		_lexer().src_code_chunk().warn(sconcat(args...));
 	}
 
-	std::string _msg_for_expect(TokType tok,
+	std::string _msg_for_expect(TokT tok,
 		const TokToStringMap& some_tok_ident_map,
 		const LexerState& lex_state) const
 	{
@@ -1040,7 +1040,7 @@ protected:		// functions
 			"\".  Have token \"", some_tok_ident_map.at(lex_state.tok()),
 			"\" and string \"", lex_state.s(), "\"");
 	}
-	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
+	void _expect(TokT tok, const TokToStringMap& some_tok_ident_map,
 		const LexerState& lex_state, bool perf_next_tok=true)
 	{
 		if (lex_state.tok() != tok)
@@ -1053,8 +1053,8 @@ protected:		// functions
 			_next_tok();
 		}
 	}
-	void _expect(TokType tok, const TokToStringMap& some_tok_ident_map,
-		LexerType* lexer=nullptr, bool perf_next_tok=true)
+	void _expect(TokT tok, const TokToStringMap& some_tok_ident_map,
+		LexerT* lexer=nullptr, bool perf_next_tok=true)
 	{
 		if (lexer != nullptr)
 		{
@@ -1067,9 +1067,9 @@ protected:		// functions
 				perf_next_tok);
 		}
 	}
-	inline auto _wexpect(TokType tok,
+	inline auto _wexpect(TokT tok,
 		const TokToStringMap& some_tok_ident_map,
-		LexerType* lexer=nullptr)
+		LexerT* lexer=nullptr)
 	{
 		return WExpect(this, tok, some_tok_ident_map, lexer);
 	}
@@ -1080,7 +1080,7 @@ protected:		// functions
 			"\".  Have string \"", lex_state.s(), "\"");
 	}
 	void _unexpected(const TokToStringMap& some_tok_ident_map,
-		LexerType* lexer=nullptr)
+		LexerT* lexer=nullptr)
 	{
 		if (lexer == nullptr)
 		{
@@ -1091,9 +1091,9 @@ protected:		// functions
 			_unexpected(some_tok_ident_map, lexer->state());
 		}
 	}
-	bool _to_next_in_list(TokType end, TokType separator,
+	bool _to_next_in_list(TokT end, TokT separator,
 		const TokToStringMap& some_tok_ident_map,
-		LexerType* lexer=nullptr)
+		LexerT* lexer=nullptr)
 	{
 		if (cmp_lex_tok(end))
 		{

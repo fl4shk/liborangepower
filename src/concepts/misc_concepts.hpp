@@ -8,21 +8,21 @@ namespace liborangepower
 namespace concepts
 {
 
-template<typename Type>
+template<typename T>
 concept HasStaticKindStr = requires
 {
-	{ Type::KIND_STR } -> std::convertible_to<std::string>;
+	{ T::KIND_STR } -> std::convertible_to<std::string>;
 };
 
-template<typename DerivedType, typename BaseType>
+template<typename DerivedT, typename BaseT>
 concept IsDerivedAndHasStaticKindStr 
-	= std::derived_from<DerivedType, BaseType>
-	&& HasStaticKindStr<DerivedType>;
+	= std::derived_from<DerivedT, BaseT>
+	&& HasStaticKindStr<DerivedT>;
 
-template<typename Type>
+template<typename T>
 concept IsConstexpr = requires()
 {
-	{ std::bool_constant<(Type{}, true)>() }
+	{ std::bool_constant<(T{}, true)>() }
 		-> std::same_as<std::true_type>;
 };
 

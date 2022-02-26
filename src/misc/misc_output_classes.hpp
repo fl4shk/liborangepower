@@ -11,15 +11,15 @@ namespace misc_output
 {
 
 
-template<typename... ArgTypes>
-std::ostream& osprintout(std::ostream& os, ArgTypes&&... args);
+template<typename... ArgTs>
+std::ostream& osprintout(std::ostream& os, ArgTs&&... args);
 
 class AnyPrintoutBackend
 {
 private:		// functions
-	template<typename FirstArgType, typename... RemArgTypes>
-	static void func(std::ostream& os, FirstArgType&& first_val, 
-		RemArgTypes&&... rem_args)
+	template<typename FirstArgT, typename... RemArgTs>
+	static void func(std::ostream& os, FirstArgT&& first_val, 
+		RemArgTs&&... rem_args)
 	{
 		typedef typename std::remove_reference<decltype(first_val)>::type
 			Temp0;
@@ -35,33 +35,33 @@ private:		// functions
 		}
 	}
 
-	template<typename... ArgTypes>
+	template<typename... ArgTs>
 	friend std::ostream& osprintout(std::ostream& os, 
-		ArgTypes&&... args);
+		ArgTs&&... args);
 };
 
-template<typename... ArgTypes>
-inline std::ostream& osprintout(std::ostream& os, ArgTypes&&... args)
+template<typename... ArgTs>
+inline std::ostream& osprintout(std::ostream& os, ArgTs&&... args)
 {
 	AnyPrintoutBackend::func(os, args...);
 	return os;
 }
 
-template<typename... ArgTypes>
-inline std::ostream& printout(ArgTypes&&... args)
+template<typename... ArgTs>
+inline std::ostream& printout(ArgTs&&... args)
 {
 	return osprintout(cout, args...);
 }
 
-template<typename... ArgTypes>
-inline std::ostream& printerr(ArgTypes&&... args)
+template<typename... ArgTs>
+inline std::ostream& printerr(ArgTs&&... args)
 {
 	return osprintout(cerr, args...);
 }
 
 // Alternate name for osprintout
-template<typename... ArgTypes>
-inline std::ostream& fprintout(std::ostream& out_file, ArgTypes&&... args)
+template<typename... ArgTs>
+inline std::ostream& fprintout(std::ostream& out_file, ArgTs&&... args)
 {
 	return osprintout(out_file, args...);
 }
@@ -70,8 +70,8 @@ inline std::ostream& fprintout(std::ostream& out_file, ArgTypes&&... args)
 
 
 
-template<typename ArrType>
-std::ostream& osprint_arr(std::ostream& os, ArrType* to_print, size_t size)
+template<typename ArrT>
+std::ostream& osprint_arr(std::ostream& os, ArrT* to_print, size_t size)
 {
 	for (size_t i=0; i<size; ++i)
 	{

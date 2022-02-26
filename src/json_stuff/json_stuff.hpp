@@ -65,18 +65,18 @@ namespace json
 
 class BlankValue;
 
-//template<typename Type>
-//inline containers::Vec2<Type> vec2_from_jv(const Json::Value& jv)
+//template<typename T>
+//inline containers::Vec2<T> vec2_from_jv(const Json::Value& jv)
 //{
 //	return
-//		containers::Vec2<Type>
+//		containers::Vec2<T>
 //	(
-//		val_from_jv<Type>(jv["x"]),
-//		val_from_jv<Type>(jv["y"])
+//		val_from_jv<T>(jv["x"]),
+//		val_from_jv<T>(jv["y"])
 //	);
 //}
-template<typename Type>
-inline Json::Value vec2_to_jv(const containers::Vec2<Type>& vec)
+template<typename T>
+inline Json::Value vec2_to_jv(const containers::Vec2<T>& vec)
 {
 	Json::Value ret;
 
@@ -86,19 +86,19 @@ inline Json::Value vec2_to_jv(const containers::Vec2<Type>& vec)
 	return ret;
 }
 //
-//template<typename Type>
-//inline containers::Vec3<Type> vec3_from_jv(const Json::Value& jv)
+//template<typename T>
+//inline containers::Vec3<T> vec3_from_jv(const Json::Value& jv)
 //{
 //	return
-//		containers::Vec3<Type>
+//		containers::Vec3<T>
 //	(
-//		val_from_jv<Type>(jv["x"]),
-//		val_from_jv<Type>(jv["y"]),
-//		val_from_jv<Type>(jv["z"])
+//		val_from_jv<T>(jv["x"]),
+//		val_from_jv<T>(jv["y"]),
+//		val_from_jv<T>(jv["z"])
 //	);
 //}
-template<typename Type>
-inline Json::Value vec3_to_jv(const containers::Vec3<Type>& vec)
+template<typename T>
+inline Json::Value vec3_to_jv(const containers::Vec3<T>& vec)
 {
 	Json::Value ret;
 
@@ -109,205 +109,205 @@ inline Json::Value vec3_to_jv(const containers::Vec3<Type>& vec)
 	return ret;
 }
 
-template<typename Type>
-inline std::remove_cvref_t<Type> val_from_jv(const Json::Value& jv)
+template<typename T>
+inline std::remove_cvref_t<T> val_from_jv(const Json::Value& jv)
 {
 	//--------
-	using NonCvrefType = std::remove_cvref_t<Type>;
+	using NonCvrefT = std::remove_cvref_t<T>;
 	//--------
-	if constexpr (std::is_same<NonCvrefType, int>())
+	if constexpr (std::is_same<NonCvrefT, int>())
 	{
 		return jv.asInt();
 	}
-	else if constexpr (std::is_same<NonCvrefType, uint>())
+	else if constexpr (std::is_same<NonCvrefT, uint>())
 	{
 		return jv.asUInt();
 	}
-	else if constexpr (std::is_same<NonCvrefType, int64_t>())
+	else if constexpr (std::is_same<NonCvrefT, int64_t>())
 	{
 		return jv.asInt64();
 	}
-	else if constexpr (std::is_same<NonCvrefType, uint64_t>())
+	else if constexpr (std::is_same<NonCvrefT, uint64_t>())
 	{
 		return jv.asUInt64();
 	}
-	else if constexpr (std::is_same<NonCvrefType, float>())
+	else if constexpr (std::is_same<NonCvrefT, float>())
 	{
 		return jv.asFloat();
 	}
-	else if constexpr (std::is_same<NonCvrefType, double>())
+	else if constexpr (std::is_same<NonCvrefT, double>())
 	{
 		return jv.asDouble();
 	}
-	else if constexpr (std::is_same<NonCvrefType, bool>())
+	else if constexpr (std::is_same<NonCvrefT, bool>())
 	{
 		return jv.asBool();
 	}
 	else if constexpr 
-		(is_specialization<NonCvrefType, std::basic_string>())
+		(is_specialization<NonCvrefT, std::basic_string>())
 	{
 		return jv.asString();
 	}
 	//--------
-	else if constexpr (is_vec2<Type>())
+	else if constexpr (is_vec2<T>())
 	{
-		//return vec2_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
-		return NonCvrefType
+		//return vec2_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv);
+		return NonCvrefT
 		(
-			val_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv["x"]),
-			val_from_jv<decltype(std::declval<NonCvrefType>().y)>(jv["y"])
+			val_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv["x"]),
+			val_from_jv<decltype(std::declval<NonCvrefT>().y)>(jv["y"])
 		);
 	}
-	else if constexpr (is_vec3<Type>())
+	else if constexpr (is_vec3<T>())
 	{
-		//return vec3_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv);
-		return NonCvrefType
+		//return vec3_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv);
+		return NonCvrefT
 		(
-			val_from_jv<decltype(std::declval<NonCvrefType>().x)>(jv["x"]),
-			val_from_jv<decltype(std::declval<NonCvrefType>().y)>(jv["y"]),
-			val_from_jv<decltype(std::declval<NonCvrefType>().z)>(jv["z"])
+			val_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv["x"]),
+			val_from_jv<decltype(std::declval<NonCvrefT>().y)>(jv["y"]),
+			val_from_jv<decltype(std::declval<NonCvrefT>().z)>(jv["z"])
 		);
 	}
 	else if constexpr
 	(
-		is_prev_curr_pair<Type>()
-		|| is_move_only_prev_curr_pair<Type>()
+		is_prev_curr_pair<T>()
+		|| is_move_only_prev_curr_pair<T>()
 	)
 	{
-		NonCvrefType ret;
+		NonCvrefT ret;
 
-		using ElemOfNonCvrefType
-			= std::remove_cvref_t<decltype(std::declval<NonCvrefType>()())>;
+		using ElemOfNonCvrefT
+			= std::remove_cvref_t<decltype(std::declval<NonCvrefT>()())>;
 
-		ret() = val_from_jv<ElemOfNonCvrefType>(jv["_prev"]);
-		ret.back_up_and_update(val_from_jv<ElemOfNonCvrefType>
+		ret() = val_from_jv<ElemOfNonCvrefT>(jv["_prev"]);
+		ret.back_up_and_update(val_from_jv<ElemOfNonCvrefT>
 			(jv["_curr"]));
 
 		return ret;
 	}
 	//--------
-	//else if constexpr (is_non_arr_std_unique_ptr<Type>())
+	//else if constexpr (is_non_arr_std_unique_ptr<T>())
 	//{
-	//	using ElemType = typename NonCvrefType::element_type;
+	//	using ElemT = typename NonCvrefT::element_type;
 
-	//	return NonCvrefType(new ElemType(val_from_jv<ElemType>
+	//	return NonCvrefT(new ElemT(val_from_jv<ElemT>
 	//		(jv["obj"])));
 	//}
-	else if constexpr (is_pseudo_vec_like_std_container<Type>())
+	else if constexpr (is_pseudo_vec_like_std_container<T>())
 	{
-		NonCvrefType ret;
+		NonCvrefT ret;
 
 		for (Json::ArrayIndex i=1; i<jv.size(); ++i)
 		{
-			if constexpr (is_std_array<Type>())
+			if constexpr (is_std_array<T>())
 			{
 				ret[i] = val_from_jv
-					<decltype(std::declval<NonCvrefType>().at(0))>
+					<decltype(std::declval<NonCvrefT>().at(0))>
 					(jv[i]);
 			}
-			else if constexpr (is_vec_like_std_container<Type>())
+			else if constexpr (is_vec_like_std_container<T>())
 			{
 				ret.push_back(val_from_jv
-					<decltype(std::declval<NonCvrefType>().at(0))>
+					<decltype(std::declval<NonCvrefT>().at(0))>
 					(jv[i]));
 			}
-			else // if constexpr (is_set_like_std_container<Type>())
+			else // if constexpr (is_set_like_std_container<T>())
 			{
-				ret.insert(val_from_jv<typename NonCvrefType::key_type>
+				ret.insert(val_from_jv<typename NonCvrefT::key_type>
 					(jv[i]));
 			}
 		}
 
 		return ret;
 	}
-	else if constexpr (is_map_like_std_container<Type>())
+	else if constexpr (is_map_like_std_container<T>())
 	{
-		NonCvrefType ret;
+		NonCvrefT ret;
 
 		for (Json::ArrayIndex i=1; i<jv.size(); ++i)
 		{
 			//ret[i]["key"] = val_from_jv
-			ret[val_from_jv<typename NonCvrefType::key_type>(jv[i]["key"])]
-				= val_from_jv<typename NonCvrefType::value_type>
+			ret[val_from_jv<typename NonCvrefT::key_type>(jv[i]["key"])]
+				= val_from_jv<typename NonCvrefT::value_type>
 					(jv[i]["value"]);
 		}
 
 		return ret;
 	}
 	//--------
-	else if constexpr (std::is_constructible<NonCvrefType, Json::Value>())
+	else if constexpr (std::is_constructible<NonCvrefT, Json::Value>())
 	{
-		return Type(jv);
+		return T(jv);
 	}
 	else
 	{
 		// Assume a static member function called `from_jv` exists
-		return Type::from_jv(jv);
+		return T::from_jv(jv);
 	}
 	//--------
 }
 
-template<typename Type>
-inline Type get_jv_memb(const Json::Value& jv, const std::string& name)
+template<typename T>
+inline T get_jv_memb(const Json::Value& jv, const std::string& name)
 {
-	//if constexpr (std::is_same<std::remove_cvref_t<Type>, int64_t>()
-	//	|| std::is_same<std::remove_cvref_t<Type>, uint64_t>()
-	//	|| std::is_same<std::remove_cvref_t<Type>, long int>()
-	//	|| std::is_same<std::remove_cvref_t<Type>, long unsigned int>())
+	//if constexpr (std::is_same<std::remove_cvref_t<T>, int64_t>()
+	//	|| std::is_same<std::remove_cvref_t<T>, uint64_t>()
+	//	|| std::is_same<std::remove_cvref_t<T>, long int>()
+	//	|| std::is_same<std::remove_cvref_t<T>, long unsigned int>())
 	//{
-	//	Type ret = 0;
+	//	T ret = 0;
 
-	//	ret = (static_cast<Type>(val_from_jv<uint>
+	//	ret = (static_cast<T>(val_from_jv<uint>
 	//		(jv[sconcat(name, ".high")])) << static_cast<uint64_t>(32u))
-	//		| static_cast<Type>(val_from_jv<uint>
+	//		| static_cast<T>(val_from_jv<uint>
 	//			(jv[sconcat(name, ".low")]));
 
 	//	return ret;
 	//}
 	//else
 	//{
-	//	return val_from_jv<Type>(jv[name]);
+	//	return val_from_jv<T>(jv[name]);
 	//}
-	return val_from_jv<Type>(jv[name]);
+	return val_from_jv<T>(jv[name]);
 }
 
-template<typename Type>
-inline void _set_jv(Json::Value& jv, const Type& val)
+template<typename T>
+inline void _set_jv(Json::Value& jv, const T& val)
 {
-	using NonCvrefType = std::remove_cvref_t<Type>;
+	using NonCvrefT = std::remove_cvref_t<T>;
 
 	jv = Json::Value();
 
-	//static_assert((!std::is_same<Type, int64_t>())
-	//	&& (!std::is_same<Type, uint64_t>()));
+	//static_assert((!std::is_same<T, int64_t>())
+	//	&& (!std::is_same<T, uint64_t>()));
 
 	//--------
-	if constexpr (is_vec2<Type>())
+	if constexpr (is_vec2<T>())
 	{
 		jv = vec2_to_jv(val);
 	}
-	else if constexpr (is_vec3<Type>())
+	else if constexpr (is_vec3<T>())
 	{
 		jv = vec3_to_jv(val);
 	}
 	else if constexpr
 	(
-		is_prev_curr_pair<Type>()
-		|| is_move_only_prev_curr_pair<Type>()
+		is_prev_curr_pair<T>()
+		|| is_move_only_prev_curr_pair<T>()
 	)
 	{
 		_set_jv(jv["_prev"], val.prev());
 		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
-	else if constexpr (is_arr_like_std_container<Type>())
+	else if constexpr (is_arr_like_std_container<T>())
 	{
 		jv[0] = BlankValue();
 
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
 			if constexpr (is_basic_indexable_std_container
-				<decltype(std::declval<NonCvrefType>().at(0))>())
+				<decltype(std::declval<NonCvrefT>().at(0))>())
 			{
 				Json::Value inner_jv;
 
@@ -321,7 +321,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 			}
 		}
 	}
-	else if constexpr (is_set_like_std_container<Type>())
+	else if constexpr (is_set_like_std_container<T>())
 	{
 		Json::ArrayIndex i = 0;
 
@@ -330,7 +330,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 		for (const auto& key: val)
 		{
 			if constexpr (is_basic_indexable_std_container
-				<typename NonCvrefType::key_type>())
+				<typename NonCvrefT::key_type>())
 			{
 				Json::Value inner_jv;
 
@@ -344,7 +344,7 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 			}
 		}
 	}
-	else if constexpr (is_map_like_std_container<Type>())
+	else if constexpr (is_map_like_std_container<T>())
 	{
 		Json::ArrayIndex i = 0;
 
@@ -368,17 +368,17 @@ inline void _set_jv(Json::Value& jv, const Type& val)
 	//--------
 }
 
-template<typename Type>
+template<typename T>
 inline void set_jv_memb(Json::Value& jv, const std::string& name,
-	const Type& val)
+	const T& val)
 {
 	//--------
-	//if constexpr (std::is_same<Type, int>()
-	//	|| std::is_same<Type, uint>()
-	//	|| std::is_same<Type, float>()
-	//	|| std::is_same<Type, double>())
-	//if constexpr (std::is_same<Type, int64_t>()
-	//	|| std::is_same<Type, uint64_t>())
+	//if constexpr (std::is_same<T, int>()
+	//	|| std::is_same<T, uint>()
+	//	|| std::is_same<T, float>()
+	//	|| std::is_same<T, double>())
+	//if constexpr (std::is_same<T, int64_t>()
+	//	|| std::is_same<T, uint64_t>())
 	//{
 	//	jv[sconcat(name, ".high")] 
 	//		= static_cast<uint32_t>(static_cast<uint64_t>(val)

@@ -5,68 +5,68 @@
 #include "metaprog_defines.hpp"
 //--------
 /*
-#define GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, copy_dd, move_dd) \
-	inline Type(const Type& to_copy) = copy_dd; \
-	inline Type(Type&& to_move) = move_dd; \
-	inline Type& operator = (const Type& to_copy) = copy_dd; \
-	inline Type& operator = (Type&& to_move) = move_dd;
+#define GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, copy_dd, move_dd) \
+	inline T(const T& to_copy) = copy_dd; \
+	inline T(T&& to_move) = move_dd; \
+	inline T& operator = (const T& to_copy) = copy_dd; \
+	inline T& operator = (T&& to_move) = move_dd;
 */
 
-#define GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, cx_cond, \
+#define GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, cx_cond, \
 	copy_dd_cond, move_dd_cond) \
 	CX_WHEN(cx_cond) \
-		inline Type(const Type& to_copy) \
+		inline T(const T& to_copy) \
 		= IF(copy_dd_cond)(default, delete); \
 	CX_WHEN(cx_cond) \
-		inline Type(Type&& to_move) \
+		inline T(T&& to_move) \
 		= IF(move_dd_cond)(default, delete); \
 	CX_WHEN(cx_cond) \
-		inline Type& operator = (const Type& to_copy) \
+		inline T& operator = (const T& to_copy) \
 		= IF(copy_dd_cond)(default, delete); \
 	CX_WHEN(cx_cond) \
-		inline Type& operator = (Type&& to_move) \
+		inline T& operator = (T&& to_move) \
 		= IF(move_dd_cond)(default, delete);
 
 /*
-#define GEN_COPY_CONSTRUCTOR_AND_ASSIGN(Type) \
-	inline Type(const Type& to_copy) = default; \
-	inline Type& operator = (const Type& to_copy) = default;
+#define GEN_COPY_CONSTRUCTOR_AND_ASSIGN(T) \
+	inline T(const T& to_copy) = default; \
+	inline T& operator = (const T& to_copy) = default;
 */
 
-#define GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 0, 1, 0)
+#define GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 0, 1, 0)
 
-#define GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 0, 0, 1)
+#define GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 0, 0, 1)
 
-#define GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 0, 0, 0)
+#define GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 0, 0, 0)
 
-#define GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 0, 1, 1)
+#define GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 0, 1, 1)
 
-#define GEN_CX_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 1, 1, 0)
+#define GEN_CX_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 1, 1, 0)
 
-#define GEN_CX_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 1, 0, 1)
+#define GEN_CX_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 1, 0, 1)
 
-#define GEN_CX_NO_CM_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 1, 0, 0)
+#define GEN_CX_NO_CM_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 1, 0, 0)
 
-#define GEN_CX_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Type) \
-	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(Type, 1, 1, 1)
+#define GEN_CX_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(T) \
+	GEN_GENERIC_CM_CONSTRUCTORS_AND_ASSIGN(T, 1, 1, 1)
 
 /*
-#define GEN_COPY_CONSTRUCTOR(Type, dd) \
-	constexpr inline Type(const Type& to_copy) = dd;
-#define GEN_MOVE_CONSTRUCTOR(Type, dd) \
-	constexpr inline Type(Type&& to_move) = dd;
+#define GEN_COPY_CONSTRUCTOR(T, dd) \
+	constexpr inline T(const T& to_copy) = dd;
+#define GEN_MOVE_CONSTRUCTOR(T, dd) \
+	constexpr inline T(T&& to_move) = dd;
 
-#define GEN_COPY_ASSIGN_OP(Type, dd) \
-	constexpr inline Type& operator = (const Type& to_copy) = dd;
-#define GEN_MOVE_ASSIGN_OP(Type, dd) \
-	constexpr inline Type& operator = (Type&& to_move) = dd;
+#define GEN_COPY_ASSIGN_OP(T, dd) \
+	constexpr inline T& operator = (const T& to_copy) = dd;
+#define GEN_MOVE_ASSIGN_OP(T, dd) \
+	constexpr inline T& operator = (T&& to_move) = dd;
 */
 //--------
 //--------
@@ -240,9 +240,9 @@ GEN_STATIC_GENERIC_GETTER_BY_REF(1, _, suffix)
 #ifndef GEN_GENERIC_SETTER_BY_VAL
 // By value
 #define GEN_GENERIC_SETTER_BY_VAL(cx_cond, prefix, suffix) \
-template<typename Type> \
+template<typename T> \
 CX_WHEN(cx_cond) inline decltype(prefix ## suffix) \
-	set_ ## suffix (Type to_copy) \
+	set_ ## suffix (T to_copy) \
 { \
 	prefix ## suffix = to_copy; \
 	return prefix ## suffix; \
@@ -266,9 +266,9 @@ GEN_GENERIC_SETTER_BY_VAL(1, _, suffix)
 #ifndef GEN_GENERIC_SETTER_BY_CON_REF
 // By const reference
 #define GEN_GENERIC_SETTER_BY_CON_REF(cx_cond, prefix, suffix) \
-template<typename Type> \
+template<typename T> \
 CX_WHEN(cx_cond) inline const decltype(prefix ## suffix) & \
-	set_ ## suffix (const Type& to_copy) \
+	set_ ## suffix (const T& to_copy) \
 { \
 	prefix ## suffix = to_copy; \
 	return prefix ## suffix; \
@@ -292,9 +292,9 @@ GEN_GENERIC_SETTER_BY_CON_REF(1, _, suffix)
 #ifndef GEN_GENERIC_SETTER_BY_RVAL_REF
 // By rvalue reference
 #define GEN_GENERIC_SETTER_BY_RVAL_REF(cx_cond, prefix, suffix) \
-template<typename Type> \
+template<typename T> \
 CX_WHEN(cx_cond) inline const decltype(prefix ## suffix) & \
-	set_ ## suffix (Type&& to_move) \
+	set_ ## suffix (T&& to_move) \
 { \
 	prefix ## suffix = std::move(to_move); \
 	return prefix ## suffix; \
@@ -318,9 +318,9 @@ GEN_GENERIC_SETTER_BY_RVAL_REF(1, _, suffix)
 #ifndef GEN_STATIC_GENERIC_SETTER_BY_VAL
 // By value
 #define GEN_STATIC_GENERIC_SETTER_BY_VAL(cx_cond, prefix, suffix) \
-template<typename Type> \
+template<typename T> \
 static CX_WHEN(cx_cond) inline decltype(prefix ## suffix) \
-	set_ ## suffix (Type to_copy) \
+	set_ ## suffix (T to_copy) \
 { \
 	prefix ## suffix = to_copy; \
 	return prefix ## suffix; \
@@ -343,9 +343,9 @@ GEN_STATIC_GENERIC_SETTER_BY_VAL(1, _, suffix)
 #ifndef GEN_STATIC_GENERIC_SETTER_BY_CON_REF
 // By const reference
 #define GEN_STATIC_GENERIC_SETTER_BY_CON_REF(cx_cond, prefix, suffix) \
-template<typename Type> \
+template<typename T> \
 static CX_WHEN(cx_cond) inline const decltype(prefix ## suffix) & \
-	set_ ## suffix (const Type& to_copy) \
+	set_ ## suffix (const T& to_copy) \
 { \
 	prefix ## suffix = to_copy; \
 	return prefix ## suffix; \

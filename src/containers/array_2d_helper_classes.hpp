@@ -14,7 +14,7 @@ namespace containers
 
 // This utility class is intended to be used when inherently 2D data, with
 // CONSTANT dimensions, is stored within a 1D array.
-template<typename Type, size_t _width, size_t _height>
+template<typename T, size_t _width, size_t _height>
 class ArrayCsz2dHelper
 {
 protected:		// variables
@@ -22,19 +22,19 @@ protected:		// variables
 	static constexpr size_t _size = _size_2d.x * _size_2d.y;
 
 //public:			// variables
-	Type* _arr = nullptr;
+	T* _arr = nullptr;
 
 public:			// functions
 	inline ArrayCsz2dHelper()
 	{
 	}
-	inline ArrayCsz2dHelper(Type* s_arr)
+	inline ArrayCsz2dHelper(T* s_arr)
 		: _arr(s_arr)
 	{
 	}
 	inline ArrayCsz2dHelper(const ArrayCsz2dHelper& to_copy) = default;
 
-	void init(Type* s_arr)
+	void init(T* s_arr)
 	{
 		_arr = s_arr;
 	}
@@ -43,7 +43,7 @@ public:			// functions
 		= default;
 
 
-	Type* arr() const
+	T* arr() const
 	{
 		return _arr;
 	}
@@ -66,23 +66,23 @@ public:			// functions
 		return _size;
 	}
 
-	Type& at(size_t x, size_t y)
+	T& at(size_t x, size_t y)
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	template<typename PosType>
-	Type& at(const Vec2<PosType>& offset_2d)
+	template<typename PosT>
+	T& at(const Vec2<PosT>& offset_2d)
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}
 
 
-	const Type& at(size_t x, size_t y) const
+	const T& at(size_t x, size_t y) const
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	template<typename PosType>
-	const Type& at(const Vec2<PosType>& offset_2d) const
+	template<typename PosT>
+	const T& at(const Vec2<PosT>& offset_2d) const
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}
@@ -93,7 +93,7 @@ public:			// functions
 
 // This utility class is intended to be used when inherently 2D data is
 // stored within a 1D array.
-template<typename Type>
+template<typename T>
 class Array2dHelper
 {
 protected:		// variables
@@ -101,7 +101,7 @@ protected:		// variables
 	size_t _size = 0;
 
 //public:			// variables
-	Type* _arr = nullptr;
+	T* _arr = nullptr;
 
 public:			// functions
 	//Array2dHelper() : _size_2d({ 0, 0 }), _size(0), _arr(0)
@@ -110,7 +110,7 @@ public:			// functions
 	inline Array2dHelper()
 	{
 	}
-	inline Array2dHelper(Type* s_arr, 
+	inline Array2dHelper(T* s_arr, 
 		const Vec2<size_t>& s_size_2d)
 		: _size_2d(s_size_2d), _size(s_size_2d.x * s_size_2d.y),
 		_arr(s_arr)
@@ -118,7 +118,7 @@ public:			// functions
 	}
 	inline Array2dHelper(const Array2dHelper& to_copy) = default;
 
-	void init(Type* s_arr, const Vec2<size_t>& s_size_2d)
+	void init(T* s_arr, const Vec2<size_t>& s_size_2d)
 	{
 		_size_2d = s_size_2d;
 		_size = _size_2d.x * _size_2d.y;
@@ -128,7 +128,7 @@ public:			// functions
 	Array2dHelper& operator = (const Array2dHelper& to_copy) = default;
 
 
-	Type* arr() const
+	T* arr() const
 	{
 		return _arr;
 	}
@@ -151,23 +151,23 @@ public:			// functions
 		return _size;
 	}
 
-	Type& at(size_t x, size_t y)
+	T& at(size_t x, size_t y)
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	template<typename PosType>
-	Type& at(const Vec2<PosType>& offset_2d)
+	template<typename PosT>
+	T& at(const Vec2<PosT>& offset_2d)
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}
 
 
-	const Type& at(size_t x, size_t y) const
+	const T& at(size_t x, size_t y) const
 	{
 		return _arr[y * _size_2d.x + x];
 	}
-	template<typename PosType>
-	const Type& at(const Vec2<PosType>& offset_2d) const
+	template<typename PosT>
+	const T& at(const Vec2<PosT>& offset_2d) const
 	{
 		return _arr[offset_2d.y * _size_2d.x + offset_2d.x];
 	}

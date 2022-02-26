@@ -9,34 +9,34 @@ namespace liborangepower
 namespace concepts
 {
 
-template<typename Type, typename OtherType>
-concept HasNonBitwiseBinops = requires(Type c, OtherType other)
+template<typename T, typename OtherT>
+concept HasNonBitwiseBinops = requires(T c, OtherT other)
 {
-	{ c + other } -> std::convertible_to<Type>;
-	{ c - other } -> std::convertible_to<Type>;
-	{ c * other } -> std::convertible_to<Type>;
-	{ c / other } -> std::convertible_to<Type>;
+	{ c + other } -> std::convertible_to<T>;
+	{ c - other } -> std::convertible_to<T>;
+	{ c * other } -> std::convertible_to<T>;
+	{ c / other } -> std::convertible_to<T>;
 };
-template<typename Type>
-concept HasNonBitwiseUnops = requires(Type c)
+template<typename T>
+concept HasNonBitwiseUnops = requires(T c)
 {
-	{ +c } -> std::convertible_to<Type>;
-	{ -c } -> std::convertible_to<Type>;
+	{ +c } -> std::convertible_to<T>;
+	{ -c } -> std::convertible_to<T>;
 };
 
-template<typename Type, typename OtherType>
-concept HasBitwiseBinops = requires(Type c, OtherType other)
+template<typename T, typename OtherT>
+concept HasBitwiseBinops = requires(T c, OtherT other)
 {
-	{ c & other } -> std::convertible_to<Type>;
-	{ c | other } -> std::convertible_to<Type>;
-	{ c ^ other } -> std::convertible_to<Type>;
-	{ c << other } -> std::convertible_to<Type>;
-	{ c >> other } -> std::convertible_to<Type>;
+	{ c & other } -> std::convertible_to<T>;
+	{ c | other } -> std::convertible_to<T>;
+	{ c ^ other } -> std::convertible_to<T>;
+	{ c << other } -> std::convertible_to<T>;
+	{ c >> other } -> std::convertible_to<T>;
 };
-template<typename Type>
-concept HasBitwiseUnops = requires(Type c)
+template<typename T>
+concept HasBitwiseUnops = requires(T c)
 {
-	{ ~c } -> std::convertible_to<Type>;
+	{ ~c } -> std::convertible_to<T>;
 };
 
 } // namespace concepts

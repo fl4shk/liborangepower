@@ -13,81 +13,81 @@ namespace liborangepower
 namespace bitwise
 {
 
-template<typename Type>
+template<typename T>
 inline constexpr size_t width_of_type()
 {
 	static_assert(CHAR_BIT == 8);
-	return (sizeof(Type) * 8);
+	return (sizeof(T) * 8);
 }
 
-// This uses the ability of the compiler to deduce what "Type" is from the
+// This uses the ability of the compiler to deduce what "T" is from the
 // type of "to_check".
-template<typename Type>
-inline constexpr size_t width_of_type(const Type& to_check)
+template<typename T>
+inline constexpr size_t width_of_type(const T& to_check)
 {
-	return width_of_type<Type>();
+	return width_of_type<T>();
 }
 
-template<typename Type>
+template<typename T>
 inline constexpr bool bprange_is_all(size_t bit_pos_range_hi,
 	size_t bit_pos_range_lo)
 {
 	return ((bit_pos_range_hi 
-		== WIDTH2MP(width_of_type<Type>()))
+		== WIDTH2MP(width_of_type<T>()))
 		&& (bit_pos_range_lo == 0));
 }
 
-// This also uses the ability of the compiler to deduce what "Type" is from
+// This also uses the ability of the compiler to deduce what "T" is from
 // the type of "to_check".
-template<typename Type>
-inline constexpr bool bprange_is_all(const Type& to_check, 
+template<typename T>
+inline constexpr bool bprange_is_all(const T& to_check, 
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
-	return bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo);
+	return bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo);
 }
 
 
-template<typename Type>
-inline void clear_bits(Type& to_clear, size_t mask)
+template<typename T>
+inline void clear_bits(T& to_clear, size_t mask)
 {
 	to_clear &= ~mask;
 }
 
-template<typename Type>
-inline void clear_bits_with_range(Type& to_clear, size_t bit_pos_range_hi,
+template<typename T>
+inline void clear_bits_with_range(T& to_clear, size_t bit_pos_range_hi,
 	size_t bit_pos_range_lo)
 {
 	clear_bits(to_clear, (BPRANGE2MASK(bit_pos_range_hi,
 		bit_pos_range_lo) << bit_pos_range_lo));
 }
 
-template<typename Type>
-inline void set_bits(Type& to_set, size_t mask)
+template<typename T>
+inline void set_bits(T& to_set, size_t mask)
 {
 	to_set |= mask;
 }
 
-template<typename Type>
-inline void set_bits_with_range(Type& to_set, size_t val,
+template<typename T>
+inline void set_bits_with_range(T& to_set, size_t val,
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
 	set_bits(to_set, ((val & BPRANGE2MASK(bit_pos_range_hi,
 		bit_pos_range_lo)) << bit_pos_range_lo));
 }
 
-template<typename Type>
-inline constexpr Type get_bits(Type to_get_from, size_t mask, 
+template<typename T>
+inline constexpr T get_bits(T to_get_from, size_t mask, 
 	size_t shift=0)
 {
 	return ((to_get_from & mask) >> shift);
 }
 
-template<typename Type>
-inline constexpr Type get_bits_with_range(Type to_get_from, 
+template<typename T>
+inline constexpr T get_bits_with_range(T to_get_from, 
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
 	// "BPRANGE2SHIFTED_MASK" didn't work for this case.
-	if (bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo))
+	if (bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo))
 	{
 		return to_get_from;
 	}
@@ -100,8 +100,8 @@ inline constexpr Type get_bits_with_range(Type to_get_from,
 }
 
 
-template<typename Type>
-inline void clear_and_set_bits(Type& to_change, size_t clear_mask,
+template<typename T>
+inline void clear_and_set_bits(T& to_change, size_t clear_mask,
 	size_t set_mask)
 {
 	// I don't remember the reason why this doesn't just call
@@ -112,12 +112,12 @@ inline void clear_and_set_bits(Type& to_change, size_t clear_mask,
 	to_change |= set_mask;
 }
 
-template<typename Type>
-inline void clear_and_set_bits(Type& to_change, size_t val,
+template<typename T>
+inline void clear_and_set_bits(T& to_change, size_t val,
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
 	// "BPRANGE2SHIFTED_MASK" didn't work for this case.
-	if (bprange_is_all<Type>(bit_pos_range_hi, bit_pos_range_lo))
+	if (bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo))
 	{
 		to_change = val;
 	}
@@ -129,8 +129,8 @@ inline void clear_and_set_bits(Type& to_change, size_t val,
 			<< bit_pos_range_lo));
 	}
 }
-template<typename Type>
-inline void clear_and_set_bits_with_range(Type& to_change, size_t val,
+template<typename T>
+inline void clear_and_set_bits_with_range(T& to_change, size_t val,
 	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
 {
 	clear_and_set_bits(to_change, val, bit_pos_range_hi, bit_pos_range_lo);
@@ -151,10 +151,10 @@ using liborangepower::integer_types::i64;
 
 
 // Can this be made "constexpr"?
-template<typename Type>
-size_t count_leading_zeros(Type x)
+template<typename T>
+size_t count_leading_zeros(T x)
 {
-	static_assert(std::is_integral<Type>());
+	static_assert(std::is_integral<T>());
 	static_assert(CHAR_BIT == 8);
 
 	size_t ret = 0;
@@ -164,13 +164,13 @@ size_t count_leading_zeros(Type x)
 
 	if (s == 0)
 	{
-		ret = sizeof(Type) * 8;
+		ret = sizeof(T) * 8;
 	}
 
 	else
 	{
-		static_assert(sizeof(Type()) <= 8);
-		switch (sizeof(Type))
+		static_assert(sizeof(T()) <= 8);
+		switch (sizeof(T))
 		{
 			case 8:
 				s = get_bits_with_range(s, 63, 32)
@@ -213,7 +213,7 @@ size_t count_leading_zeros(Type x)
 
 			//// 128-bit, eh?  I don't know what else it'd be....
 			//default:
-			//	for (i64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+			//	for (i64 i=((1 << sizeof(T)) - 1); i>=0; --i)
 			//	{
 			//		if (!get_bits_with_range(s, i, i))
 			//		{
@@ -231,10 +231,10 @@ size_t count_leading_zeros(Type x)
 	return ret;
 }
 
-//template<typename Type>
-//constexpr size_t basic_count_leading_zeros(Type x)
+//template<typename T>
+//constexpr size_t basic_count_leading_zeros(T x)
 //{
-//	static_assert(std::is_integral<Type>());
+//	static_assert(std::is_integral<T>());
 //	static_assert(CHAR_BIT == 8);
 //
 //	size_t ret = 0;
@@ -244,11 +244,11 @@ size_t count_leading_zeros(Type x)
 //
 //	if (s == 0)
 //	{
-//		ret = sizeof(Type) * 8;
+//		ret = sizeof(T) * 8;
 //	}
 //	else
 //	{
-//		for (i64 i=((1 << sizeof(Type)) - 1); i>=0; --i)
+//		for (i64 i=((1 << sizeof(T)) - 1); i>=0; --i)
 //		{
 //			if (!get_bits_with_range(s, i, i))
 //			{
@@ -263,13 +263,13 @@ size_t count_leading_zeros(Type x)
 //	return ret;
 //}
 //
-//template<typename Type>
-//constexpr size_t basic_ilog2(Type x)
+//template<typename T>
+//constexpr size_t basic_ilog2(T x)
 //{
-//	static_assert(std::is_integral<Type>());
+//	static_assert(std::is_integral<T>());
 //	static_assert(CHAR_BIT == 8);
 //
-//	return (sizeof(Type) * 8 - 1 - basic_count_leading_zeros(x));
+//	return (sizeof(T) * 8 - 1 - basic_count_leading_zeros(x));
 //}
 
 

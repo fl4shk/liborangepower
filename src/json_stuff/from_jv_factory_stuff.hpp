@@ -15,44 +15,44 @@ namespace json
 {
 
 using liborangepower::concepts::IsDerivedAndHasStaticKindStr;
-template<typename DerivedType, typename BaseType>
-concept IsValidFromJvFactoryType
-	= IsDerivedAndHasStaticKindStr<DerivedType, BaseType> 
+template<typename DerivedT, typename BaseT>
+concept IsValidFromJvFactoryT
+	= IsDerivedAndHasStaticKindStr<DerivedT, BaseT> 
 	&& requires(const Json::Value& jv)
 {
-	DerivedType(jv);
+	DerivedT(jv);
 };
 
-template<typename BaseType>
+template<typename BaseT>
 class FromJvFactory final
 {
 public:		// types
 	using Func
-		= std::function<std::unique_ptr<BaseType>(const Json::Value&)>;
+		= std::function<std::unique_ptr<BaseT>(const Json::Value&)>;
 	using FuncMap = std::map<std::string, Func>;
 public:		// functions
 	// Create a `FuncMap` that maps each derived type's `KIND_STR` to a
-	// lambda function that generates an `std::unique_ptr<BaseType>` that
-	// points to a `new FirstDerivedType(jv)`.
-	template<IsValidFromJvFactoryType<BaseType> FirstDerivedType,
-		IsValidFromJvFactoryType<BaseType>... RemDerivedTypes>
+	// lambda function that generates an `std::unique_ptr<BaseT>` that
+	// points to a `new FirstDerivedT(jv)`.
+	template<IsValidFromJvFactoryT<BaseT> FirstDerivedT,
+		IsValidFromJvFactoryT<BaseT>... RemDerivedTs>
 	static FuncMap gen_func_map()
 	{
 		FuncMap ret;
 
-		if constexpr (sizeof...(RemDerivedTypes) > 0)
+		if constexpr (sizeof...(RemDerivedTs) > 0)
 		{
-			ret = gen_func_map<RemDerivedTypes...>();
+			ret = gen_func_map<RemDerivedTs...>();
 		}
 
-		//ret[FirstDerivedType::KIND_STR] = Func(FirstDerivedType::from_jv);
-		ret[FirstDerivedType::KIND_STR]
+		//ret[FirstDerivedT::KIND_STR] = Func(FirstDerivedT::from_jv);
+		ret[FirstDerivedT::KIND_STR]
 			= Func
 			(
-				[](const Json::Value& jv) -> std::unique_ptr<BaseType>
+				[](const Json::Value& jv) -> std::unique_ptr<BaseT>
 				{
-					return std::unique_ptr<BaseType>
-						(new FirstDerivedType(jv));
+					return std::unique_ptr<BaseT>
+						(new FirstDerivedT(jv));
 				}
 			);
 

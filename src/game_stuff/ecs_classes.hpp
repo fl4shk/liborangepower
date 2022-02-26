@@ -126,13 +126,13 @@ protected:		// functions
 	bool _tick_helper(Engine* ecs_engine, bool cond);
 };
 //--------
-template<typename Type>
+template<typename T>
 concept EngineDerivedFromComp 
-	= json::IsValidFromJvFactoryType<Type, Comp>;
+	= json::IsValidFromJvFactoryT<T, Comp>;
 
-template<typename Type>
+template<typename T>
 concept EngineDerivedFromSys
-	= json::IsValidFromJvFactoryType<Type, Sys>;
+	= json::IsValidFromJvFactoryT<T, Sys>;
 
 class Engine
 {
@@ -179,34 +179,34 @@ public:		// functions
 		//_sys_deserialize(jv);
 	}
 	//--------
-	template<EngineDerivedFromComp FirstCompType,
-		EngineDerivedFromComp... RemCompTypes>
+	template<EngineDerivedFromComp FirstCompT,
+		EngineDerivedFromComp... RemCompTs>
 	void init_comp_deserialize()
 	{
 		_comp_deser_func_map 
 			= json::FromJvFactory<Comp>::gen_func_map
-				<FirstCompType, RemCompTypes...>();
+				<FirstCompT, RemCompTs...>();
 	}
 
-	//template<EngineDerivedFromSys FirstSysType,
-	//	EngineDerivedFromSys... RemSysTypes>
+	//template<EngineDerivedFromSys FirstSysT,
+	//	EngineDerivedFromSys... RemSysTs>
 	//void init_sys_deserialize()
 	//{
 	//	_sys_deser_func_map 
 	//		= json::FromJvFactory<Sys>::gen_func_map
-	//			<FirstSysType, RemSysTypes...>();
+	//			<FirstSysT, RemSysTs...>();
 	//}
 	//--------
 private:		// functions
 	//--------
 	void _autoser_deserialize(const Json::Value& jv);
 
-	//template<EngineDerivedFromComp FirstCompType,
-	//	EngineDerivedFromComp... RemCompTypes>
+	//template<EngineDerivedFromComp FirstCompT,
+	//	EngineDerivedFromComp... RemCompTs>
 	void _ent_deserialize(const Json::Value& jv);
 
-	////template<EngineDerivedFromSys FirstSysType,
-	////	EngineDerivedFromSys... RemSysTypes>
+	////template<EngineDerivedFromSys FirstSysT,
+	////	EngineDerivedFromSys... RemSysTs>
 	//void _sys_deserialize(const Json::Value& jv);
 	//--------
 	void _inner_create(EntId id, int file_num);
@@ -328,43 +328,43 @@ public:		// functions
 	{
 		return comp_map(id, file_num).at(key);
 	}
-	template<EngineDerivedFromComp Type>
+	template<EngineDerivedFromComp T>
 	inline CompUptr& comp_at(EntId id, int file_num) const
 	{
-		return comp_map(id, file_num).at(Type::KIND_STR);
+		return comp_map(id, file_num).at(T::KIND_STR);
 	}
 
 	inline CompUptr& comp_at_cfn(EntId id, const std::string& key) const
 	{
 		return comp_at(id, key, curr_file_num);
 	}
-	template<EngineDerivedFromComp Type>
+	template<EngineDerivedFromComp T>
 	inline CompUptr& comp_at_cfn(EntId id) const
 	{
-		return comp_at<Type>(id, curr_file_num);
+		return comp_at<T>(id, curr_file_num);
 	}
 	//--------
-	template<EngineDerivedFromComp Type>
-	inline Type* casted_comp_at(EntId id, const std::string& key,
+	template<EngineDerivedFromComp T>
+	inline T* casted_comp_at(EntId id, const std::string& key,
 		int file_num) const
 	{
-		return static_cast<Type*>(comp_at(id, key, file_num).get());
+		return static_cast<T*>(comp_at(id, key, file_num).get());
 	}
-	template<EngineDerivedFromComp Type>
-	inline Type* casted_comp_at(EntId id, int file_num) const
+	template<EngineDerivedFromComp T>
+	inline T* casted_comp_at(EntId id, int file_num) const
 	{
-		return casted_comp_at<Type>(id, Type::KIND_STR, file_num);
+		return casted_comp_at<T>(id, T::KIND_STR, file_num);
 	}
 
-	template<EngineDerivedFromComp Type>
-	inline Type* casted_comp_at_cfn(EntId id, const std::string& key) const
+	template<EngineDerivedFromComp T>
+	inline T* casted_comp_at_cfn(EntId id, const std::string& key) const
 	{
-		return casted_comp_at<Type>(id, key, curr_file_num);
+		return casted_comp_at<T>(id, key, curr_file_num);
 	}
-	template<EngineDerivedFromComp Type>
-	inline Type* casted_comp_at_cfn(EntId id) const
+	template<EngineDerivedFromComp T>
+	inline T* casted_comp_at_cfn(EntId id) const
 	{
-		return casted_comp_at<Type>(id, curr_file_num);
+		return casted_comp_at<T>(id, curr_file_num);
 	}
 	//--------
 	bool insert_comp(EntId id, const std::string& key, CompUptr&& comp,
@@ -407,20 +407,20 @@ public:		// functions
 	}
 	//--------
 	size_t erase_comp(EntId id, const std::string& key, int file_num);
-	template<EngineDerivedFromComp Type>
+	template<EngineDerivedFromComp T>
 	inline size_t erase_comp(EntId id, int file_num)
 	{
-		return erase_comp(id, Type::KIND_STR, file_num);
+		return erase_comp(id, T::KIND_STR, file_num);
 	}
 
 	inline size_t erase_comp_cfn(EntId id, const std::string& key)
 	{
 		return erase_comp(id, key, curr_file_num);
 	}
-	template<EngineDerivedFromComp Type>
+	template<EngineDerivedFromComp T>
 	inline size_t erase_comp_cfn(EntId id)
 	{
-		return erase_comp<Type>(id, curr_file_num);
+		return erase_comp<T>(id, curr_file_num);
 	}
 	//--------
 	bool insert_sys(const std::string& key, SysUptr&& sys);
@@ -437,10 +437,10 @@ public:		// functions
 	}
 
 	size_t erase_sys(const std::string& key);
-	template<EngineDerivedFromSys Type>
+	template<EngineDerivedFromSys T>
 	inline size_t erase_sys()
 	{
-		return erase_sys(Type::KIND_STR);
+		return erase_sys(T::KIND_STR);
 	}
 	//--------
 	inline bool has_ent_with_comp(EntId id, const std::string& key,
@@ -449,10 +449,10 @@ public:		// functions
 		return (engine_comp_map(file_num).contains(id)
 			&& comp_map(id, file_num).contains(key));
 	}
-	template<EngineDerivedFromComp Type>
+	template<EngineDerivedFromComp T>
 	inline bool has_ent_with_comp(EntId id, int file_num) const
 	{
-		return has_ent_with_comp(id, Type::KIND_STR, file_num);
+		return has_ent_with_comp(id, T::KIND_STR, file_num);
 	}
 
 	inline bool has_ent_with_comp_cfn(EntId id, const std::string& key)
@@ -460,10 +460,10 @@ public:		// functions
 	{
 		return has_ent_with_comp(id, key, curr_file_num);
 	}
-	template<EngineDerivedFromComp Type>
+	template<EngineDerivedFromComp T>
 	inline bool has_ent_with_comp_cfn(EntId id) const
 	{
-		return has_ent_with_comp<Type>(id, curr_file_num);
+		return has_ent_with_comp<T>(id, curr_file_num);
 	}
 	//--------
 	void tick();

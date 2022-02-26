@@ -12,22 +12,22 @@ namespace liborangepower
 namespace lang
 {
 
-template<typename _TokType, typename _NumType=bignum::BigNum>
+template<typename _TokT, typename _NumT=bignum::BigNum>
 class LexerBase
 {
 public:		// types
-	using TokType = _TokType;
-	using NumType = _NumType;
+	using TokT = _TokT;
+	using NumT = _NumT;
 
 	class State final
 	{
-	friend class LexerBase<TokType, NumType>;
+	friend class LexerBase<TokT, NumT>;
 
 	private:		// variables
-		TokType _tok;
+		TokT _tok;
 		std::string _s;
 		int _c;
-		NumType _n;
+		NumT _n;
 		size_t _x = 0, _line_num = 1, _pos_in_line = 0;
 
 	public:		// functions
@@ -109,7 +109,7 @@ public:		// types
 
 	using TwoStates = std::pair<State, State>;
 
-	using TokToStringMap = std::map<TokType, std::string>;
+	using TokToStringMap = std::map<TokT, std::string>;
 
 protected:		// variables
 	std::string _filename;
@@ -127,19 +127,19 @@ public:		// functions
 	virtual ~LexerBase() = default;
 
 
-	//template<typename Type>
-	//inline Type src_code_chunk(const TwoStates* other_two_states=nullptr)
+	//template<typename T>
+	//inline T src_code_chunk(const TwoStates* other_two_states=nullptr)
 	//	const
 	//{
 	//	if (other_two_states != nullptr)
 	//	{
-	//		return Type(filename(), other_two_states->second._s,
+	//		return T(filename(), other_two_states->second._s,
 	//			other_two_states->first._line_num,
 	//			other_two_states->first._pos_in_line);
 	//	}
 	//	else // if (other_two_states == nullptr)
 	//	{
-	//		return Type(filename(), state()._s,
+	//		return T(filename(), state()._s,
 	//			prev_state()._line_num, prev_state()._pos_in_line);
 	//	}
 	//}
@@ -218,7 +218,7 @@ public:		// functions
 	GEN_GETTER_AND_SETTER_BY_CON_REF(two_states)
 
 protected:		// functions
-	void _next_tok(TokType comment_tok)
+	void _next_tok(TokT comment_tok)
 	{
 		do
 		{
@@ -258,7 +258,7 @@ protected:		// functions
 			_next_char();
 		}
 	}
-	void _set_tok(TokType n_tok, bool perf_next_char)
+	void _set_tok(TokT n_tok, bool perf_next_char)
 	{
 		state()._tok = n_tok;
 
@@ -271,14 +271,14 @@ protected:		// functions
 	virtual void _inner_next_tok() = 0;
 
 private:		// functions
-	inline bool _inner_sel_set_tok(TokType last_tok)
+	inline bool _inner_sel_set_tok(TokT last_tok)
 	{
 		_set_tok(last_tok, false);
 		return true;
 	}
-	template<typename... RemArgTypes>
-	inline bool _inner_sel_set_tok(char first_char, TokType first_tok,
-		RemArgTypes&&... rem_args)
+	template<typename... RemArgTs>
+	inline bool _inner_sel_set_tok(char first_char, TokT first_tok,
+		RemArgTs&&... rem_args)
 	{
 		if (c() == first_char)
 		{
@@ -296,16 +296,16 @@ private:		// functions
 	}
 
 public:		// functions
-	inline bool _sel_set_tok(TokType only_tok)
+	inline bool _sel_set_tok(TokT only_tok)
 	{
 		_next_char();
 		_set_tok(only_tok, false);
 		return true;
 	}
 
-	template<typename... RemArgTypes>
-	inline bool _sel_set_tok(char first_char, TokType first_tok,
-		RemArgTypes&&... rem_args)
+	template<typename... RemArgTs>
+	inline bool _sel_set_tok(char first_char, TokT first_tok,
+		RemArgTs&&... rem_args)
 	{
 		_next_char();
 
@@ -313,7 +313,7 @@ public:		// functions
 	}
 
 	inline bool _kw_set_tok
-		(const std::map<TokType, std::string>& some_tok_ident_map)
+		(const std::map<TokT, std::string>& some_tok_ident_map)
 	{
 		for (const auto& iter: some_tok_ident_map)
 		{

@@ -19,19 +19,19 @@ namespace containers
 // This is a small class for the purposes of holding the states of
 // "previous" and "current" pairs.  It is primarily intended for use with
 // SMALL types, such as vec2's, built-in types, and so on and so forth.
-template<typename Type>
+template<typename T>
 class PrevCurrPair final
 {
 private:		// variables
-	Type _prev, _curr;
+	T _prev, _curr;
 
 public:		// functions
 	inline PrevCurrPair() = default;
-	inline PrevCurrPair(const Type& s_prev, const Type& s_curr)
+	inline PrevCurrPair(const T& s_prev, const T& s_curr)
 		: _prev(s_prev), _curr(s_curr)
 	{
 	}
-	inline PrevCurrPair(Type&& s_prev, Type&& s_curr)
+	inline PrevCurrPair(T&& s_prev, T&& s_curr)
 		: _prev(std::move(s_prev)), _curr(std::move(s_curr))
 	{
 	}
@@ -43,12 +43,12 @@ public:		// functions
 		_prev = _curr;
 	}
 
-	inline void back_up_and_update(const Type& n_curr)
+	inline void back_up_and_update(const T& n_curr)
 	{
 		_prev = std::move(_curr);
 		_curr = n_curr;
 	}
-	inline void back_up_and_update(Type&& n_curr)
+	inline void back_up_and_update(T&& n_curr)
 	{
 		_prev = std::move(_curr);
 		_curr = std::move(n_curr);
@@ -81,11 +81,11 @@ public:		// functions
 	inline auto operator <=> (const PrevCurrPair& to_cmp) const
 		= default;
 
-	inline Type& operator () ()
+	inline T& operator () ()
 	{
 		return _curr;
 	}
-	inline const Type& operator () () const
+	inline const T& operator () () const
 	{
 		return _curr;
 	}
@@ -93,18 +93,18 @@ public:		// functions
 	GEN_GETTER_BY_CON_REF(prev)
 	GEN_GETTER_BY_CON_REF(curr)
 };
-//template<typename Type> 
+//template<typename T> 
 //class CxPrevCurrPair final
 //{
 //private:		// variables
-//	Type _prev, _curr;
+//	T _prev, _curr;
 //public:		// functions
 //	constexpr inline CxPrevCurrPair() = default;
-//	constexpr inline CxPrevCurrPair(const Type& s_prev, const Type& s_curr)
+//	constexpr inline CxPrevCurrPair(const T& s_prev, const T& s_curr)
 //		: _prev(s_prev), _curr(s_curr)
 //	{
 //	}
-//	constexpr inline CxPrevCurrPair(Type&& s_prev, Type&& s_curr)
+//	constexpr inline CxPrevCurrPair(T&& s_prev, T&& s_curr)
 //		: _prev(std::move(s_prev)), _curr(std::move(s_curr))
 //	{
 //	}
@@ -116,12 +116,12 @@ public:		// functions
 //		_prev = _curr;
 //	}
 //
-//	constexpr inline void back_up_and_update(const Type& n_curr)
+//	constexpr inline void back_up_and_update(const T& n_curr)
 //	{
 //		_prev = std::move(_curr);
 //		_curr = n_curr;
 //	}
-//	constexpr inline void back_up_and_update(Type&& n_curr)
+//	constexpr inline void back_up_and_update(T&& n_curr)
 //	{
 //		_prev = std::move(_curr);
 //		_curr = std::move(n_curr);
@@ -135,11 +135,11 @@ public:		// functions
 //	constexpr inline auto operator <=> (const CxPrevCurrPair& to_cmp) const
 //		= default;
 //
-//	constexpr inline Type& operator () ()
+//	constexpr inline T& operator () ()
 //	{
 //		return _curr;
 //	}
-//	constexpr inline const Type& operator () () const
+//	constexpr inline const T& operator () () const
 //	{
 //		return _curr;
 //	}
@@ -148,11 +148,11 @@ public:		// functions
 //	GEN_GETTER_BY_CON_REF(curr)
 //};
 //--------
-template<typename Type>
+template<typename T>
 class MoveOnlyPrevCurrPair final
 {
 private:		// variables
-	Type _prev, _curr;
+	T _prev, _curr;
 	
 public:		// functions
 	inline MoveOnlyPrevCurrPair() = default;
@@ -162,10 +162,10 @@ public:		// functions
 	inline void back_up()
 	{
 		_prev = std::move(_curr);
-		_curr = Type();
+		_curr = T();
 	}
 
-	inline void back_up_and_update(Type&& n_curr)
+	inline void back_up_and_update(T&& n_curr)
 	{
 		_prev = std::move(_curr);
 		_curr = std::move(n_curr);
@@ -179,11 +179,11 @@ public:		// functions
 	inline auto operator <=> (const MoveOnlyPrevCurrPair& to_cmp) const
 		= default;
 
-	inline Type& operator () ()
+	inline T& operator () ()
 	{
 		return _curr;
 	}
-	inline const Type& operator () () const
+	inline const T& operator () () const
 	{
 		return _curr;
 	}
@@ -192,11 +192,11 @@ public:		// functions
 	GEN_GETTER_BY_CON_REF(curr);
 };
 
-//template<typename Type>
+//template<typename T>
 //class CxMoveOnlyPrevCurrPair final
 //{
 //private:		// variables
-//	Type _prev, _curr;
+//	T _prev, _curr;
 //	
 //public:		// functions
 //	constexpr inline CxMoveOnlyPrevCurrPair() = default;
@@ -206,10 +206,10 @@ public:		// functions
 //	constexpr inline void back_up()
 //	{
 //		_prev = std::move(_curr);
-//		_curr = Type();
+//		_curr = T();
 //	}
 //
-//	constexpr inline void back_up_and_update(Type&& n_curr)
+//	constexpr inline void back_up_and_update(T&& n_curr)
 //	{
 //		_prev = std::move(_curr);
 //		_curr = std::move(n_curr);
@@ -223,11 +223,11 @@ public:		// functions
 //	constexpr inline auto operator <=>
 //		(const CxMoveOnlyPrevCurrPair& to_cmp) const = default;
 //
-//	constexpr inline Type& operator () ()
+//	constexpr inline T& operator () ()
 //	{
 //		return _curr;
 //	}
-//	constexpr inline const Type& operator () () const
+//	constexpr inline const T& operator () () const
 //	{
 //		return _curr;
 //	}
@@ -236,16 +236,16 @@ public:		// functions
 //	GEN_GETTER_BY_CON_REF(curr);
 //};
 //--------
-template<typename Type>
+template<typename T>
 constexpr inline bool is_prev_curr_pair()
 {
-	return concepts::is_specialization<Type, PrevCurrPair>();
+	return concepts::is_specialization<T, PrevCurrPair>();
 }
 
-template<typename Type>
+template<typename T>
 constexpr inline bool is_move_only_prev_curr_pair()
 {
-	return concepts::is_specialization<Type, MoveOnlyPrevCurrPair>();
+	return concepts::is_specialization<T, MoveOnlyPrevCurrPair>();
 }
 //--------
 } // namespace containers

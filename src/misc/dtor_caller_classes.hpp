@@ -12,18 +12,18 @@ namespace liborangepower
 namespace misc_util
 {
 
-template<typename Type>
+template<typename T>
 class DtorCaller
 {
 public:		// typedefs
-	using Dtor = void (*)(Type* self);
+	using Dtor = void (*)(T* self);
 
 protected:		// variables
-	Type* _self = nullptr;
+	T* _self = nullptr;
 	Dtor _dtor = nullptr;
 
 public:		// functions
-	inline DtorCaller(Type* s_self, Dtor s_dtor)
+	inline DtorCaller(T* s_self, Dtor s_dtor)
 		: _self(s_self), _dtor(s_dtor)
 	{
 	}
@@ -54,7 +54,7 @@ public:		// functions
 	GEN_GETTER_BY_VAL(dtor);
 };
 
-//template<typename Type>
+//template<typename T>
 //class DtorCallerNoObj
 //{
 //public:		// typedefs

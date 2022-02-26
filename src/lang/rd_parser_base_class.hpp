@@ -27,19 +27,19 @@ namespace lang
 {
 
 // A base class for parsing LL(1) grammars via recursive descent.
-template<typename LexerType, typename DerivedType>
+template<typename LexerT, typename DerivedT>
 class RdParserBase
 {
 public:		// types
 	//--------
-	using TokType = LexerType::TokType;
-	using LexerState = LexerType::State;
+	using TokT = LexerT::TokT;
+	using LexerState = LexerT::State;
 
-	using TokSet = std::set<TokType>;
+	using TokSet = std::set<TokT>;
 
 	using ParseRet = std::optional<TokSet>;
 
-	using ParseFunc = ParseRet (DerivedType::*)();
+	using ParseFunc = ParseRet (DerivedT::*)();
 	//--------
 
 	//--------
@@ -78,7 +78,7 @@ public:		// types
 
 protected:		// variables
 	std::string _filename, _text;
-	std::unique_ptr<LexerType> _lexer;
+	std::unique_ptr<LexerT> _lexer;
 
 	string _parse_func_str;
 
@@ -99,10 +99,10 @@ public:		// functions
 			_text = misc_input::get_istream_as_str(f);
 		}
 		
-		_lexer.reset(new LexerType(_filename, &_text));
+		_lexer.reset(new LexerT(_filename, &_text));
 		_next_tok();
 
-		//_lexer.reset(new LexerType(_filename, _text));
+		//_lexer.reset(new LexerT(_filename, _text));
 		//_next_tok();
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(RdParserBase);
@@ -146,42 +146,42 @@ protected:		// functions
 	{
 		return (_self()->*parse_func)();
 	}
-	template<typename FirstArgType, typename... RemArgTypes>
+	template<typename FirstArgT, typename... RemArgTs>
 	inline void _warn(const FilePos& some_file_pos,
-		const FirstArgType& first_arg, RemArgTypes&&... rem_args) const
+		const FirstArgT& first_arg, RemArgTs&&... rem_args) const
 	{
 		some_file_pos.warn(sconcat(first_arg, rem_args...));
 	}
-	template<typename FirstArgType, typename... RemArgTypes>
-	inline void _lex_fp_warn(const FirstArgType& first_arg,
-		RemArgTypes&&... rem_args) const
+	template<typename FirstArgT, typename... RemArgTs>
+	inline void _lex_fp_warn(const FirstArgT& first_arg,
+		RemArgTs&&... rem_args) const
 	{
 		_warn(lex_file_pos(), first_arg, rem_args...);
 	}
-	template<typename FirstArgType, typename... RemArgTypes>
+	template<typename FirstArgT, typename... RemArgTs>
 	inline void _err(const FilePos& some_file_pos, 
-		const FirstArgType& first_arg, RemArgTypes&&... rem_args) const
+		const FirstArgT& first_arg, RemArgTs&&... rem_args) const
 	{
 		some_file_pos.err(sconcat(first_arg, rem_args...));
 	}
-	template<typename FirstArgType, typename... RemArgTypes>
-	inline void _lex_fp_err(const FirstArgType& first_arg,
-		RemArgTypes&&... rem_args) const
+	template<typename FirstArgT, typename... RemArgTs>
+	inline void _lex_fp_err(const FirstArgT& first_arg,
+		RemArgTs&&... rem_args) const
 	{
 		_err(lex_file_pos(), first_arg, rem_args...);
 	}
 
-	inline DerivedType* _self()
+	inline DerivedT* _self()
 	{
-		return static_cast<DerivedType*>(this);
+		return static_cast<DerivedT*>(this);
 	}
 	inline auto _next_tok()
 	{
 		return _lexer->next_tok();
 	}
 
-	template<typename... ArgTypes>
-	inline void _pfs_internal_err(const ArgTypes&... args) const
+	template<typename... ArgTs>
+	inline void _pfs_internal_err(const ArgTs&... args) const
 	{
 		if constexpr (sizeof...(args) > 0)
 		{
@@ -259,9 +259,9 @@ private:		// functions
 
 		return ret;
 	}
-	template<typename... RemFuncTypes>
+	template<typename... RemFuncTs>
 	inline std::optional<ParseFunc> _check_parse(TokSet& tok_set,
-		const ParseFunc& first_func, RemFuncTypes&&... rem_funcs)
+		const ParseFunc& first_func, RemFuncTs&&... rem_funcs)
 	{
 		const auto parse_ret = _inner_check_parse(tok_set, first_func);
 
@@ -281,17 +281,17 @@ private:		// functions
 	}
 
 protected:		// functions
-	template<typename... RemFuncTypes>
+	template<typename... RemFuncTs>
 	inline std::optional<ParseFunc> _check_parse
-		(const ParseFunc& first_func, RemFuncTypes&&... rem_funcs)
+		(const ParseFunc& first_func, RemFuncTs&&... rem_funcs)
 	{
 		return _check_parse(_wanted_tok_set, first_func, rem_funcs...);
 	}
 
 private:		// functions
-	template<typename... RemArgTypes>
+	template<typename... RemArgTs>
 	inline void _inner_get_valid_tok_set(TokSet& ret,
-		const ParseFunc& first_parse_func, RemArgTypes&&... rem_args)
+		const ParseFunc& first_parse_func, RemArgTs&&... rem_args)
 	{
 		_inner_check_parse(ret, first_parse_func);
 
@@ -302,9 +302,9 @@ private:		// functions
 	}
 
 protected:		// functions
-	template<typename... RemArgTypes>
+	template<typename... RemArgTs>
 	inline TokSet _get_valid_tok_set(const ParseFunc& first_parse_func,
-		RemArgTypes&&... rem_args)
+		RemArgTs&&... rem_args)
 	{
 		TokSet ret;
 		_inner_get_valid_tok_set(ret, first_parse_func, rem_args...);
@@ -366,9 +366,9 @@ protected:		// functions
 	//}
 
 private:		// functions
-	template<typename... RemArgTypes>
-	inline std::optional<TokType> _cmp_tok(TokType to_cmp,
-		TokType first_tok, RemArgTypes&&... rem_args) const
+	template<typename... RemArgTs>
+	inline std::optional<TokT> _cmp_tok(TokT to_cmp,
+		TokT first_tok, RemArgTs&&... rem_args) const
 	{
 		if (to_cmp == first_tok)
 		{
@@ -383,7 +383,7 @@ private:		// functions
 			return std::nullopt;
 		}
 	}
-	inline std::optional<TokType> _cmp_tok(TokType to_cmp,
+	inline std::optional<TokT> _cmp_tok(TokT to_cmp,
 		const TokSet& tok_set) const
 	{
 		for (const auto& tok: tok_set)
@@ -398,25 +398,25 @@ private:		// functions
 	}
 
 protected:		// functions
-	template<typename... RemArgTypes>
-	inline std::optional<TokType> _cmp_lex_tok(TokType first_tok,
-		RemArgTypes&&... rem_args) const
+	template<typename... RemArgTs>
+	inline std::optional<TokT> _cmp_lex_tok(TokT first_tok,
+		RemArgTs&&... rem_args) const
 	{
 		return _cmp_tok(lex_tok, first_tok, rem_args...);
 	}
-	inline std::optional<TokType> _cmp_lex_tok(const TokSet& tok_set)
+	inline std::optional<TokT> _cmp_lex_tok(const TokSet& tok_set)
 		const
 	{
 		return _cmp_tok(lex_tok(), tok_set);
 	}
 
-	template<typename... RemArgTypes>
-	inline std::optional<TokType> _cmp_prev_lex_tok(TokType first_tok,
-		RemArgTypes&&... rem_args) const
+	template<typename... RemArgTs>
+	inline std::optional<TokT> _cmp_prev_lex_tok(TokT first_tok,
+		RemArgTs&&... rem_args) const
 	{
 		return _cmp_tok(prev_lex_tok, first_tok, rem_args...);
 	}
-	inline std::optional<TokType> _cmp_prev_lex_tok(const TokSet& tok_set)
+	inline std::optional<TokT> _cmp_prev_lex_tok(const TokSet& tok_set)
 		const
 	{
 		return _cmp_tok(prev_lex_tok(), tok_set);
@@ -447,9 +447,9 @@ protected:		// functions
 	}
 
 private:		// functions
-	template<typename... RemArgTypes>
-	bool _inner_expect(TokSet& tok_set, TokType first_tok,
-		RemArgTypes&&... rem_args) const
+	template<typename... RemArgTs>
+	bool _inner_expect(TokSet& tok_set, TokT first_tok,
+		RemArgTs&&... rem_args) const
 	{
 		tok_set.insert(first_tok);
 
@@ -468,8 +468,8 @@ private:		// functions
 	}
 
 protected:		// functions
-	template<typename... RemArgTypes>
-	void _expect(TokType first_tok, RemArgTypes&&... rem_args)
+	template<typename... RemArgTs>
+	void _expect(TokT first_tok, RemArgTs&&... rem_args)
 	{
 		TokSet tok_set;
 
@@ -499,9 +499,9 @@ protected:		// functions
 	//}
 
 //private:		// functions
-//	template<typename... RemArgTypes>
-//	bool _inner_sel_parse(TokSet& tok_set, TokType first_tok,
-//		ParseFunc first_parse_func, RemArgTypes&&... rem_args)
+//	template<typename... RemArgTs>
+//	bool _inner_sel_parse(TokSet& tok_set, TokT first_tok,
+//		ParseFunc first_parse_func, RemArgTs&&... rem_args)
 //	{
 //		tok_set.insert(first_tok);
 //
@@ -521,9 +521,9 @@ protected:		// functions
 //	}
 //
 //protected:		// functions
-//	template<typename... RemArgTypes>
-//	void _sel_parse(TokType first_tok, ParseFunc first_parse_func,
-//		RemArgTypes&&... rem_args)
+//	template<typename... RemArgTs>
+//	void _sel_parse(TokT first_tok, ParseFunc first_parse_func,
+//		RemArgTs&&... rem_args)
 //	{
 //		TokSet tok_set;
 //

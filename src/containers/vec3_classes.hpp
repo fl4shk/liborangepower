@@ -13,27 +13,27 @@ namespace liborangepower
 namespace containers
 {
 
-template<typename Vec3Type, typename OtherVec3Type>
+template<typename Vec3T, typename OtherVec3T>
 concept LikeVec3 
-	= HasElemType<Vec3Type> 
-	&& requires(OtherVec3Type other)
+	= HasElemT<Vec3T> 
+	&& requires(OtherVec3T other)
 {
-	{ other.x } -> std::convertible_to<typename Vec3Type::ElemType>;
-	{ other.y } -> std::convertible_to<typename Vec3Type::ElemType>;
-	{ other.z } -> std::convertible_to<typename Vec3Type::ElemType>;
+	{ other.x } -> std::convertible_to<typename Vec3T::ElemT>;
+	{ other.y } -> std::convertible_to<typename Vec3T::ElemT>;
+	{ other.z } -> std::convertible_to<typename Vec3T::ElemT>;
 };
 
-template<typename Type>
+template<typename T>
 class Vec3
 {
 public:		// types
-	using ElemType = Type;
+	using ElemT = T;
 public:		// variables
-	Type x, y, z;
+	T x, y, z;
 public:		// functions
 	//--------
 	inline Vec3() = default;
-	inline Vec3(const Type& s_x, const Type& s_y, const Type& s_z)
+	inline Vec3(const T& s_x, const T& s_y, const T& s_z)
 		: x(s_x), y(s_y), z(s_z)
 	{
 	}
@@ -41,29 +41,29 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Vec3);
 	virtual inline ~Vec3() = default;
 	//--------
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline Vec3 operator + (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline Vec3 operator + (const OtherVec3T& other) const
 	{
-		return Vec3<Type>(x + other.x, y + other.y, z + other.z);
+		return Vec3<T>(x + other.x, y + other.y, z + other.z);
 	}
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline Vec3& operator += (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline Vec3& operator += (const OtherVec3T& other) const
 	{
 		*this = (*this) + other;
 		return *this;
 	}
 
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline Vec3 operator - (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline Vec3 operator - (const OtherVec3T& other) const
 	{
-		return Vec3<Type>(x - other.x, y - other.y, z - other.z);
+		return Vec3<T>(x - other.x, y - other.y, z - other.z);
 	}
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline Vec3& operator -= (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline Vec3& operator -= (const OtherVec3T& other) const
 	{
 		*this = (*this) - other;
 		return *this;
@@ -74,121 +74,121 @@ public:		// functions
 		return Vec3(-x, -y, -z);
 	}
 
-	template<std::convertible_to<Type> OtherType>
-	inline Vec3 operator * (const OtherType& scale) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec3 operator * (const OtherT& scale) const
 	{
 		return Vec3(x * scale, y * scale, z * scale);
 	}
-	template<std::convertible_to<Type> OtherType>
-	inline Vec3& operator *= (const OtherType& other) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec3& operator *= (const OtherT& other) const
 	{
 		*this = (*this) * other;
 		return *this;
 	}
 
-	template<std::convertible_to<Type> OtherType>
-	inline Vec3 operator / (const OtherType& scale) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec3 operator / (const OtherT& scale) const
 	{
-		return Vec3<Type>(x / scale, y / scale, z / scale);
+		return Vec3<T>(x / scale, y / scale, z / scale);
 	}
-	template<std::convertible_to<Type> OtherType>
-	inline Vec3& operator /= (const OtherType& scale) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec3& operator /= (const OtherT& scale) const
 	{
 		*this = (*this) / scale;
 		return *this;
 	}
 	//--------
 	// Dot product
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline Type dot_prod(const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline T dot_prod(const OtherVec3T& other) const
 	{
 		return ((x * other.x) + (y * other.y) + (z * other.z));
 	}
 
 	// Cross product
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline Vec3 cross_prod(const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline Vec3 cross_prod(const OtherVec3T& other) const
 	{
-		return Vec3<Type>((y * other.z) - (z * other.y),
+		return Vec3<T>((y * other.z) - (z * other.y),
 			(z * other.x) - (x * other.z),
 			(x * other.y) - (y * other.x));
 	}
 
-	inline Type norm() const
+	inline T norm() const
 	{
 		return std::sqrt(dot_prod(*this));
 	}
 	//--------
 	// Templates can't be defaulted for some reason
-	//template<typename OtherVec3Type>
-	//	requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	//inline auto operator <=> (const OtherVec3Type& other) const
+	//template<typename OtherVec3T>
+	//	requires LikeVec3<Vec3<T>, OtherVec3T>
+	//inline auto operator <=> (const OtherVec3T& other) const
 	//	= default;
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline bool operator == (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline bool operator == (const OtherVec3T& other) const
 	{
 		return ((x == other.x) && (y == other.y) && (z == other.z));
 	}
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline bool operator != (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline bool operator != (const OtherVec3T& other) const
 	{
 		return (!((*this) == other));
 	}
 
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline bool operator < (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline bool operator < (const OtherVec3T& other) const
 	{
 		return ((z < other.z)
 			|| ((z == other.z) && (Vec2(x, y) < Vec2(other.x, other.y))));
 	}
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline bool operator > (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline bool operator > (const OtherVec3T& other) const
 	{
 		return ((z > other.z)
 			|| ((z == other.z) && (Vec2(x, y) > Vec2(other.x, other.y))));
 	}
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline bool operator <= (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline bool operator <= (const OtherVec3T& other) const
 	{
 		return (!((*this) > other));
 	}
-	template<typename OtherVec3Type>
-		requires LikeVec3<Vec3<Type>, OtherVec3Type>
-	inline bool operator >= (const OtherVec3Type& other) const
+	template<typename OtherVec3T>
+		requires LikeVec3<Vec3<T>, OtherVec3T>
+	inline bool operator >= (const OtherVec3T& other) const
 	{
 		return (!((*this) < other));
 	}
 	//--------
 };
 
-//template<typename Type>
-//extern uint32_t _is_vec3_func(const Vec3<Type>&);
-//template<typename Type>
-//extern uint8_t _is_vec3_func(const Type&);
+//template<typename T>
+//extern uint32_t _is_vec3_func(const Vec3<T>&);
+//template<typename T>
+//extern uint8_t _is_vec3_func(const T&);
 //
-//template<typename Type>
+//template<typename T>
 //constexpr inline bool is_vec3()
 //{
-//	return (sizeof(_is_vec3_func(std::declval<Type>()))
+//	return (sizeof(_is_vec3_func(std::declval<T>()))
 //		== sizeof(uint32_t));
 //}
-//template<typename Type>
+//template<typename T>
 //constexpr inline bool is_vec3()
 //{
-//	return misc_util::is_specialization<Type, Vec3>();
+//	return misc_util::is_specialization<T, Vec3>();
 //}
 
-template<typename Type>
+template<typename T>
 constexpr inline bool is_vec3()
 {
-	return concepts::is_specialization<Type, Vec3>();
+	return concepts::is_specialization<T, Vec3>();
 }
 } // namespace containers
 } // namespace liborangepower

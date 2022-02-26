@@ -17,137 +17,137 @@ namespace containers
 {
 using concepts::is_specialization;
 //--------
-template<typename FirstType, typename... RemTypes>
-extern uint8_t _is_std_unique_ptr_check(const FirstType&);
+template<typename FirstT, typename... RemTs>
+extern uint8_t _is_std_unique_ptr_check(const FirstT&);
 
-template<typename FirstType, typename... RemTypes>
+template<typename FirstT, typename... RemTs>
 extern uint16_t _is_std_unique_ptr_check
-	(const std::unique_ptr<FirstType, RemTypes...>&);
+	(const std::unique_ptr<FirstT, RemTs...>&);
 
-template<typename FirstType, typename... RemTypes>
+template<typename FirstT, typename... RemTs>
 extern uint32_t _is_std_unique_ptr_check
-	(const std::unique_ptr<FirstType[], RemTypes...>&);
+	(const std::unique_ptr<FirstT[], RemTs...>&);
 
 
-template<typename ToCheckType>
+template<typename ToCheckT>
 constexpr inline bool is_non_arr_std_unique_ptr()
 {
-	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckType>()))
+	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint16_t));
 }
-template<typename ToCheckType>
+template<typename ToCheckT>
 constexpr inline bool is_arr_std_unique_ptr()
 {
-	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckType>()))
+	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
 }
-template<typename ToCheckType>
+template<typename ToCheckT>
 constexpr inline bool is_any_std_unique_ptr()
 {
-	return (is_non_arr_std_unique_ptr<ToCheckType>()
-		|| is_arr_std_unique_ptr<ToCheckType>());
+	return (is_non_arr_std_unique_ptr<ToCheckT>()
+		|| is_arr_std_unique_ptr<ToCheckT>());
 }
 //--------
 //GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(is_std_array, std::array);
-template<typename Type>
+template<typename T>
 constexpr inline bool is_std_array()
 {
 	//return IS_SPECIALIZATION_MACRO(is_std_array);
-	//return concepts::is_specialization<Type, std::array>();
-	return is_specialization<Type, std::array>();
+	//return concepts::is_specialization<T, std::array>();
+	return is_specialization<T, std::array>();
 }
 //--------
-template<typename Type>
+template<typename T>
 constexpr inline bool is_std_vector()
 {
-	return is_specialization<Type, std::vector>();
+	return is_specialization<T, std::vector>();
 }
 
-template<typename Type>
+template<typename T>
 constexpr inline bool is_std_deque()
 {
-	return is_specialization<Type, std::deque>();
+	return is_specialization<T, std::deque>();
 }
-template<typename Type>
+template<typename T>
 constexpr inline bool is_vec_like_std_container()
 {
 	return
 	(
-		is_std_vector<Type>()
-		|| is_std_deque<Type>()
+		is_std_vector<T>()
+		|| is_std_deque<T>()
 	);
 }
-template<typename Type>
+template<typename T>
 constexpr inline bool is_arr_like_std_container()
 {
 	return
 	(
-		is_std_array<Type>()
-		|| is_vec_like_std_container<Type>()
+		is_std_array<T>()
+		|| is_vec_like_std_container<T>()
 	);
 }
 //--------
-template<typename Type>
+template<typename T>
 constexpr inline bool is_std_set()
 {
-	return is_specialization<Type, std::set>();
+	return is_specialization<T, std::set>();
 }
-template<typename Type>
+template<typename T>
 constexpr inline bool is_std_unordered_set()
 {
-	return is_specialization<Type, std::unordered_set>();
+	return is_specialization<T, std::unordered_set>();
 }
 
-template<typename Type>
+template<typename T>
 constexpr inline bool is_set_like_std_container()
 {
 	return
 	(
-		is_std_set<Type>()
-		|| is_std_unordered_set<Type>()
+		is_std_set<T>()
+		|| is_std_unordered_set<T>()
 	);
 }
 //--------
-template<typename Type>
+template<typename T>
 constexpr inline bool is_std_map()
 {
-	return is_specialization<Type, std::map>();
+	return is_specialization<T, std::map>();
 }
 
-template<typename Type>
+template<typename T>
 constexpr inline bool is_std_unordered_map()
 {
 	//return(is_std_set);
-	return is_specialization<Type, std::unordered_map>();
+	return is_specialization<T, std::unordered_map>();
 }
 
-template<typename Type>
+template<typename T>
 constexpr inline bool is_map_like_std_container()
 {
 	return
 	(
-		is_std_map<Type>()
-		|| is_std_unordered_map<Type>()
+		is_std_map<T>()
+		|| is_std_unordered_map<T>()
 	);
 }
 //--------
-template<typename Type>
+template<typename T>
 constexpr inline bool is_pseudo_vec_like_std_container()
 {
 	return
 	(
-		is_arr_like_std_container<Type>()
-		//is_vec_like_std_container<Type>()
-		|| is_set_like_std_container<Type>()
+		is_arr_like_std_container<T>()
+		//is_vec_like_std_container<T>()
+		|| is_set_like_std_container<T>()
 	);
 }
-template<typename Type>
+template<typename T>
 constexpr inline bool is_basic_indexable_std_container()
 {
 	return
 	(
-		is_pseudo_vec_like_std_container<Type>()
-		|| is_map_like_std_container<Type>()
+		is_pseudo_vec_like_std_container<T>()
+		|| is_map_like_std_container<T>()
 	);
 }
 //--------

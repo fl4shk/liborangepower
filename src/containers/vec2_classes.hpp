@@ -13,32 +13,32 @@ namespace liborangepower
 namespace containers
 {
 
-template<typename Type>
-concept HasElemType = requires
+template<typename T>
+concept HasElemT = requires
 {
-	{ std::declval<typename Type::ElemType>() };
+	{ std::declval<typename T::ElemT>() };
 };
 
-template<typename Vec2Type, typename OtherVec2Type>
+template<typename Vec2T, typename OtherVec2T>
 concept LikeVec2 
-	= HasElemType<Vec2Type> 
-	&& requires(OtherVec2Type other)
+	= HasElemT<Vec2T> 
+	&& requires(OtherVec2T other)
 {
-	{ other.x } -> std::convertible_to<typename Vec2Type::ElemType>;
-	{ other.y } -> std::convertible_to<typename Vec2Type::ElemType>;
+	{ other.x } -> std::convertible_to<typename Vec2T::ElemT>;
+	{ other.y } -> std::convertible_to<typename Vec2T::ElemT>;
 };
 
-template<typename Type>
+template<typename T>
 class Vec2
 {
 public:		// types
-	using ElemType = Type;
+	using ElemT = T;
 public:		// variables
-	Type x, y;
+	T x, y;
 public:		// functions
 	//--------
 	inline Vec2() = default;
-	inline Vec2(const Type& s_x, const Type& s_y)
+	inline Vec2(const T& s_x, const T& s_y)
 		: x(s_x), y(s_y)
 	{
 	}
@@ -46,29 +46,29 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Vec2);
 	virtual ~Vec2() = default;
 	//--------
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline Vec2 operator + (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline Vec2 operator + (const OtherVec2T& other) const
 	{
-		return Vec2<Type>(x + other.x, y + other.y);
+		return Vec2<T>(x + other.x, y + other.y);
 	}
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline Vec2& operator += (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline Vec2& operator += (const OtherVec2T& other) const
 	{
 		*this = (*this) + other;
 		return *this;
 	}
 
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline Vec2 operator - (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline Vec2 operator - (const OtherVec2T& other) const
 	{
-		return Vec2<Type>(x - other.x, y - other.y);
+		return Vec2<T>(x - other.x, y - other.y);
 	}
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline Vec2& operator -= (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline Vec2& operator -= (const OtherVec2T& other) const
 	{
 		*this = (*this) - other;
 		return *this;
@@ -79,124 +79,124 @@ public:		// functions
 		return Vec2(-x, -y);
 	}
 
-	template<std::convertible_to<Type> OtherType>
-	inline Vec2 operator * (const OtherType& scale) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec2 operator * (const OtherT& scale) const
 	{
-		return Vec2<Type>(x * scale, y * scale);
+		return Vec2<T>(x * scale, y * scale);
 	}
-	template<std::convertible_to<Type> OtherType>
-	inline Vec2& operator *= (const OtherType& other) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec2& operator *= (const OtherT& other) const
 	{
 		*this = (*this) * other;
 		return *this;
 	}
 
-	template<std::convertible_to<Type> OtherType>
-	inline Vec2 operator / (const OtherType& scale) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec2 operator / (const OtherT& scale) const
 	{
-		return Vec2<Type>(x / scale, y / scale);
+		return Vec2<T>(x / scale, y / scale);
 	}
-	template<std::convertible_to<Type> OtherType>
-	inline Vec2& operator /= (const OtherType& scale) const
+	template<std::convertible_to<T> OtherT>
+	inline Vec2& operator /= (const OtherT& scale) const
 	{
 		*this = (*this) / scale;
 		return *this;
 	}
 	//--------
 	// Dot product
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline Type dot_prod(const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline T dot_prod(const OtherVec2T& other) const
 	{
-		return Type((x * other.x) + (y * other.y));
+		return T((x * other.x) + (y * other.y));
 	}
 
 	// Z component of a 3D cross product, which is computed as if *this and
 	// to_zcross have been converted to 3D vectors with Z components of zero
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline Type zcross_prod(const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline T zcross_prod(const OtherVec2T& other) const
 	{
-		return Type((x * other.y) - (y * other.x));
+		return T((x * other.y) - (y * other.x));
 	}
 
-	inline Type norm() const
+	inline T norm() const
 	{
 		return std::sqrt(dot_prod(*this));
 	}
 	//--------
 	// Templates can't be defaulted for some reason
-	//template<typename OtherVec2Type>
-	//	requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	//inline auto operator <=> (const OtherVec2Type& other) const
+	//template<typename OtherVec2T>
+	//	requires LikeVec2<Vec2<T>, OtherVec2T>
+	//inline auto operator <=> (const OtherVec2T& other) const
 	//	= default;
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline bool operator == (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline bool operator == (const OtherVec2T& other) const
 	{
 		return ((x == other.x) && (y == other.y));
 	}
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline bool operator != (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline bool operator != (const OtherVec2T& other) const
 	{
 		return (!((*this) == other));
 	}
 
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline bool operator < (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline bool operator < (const OtherVec2T& other) const
 	{
 		return ((y < other.y) || ((y == other.y) && (x < other.x)));
 	}
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline bool operator > (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline bool operator > (const OtherVec2T& other) const
 	{
 		return ((y > other.y) || ((y == other.y) && (x > other.x)));
 	}
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline bool operator <= (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline bool operator <= (const OtherVec2T& other) const
 	{
 		return (!((*this) > other));
 	}
-	template<typename OtherVec2Type>
-		requires LikeVec2<Vec2<Type>, OtherVec2Type>
-	inline bool operator >= (const OtherVec2Type& other) const
+	template<typename OtherVec2T>
+		requires LikeVec2<Vec2<T>, OtherVec2T>
+	inline bool operator >= (const OtherVec2T& other) const
 	{
 		return (!((*this) < other));
 	}
 	//--------
 };
 
-//template<typename Type>
-//extern uint32_t _is_vec2_func(const Vec2<Type>&);
-//template<typename Type>
-//extern uint8_t _is_vec2_func(const Type&);
+//template<typename T>
+//extern uint32_t _is_vec2_func(const Vec2<T>&);
+//template<typename T>
+//extern uint8_t _is_vec2_func(const T&);
 //
-//template<typename Type>
+//template<typename T>
 //constexpr inline bool is_vec2()
 //{
-//	return (sizeof(_is_vec2_func(std::declval<Type>()))
+//	return (sizeof(_is_vec2_func(std::declval<T>()))
 //		== sizeof(uint32_t));
 //}
-//template<typename Type>
+//template<typename T>
 //constexpr inline bool is_vec2()
 //{
-//	return misc_util::is_specialization<Type, Vec2>();
+//	return misc_util::is_specialization<T, Vec2>();
 //}
 
 //GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(is_vec2, Vec2);
-//template<typename Type>
+//template<typename T>
 //constexpr inline bool is_vec2()
 //{
 //	GEN_IS_SPECIALIZATION_FUNC_CONTENTS(is_vec2);
 //}
-template<typename Type>
+template<typename T>
 constexpr inline bool is_vec2()
 {
-	return concepts::is_specialization<Type, Vec2>();
+	return concepts::is_specialization<T, Vec2>();
 }
 
 } // namespace containers

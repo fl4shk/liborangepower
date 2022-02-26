@@ -19,20 +19,20 @@ class Prng
 {
 public:		// typedefs
 	typedef decltype(std::chrono::high_resolution_clock::now()
-		.time_since_epoch().count()) SeedType;
+		.time_since_epoch().count()) SeedT;
 
-	//typedef std::minstd_rand InstanceType;
-	//typedef std::mt19937 InstanceType;
-	typedef std::mt19937_64 InstanceType;
+	//typedef std::minstd_rand InstanceT;
+	//typedef std::mt19937 InstanceT;
+	typedef std::mt19937_64 InstanceT;
 
 protected:		// variables
 	int _param_0, _param_1;
 
-	InstanceType _instance;
+	InstanceT _instance;
 
 
 protected:		// functions
-	inline SeedType _default_initial_seed()
+	inline SeedT _default_initial_seed()
 	{
 		// I have no idea how good this is, but it seems to work?
 		return (std::chrono::high_resolution_clock::now()
@@ -46,7 +46,7 @@ public:		// functions
 	{
 	}
 
-	inline Prng(SeedType s_seed)
+	inline Prng(SeedT s_seed)
 		: _instance(s_seed)
 	{
 	}
@@ -79,10 +79,10 @@ public:		// functions
 		return ret;
 	}
 
-	template<typename Type>
+	template<typename T>
 	inline auto run()
 	{
-		return static_cast<Type>(_instance());
+		return static_cast<T>(_instance());
 	}
 
 

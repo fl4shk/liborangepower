@@ -12,72 +12,72 @@ namespace concepts
 {
 //--------
 #define _INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
-	ContainerEtcType, rem_cond) \
-	template<typename Type> \
-	extern uint8_t _ ## func_name ## _check (const Type&); \
+	CntnrEtcT, rem_cond) \
+	template<typename T> \
+	extern uint8_t _ ## func_name ## _check (const T&); \
 	\
-	template<typename Type, \
-		IF(rem_cond)(typename... RemTypes, auto... RemTargs)> \
+	template<typename T, \
+		IF(rem_cond)(typename... RemTs, auto... RemTargs)> \
 	extern uint32_t _ ## func_name ## _check \
-		(const ContainerEtcType<Type, \
-		IF(rem_cond)(RemTypes, RemTargs)...>&) \
+		(const CntnrEtcT<T, \
+		IF(rem_cond)(RemTs, RemTargs)...>&) \
 
 #define GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(func_name, \
-	ContainerEtcType) \
+	CntnrEtcT) \
 	_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
-		ContainerEtcType, 1)
+		CntnrEtcT, 1)
 #define GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(func_name, \
-	ContainerEtcType) \
+	CntnrEtcT) \
 	_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
-		ContainerEtcType, 0)
+		CntnrEtcT, 0)
 
 #define IS_SPECIALIZATION_MACRO(func_name) \
-	(sizeof(_ ## func_name ## _check(std::declval<Type>())) \
+	(sizeof(_ ## func_name ## _check(std::declval<T>())) \
 		== sizeof(uint32_t))
 //--------
-template<template<typename...> typename ContainerEtcType,
-	typename FirstArgType>
-extern uint8_t _is_specialization_check(const FirstArgType&);
+template<template<typename...> typename CntnrEtcT,
+	typename FirstArgT>
+extern uint8_t _is_specialization_check(const FirstArgT&);
 
-template<template<typename...> typename ContainerEtcType,
-	typename FirstArgType, typename... RemArgTypes>
+template<template<typename...> typename CntnrEtcT,
+	typename FirstArgT, typename... RemArgTs>
 extern uint32_t _is_specialization_check
-	(const ContainerEtcType<FirstArgType, RemArgTypes...>&);
+	(const CntnrEtcT<FirstArgT, RemArgTs...>&);
 
-template<typename ToCheckType,
-	template<typename...> typename ContainerEtcType>
+template<typename ToCheckT,
+	template<typename...> typename CntnrEtcT>
 constexpr inline bool is_specialization()
 {
-	return (sizeof(_is_specialization_check<ContainerEtcType>
-		(std::declval<ToCheckType>()))
+	return (sizeof(_is_specialization_check<CntnrEtcT>
+		(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
 }
 //--------
-template<template<typename, auto, auto...> typename ContainerEtcType,
-	typename Type>
-extern uint8_t _is_specialization_check(const Type&);
+template<template<typename, auto, auto...> typename CntnrEtcT,
+	typename T>
+extern uint8_t _is_specialization_check(const T&);
 
-template<template<typename, auto, auto...> typename ContainerEtcType,
-	typename Type, auto FirstAutoArg, auto... RemAutoArgs>
+template<template<typename, auto, auto...> typename CntnrEtcT,
+	typename T, auto FirstAutoArg, auto... RemAutoArgs>
 extern uint32_t _is_specialization_check
-	(const ContainerEtcType<Type, FirstAutoArg, RemAutoArgs...>&);
+	(const CntnrEtcT<T, FirstAutoArg, RemAutoArgs...>&);
 
-template<typename ToCheckType,
-	template<typename, auto, auto...> typename ContainerEtcType>
+template<typename ToCheckT,
+	template<typename, auto, auto...> typename CntnrEtcT>
 constexpr inline bool is_specialization()
 {
-	return (sizeof(_is_specialization_check<ContainerEtcType>
-		(std::declval<ToCheckType>()))
+	return (sizeof(_is_specialization_check<CntnrEtcT>
+		(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
 }
 //--------
-template<typename Type, template<typename...> typename ContainerEtcType>
-concept IsSpecialization = is_specialization<Type, ContainerEtcType>();
+template<typename T, template<typename...> typename CntnrEtcT>
+concept IsSpecialization = is_specialization<T, CntnrEtcT>();
 
-template<typename Type,
-	template<typename, auto, auto...> typename ContainerEtcType>
+template<typename T,
+	template<typename, auto, auto...> typename CntnrEtcT>
 concept IsSpecializationRtArgs
-	= is_specialization<Type, ContainerEtcType>();
+	= is_specialization<T, CntnrEtcT>();
 //--------
 } // namespace concepts
 } // namespace liborangepower

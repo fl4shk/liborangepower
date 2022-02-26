@@ -10,9 +10,9 @@ namespace liborangepower
 namespace strings
 {
 //--------
-template<typename FirstArgType, typename... RemArgTypes>
-inline std::string sconcat(const FirstArgType& first_arg, 
-	RemArgTypes&&... rem_args)
+template<typename FirstArgT, typename... RemArgTs>
+inline std::string sconcat(const FirstArgT& first_arg, 
+	RemArgTs&&... rem_args)
 {
 	std::string ret;
 	std::stringstream sstm;
@@ -37,16 +37,16 @@ inline std::string strjoin(const std::string& sep)
 	return std::string();
 }
 
-template<typename FirstArgType>
+template<typename FirstArgT>
 inline std::string strjoin(const std::string& sep,
-	const FirstArgType& first_arg)
+	const FirstArgT& first_arg)
 {
 	return sconcat(first_arg, sep);
 }
 
-template<typename FirstArgType, typename... RemArgTypes>
+template<typename FirstArgT, typename... RemArgTs>
 inline std::string strjoin(const std::string& sep,
-	const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+	const FirstArgT& first_arg, RemArgTs&&... rem_args)
 {
 	auto ret = strjoin(sep, first_arg);
 
@@ -56,8 +56,8 @@ inline std::string strjoin(const std::string& sep,
 	}
 	return ret;
 }
-template<typename... ArgTypes>
-inline std::string strjoin2(const std::string& sep, ArgTypes&&... args)
+template<typename... ArgTs>
+inline std::string strjoin2(const std::string& sep, ArgTs&&... args)
 {
 	auto temp = strjoin(sep, args...);
 
@@ -74,14 +74,14 @@ inline std::string strjoin2(const std::string& sep, ArgTypes&&... args)
 	return ret;
 }
 
-template<typename... ArgTypes>
-inline std::string strappcom(ArgTypes&&... args)
+template<typename... ArgTs>
+inline std::string strappcom(ArgTs&&... args)
 {
 	return strjoin(", ", args...);
 }
 
-template<typename... ArgTypes>
-inline std::string strappcom2(ArgTypes&&... args)
+template<typename... ArgTs>
+inline std::string strappcom2(ArgTs&&... args)
 {
 	return strjoin2(", ", args...);
 }

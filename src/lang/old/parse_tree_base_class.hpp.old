@@ -15,7 +15,7 @@ namespace liborangepower
 namespace lang
 {
 
-template<typename SrcCodeChunkType, typename TokType>
+template<typename SrcCodeChunkT, typename TokT>
 class ParseTreeBase
 {
 public:		// types
@@ -24,16 +24,16 @@ public:		// types
 	using Child = std::variant<OneChild, ChildVec>;
 
 	using DataElem = std::variant<bool, std::string, bignum::BigNum,
-		TokType>;
+		TokT>;
 
 private:		// variables
-	SrcCodeChunkType _src_code_chunk;
+	SrcCodeChunkT _src_code_chunk;
 	std::string _ident;
 	std::map<std::string, DataElem> _data;
 	std::map<std::string, Child> _children;
 
 public:		// functions
-	inline ParseTreeBase(const SrcCodeChunkType& s_src_code_chunk)
+	inline ParseTreeBase(const SrcCodeChunkT& s_src_code_chunk)
 		: _src_code_chunk(s_src_code_chunk)
 	{
 	}

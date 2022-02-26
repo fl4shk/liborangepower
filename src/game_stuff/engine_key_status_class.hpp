@@ -5,8 +5,6 @@
 #include "../gen_class_innards_defines.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
 
-#include <map>
-
 namespace liborangepower
 {
 
@@ -19,16 +17,16 @@ class EngineKeyStatus final
 {
 public:		// types
 	using StateVec = std::vector<PrevCurrPair<bool>>;
-	using StateVecSizeType = typename StateVec::size_type;
+	using StateVecSizeT = typename StateVec::size_type;
 private:		// variables
 	//std::map<KeyKind, PrevCurrPair<bool>> state_map;
 	StateVec _state_vec;
 public:		// functions
 	inline EngineKeyStatus() = default;
-	EngineKeyStatus(StateVecSizeType state_vec_size)
+	EngineKeyStatus(StateVecSizeT state_vec_size)
 		: _state_vec(state_vec_size, PrevCurrPair<bool>(false, false))
 	{
-		//for (StateVecSizeType i=0; i<state_vec_size; ++i)
+		//for (StateVecSizeT i=0; i<state_vec_size; ++i)
 		//{
 		//	//_state_vec[key_kind] = PrevCurrPair<bool>();
 		//	//_state_vec.at(key_kind)() = false;
@@ -40,23 +38,126 @@ public:		// functions
 
 	inline PrevCurrPair<bool>& at(const auto& key_kind)
 	{
-		return _state_vec.at(static_cast<StateVecSizeType>(key_kind));
+		return _state_vec.at(static_cast<StateVecSizeT>(key_kind));
 	}
 	inline const PrevCurrPair<bool>& at(const auto& key_kind) const
 	{
-		return _state_vec.at(static_cast<StateVecSizeType>(key_kind));
+		return _state_vec.at(static_cast<StateVecSizeT>(key_kind));
+	}
+	//--------
+	inline bool key_up_prev(const auto& key_kind) const
+	{
+		return !at(key_kind).prev();
+	}
+	inline bool key_down_prev(const auto& key_kind) const
+	{
+		return at(key_kind).prev();
 	}
 
-	inline bool key_went_up_just_now(const auto& key_kind) const
+	inline bool key_up_now(const auto& key_kind) const
 	{
-		return (at(key_kind).prev() && (!at(key_kind)()));
+		return !at(key_kind)();
 	}
-	inline bool key_went_down_just_now(const auto& key_kind) const
+	inline bool key_down_now(const auto& key_kind) const
 	{
-		return ((!at(key_kind).prev()) && at(key_kind)());
+		return at(key_kind)();
 	}
 
-	inline bool any_key_went_up_just_now() const
+	inline bool key_just_went_up(const auto& key_kind) const
+	{
+		//return (at(key_kind).prev() && !at(key_kind)());
+		return (key_down_prev(key_kind) && key_up_now(key_kind));
+	}
+	inline bool key_just_went_down(const auto& key_kind) const
+	{
+		//return (!at(key_kind).prev() && at(key_kind)());
+		return (key_up_prev(key_kind) && key_down_now(key_kind));
+	}
+	//--------
+public:		// types
+	template<typename T, typename... RemT>
+	using KeySet = std::set<T, RemT...>;
+public:		// functions
+	//--------
+	template<typename T, typename... RemT>
+	static inline bool generic_key_set_func
+		(const KeySet<T, RemT...>& key_set,
+		const std::function<bool(const T&)>& func)
+	{
+		for (const auto& key_kind: key_set)
+		{
+			if (!func(self, key_kind))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	template<typename T, typename... RemT>
+	inline bool key_set_up_prev(const KeySet<T, RemT...>& key_set) const
+	{
+		return generic_key_set_func(key_set,
+			std::bind(&EngineKeyStatus::key_up_prev, this));
+	}
+	template<typename T, typename... RemT>
+	inline bool key_set_down_prev(const KeySet<T, RemT...>& key_set) const
+	{
+		return generic_key_set_func(key_set,
+			std::bind(&EngineKeyStatus::key_down_prev, this));
+	}
+
+	template<typename T, typename... RemT>
+	inline bool key_set_up_now(const KeySet<T, RemT...>& key_set) const
+	{
+		return generic_key_set_func(key_set,
+			std::bind(&EngineKeyStatus::key_up_now, this));
+	}
+	template<typename T, typename... RemT>
+	inline bool key_set_down_now(const KeySet<T, RemT...>& key_set) const
+	{
+		return generic_key_set_func(key_set,
+			std::bind(&EngineKeyStatus::key_down_now, this));
+	}
+
+	template<typename T, typename... RemT>
+	inline bool key_set_jw_down_and_up_now
+		(const KeySet<T, RemT...>& key_down_set,
+		const KeySet<T, RemT...>& key_up_set) const
+	{
+	}
+
+	template<typename T, typename... RemT>
+	inline bool key_set_just_went_up(const KeySet<T, RemT...>& key_set)
+		const
+	{
+		//for (const auto& key_kind: key_set)
+		//{
+		//	if (!(at(key_kind).prev() && (!at(key_kind)())))
+		//	{
+		//		return false;
+		//	}
+		//}
+		//return true;
+		return generic_key_set_func(key_set,
+			std::bind(&EngineKeyStatus::key_just_went_up, this));
+	}
+	template<typename T, typename... RemT>
+	inline bool key_set_just_went_down(const KeySet<T, RemT...>& key_set)
+		const
+	{
+		//for (const auto& key_kind: grp)
+		//{
+		//	if (!((!at(key_kind).prev()) && at(key_kind)()))
+		//	{
+		//		return false;
+		//	}
+		//}
+		//return true;
+		return generic_key_set_func(key_set,
+			std::bind(&EngineKeyStatus::key_just_went_down, this));
+	}
+	//--------
+	inline bool any_key_just_went_up() const
 	{
 		for (const auto& item: _state_vec)
 		{
@@ -67,7 +168,7 @@ public:		// functions
 		}
 		return false;
 	}
-	inline bool any_key_went_down_just_now() const
+	inline bool any_key_just_went_down() const
 	{
 		for (const auto& item: _state_vec)
 		{
@@ -89,11 +190,11 @@ public:		// functions
 		}
 		return false;
 	}
-
-	template<typename KeyKind, typename KeycType, typename KeyStatusType>
+	//--------
+	template<typename KeyKind, typename KeycT, typename KeyStatusT>
 	inline void update
-		(const std::map<KeycType, KeyStatusType>& key_status_map,
-		const std::map<KeyKind, KeycType>& keyc_map)
+		(const std::map<KeycT, KeyStatusT>& key_status_map,
+		const std::map<KeyKind, KeycT>& keyc_map)
 	{
 		//auto update_key_status
 		//	= [](PrevCurrPair<bool>& key_status_down, SDL_Keycode sym)
@@ -107,7 +208,7 @@ public:		// functions
 		//	}
 		//};
 		for (const auto& pair: keyc_map)
-		//for (StateVecSizeType key_kind=0;
+		//for (StateVecSizeT key_kind=0;
 		//	key_kind<keyc_vec.size();
 		//	++key_kind)
 		{
@@ -123,8 +224,9 @@ public:		// functions
 			}
 		}
 	}
-
+	//--------
 	GEN_GETTER_BY_CON_REF(state_vec);
+	//--------
 }; 
 
 } // namespace game

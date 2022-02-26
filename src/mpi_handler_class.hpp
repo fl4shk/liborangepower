@@ -80,81 +80,81 @@ public:		// functions
 
 
 	// There are MPI wrappers from here on out
-	template<typename Type>
-	inline int send(const Type* buf, int num_instances, int dst, 
+	template<typename T>
+	inline int send(const T* buf, int num_instances, int dst, 
 		int tag=0, MPI_Comm comm=MPI_COMM_WORLD) const
 	{
-		MPI_HANDLER_STATIC_ASSERT_0(Type, "send");
-		MPI_HANDLER_STATIC_ASSERT_1(Type, "send");
+		MPI_HANDLER_STATIC_ASSERT_0(T, "send");
+		MPI_HANDLER_STATIC_ASSERT_1(T, "send");
 
 		return _wrapped_send(buf, num_instances, dst, tag, comm);
 	}
-	template<typename ArrType>
-	inline int send(const ArrType& buf, int dst, int tag=0,
+	template<typename ArrT>
+	inline int send(const ArrT& buf, int dst, int tag=0,
 		MPI_Comm comm=MPI_COMM_WORLD) const
 	{
 		return send(buf.data(), buf.size(), dst, tag, comm);
 	}
 
 
-	//template<typename Type>
-	//inline int send(const DynArr<Type>& buf, int dst, int tag=0, 
+	//template<typename T>
+	//inline int send(const DynArr<T>& buf, int dst, int tag=0, 
 	//	MPI_Comm comm=MPI_COMM_WORLD) const
 	//{
 	//	return send(buf.get_arr(), buf.get_size(), dst, tag, comm);
 	//}
-	//template<typename Type>
-	//inline int send_single(const Type* non_buf, int dst, int tag=0,
+	//template<typename T>
+	//inline int send_single(const T* non_buf, int dst, int tag=0,
 	//	MPI_Comm comm=MPI_COMM_WORLD) const
 	//{
-	//	MPI_HANDLER_STATIC_ASSERT_0(Type, "send_single");
-	//	MPI_HANDLER_STATIC_ASSERT_1(Type, "send_single");
+	//	MPI_HANDLER_STATIC_ASSERT_0(T, "send_single");
+	//	MPI_HANDLER_STATIC_ASSERT_1(T, "send_single");
 	//
 	//	return _wrapped_send(non_buf, 1, dst, tag, comm);
 	//}
-	template<typename Type>
-	inline int send_single(const Type& some_var, int dst, int tag=0,
+	template<typename T>
+	inline int send_single(const T& some_var, int dst, int tag=0,
 		MPI_Comm comm=MPI_COMM_WORLD) const
 	{
-		MPI_HANDLER_STATIC_ASSERT_0(Type, "send_single");
-		MPI_HANDLER_STATIC_ASSERT_1(Type, "send_single");
+		MPI_HANDLER_STATIC_ASSERT_0(T, "send_single");
+		MPI_HANDLER_STATIC_ASSERT_1(T, "send_single");
 
 		return _wrapped_send(&some_var, 1, dst, tag, comm);
 	}
 
 
-	template<typename Type>
-	inline int recv(Type* buf, int num_instances, int src, 
+	template<typename T>
+	inline int recv(T* buf, int num_instances, int src, 
 		int tag=MPI_ANY_TAG, MPI_Comm comm=MPI_COMM_WORLD, 
 		MPI_Status* status=MPI_STATUS_IGNORE) const
 	{
-		MPI_HANDLER_STATIC_ASSERT_0(Type, "recv");
-		MPI_HANDLER_STATIC_ASSERT_1(Type, "recv");
+		MPI_HANDLER_STATIC_ASSERT_0(T, "recv");
+		MPI_HANDLER_STATIC_ASSERT_1(T, "recv");
 
 		return _wrapped_recv(buf, num_instances, src, tag, comm, status);
 	}
-	template<typename ArrType>
-	inline int recv(ArrType& buf, int src,
+	template<typename ArrT>
+	inline int recv(ArrT& buf, int src,
 		int tag=MPI_ANY_TAG, MPI_Comm comm=MPI_COMM_WORLD, 
 		MPI_Status* status=MPI_STATUS_IGNORE) const
 	{
 		return recv(buf.data(), buf.size(), src, tag, comm, status);
 	}
-	//template<typename Type>
-	//inline int recv(DynArr<Type>& buf, int src, int tag=MPI_ANY_TAG,
+	//template<typename T>
+	//inline int recv(DynArr<T>& buf, int src, int tag=MPI_ANY_TAG,
 	//	MPI_Comm comm=MPI_COMM_WORLD, 
 	//	MPI_Status* status=MPI_STATUS_IGNORE)
 	//{
 	//	return recv(buf.get_arr(), buf.get_size(), src, tag, comm, 
 	//		status);
 	//}
-	template<typename Type>
-	inline int recv_single(Type& some_var, int src, int tag=MPI_ANY_TAG,
+	template<typename T>
+	inline int recv_single(T& some_var, int src, int tag=MPI_ANY_TAG,
 		MPI_Comm comm=MPI_COMM_WORLD, 
 		MPI_Status* status=MPI_STATUS_IGNORE) const
 	{
-		MPI_HANDLER_STATIC_ASSERT_0(Type, "recv_single");
-		MPI_HANDLER_STATIC_ASSERT_1(Type, "recv_single");
+		MPI_HANDLER_STATIC_ASSERT_0(T, "recv_single");
+		MPI_HANDLER_STATIC_ASSERT_1(T, "recv_single");
 
 		return _wrapped_recv(&some_var, 1, src, tag, comm, status);
 	}
@@ -169,38 +169,38 @@ public:		// functions
 			comm);
 	}
 
-	template<typename Type>
-	inline int send_recv(const Type* send_buf, int num_send_instances, 
-		int dst, Type* recv_buf, int num_recv_instances, int src, 
+	template<typename T>
+	inline int send_recv(const T* send_buf, int num_send_instances, 
+		int dst, T* recv_buf, int num_recv_instances, int src, 
 		int send_tag=0, int recv_tag=MPI_ANY_TAG, 
 		MPI_Comm comm=MPI_COMM_WORLD, 
 		MPI_Status* status=MPI_STATUS_IGNORE) const
 	{
-		MPI_HANDLER_STATIC_ASSERT_0(Type, "send_recv");
-		MPI_HANDLER_STATIC_ASSERT_1(Type, "send_recv");
+		MPI_HANDLER_STATIC_ASSERT_0(T, "send_recv");
+		MPI_HANDLER_STATIC_ASSERT_1(T, "send_recv");
 
 		return _wrapped_send_recv(send_buf, num_send_instances, dst,
 			send_tag, recv_buf, num_recv_instances, src, recv_tag, comm,
 			status);
-		//return raw_send_recv(send_buf, num_send_instances * sizeof(Type),
+		//return raw_send_recv(send_buf, num_send_instances * sizeof(T),
 		//	MPI_BYTE, dst, send_tag, recv_buf, 
-		//	num_recv_instances * sizeof(Type), MPI_BYTE, src, recv_tag,
+		//	num_recv_instances * sizeof(T), MPI_BYTE, src, recv_tag,
 		//	comm, status);
 	}
-	template<typename Type>
-	inline int send_recv_single(const Type& to_send, int dst, 
-		Type& to_recv, int src, int send_tag=0, int recv_tag=MPI_ANY_TAG,
+	template<typename T>
+	inline int send_recv_single(const T& to_send, int dst, 
+		T& to_recv, int src, int send_tag=0, int recv_tag=MPI_ANY_TAG,
 		MPI_Comm comm=MPI_COMM_WORLD, 
 		MPI_Status* status=MPI_STATUS_IGNORE) const
 	{
-		MPI_HANDLER_STATIC_ASSERT_0(Type, "send_recv_single");
-		MPI_HANDLER_STATIC_ASSERT_1(Type, "send_recv_single");
+		MPI_HANDLER_STATIC_ASSERT_0(T, "send_recv_single");
+		MPI_HANDLER_STATIC_ASSERT_1(T, "send_recv_single");
 
 		return _wrapped_send_recv(&to_send, 1, dst, send_tag,
 			&to_recv, 1, src, recv_tag, comm, status);
 	}
-	template<typename Type>
-	inline int send_recv_single(const Type& to_send, Type& to_recv, 
+	template<typename T>
+	inline int send_recv_single(const T& to_send, T& to_recv, 
 		int partner, int send_tag=0, int recv_tag=MPI_ANY_TAG,
 		MPI_Comm comm=MPI_COMM_WORLD,
 		MPI_Status* status=MPI_STATUS_IGNORE) const
@@ -208,8 +208,8 @@ public:		// functions
 		return send_recv_single(to_send, partner, to_recv, send_tag, 
 			recv_tag, comm, status);
 	}
-	//template<typename Type>
-	//inline int send_recv_single(const Type& to_send, Type& to_recv, 
+	//template<typename T>
+	//inline int send_recv_single(const T& to_send, T& to_recv, 
 	//	int send_tag=0, int recv_tag=MPI_ANY_TAG,
 	//	MPI_Comm comm=MPI_COMM_WORLD,
 	//	MPI_Status* status=MPI_STATUS_IGNORE)
@@ -289,29 +289,29 @@ protected:		// functions
 		return MPI_Finalize();
 	}
 
-	template<typename Type>
-	inline int _wrapped_send(const Type* buf, int num_instances, int dst, 
+	template<typename T>
+	inline int _wrapped_send(const T* buf, int num_instances, int dst, 
 		int tag, MPI_Comm comm) const
 	{
-		return MPI_Send(buf, num_instances * sizeof(Type), MPI_BYTE, dst,
+		return MPI_Send(buf, num_instances * sizeof(T), MPI_BYTE, dst,
 			tag, comm);
 	}
-	template<typename Type>
-	inline int _wrapped_recv(Type* buf, int num_instances, int src,
+	template<typename T>
+	inline int _wrapped_recv(T* buf, int num_instances, int src,
 		int tag, MPI_Comm comm, MPI_Status* status) const
 	{
-		return MPI_Recv(buf, num_instances * sizeof(Type), MPI_BYTE, src, 
+		return MPI_Recv(buf, num_instances * sizeof(T), MPI_BYTE, src, 
 			tag, comm, status);
 	}
-	template<typename Type>
-	inline int _wrapped_send_recv(const Type* send_buf, 
-		int num_send_instances, int dst, int send_tag, Type* recv_buf,
+	template<typename T>
+	inline int _wrapped_send_recv(const T* send_buf, 
+		int num_send_instances, int dst, int send_tag, T* recv_buf,
 		int num_recv_instances, int src, int recv_tag, MPI_Comm comm,
 		MPI_Status* status) const
 	{
-		return MPI_Sendrecv(send_buf, num_send_instances * sizeof(Type),
+		return MPI_Sendrecv(send_buf, num_send_instances * sizeof(T),
 			MPI_BYTE, dst, send_tag, recv_buf, 
-			num_recv_instances * sizeof(Type), MPI_BYTE, src, recv_tag,
+			num_recv_instances * sizeof(T), MPI_BYTE, src, recv_tag,
 			comm, status);
 	}
 

@@ -13,28 +13,28 @@ namespace range
 
 // in_range and vec2_in_range are PRIMARILY intended for use with a range
 // of 0 (inclusive) to size (exclusive)
-template<typename FirstArgType, typename SecondArgType,
-	typename ThirdArgType>
-inline bool in_range(FirstArgType range_start_inclusive, 
-	SecondArgType range_end_exclusive, ThirdArgType to_check)
+template<typename FirstArgT, typename SecondArgT,
+	typename ThirdArgT>
+inline bool in_range(FirstArgT range_start_inclusive, 
+	SecondArgT range_end_exclusive, ThirdArgT to_check)
 {
 	return (to_check >= range_start_inclusive 
 		&& to_check < range_end_exclusive);
 }
 
-template<typename FirstArgType, typename SecondArgType,
-	typename ThirdArgType>
-inline bool in_range_inclusive(FirstArgType range_start_inclusive, 
-	SecondArgType range_end_inclusive, ThirdArgType to_check)
+template<typename FirstArgT, typename SecondArgT,
+	typename ThirdArgT>
+inline bool in_range_inclusive(FirstArgT range_start_inclusive, 
+	SecondArgT range_end_inclusive, ThirdArgT to_check)
 {
 	return (to_check >= range_start_inclusive
 		&& to_check <= range_end_inclusive);
 }
 
-//template<typename Type>
-//inline bool vec2_in_range(containers::Vec2<Type> range_start_inclusive, 
-//	containers::Vec2<Type> range_end_exclusive, 
-//	containers::Vec2<Type> to_check)
+//template<typename T>
+//inline bool vec2_in_range(containers::Vec2<T> range_start_inclusive, 
+//	containers::Vec2<T> range_end_exclusive, 
+//	containers::Vec2<T> to_check)
 //{
 //	return (to_check.x >= range_start_inclusive.x 
 //		&& to_check.x < range_end_exclusive.x
@@ -43,9 +43,9 @@ inline bool in_range_inclusive(FirstArgType range_start_inclusive,
 //}
 
 
-template<typename Type>
-inline Type clamp_to_range(Type range_start_inclusive, 
-	Type range_end_exclusive, Type to_clamp)
+template<typename T>
+inline T clamp_to_range(T range_start_inclusive, 
+	T range_end_exclusive, T to_clamp)
 {
 	if (to_clamp < range_start_inclusive)
 	{
@@ -54,10 +54,10 @@ inline Type clamp_to_range(Type range_start_inclusive,
 	}
 	else if (to_clamp >= range_end_exclusive)
 	{
-		//to_clamp = range_end_exclusive - Type(1);
-		return range_end_exclusive - (Type)(1);
-		//Type ret = range_end_exclusive;
-		//ret -= (Type)1;
+		//to_clamp = range_end_exclusive - T(1);
+		return range_end_exclusive - (T)(1);
+		//T ret = range_end_exclusive;
+		//ret -= (T)1;
 
 	}
 	else

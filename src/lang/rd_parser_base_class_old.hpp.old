@@ -25,31 +25,31 @@ using strings::sconcat;
 namespace lang
 {
 
-template<typename LexerType, typename DerivedType>
+template<typename LexerT, typename DerivedT>
 class RdParserBase
 {
 public:		// types
 	//--------
-	using TokType = LexerType::TokType;
-	using LexerState = LexerType::State;
-	using TokToStringMap = std::map<TokType, std::string>;
+	using TokT = LexerT::TokT;
+	using LexerState = LexerT::State;
+	using TokToStringMap = std::map<TokT, std::string>;
 
 	using ParseRet = bool;
-	using ParseFunc = bool (DerivedType::*)();
+	using ParseFunc = bool (DerivedT::*)();
 
-	// Set this to a `TokType` when we just want to parse one particular
+	// Set this to a `TokT` when we just want to parse one particular
 	// token.
-	using ParseAction = std::variant<TokType, ParseFunc>;
+	using ParseAction = std::variant<TokT, ParseFunc>;
 	//--------
 
 	//--------
 	class DeferRestoreLexState final
 	{
 	private:		// variables
-		std::shared_ptr<LexerType>* _lexer;
+		std::shared_ptr<LexerT>* _lexer;
 		LexerState _lex_state;
 	public:		// functions
-		inline DeferRestoreLexState(std::shared_ptr<LexerType>& s_lexer)
+		inline DeferRestoreLexState(std::shared_ptr<LexerT>& s_lexer)
 			: _lexer(&s_lexer)
 		{
 			_lex_state = (*_lexer)->state();
@@ -67,12 +67,12 @@ public:		// types
 	class UnitParse final
 	{
 	private:		// variables
-		DerivedType* _self = nullptr;
+		DerivedT* _self = nullptr;
 		std::string _parse_act_str;
 		ParseAction _parse_action;
 		bool _optional = false;
 	public:		// functions
-		inline UnitParse(DerivedType* s_self,
+		inline UnitParse(DerivedT* s_self,
 			const std::string& s_parse_act_str,
 			const ParseAction& s_parse_action, bool s_optional=false)
 			: _self(s_self), _parse_act_str(s_parse_act_str),
@@ -89,9 +89,9 @@ public:		// types
 
 		inline bool operator () () const
 		{
-			if (std::holds_alternative<TokType>(_parse_action))
+			if (std::holds_alternative<TokT>(_parse_action))
 			{
-				auto parse_tok = std::get<TokType>(_parse_action);
+				auto parse_tok = std::get<TokT>(_parse_action);
 				return (_self->_lexer->tok() == parse_tok);
 			}
 			else if (std::holds_alternative<ParseFunc>(_parse_action))
@@ -134,14 +134,14 @@ public:		// types
 		};
 
 	protected:		// variables
-		DerivedType* _self = nullptr;
+		DerivedT* _self = nullptr;
 		InstVec _inst_vec;
 		bool _optional = false;
-		std::set<TokType> _valid_next_token_set;
+		std::set<TokT> _valid_next_token_set;
 
 	public:		// functions
 		inline SeqParse() = default;
-		inline SeqParse(DerivedType* s_self, InstVec&& s_inst_vec,
+		inline SeqParse(DerivedT* s_self, InstVec&& s_inst_vec,
 			bool s_optional=false)
 			: _self(s_self), _inst_vec(std::move(s_inst_vec)),
 			_optional(s_optional)
@@ -151,7 +151,7 @@ public:		// types
 		virtual inline ~SeqParse() = default;
 
 		// For error handling (which I didn't originally really handle).
-		virtual bool valid_next_token_set(std::set<TokType>& ret) const
+		virtual bool valid_next_token_set(std::set<TokT>& ret) const
 		{
 			self->_just_get_valid_next_token_set = true;
 			self->_just_get_valid_next_token_set = false;
@@ -362,7 +362,7 @@ public:		// types
 		using InstVec = SeqParse::InstVec;
 
 	public:		// functions
-		inline OrParse(DerivedType* s_self, InstVec&& s_inst_vec,
+		inline OrParse(DerivedT* s_self, InstVec&& s_inst_vec,
 			bool s_optional=false)
 			: SeqParse(s_self, std::move(s_inst_vec), s_optional)
 		{
@@ -409,7 +409,7 @@ public:		// types
 		size_t _num_execs = 0;
 
 	public:		// functions
-		inline ListParse(DerivedType* s_self, InstVec&& s_inst_vec,
+		inline ListParse(DerivedT* s_self, InstVec&& s_inst_vec,
 			bool s_optional=false)
 			: SeqParse(s_self, std::move(s_inst_vec), s_optional)
 		{
@@ -466,8 +466,8 @@ public:		// types
 	//--------
 
 	//--------
-	template<typename SomeSeqParseType>
-	using MapSeqParse = std::map<std::string, SomeSeqParseType>;
+	template<typename SomeSeqParseT>
+	using MapSeqParse = std::map<std::string, SomeSeqParseT>;
 
 	class MultiParse final
 	{
@@ -477,12 +477,12 @@ public:		// types
 		using InstVec = SeqParse::InstVec;
 
 	public:		// functions
-		template<typename SomeMapSeqParseType, typename FirstArgType,
-			typename... RemArgTypes>
+		template<typename SomeMapSeqParseT, typename FirstArgT,
+			typename... RemArgTs>
 		static inline void append_msp
-			(SomeMapSeqParseType& map_seq_parse,
-			const std::string& first_key, FirstArgType&& first_seq,
-			RemArgTypes&&... rem_args)
+			(SomeMapSeqParseT& map_seq_parse,
+			const std::string& first_key, FirstArgT&& first_seq,
+			RemArgTs&&... rem_args)
 		{
 			map_seq_parse[first_key] = std::move(first_seq);
 
@@ -492,7 +492,7 @@ public:		// types
 			}
 		}
 
-		static inline UnitParse unit_parse(DerivedType* s_self,
+		static inline UnitParse unit_parse(DerivedT* s_self,
 			const std::string& s_parse_act_str,
 			const ParseAction& s_parse_action, bool s_optional)
 		{
@@ -501,36 +501,36 @@ public:		// types
 		}
 
 	private:		// functions
-		template<typename FirstArgType, typename... RemArgTypes>
+		template<typename FirstArgT, typename... RemArgTs>
 		static inline void _inner_seq_parse(InstVec& ret,
-			const FirstArgType& first_arg, RemArgTypes&&... rem_args)
+			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			using NoRefFirstArgType
-				= std::remove_reference<FirstArgType>::type;
-			using TrueFirstArgType
-				= std::remove_cv<NoRefFirstArgType>::type;
+			using NoRefFirstArgT
+				= std::remove_reference<FirstArgT>::type;
+			using TrueFirstArgT
+				= std::remove_cv<NoRefFirstArgT>::type;
 
-			static_assert((std::is_same<TrueFirstArgType, UnitParse>()
-				|| std::is_same<TrueFirstArgType, SeqParse>()
-				|| std::is_same<TrueFirstArgType, OrParse>()
-				|| std::is_same<TrueFirstArgType, ListParse>()),
+			static_assert((std::is_same<TrueFirstArgT, UnitParse>()
+				|| std::is_same<TrueFirstArgT, SeqParse>()
+				|| std::is_same<TrueFirstArgT, OrParse>()
+				|| std::is_same<TrueFirstArgT, ListParse>()),
 				"Invalid _inner_seq_parse() first arg");
 
 			Inst to_push;
 
-			if constexpr (std::is_same<TrueFirstArgType, UnitParse>())
+			if constexpr (std::is_same<TrueFirstArgT, UnitParse>())
 			{
 				to_push = first_arg;
 			}
-			else if constexpr (std::is_same<TrueFirstArgType, SeqParse>())
+			else if constexpr (std::is_same<TrueFirstArgT, SeqParse>())
 			{
 				to_push = SeqParseSptr(new SeqParse(first_arg));
 			}
-			else if constexpr (std::is_same<TrueFirstArgType, OrParse>())
+			else if constexpr (std::is_same<TrueFirstArgT, OrParse>())
 			{
 				to_push = SeqParseSptr(new OrParse(first_arg));
 			}
-			else if constexpr (std::is_same<TrueFirstArgType, ListParse>())
+			else if constexpr (std::is_same<TrueFirstArgT, ListParse>())
 			{
 				to_push = SeqParseSptr(new ListParse(first_arg));
 			}
@@ -549,30 +549,30 @@ public:		// types
 		}
 
 	public:		// functions
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline SeqParse seq_parse(DerivedType* s_self,
-			bool s_optional, const FirstArgType& first_arg,
-			RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline SeqParse seq_parse(DerivedT* s_self,
+			bool s_optional, const FirstArgT& first_arg,
+			RemArgTs&&... rem_args)
 		{
 			SeqParse::InstVec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return SeqParse(s_self, std::move(s_vec), s_optional);
 		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline SeqParse or_parse(DerivedType* s_self,
-			bool s_optional, const FirstArgType& first_arg,
-			RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline SeqParse or_parse(DerivedT* s_self,
+			bool s_optional, const FirstArgT& first_arg,
+			RemArgTs&&... rem_args)
 		{
 			SeqParse::InstVec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
 
 			return OrParse(s_self, std::move(s_vec), s_optional);
 		}
-		template<typename FirstArgType, typename... RemArgTypes>
-		static inline SeqParse list_parse(DerivedType* s_self,
-			bool s_optional, const FirstArgType& first_arg,
-			RemArgTypes&&... rem_args)
+		template<typename FirstArgT, typename... RemArgTs>
+		static inline SeqParse list_parse(DerivedT* s_self,
+			bool s_optional, const FirstArgT& first_arg,
+			RemArgTs&&... rem_args)
 		{
 			SeqParse::InstVec s_vec;
 			_inner_seq_parse(s_vec, first_arg, rem_args...);
@@ -584,7 +584,7 @@ public:		// types
 
 protected:		// variables
 	std::string _filename, _text;
-	std::unique_ptr<LexerType> _lexer;
+	std::unique_ptr<LexerT> _lexer;
 	bool _just_get_valid_next_token_set, _just_test, _just_parse;
 
 public:		// functions
@@ -595,7 +595,7 @@ public:		// functions
 		{
 			_text = misc_input::get_istream_as_str(f);
 		}
-		_lexer.push_back(new LexerType(_filename, &_text));
+		_lexer.push_back(new LexerT(_filename, &_text));
 		_next_tok();
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(RdParserBase);

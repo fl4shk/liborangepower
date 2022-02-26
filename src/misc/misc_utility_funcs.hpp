@@ -8,8 +8,8 @@ namespace misc_util
 {
 
 // Don't use weird things with this.
-template<typename FirstArgType, typename SecondArgType>
-FirstArgType max_va(const FirstArgType& arg_0, const SecondArgType& arg_1)
+template<typename FirstArgT, typename SecondArgT>
+FirstArgT max_va(const FirstArgT& arg_0, const SecondArgT& arg_1)
 {
 	if (arg_0 >= arg_1)
 	{
@@ -21,18 +21,18 @@ FirstArgType max_va(const FirstArgType& arg_0, const SecondArgType& arg_1)
 	}
 }
 
-template<typename FirstArgType, typename SecondArgType, 
-	typename... RemainingTypes>
-inline FirstArgType max_va(const FirstArgType& arg_0, 
-	const SecondArgType& arg_1, RemainingTypes... remaining_args )
+template<typename FirstArgT, typename SecondArgT, 
+	typename... RemainingTs>
+inline FirstArgT max_va(const FirstArgT& arg_0, 
+	const SecondArgT& arg_1, RemainingTs... remaining_args )
 {
 	return max_va(max_va(arg_0, arg_1), remaining_args...);
 }
 
 
-template<typename FirstArgType, typename SecondArgType>
-inline FirstArgType min_va(const FirstArgType& arg_0, 
-	const SecondArgType& arg_1)
+template<typename FirstArgT, typename SecondArgT>
+inline FirstArgT min_va(const FirstArgT& arg_0, 
+	const SecondArgT& arg_1)
 {
 	if (arg_0 <= arg_1)
 	{
@@ -44,19 +44,19 @@ inline FirstArgType min_va(const FirstArgType& arg_0,
 	}
 }
 
-template<typename FirstArgType, typename SecondArgType, 
-	typename... RemainingTypes>
-inline FirstArgType min_va(const FirstArgType& arg_0, 
-	const SecondArgType& arg_1, RemainingTypes... remaining_args )
+template<typename FirstArgT, typename SecondArgT, 
+	typename... RemainingTs>
+inline FirstArgT min_va(const FirstArgT& arg_0, 
+	const SecondArgT& arg_1, RemainingTs... remaining_args )
 {
 	return min_va(min_va(arg_0, arg_1), remaining_args...);
 }
 
 
-template<typename Type>
-inline Type custom_abs(const Type& val)
+template<typename T>
+inline T custom_abs(const T& val)
 {
-	if (val < static_cast<Type>(0))
+	if (val < static_cast<T>(0))
 	{
 		return -val;
 	}
@@ -67,47 +67,47 @@ inline Type custom_abs(const Type& val)
 }
 
 
-template<typename Type, size_t index>
-inline void _init_array_backend(Type* all_values_arr, 
-	const Type& to_copy)
+template<typename T, size_t index>
+inline void _init_array_backend(T* all_values_arr, 
+	const T& to_copy)
 {
 	//asm_comment("_init_array_backend() single value");
 	all_values_arr[index] = to_copy;
 }
 
-template<typename Type, size_t index, typename... RemainingTypes>
-inline void _init_array_backend(Type* all_values_arr, 
-	const Type& first_value, const RemainingTypes&... remaining_values)
+template<typename T, size_t index, typename... RemainingTs>
+inline void _init_array_backend(T* all_values_arr, 
+	const T& first_value, const RemainingTs&... remaining_values)
 {
-	_init_array_backend<Type, index>(all_values_arr, first_value);
+	_init_array_backend<T, index>(all_values_arr, first_value);
 
-	_init_array_backend<Type, index + 1>(all_values_arr, 
+	_init_array_backend<T, index + 1>(all_values_arr, 
 		remaining_values...);
 }
 
-template<typename Type, typename... AllTheTypes>
-inline void init_array(Type* all_values_arr, 
-	const AllTheTypes&...  all_the_values)
+template<typename T, typename... AllTheTs>
+inline void init_array(T* all_values_arr, 
+	const AllTheTs&...  all_the_values)
 {
-	_init_array_backend<Type, 0>(all_values_arr,
+	_init_array_backend<T, 0>(all_values_arr,
 		all_the_values...);
 }
 
 
 // This has no real reason to exist
-template<typename Type>
+template<typename T>
 constexpr inline bool type_is_signed()
 {
-	return ((Type)(-1) < (Type)(0));
+	return ((T)(-1) < (T)(0));
 }
 
 
-//template<typename FirstArgType, typename SecondArgType>
-//bool cmpeq_array(FirstArgType* first_arr, SecondArgType* second_arr,
+//template<typename FirstArgT, typename SecondArgT>
+//bool cmpeq_array(FirstArgT* first_arr, SecondArgT* second_arr,
 //	size_t size)
 //	_attribute_((noinline));
-template<typename FirstArgType, typename SecondArgType>
-bool cmpeq_array(FirstArgType* first_arr, SecondArgType* second_arr,
+template<typename FirstArgT, typename SecondArgT>
+bool cmpeq_array(FirstArgT* first_arr, SecondArgT* second_arr,
 	size_t size)
 {
 	if (size == 0)
@@ -127,16 +127,16 @@ bool cmpeq_array(FirstArgType* first_arr, SecondArgType* second_arr,
 }
 
 
-template<typename FirstArgType>
-bool anything_matches(const FirstArgType& first_val)
+template<typename FirstArgT>
+bool anything_matches(const FirstArgT& first_val)
 {
 	return false;
 }
 
-template<typename FirstArgType, typename SecondArgType,
-	typename... RemArgTypes>
-bool anything_matches(const FirstArgType& first_val,
-	const SecondArgType& next, RemArgTypes&&... rem_args)
+template<typename FirstArgT, typename SecondArgT,
+	typename... RemArgTs>
+bool anything_matches(const FirstArgT& first_val,
+	const SecondArgT& next, RemArgTs&&... rem_args)
 {
 	if (sizeof...(rem_args) == 0)
 	{

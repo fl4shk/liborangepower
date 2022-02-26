@@ -10,10 +10,10 @@ namespace liborangepower
 namespace strings
 {
 
-template<typename Type>
-inline Type convert_str_to(const std::string& to_convert)
+template<typename T>
+inline T convert_str_to(const std::string& to_convert)
 {
-	Type ret;
+	T ret;
 
 	std::stringstream sstm;
 	sstm << to_convert;
