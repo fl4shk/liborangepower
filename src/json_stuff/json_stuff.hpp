@@ -148,27 +148,26 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 	{
 		ret = jv.asBool();
 	}
-	else if constexpr 
-		(is_specialization<NonCvrefT, std::basic_string>())
+	else if constexpr (is_specialization<NonCvrefT, std::basic_string>())
 	{
 		ret = jv.asString();
 	}
 	//--------
-	else if constexpr (is_vec2<T>())
+	else if constexpr (is_vec2<NonCvrefT>())
 	{
 		val_from_jv(ret.x, jv["x"]);
 		val_from_jv(ret.y, jv["y"]);
 	}
-	else if constexpr (is_vec3<T>())
+	else if constexpr (is_vec3<NonCvrefT>())
 	{
-			val_from_jv(ret.x, jv["x"]);
-			val_from_jv(ret.y, jv["y"]);
-			val_from_jv(ret.z, jv["z"]);
+		val_from_jv(ret.x, jv["x"]);
+		val_from_jv(ret.y, jv["y"]);
+		val_from_jv(ret.z, jv["z"]);
 	}
 	else if constexpr
 	(
-		is_prev_curr_pair<T>()
-		|| is_move_only_prev_curr_pair<T>()
+		is_prev_curr_pair<NonCvrefT>()
+		|| is_move_only_prev_curr_pair<NonCvrefT>()
 	)
 	{
 		val_from_jv(ret(), jv["_prev"]);
@@ -183,7 +182,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 	//	return NonCvrefT(new ElemT(val_from_jv<ElemT>
 	//		(jv["obj"])));
 	//}
-	else if constexpr (is_pseudo_vec_like_std_container<T>())
+	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
 	{
 		ret = NonCvrefT();
 
@@ -211,7 +210,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 			}
 		}
 	}
-	else if constexpr (is_map_like_std_container<T>())
+	else if constexpr (is_map_like_std_container<NonCvrefT>())
 	{
 		ret = NonCvrefT();
 
@@ -228,7 +227,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 		}
 	}
 	//--------
-	else if constexpr (HasJvDeserializeFunc<T>)
+	else if constexpr (HasJvDeserializeFunc<NonCvrefT>)
 	{
 		ret.deserialize(jv);
 	}
@@ -247,7 +246,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 inline void get_jv_memb(auto& ret, const Json::Value& jv,
 	const std::string& name)
 {
-	val_from_jv<decltype(ret)>(ret, jv[name]);
+	val_from_jv(ret, jv[name]);
 }
 template<typename TempT, typename RetT>
 inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
