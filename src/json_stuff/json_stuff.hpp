@@ -108,7 +108,8 @@ inline Json::Value vec3_to_jv(const containers::Vec3<T>& vec)
 	return ret;
 }
 
-concept HasJvDeserializeFunc = requires(auto obj, const Json::Value& jv)
+template<typename T>
+concept HasJvDeserializeFunc = requires(T obj, const Json::Value& jv)
 {
 	{ obj.deserialize(jv) } -> std::same_as<void>;
 };
