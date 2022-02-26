@@ -135,8 +135,9 @@ public:		// functions
 			&& key_set_just_went_up(key_up_set));
 	}
 
+	template<typename T, typename... RemTs>
 	inline bool key_set_just_went_up
-		(const KeySet<auto, auto...>& key_set) const
+		(const KeySet<T, RemTs...>& key_set) const
 	{
 		//for (const auto& key_kind: key_set)
 		//{
@@ -147,10 +148,12 @@ public:		// functions
 		//}
 		//return true;
 		return generic_key_set_func(key_set,
-			std::bind(&EngineKeyStatus::key_just_went_up, this));
+			std::bind(&EngineKeyStatus::key_just_went_up<T, RemTs...>,
+				this));
 	}
+	template<typename T, typename... RemTs>
 	inline bool key_set_just_went_down
-		(const KeySet<auto, auto...>& key_set) const
+		(const KeySet<T, RemTs...>& key_set) const
 	{
 		//for (const auto& key_kind: grp)
 		//{
@@ -161,7 +164,8 @@ public:		// functions
 		//}
 		//return true;
 		return generic_key_set_func(key_set,
-			std::bind(&EngineKeyStatus::key_just_went_down, this));
+			std::bind(&EngineKeyStatus::key_just_went_down<T, RemTs...>,
+				this));
 	}
 	//--------
 	inline bool generic_any_key_func
