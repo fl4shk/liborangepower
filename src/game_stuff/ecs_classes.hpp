@@ -230,17 +230,6 @@ public:		// functions
 	// Destroy now
 	void destroy(EntId id, int file_num);
 	void destroy(int file_num);
-	inline void destroy_cfn()
-	{
-		destroy(USE_CURR_FILE_NUM);
-	}
-
-	void destroy_all(int file_num);
-	inline void destroy_all_cfn()
-	{
-		destroy_all(USE_CURR_FILE_NUM);
-	}
-	void destroy_all();
 
 	inline void destroy_cfn(EntId id)
 	{
@@ -250,6 +239,13 @@ public:		// functions
 	{
 		destroy(curr_file_num);
 	}
+
+	void destroy_all(int file_num);
+	inline void destroy_all_cfn()
+	{
+		destroy_all(USE_CURR_FILE_NUM);
+	}
+	void destroy_all();
 	//--------
 	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set,
 		int file_num=USE_CURR_FILE_NUM) const;
