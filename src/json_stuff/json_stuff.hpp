@@ -201,14 +201,12 @@ inline std::remove_cvref_t<T> val_from_jv(const Json::Value& jv)
 		{
 			if constexpr (is_std_array<T>())
 			{
-				ret[i] = val_from_jv
-					<decltype(std::declval<NonCvrefT>().at(0))>
+				ret[i] = val_from_jv<typename NonCvrefT::value_type>>
 					(jv[i]);
 			}
 			else if constexpr (is_vec_like_std_container<T>())
 			{
-				ret.push_back(val_from_jv
-					<decltype(std::declval<NonCvrefT>().at(0))>
+				ret.push_back(val_from_jv<typename NonCvrefT::value_type>
 					(jv[i]));
 			}
 			else // if constexpr (is_set_like_std_container<T>())
@@ -307,7 +305,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 		for (Json::ArrayIndex i=0; i<val.size(); ++i)
 		{
 			if constexpr (is_basic_indexable_std_container
-				<decltype(std::declval<NonCvrefT>().at(0))>())
+				<typename NonCvrefT::value_type>())
 			{
 				Json::Value inner_jv;
 
