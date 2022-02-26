@@ -200,11 +200,10 @@ public:		// functions
 	}
 	//--------
 	// mainly intended for use with SDL
-	template<typename KeyKind, typename KeycT, typename KeyStatusT,
-		typename... MapRemTs>
+	template<typename KeyKind, typename KeycT, typename KeyStatusT>
 	inline void update
-		(const std::map<KeycT, KeyStatusT, MapRemTs...>& key_status_map,
-		const std::map<KeyKind, KeycT, MapRemTs...>& keyc_map)
+		(const std::map<KeycT, KeyStatusT>& key_status_map,
+		const std::map<KeyKind, KeycT>& keyc_map)
 	{
 		for (const auto& pair: keyc_map)
 		{
