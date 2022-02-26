@@ -22,6 +22,8 @@ namespace containers
 template<typename T>
 class PrevCurrPair final
 {
+public:		// types
+	using ElemT = T;
 private:		// variables
 	T _prev, _curr;
 
@@ -96,6 +98,8 @@ public:		// functions
 //template<typename T> 
 //class CxPrevCurrPair final
 //{
+//public:		// types
+//	using ElemT = T;
 //private:		// variables
 //	T _prev, _curr;
 //public:		// functions
@@ -151,9 +155,10 @@ public:		// functions
 template<typename T>
 class MoveOnlyPrevCurrPair final
 {
+public:		// types
+	using ElemT = T;
 private:		// variables
 	T _prev, _curr;
-	
 public:		// functions
 	inline MoveOnlyPrevCurrPair() = default;
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(MoveOnlyPrevCurrPair);
@@ -195,9 +200,10 @@ public:		// functions
 //template<typename T>
 //class CxMoveOnlyPrevCurrPair final
 //{
+//public:		// types
+//	using ElemT = T;
 //private:		// variables
 //	T _prev, _curr;
-//	
 //public:		// functions
 //	constexpr inline CxMoveOnlyPrevCurrPair() = default;
 //	GEN_CX_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(CxMoveOnlyPrevCurrPair);

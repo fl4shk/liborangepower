@@ -154,8 +154,8 @@ inline std::remove_cvref_t<T> val_from_jv(const Json::Value& jv)
 		//return vec2_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv);
 		return NonCvrefT
 		(
-			val_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv["x"]),
-			val_from_jv<decltype(std::declval<NonCvrefT>().y)>(jv["y"])
+			val_from_jv<typename T::ElemT>(jv["x"]),
+			val_from_jv<typename T::ElemT>(jv["y"])
 		);
 	}
 	else if constexpr (is_vec3<T>())
@@ -163,9 +163,9 @@ inline std::remove_cvref_t<T> val_from_jv(const Json::Value& jv)
 		//return vec3_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv);
 		return NonCvrefT
 		(
-			val_from_jv<decltype(std::declval<NonCvrefT>().x)>(jv["x"]),
-			val_from_jv<decltype(std::declval<NonCvrefT>().y)>(jv["y"]),
-			val_from_jv<decltype(std::declval<NonCvrefT>().z)>(jv["z"])
+			val_from_jv<typename T::ElemT>(jv["x"]),
+			val_from_jv<typename T::ElemT>(jv["y"]),
+			val_from_jv<typename T::ElemT>(jv["z"])
 		);
 	}
 	else if constexpr
@@ -176,11 +176,11 @@ inline std::remove_cvref_t<T> val_from_jv(const Json::Value& jv)
 	{
 		NonCvrefT ret;
 
-		using ElemOfNonCvrefT
-			= std::remove_cvref_t<decltype(std::declval<NonCvrefT>()())>;
+		//using ElemOfNonCvrefT
+		//	= std::remove_cvref_t<decltype(std::declval<NonCvrefT>()())>;
 
-		ret() = val_from_jv<ElemOfNonCvrefT>(jv["_prev"]);
-		ret.back_up_and_update(val_from_jv<ElemOfNonCvrefT>
+		ret() = val_from_jv<typename NonCvrefT::ElemT>(jv["_prev"]);
+		ret.back_up_and_update(val_from_jv<typename NonCvrefT::ElemT>
 			(jv["_curr"]));
 
 		return ret;
