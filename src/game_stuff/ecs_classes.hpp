@@ -230,6 +230,17 @@ public:		// functions
 	// Destroy now
 	void destroy(EntId id, int file_num);
 	void destroy(int file_num);
+	inline void destroy_cfn()
+	{
+		destroy(USE_CURR_FILE_NUM);
+	}
+
+	void destroy_all(int file_num);
+	inline void destroy_all_cfn()
+	{
+		destroy_all(USE_CURR_FILE_NUM);
+	}
+	void destroy_all();
 
 	inline void destroy_cfn(EntId id)
 	{

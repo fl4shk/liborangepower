@@ -250,6 +250,20 @@ void Engine::destroy(int file_num)
 	to_destroy_set(file_num).clear();
 }
 
+void Engine::destroy_all(int file_num)
+{
+	next_ent_id(file_num) = EntId();
+	engine_comp_map(file_num).clear();
+}
+
+void Engine::destroy_all()
+{
+	for (int i=0; i<num_files; ++i)
+	{
+		destroy_all(i);
+	}
+}
+
 //--------
 EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set,
 	int file_num) const
