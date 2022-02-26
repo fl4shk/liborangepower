@@ -146,7 +146,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 	}
 	else if constexpr (std::is_same<NonCvrefT, bool>())
 	{
-		return jv.asBool();
+		ret = jv.asBool();
 	}
 	else if constexpr 
 		(is_specialization<NonCvrefT, std::basic_string>())
