@@ -248,7 +248,7 @@ inline void get_jv_memb(auto& ret, const Json::Value& jv,
 {
 	val_from_jv<decltype(ret)>(ret, jv[name]);
 }
-template<typename RetT, typename TempT>
+template<typename TempT, typename RetT>
 inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
 	const std::string& name)
 {
