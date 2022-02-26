@@ -118,22 +118,22 @@ public:		// functions
 			std::bind(&EngineKeyStatus::key_down_now<T>, this));
 	}
 
-	template<typename T, typename... RemTs>
-	inline bool key_set_jw_down_and_up_now
-		(const KeySet<T, RemTs...>& key_down_set,
-		const KeySet<T, RemTs...>& key_up_set) const
-	{
-		return (key_set_just_went_down(key_down_set)
-			&& key_set_up_now(key_up_set));
-	}
-	template<typename T, typename... RemTs>
-	inline bool key_set_jw_up_and_down_now
-		(const KeySet<T, RemTs...>& key_down_set,
-		const KeySet<T, RemTs...>& key_up_set) const
-	{
-		return (key_set_down_now(key_down_set)
-			&& key_set_just_went_up(key_up_set));
-	}
+	//template<typename T, typename... RemTs>
+	//inline bool key_set_jw_down_and_up_now
+	//	(const KeySet<T, RemTs...>& key_down_set,
+	//	const KeySet<T, RemTs...>& key_up_set) const
+	//{
+	//	return (key_set_just_went_down(key_down_set)
+	//		&& key_set_up_now(key_up_set));
+	//}
+	//template<typename T, typename... RemTs>
+	//inline bool key_set_jw_up_and_down_now
+	//	(const KeySet<T, RemTs...>& key_down_set,
+	//	const KeySet<T, RemTs...>& key_up_set) const
+	//{
+	//	return (key_set_down_now(key_down_set)
+	//		&& key_set_just_went_up(key_up_set));
+	//}
 
 	template<typename T, typename... RemTs>
 	inline bool key_set_just_went_up
