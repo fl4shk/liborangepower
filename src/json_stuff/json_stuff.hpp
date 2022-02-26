@@ -58,7 +58,7 @@ namespace json
 #define JSON_MEMB_SERIALIZE(name) \
 	set_jv_memb(ret, #name, name);
 #define JSON_MEMB_DESERIALIZE(name) \
-	get_jv_memb(name, jv, #name); \
+	get_jv_memb(name, jv, #name);
 #define JSON_MEMB_FROM_JV_DESERIALIZE(name) \
 	get_jv_memb(ret.name, jv, #name);
 
