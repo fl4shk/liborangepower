@@ -16,31 +16,26 @@ namespace game
 class EngineKeyStatus final
 {
 public:		// types
-	using StateVec = std::vector<PrevCurrPair<bool>>;
+	using State = PrevCurrPair<bool>;
+	using StateVec = std::vector<State>;
 	using StateVecSizeT = typename StateVec::size_type;
 private:		// variables
-	//std::map<KeyKind, PrevCurrPair<bool>> state_map;
+	//std::map<KeyKind, State> state_map;
 	StateVec _state_vec;
 public:		// functions
 	inline EngineKeyStatus() = default;
-	EngineKeyStatus(StateVecSizeT state_vec_size)
-		: _state_vec(state_vec_size, PrevCurrPair<bool>(false, false))
+	inline EngineKeyStatus(StateVecSizeT state_vec_size)
+		: _state_vec(state_vec_size, State(false, false))
 	{
-		//for (StateVecSizeT i=0; i<state_vec_size; ++i)
-		//{
-		//	//_state_vec[key_kind] = PrevCurrPair<bool>();
-		//	//_state_vec.at(key_kind)() = false;
-		//	//_state_vec.at(key_kind).back_up();
-		//}
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EngineKeyStatus);
 	inline ~EngineKeyStatus() = default;
 
-	inline PrevCurrPair<bool>& at(const auto& key_kind)
+	inline State& at(const auto& key_kind)
 	{
 		return _state_vec.at(static_cast<StateVecSizeT>(key_kind));
 	}
-	inline const PrevCurrPair<bool>& at(const auto& key_kind) const
+	inline const State& at(const auto& key_kind) const
 	{
 		return _state_vec.at(static_cast<StateVecSizeT>(key_kind));
 	}
@@ -75,8 +70,10 @@ public:		// functions
 	}
 	//--------
 public:		// types
+	//--------
 	template<typename T, typename... RemTs>
 	using KeySet = std::set<T, RemTs...>;
+	//--------
 public:		// functions
 	//--------
 	template<typename T, typename... RemTs>
@@ -86,34 +83,32 @@ public:		// functions
 	{
 		for (const auto& key_kind: key_set)
 		{
-			if (!func(self, key_kind))
+			if (!func(key_kind))
 			{
 				return false;
 			}
 		}
 		return true;
 	}
-	template<typename T, typename... RemTs>
-	inline bool key_set_up_prev(const KeySet<T, RemTs...>& key_set) const
+	inline bool key_set_up_prev(const KeySet<auto, auto...>& key_set) const
 	{
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_up_prev, this));
 	}
-	template<typename T, typename... RemTs>
-	inline bool key_set_down_prev(const KeySet<T, RemTs...>& key_set) const
+	inline bool key_set_down_prev(const KeySet<auto, auto...>& key_set)
+		const
 	{
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_down_prev, this));
 	}
 
-	template<typename T, typename... RemTs>
-	inline bool key_set_up_now(const KeySet<T, RemTs...>& key_set) const
+	inline bool key_set_up_now(const KeySet<auto, auto...>& key_set) const
 	{
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_up_now, this));
 	}
-	template<typename T, typename... RemTs>
-	inline bool key_set_down_now(const KeySet<T, RemTs...>& key_set) const
+	inline bool key_set_down_now(const KeySet<auto, auto...>& key_set)
+		const
 	{
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_down_now, this));
@@ -124,11 +119,20 @@ public:		// functions
 		(const KeySet<T, RemTs...>& key_down_set,
 		const KeySet<T, RemTs...>& key_up_set) const
 	{
+		return (key_set_just_went_down(key_down_set)
+			&& key_set_up_now(key_up_set));
+	}
+	template<typename T, typename... RemTs>
+	inline bool key_set_jw_up_and_down_now
+		(const KeySet<T, RemTs...>& key_down_set,
+		const KeySet<T, RemTs...>& key_up_set) const
+	{
+		return (key_set_down_now(key_down_set)
+			&& key_set_just_went_up(key_up_set));
 	}
 
-	template<typename T, typename... RemTs>
-	inline bool key_set_just_went_up(const KeySet<T, RemTs...>& key_set)
-		const
+	inline bool key_set_just_went_up
+		(const KeySet<auto, auto...>& key_set) const
 	{
 		//for (const auto& key_kind: key_set)
 		//{
@@ -141,9 +145,8 @@ public:		// functions
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_just_went_up, this));
 	}
-	template<typename T, typename... RemTs>
-	inline bool key_set_just_went_down(const KeySet<T, RemTs...>& key_set)
-		const
+	inline bool key_set_just_went_down
+		(const KeySet<auto, auto...>& key_set) const
 	{
 		//for (const auto& key_kind: grp)
 		//{
@@ -157,60 +160,45 @@ public:		// functions
 			std::bind(&EngineKeyStatus::key_just_went_down, this));
 	}
 	//--------
-	inline bool any_key_just_went_up() const
+	inline bool generic_any_key_func
+		(const std::function<bool(const State&)> func) const
 	{
 		for (const auto& item: _state_vec)
 		{
-			if (item.prev() && (!item()))
+			if (func(item))
 			{
 				return true;
 			}
 		}
 		return false;
+	}
+	inline bool any_key_just_went_up() const
+	{
+		return generic_any_key_func
+			([](const State& item) -> bool
+				{ return (item.prev() && !item()); });
 	}
 	inline bool any_key_just_went_down() const
 	{
-		for (const auto& item: _state_vec)
-		{
-			if ((!item.prev()) && item())
-			{
-				return true;
-			}
-		}
-		return false;
+		return generic_any_key_func
+			([](const State& item) -> bool
+				{ return (!item.prev() && item()); });
 	}
 	inline bool has_changed() const
 	{
-		for (const auto& item: _state_vec)
-		{
-			if (item.has_changed())
-			{
-				return true;
-			}
-		}
-		return false;
+		return generic_any_key_func
+			([](const State& item) -> bool
+				{ return item.has_changed(); });
 	}
 	//--------
-	template<typename KeyKind, typename KeycT, typename KeyStatusT>
+	// mainly intended for use with SDL
+	template<typename KeyKind, typename KeycT, typename KeyStatusT,
+		typename... MapRemTs>
 	inline void update
-		(const std::map<KeycT, KeyStatusT>& key_status_map,
-		const std::map<KeyKind, KeycT>& keyc_map)
+		(const std::map<KeycT, KeyStatusT, MapRemTs...>& key_status_map,
+		const std::map<KeyKind, KeycT, MapRemTs...>& keyc_map)
 	{
-		//auto update_key_status
-		//	= [](PrevCurrPair<bool>& key_status_down, SDL_Keycode sym)
-		//	-> void
-		//{
-		//	if (key_status_map.contains(sym))
-		//	{
-		//		//key_status_down() = _key_status_map.at(sym).down.prev();
-		//		key_status_down.back_up_and_update
-		//			(key_status_map.at(sym).down());
-		//	}
-		//};
 		for (const auto& pair: keyc_map)
-		//for (StateVecSizeT key_kind=0;
-		//	key_kind<keyc_vec.size();
-		//	++key_kind)
 		{
 			const auto& key_kind = pair.first;
 			const auto& sym = pair.second;
