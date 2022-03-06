@@ -4,7 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../concepts/misc_concepts.hpp"
 
-#include <map>
+#include <unordered_map>
 
 // jsoncpp headers
 #include <json/value.h>
@@ -27,9 +27,8 @@ template<typename BaseT>
 class FromJvFactory final
 {
 public:		// types
-	using Func
-		= std::function<std::unique_ptr<BaseT>(const Json::Value&)>;
-	using FuncMap = std::map<std::string, Func>;
+	using Func = std::function<std::unique_ptr<BaseT>(const Json::Value&)>;
+	using FuncMap = std::unordered_map<std::string, Func>;
 public:		// functions
 	// Create a `FuncMap` that maps each derived type's `KIND_STR` to a
 	// lambda function that generates an `std::unique_ptr<BaseT>` that
@@ -51,8 +50,7 @@ public:		// functions
 			(
 				[](const Json::Value& jv) -> std::unique_ptr<BaseT>
 				{
-					return std::unique_ptr<BaseT>
-						(new FirstDerivedT(jv));
+					return std::unique_ptr<BaseT>(new FirstDerivedT(jv));
 				}
 			);
 

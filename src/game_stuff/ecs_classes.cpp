@@ -164,7 +164,7 @@ void Engine::deserialize(const Json::Value& jv)
 	_num_files = jv["_engine_comp_map_vec"].size();
 
 	_engine_comp_map_vec.clear();
-	for (integer_types::u64 i=0; i<_num_files; ++i)
+	for (decltype(_num_files) i=0; i<num_files(); ++i)
 	{
 		_engine_comp_map_vec.push_back(EngineCompMap());
 	}
@@ -262,7 +262,7 @@ void Engine::destroy_all(int file_num)
 
 void Engine::destroy_all()
 {
-	for (integer_types::u64 i=0; i<num_files(); ++i)
+	for (decltype(_num_files) i=0; i<num_files(); ++i)
 	{
 		destroy_all(i);
 	}
