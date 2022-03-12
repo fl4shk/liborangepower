@@ -33,7 +33,7 @@ using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
 using EntIdMap = std::map<std::string, EntIdVec2d>;
 using EntIdMapFullIndex = std::pair<std::string, containers::Vec2<size_t>>;
-using EntIdSet = std::map<EntId>;
+using EntIdSet = std::set<EntId>;
 
 using CompUptr = std::unique_ptr<Comp>;
 using CompMap = std::map<std::string, CompUptr>;
