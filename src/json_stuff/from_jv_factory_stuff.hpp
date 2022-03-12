@@ -19,7 +19,7 @@ class FromJvFactory final
 {
 public:		// types
 	using Func = std::function<std::unique_ptr<BaseT>(const Json::Value&)>;
-	using FuncMap = std::unordered_map<std::string, Func>;
+	using FuncMap = std::map<std::string, Func>;
 public:		// functions
 	// Create a `FuncMap` that maps each derived type's `KIND_STR` to a
 	// lambda function that generates an `std::unique_ptr<BaseT>` that
