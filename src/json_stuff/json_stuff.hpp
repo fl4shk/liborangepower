@@ -190,11 +190,15 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 		//};
 
 		const Json::Value& obj = jv["obj"];
-		const bool& has_kind_str = val_from_jv<bool>(jv["has_kind_str"]);
+		bool has_kind_str;
+		val_from_jv(has_kind_str, jv["has_kind_str"], func_map);
 
 		if (!has_kind_str)
 		{
-			return NonCvrefT(new ElemT(val_from_jv<ElemT>(obj)));
+			//return NonCvrefT(new ElemT(val_from_jv<ElemT>(obj)));
+			ElemT temp;
+			val_from_jv(temp, obj, func_map);
+			ret = new ElemT(temp);
 		}
 		else // if (has_kind_str)
 		{
@@ -203,9 +207,12 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 				throw std::invalid_argument(sconcat("val_from_jv(): ",
 					"Need a non-null `func_map` in this case"));
 			}
-			const auto& kind_str
-				= val_from_jv<std::string>(jv["kind_str"]);
-			return (*func_map).at(kind_str)(obj);
+			//const auto& kind_str
+			//	= val_from_jv<std::string>(ret, jv["kind_str"]);
+			std::string kind_str;
+			val_from_jv(kind_str, jv["kind_str"], func_map);
+			//return (*func_map).at(kind_str)(obj);
+			ret = (*func_map).at(kind_str)(obj);
 		}
 	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
