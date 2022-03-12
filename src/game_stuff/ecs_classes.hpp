@@ -89,8 +89,8 @@ class Sys
 {
 public:		// serialization stuff
 	#define MEMB_LIST_ECS_SYS(X) \
-		X(_did_init) \
-		X(game_mode_active) \
+		X(_did_init, nullptr) \
+		X(game_mode_active, nullptr) \
 
 private:		// variables
 	bool _did_init = false;
@@ -142,19 +142,18 @@ public:		// constants
 		DEFAULT_NUM_FILES = 9;
 	static constexpr int
 		USE_CURR_FILE_NUM = -1;
-protected:		// auto-serialized variables
-	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X) \
-		X(_next_ent_id_vec) \
-		X(_to_destroy_set_vec) \
+protected:		// serialized variables
+	#define MEMB_LIST_ECS_ENGINE(X) \
+		X(_next_ent_id_vec, nullptr) \
+		X(_to_destroy_set_vec, nullptr) \
+		X(_num_files, nullptr) \
+		X(_engine_comp_map_vec, &_comp_deser_func_map)
 
 	std::vector<EntId> _next_ent_id_vec;
-
 	std::vector<EntIdSet> _to_destroy_set_vec;
-protected:		// non-auto-serialized serialized variables
 	integer_types::u64 _num_files = DEFAULT_NUM_FILES;
-
-	// All `EntId` are stored as just the keys of `_engine_comp_map`, with
-	// no other storage for them.
+	// All `EntId` are stored as just the keys of each `EngineCompMap`,
+	// with no other storage for them.
 	std::vector<EngineCompMap> _engine_comp_map_vec;
 protected:		// non-serialized variables
 	SysMap _sys_map;

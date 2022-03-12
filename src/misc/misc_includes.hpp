@@ -27,6 +27,9 @@
 
 #include <concepts>
 
+#include <exception>
+#include <stdexcept>
+
 
 using std::cout;
 using std::cerr;

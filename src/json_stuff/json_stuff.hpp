@@ -13,6 +13,8 @@
 #include "../concepts/is_specialization_concepts.hpp"
 #include "../concepts/misc_concepts.hpp"
 
+#include "from_jv_factory_stuff.hpp"
+
 // jsoncpp headers
 #include <json/value.h>
 #include <json/reader.h>
@@ -55,12 +57,12 @@ namespace json
 
 // These are for use with X macros that call a macro on at least some
 // members of a class to serialize or deserialize
-#define JSON_MEMB_SERIALIZE(name) \
+#define JSON_MEMB_SERIALIZE(name, unused_arg) \
 	set_jv_memb(ret, #name, name);
-#define JSON_MEMB_DESERIALIZE(name) \
-	get_jv_memb(name, jv, #name);
-#define JSON_MEMB_FROM_JV_DESERIALIZE(name) \
-	get_jv_memb(ret.name, jv, #name);
+#define JSON_MEMB_DESERIALIZE(name, func_map) \
+	get_jv_memb(name, jv, #name, func_map);
+#define JSON_MEMB_FROM_JV_DESERIALIZE(name, func_map) \
+	get_jv_memb(ret.name, jv, #name, func_map);
 
 class BlankValue;
 
@@ -108,14 +110,9 @@ inline Json::Value vec3_to_jv(const containers::Vec3<T>& vec)
 	return ret;
 }
 
-template<typename T>
-concept HasJvDeserializeFunc = requires(T obj, const Json::Value& jv)
-{
-	{ obj.deserialize(jv) } -> std::same_as<void>;
-};
-
-template<typename T>
-inline void val_from_jv(T& ret, const Json::Value& jv)
+template<typename T, typename BaseT=void>
+inline void val_from_jv(T& ret, const Json::Value& jv,
+	const FromJvFactory<BaseT>::FuncMap* func_map)
 {
 	//--------
 	using NonCvrefT = std::remove_cvref_t<T>;
@@ -155,14 +152,14 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 	//--------
 	else if constexpr (is_vec2<NonCvrefT>())
 	{
-		val_from_jv(ret.x, jv["x"]);
-		val_from_jv(ret.y, jv["y"]);
+		val_from_jv(ret.x, jv["x"], func_map);
+		val_from_jv(ret.y, jv["y"], func_map);
 	}
 	else if constexpr (is_vec3<NonCvrefT>())
 	{
-		val_from_jv(ret.x, jv["x"]);
-		val_from_jv(ret.y, jv["y"]);
-		val_from_jv(ret.z, jv["z"]);
+		val_from_jv(ret.x, jv["x"], func_map);
+		val_from_jv(ret.y, jv["y"], func_map);
+		val_from_jv(ret.z, jv["z"], func_map);
 	}
 	else if constexpr
 	(
@@ -170,18 +167,47 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 		|| is_move_only_prev_curr_pair<NonCvrefT>()
 	)
 	{
-		val_from_jv(ret(), jv["_prev"]);
+		val_from_jv(ret(), jv["_prev"], func_map);
 		ret.back_up();
-		val_from_jv(ret(), jv["_curr"]);
+		val_from_jv(ret(), jv["_curr"], func_map);
 	}
 	//--------
-	//else if constexpr (is_non_arr_std_unique_ptr<T>())
-	//{
-	//	using ElemT = typename NonCvrefT::element_type;
+	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>())
+	{
+		using ElemT = typename NonCvrefT::element_type;
 
-	//	return NonCvrefT(new ElemT(val_from_jv<ElemT>
-	//		(jv["obj"])));
-	//}
+		////return NonCvrefT(new ElemT(val_from_jv<ElemT>
+		////	(jv["obj"])));
+		//auto find_func
+		//	= [&]<typename FirstFuncMapType, typename... RemFuncMapTypes>
+		//	(const FirstFuncMapType& first_func_map,
+		//	const RemFuncMapTypes&... rem_func_maps) -> void
+		//{
+		//	if constexpr (std::is_same<ElemT, >())
+		//	if constexpr (sizeof...(rem_func_maps) > 0)
+		//	{
+		//	}
+		//};
+
+		const Json::Value& obj = jv["obj"];
+		const bool& has_kind_str = val_from_jv<bool>(jv["has_kind_str"]);
+
+		if (!has_kind_str)
+		{
+			return NonCvrefT(new ElemT(val_from_jv<ElemT>(obj)));
+		}
+		else // if (has_kind_str)
+		{
+			if (!func_map)
+			{
+				throw std::invalid_argument(sconcat("val_from_jv(): ",
+					"Need a non-null `func_map` in this case"));
+			}
+			const auto& kind_str
+				= val_from_jv<std::string>(jv["kind_str"]);
+			return (*func_map).at(kind_str)(obj);
+		}
+	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
 	{
 		ret = NonCvrefT();
@@ -190,13 +216,13 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 		{
 			if constexpr (is_std_array<T>())
 			{
-				val_from_jv(ret[i], jv[i]);
+				val_from_jv(ret[i], jv[i], func_map);
 			}
 			else if constexpr (is_vec_like_std_container<T>())
 			{
 				typename NonCvrefT::value_type temp;
 
-				val_from_jv(temp, jv[i]);
+				val_from_jv(temp, jv[i], func_map);
 
 				ret.push_back(temp);
 			}
@@ -204,7 +230,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 			{
 				typename NonCvrefT::key_type temp;
 
-				val_from_jv(temp, jv[i]);
+				val_from_jv(temp, jv[i], func_map);
 
 				ret.insert(temp);
 			}
@@ -218,10 +244,10 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 		{
 			//ret[i]["key"] = val_from_jv
 			typename NonCvrefT::key_type key;
-			val_from_jv(key, jv[i]["key"]);
+			val_from_jv(key, jv[i]["key"], func_map);
 
 			typename NonCvrefT::value_type value;
-			val_from_jv(value, jv[i]["value"]);
+			val_from_jv(value, jv[i]["value"], func_map);
 
 			ret[key] = value;
 		}
@@ -243,17 +269,18 @@ inline void val_from_jv(T& ret, const Json::Value& jv)
 	//--------
 }
 
-inline void get_jv_memb(auto& ret, const Json::Value& jv,
-	const std::string& name)
+template<typename T, typename BaseT=void>
+inline void get_jv_memb(T& ret, const Json::Value& jv,
+	const std::string& name, const FromJvFactory<BaseT>::FuncMap* func_map)
 {
-	val_from_jv(ret, jv[name]);
+	val_from_jv(ret, jv[name], func_map);
 }
-template<typename TempT, typename RetT>
+template<typename TempT, typename RetT, typename BaseT=void>
 inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
-	const std::string& name)
+	const std::string& name, const FromJvFactory<BaseT>::FuncMap* func_map)
 {
 	TempT temp;
-	get_jv_memb(temp, jv, name);
+	get_jv_memb(temp, jv, name, func_map);
 	ret = static_cast<RetT>(temp);
 }
 
@@ -264,8 +291,8 @@ inline void _set_jv(Json::Value& jv, const T& val)
 
 	jv = Json::Value();
 
-	//static_assert((!std::is_same<T, int64_t>())
-	//	&& (!std::is_same<T, uint64_t>()));
+	//static_assert(!std::is_same<T, int64_t>()
+	//	&& !std::is_same<T, uint64_t>());
 
 	//--------
 	if constexpr (is_vec2<T>())
@@ -286,6 +313,19 @@ inline void _set_jv(Json::Value& jv, const T& val)
 		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
+	else if constexpr (is_non_arr_std_unique_ptr<T>())
+	{
+		jv["obj"] = *val;
+		if constexpr (HasStaticKindStr<T>)
+		{
+			jv["has_kind_str"] = true;
+			jv["kind_str"] = T::KIND_STR;
+		}
+		else
+		{
+			jv["has_kind_str"] = false;
+		}
+	}
 	else if constexpr (is_arr_like_std_container<T>())
 	{
 		jv[0] = BlankValue();

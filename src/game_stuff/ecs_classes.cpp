@@ -120,26 +120,27 @@ Engine::operator Json::Value () const
 {
 	Json::Value ret;
 
-	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
+	//MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
-	for (Json::ArrayIndex i=0;
-		i<static_cast<Json::ArrayIndex>(_num_files);
-		++i)
-	{
-		Json::Value& inner_jv = ret["_engine_comp_map_vec"][i];
+	//for (Json::ArrayIndex i=0;
+	//	i<static_cast<Json::ArrayIndex>(_num_files);
+	//	++i)
+	//{
+	//	Json::Value& inner_jv = ret["_engine_comp_map_vec"][i];
 
-		for (const auto& ent_pair: _engine_comp_map_vec.at(i))
-		{
-			//Json::Value& ent_jv = ret["_engine_comp_map"]
-			//	[sconcat(ent_pair.first)];
-			Json::Value& ent_jv = inner_jv[sconcat(ent_pair.first)];
+	//	for (const auto& ent_pair: _engine_comp_map_vec.at(i))
+	//	{
+	//		//Json::Value& ent_jv = ret["_engine_comp_map"]
+	//		//	[sconcat(ent_pair.first)];
+	//		Json::Value& ent_jv = inner_jv[sconcat(ent_pair.first)];
 
-			for (const auto& comp_pair: *ent_pair.second)
-			{
-				set_jv_memb(ent_jv, comp_pair.first, *comp_pair.second);
-			}
-		}
-	}
+	//		for (const auto& comp_pair: *ent_pair.second)
+	//		{
+	//			set_jv_memb(ent_jv, comp_pair.first, *comp_pair.second);
+	//		}
+	//	}
+	//}
+	MEMB_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	return ret;
 }
@@ -157,55 +158,56 @@ Engine::operator Json::Value () const
 //void Engine::_ent_deserialize(const Json::Value& jv)
 void Engine::deserialize(const Json::Value& jv)
 {
-	destroy_all();
+	//destroy_all();
 
-	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
+	//MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
+	MEMB_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 
-	_num_files = jv["_engine_comp_map_vec"].size();
+	//_num_files = jv["_engine_comp_map_vec"].size();
 
-	_engine_comp_map_vec.clear();
-	for (decltype(_num_files) i=0; i<num_files(); ++i)
-	{
-		_engine_comp_map_vec.push_back(EngineCompMap());
-	}
+	//_engine_comp_map_vec.clear();
+	//for (decltype(_num_files) i=0; i<num_files(); ++i)
+	//{
+	//	_engine_comp_map_vec.push_back(EngineCompMap());
+	//}
 
-	for (Json::ArrayIndex file_num=0;
-		file_num<jv["_engine_comp_map_vec"].size();
-		++file_num)
-	{
-		const Json::Value& inner_jv
-			= jv["_engine_comp_map_vec"][file_num];
+	//for (Json::ArrayIndex file_num=0;
+	//	file_num<jv["_engine_comp_map_vec"].size();
+	//	++file_num)
+	//{
+	//	const Json::Value& inner_jv
+	//		= jv["_engine_comp_map_vec"][file_num];
 
-		//const auto& ent_name_vec
-		//	= jv["_engine_comp_map"].getMemberNames();
-		const auto& ent_name_vec = inner_jv.getMemberNames();
+	//	//const auto& ent_name_vec
+	//	//	= jv["_engine_comp_map"].getMemberNames();
+	//	const auto& ent_name_vec = inner_jv.getMemberNames();
 
-		for (const auto& ent_name: ent_name_vec)
-		{
-			EntId id = 0;
+	//	for (const auto& ent_name: ent_name_vec)
+	//	{
+	//		EntId id = 0;
 
-			std::stringstream sstm;
-			sstm << ent_name;
-			sstm >> id;
+	//		std::stringstream sstm;
+	//		sstm << ent_name;
+	//		sstm >> id;
 
-			_inner_create(id, file_num);
+	//		_inner_create(id, file_num);
 
-			//const Json::Value& comp_jv
-			//	= jv["_engine_comp_map"][ent_name];
-			const Json::Value& comp_jv = inner_jv[ent_name];
-			const auto& comp_name_vec = comp_jv.getMemberNames();
+	//		//const Json::Value& comp_jv
+	//		//	= jv["_engine_comp_map"][ent_name];
+	//		const Json::Value& comp_jv = inner_jv[ent_name];
+	//		const auto& comp_name_vec = comp_jv.getMemberNames();
 
-			for (const auto& comp_name: comp_name_vec)
-			{
-				//_inner_ent_deserialize<FirstCompT, RemCompTs...>
-				//	(id, comp_jv, comp_name);
-				//insert_comp(id, comp_name,
-				//	CompUptr(new FirstCompT(comp_jv)));
-				insert_comp(id, comp_name,
-					_comp_deser_func_map.at(comp_name)(comp_jv), file_num);
-			}
-		}
-	}
+	//		for (const auto& comp_name: comp_name_vec)
+	//		{
+	//			//_inner_ent_deserialize<FirstCompT, RemCompTs...>
+	//			//	(id, comp_jv, comp_name);
+	//			//insert_comp(id, comp_name,
+	//			//	CompUptr(new FirstCompT(comp_jv)));
+	//			insert_comp(id, comp_name,
+	//				_comp_deser_func_map.at(comp_name)(comp_jv), file_num);
+	//		}
+	//	}
+	//}
 }
 ////template<EngineDerivedFromSys FirstSysT,
 ////	EngineDerivedFromSys... RemSysTs>

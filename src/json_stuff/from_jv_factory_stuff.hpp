@@ -4,7 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../concepts/misc_concepts.hpp"
 
-#include <unordered_map>
+#include "json_concepts.hpp"
 
 // jsoncpp headers
 #include <json/value.h>
@@ -13,15 +13,6 @@ namespace liborangepower
 {
 namespace json
 {
-
-using liborangepower::concepts::IsDerivedAndHasStaticKindStr;
-template<typename DerivedT, typename BaseT>
-concept IsValidFromJvFactoryT
-	= IsDerivedAndHasStaticKindStr<DerivedT, BaseT> 
-	&& requires(const Json::Value& jv)
-{
-	DerivedT(jv);
-};
 
 template<typename BaseT>
 class FromJvFactory final
@@ -50,7 +41,17 @@ public:		// functions
 			(
 				[](const Json::Value& jv) -> std::unique_ptr<BaseT>
 				{
-					return std::unique_ptr<BaseT>(new FirstDerivedT(jv));
+					if constexpr (std::is_constructible
+						<FirstDerivedT, Json::Value>())
+					{
+						return std::unique_ptr<BaseT>
+							(new FirstDerivedT(jv));
+					}
+					else
+					{
+						return std::unique_ptr<BaseT>
+							(new FirstDerivedT(FirstDerived::from_jv(jv)));
+					}
 				}
 			);
 
