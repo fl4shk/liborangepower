@@ -325,7 +325,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 	else if constexpr (is_non_arr_std_unique_ptr<T>())
 	{
 		jv["obj"] = *val;
-		if constexpr (HasStaticKindStr<T>)
+		if constexpr (concepts::HasStaticKindStr<T>)
 		{
 			jv["has_kind_str"] = true;
 			jv["kind_str"] = T::KIND_STR;
