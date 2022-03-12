@@ -28,7 +28,8 @@ concept IsValidFromJvFactoryT
 	= IsDerivedAndHasStaticKindStr<DerivedT, BaseT> 
 	&& requires(const Json::Value& jv)
 {
-	std::declval<DerivedT>(jv);
+	//std::declval<DerivedT>(jv);
+	DerivedT(jv);
 };
 
 //template<typename T, typename BaseT>
