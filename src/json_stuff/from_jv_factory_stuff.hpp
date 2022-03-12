@@ -50,7 +50,8 @@ public:		// functions
 					else
 					{
 						return std::unique_ptr<BaseT>
-							(new FirstDerivedT(FirstDerived::from_jv(jv)));
+							(new FirstDerivedT
+								(FirstDerivedT::from_jv(jv)));
 					}
 				}
 			);
