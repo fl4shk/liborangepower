@@ -112,7 +112,7 @@ inline Json::Value vec3_to_jv(const containers::Vec3<T>& vec)
 
 template<typename T, typename BaseT=void>
 inline void val_from_jv(T& ret, const Json::Value& jv,
-	const typename FromJvFactory<BaseT>::FuncMap* func_map)
+	typename FromJvFactory<BaseT>::FuncMap* func_map)
 {
 	//--------
 	using NonCvrefT = std::remove_cvref_t<T>;
@@ -279,14 +279,14 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 template<typename T, typename BaseT=void>
 inline void get_jv_memb(T& ret, const Json::Value& jv,
 	const std::string& name,
-	const typename FromJvFactory<BaseT>::FuncMap* func_map)
+	typename FromJvFactory<BaseT>::FuncMap* func_map)
 {
 	val_from_jv(ret, jv[name], func_map);
 }
 template<typename TempT, typename RetT, typename BaseT=void>
 inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
 	const std::string& name,
-	const typename FromJvFactory<BaseT>::FuncMap* func_map)
+	typename FromJvFactory<BaseT>::FuncMap* func_map)
 {
 	TempT temp;
 	get_jv_memb(temp, jv, name, func_map);
