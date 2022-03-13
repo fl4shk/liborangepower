@@ -254,7 +254,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 			typename NonCvrefT::value_type value;
 			val_from_jv(value, jv[i]["value"], func_map);
 
-			ret[key] = value;
+			ret[key] = std::move(value);
 		}
 	}
 	//--------
