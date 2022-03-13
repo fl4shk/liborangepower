@@ -244,17 +244,26 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 	else if constexpr (is_map_like_std_container<NonCvrefT>())
 	{
 		ret = NonCvrefT();
+		using KeyT = typename NonCvrefT::key_type;
+		using ValueT = typename NonCvrefT::value_type;
 
 		for (Json::ArrayIndex i=1; i<jv.size(); ++i)
 		{
 			//ret[i]["key"] = val_from_jv
-			typename NonCvrefT::key_type key;
+			KeyT key;
 			val_from_jv(key, jv[i]["key"], func_map);
 
-			typename NonCvrefT::value_type value;
+			ValueT value;
 			val_from_jv(value, jv[i]["value"], func_map);
 
-			ret[key] = std::move(value);
+			if constexpr (is_non_arr_std_unique_ptr<ValueT>())
+			{
+				ret[key] = std::move(value);
+			}
+			else
+			{
+				ret[key] = value;
+			}
 		}
 	}
 	//--------
