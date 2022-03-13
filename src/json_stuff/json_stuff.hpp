@@ -212,8 +212,6 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 			std::string kind_str;
 			val_from_jv(kind_str, jv["kind_str"], func_map);
 
-			//return (*func_map).at(kind_str)(obj);
-
 			//ret.reset(func_map->at(kind_str)(obj));
 			ret = func_map->at(kind_str)(obj);
 		}

@@ -158,7 +158,8 @@ protected:		// serialized variables
 protected:		// non-serialized variables
 	SysMap _sys_map;
 private:		// non-serialized variables
-	json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
+	//json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
+	json::FromJvFactoryFuncMap<Comp> _comp_deser_func_map;
 	//json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
 public:		// variables
 	int curr_file_num = 0;
