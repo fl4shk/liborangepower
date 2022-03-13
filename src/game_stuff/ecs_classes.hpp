@@ -9,8 +9,8 @@
 #include "../json_stuff/json_stuff.hpp"
 #include "../json_stuff/from_jv_factory_stuff.hpp"
 
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 #include <sstream>
 
 namespace liborangepower
@@ -31,20 +31,20 @@ static constexpr EntId ENT_NULL_ID
 
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
-using EntIdMap = std::unordered_map<std::string, EntIdVec2d>;
+using EntIdMap = std::map<std::string, EntIdVec2d>;
 using EntIdMapFullIndex = std::pair<std::string, containers::Vec2<size_t>>;
-using EntIdSet = std::unordered_set<EntId>;
+using EntIdSet = std::set<EntId>;
 
 using CompUptr = std::unique_ptr<Comp>;
-using CompMap = std::unordered_map<std::string, CompUptr>;
+using CompMap = std::map<std::string, CompUptr>;
 using CompMapUptr = std::unique_ptr<CompMap>;
 
-using EngineCompMap = std::unordered_map<EntId, CompMapUptr>;
+using EngineCompMap = std::map<EntId, CompMapUptr>;
 
 using SysUptr = std::unique_ptr<Sys>;
-using SysMap = std::unordered_map<std::string, SysUptr>;
+using SysMap = std::map<std::string, SysUptr>;
 
-using StrKeySet = std::unordered_set<std::string>;
+using StrKeySet = std::set<std::string>;
 //--------
 class Ent final
 {
