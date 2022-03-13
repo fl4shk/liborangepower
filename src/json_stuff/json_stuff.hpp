@@ -214,7 +214,8 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 
 			//return (*func_map).at(kind_str)(obj);
 
-			ret.reset(func_map->at(kind_str)(obj));
+			//ret.reset(func_map->at(kind_str)(obj));
+			ret = func_map->at(kind_str)(obj);
 		}
 	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
