@@ -12,7 +12,7 @@ public:		// serialized variables
 	#define MEMB_LIST_TEST(X) \
 		X(data, _data_func_map)
 
-	std::unique_ptr<Base> data;
+	std::unordered_map<std::string, std::unique_ptr<Base>> data;
 private:		// non-serialized variables
 	FromJvFactoryFuncMap<Base> _data_func_map;
 public:		// functions
