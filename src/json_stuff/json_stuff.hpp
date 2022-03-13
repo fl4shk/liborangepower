@@ -354,7 +354,8 @@ inline void _set_jv(Json::Value& jv, const T& val)
 	//--------
 	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>())
 	{
-		jv["obj"] = *val;
+		//jv["obj"] = *val;
+		_set_jv(jv["obj"], *val);
 		using ElemT = typename NonCvrefT::element_type;
 		//if constexpr (concepts::HasStaticKindStr<T>)
 		//{
