@@ -193,14 +193,16 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 		//bool has_kind_str;
 		//val_from_jv(has_kind_str, jv["has_kind_str"], func_map);
 
-		if (!jv.isMember("kind_str"))
+		//if (!jv.isMember("kind_str"))
+		if constexpr (!std::is_same<ElemT, BaseT>())
 		{
 			//return NonCvrefT(new ElemT(val_from_jv<ElemT>(obj)));
 			ElemT temp;
 			val_from_jv(temp, obj, func_map);
 			ret.reset(new ElemT(temp));
 		}
-		else // if (jv.isMember("kind_str"))
+		//else // if (jv.isMember("kind_str"))
+		else // if (std::is_same<ElemT, BaseT>())
 		{
 			if (!func_map)
 			{
@@ -209,7 +211,9 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 			}
 			std::string kind_str;
 			val_from_jv(kind_str, jv["kind_str"], func_map);
+
 			//return (*func_map).at(kind_str)(obj);
+
 			ret.reset(func_map->at(kind_str)(obj));
 		}
 	}
