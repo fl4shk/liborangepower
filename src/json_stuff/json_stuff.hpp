@@ -110,9 +110,9 @@ inline Json::Value vec3_to_jv(const containers::Vec3<T>& vec)
 	return ret;
 }
 
-template<typename T, typename BaseT=void>
+template<typename T, typename BaseT>
 inline void val_from_jv(T& ret, const Json::Value& jv,
-	typename FromJvFactory<BaseT>::FuncMap* func_map)
+	FromJvFactoryFuncMap<BaseT>* func_map)
 {
 	//--------
 	using NonCvrefT = std::remove_cvref_t<T>;
@@ -190,29 +190,27 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 		//};
 
 		const Json::Value& obj = jv["obj"];
-		bool has_kind_str;
-		val_from_jv(has_kind_str, jv["has_kind_str"], func_map);
+		//bool has_kind_str;
+		//val_from_jv(has_kind_str, jv["has_kind_str"], func_map);
 
-		if (!has_kind_str)
+		if (!jv.isMember("kind_str"))
 		{
 			//return NonCvrefT(new ElemT(val_from_jv<ElemT>(obj)));
 			ElemT temp;
 			val_from_jv(temp, obj, func_map);
-			ret = new ElemT(temp);
+			ret.reset(new ElemT(temp));
 		}
-		else // if (has_kind_str)
+		else // if (jv.isMember("kind_str"))
 		{
 			if (!func_map)
 			{
 				throw std::invalid_argument(sconcat("val_from_jv(): ",
 					"Need a non-null `func_map` in this case"));
 			}
-			//const auto& kind_str
-			//	= val_from_jv<std::string>(ret, jv["kind_str"]);
 			std::string kind_str;
 			val_from_jv(kind_str, jv["kind_str"], func_map);
 			//return (*func_map).at(kind_str)(obj);
-			ret = (*func_map).at(kind_str)(obj);
+			ret = func_map->at(kind_str)(obj);
 		}
 	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
@@ -275,21 +273,44 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 	}
 	//--------
 }
-
-template<typename T, typename BaseT=void>
-inline void get_jv_memb(T& ret, const Json::Value& jv,
-	const std::string& name,
-	typename FromJvFactory<BaseT>::FuncMap* func_map)
+template<typename T>
+inline void val_from_jv(T& ret, const Json::Value& jv,
+	const std::nullopt_t& some_nullopt)
 {
-	val_from_jv(ret, jv[name], func_map);
+	val_from_jv<T, void>(ret, jv, nullptr);
 }
-template<typename TempT, typename RetT, typename BaseT=void>
+
+template<typename T, typename BaseT>
+inline void get_jv_memb(T& ret, const Json::Value& jv,
+	const std::string& name, FromJvFactoryFuncMap<BaseT>& func_map)
+{
+	val_from_jv(ret, jv[name], &func_map);
+}
+template<typename T>
+inline void get_jv_memb(T& ret, const Json::Value& jv,
+	const std::string& name, const std::nullopt_t& some_nullopt)
+{
+	//FromJvFactoryFuncMap<void> func_map;
+	//get_jv_memb(ret, jv, name, func_map);
+	val_from_jv(ret, jv[name], std::nullopt);
+}
+
+template<typename TempT, typename RetT, typename BaseT>
 inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
-	const std::string& name,
-	typename FromJvFactory<BaseT>::FuncMap* func_map)
+	const std::string& name, FromJvFactoryFuncMap<BaseT>& func_map)
 {
 	TempT temp;
 	get_jv_memb(temp, jv, name, func_map);
+	ret = static_cast<RetT>(temp);
+}
+template<typename TempT, typename RetT>
+inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
+	const std::string& name, const std::nullopt_t& some_nullopt)
+{
+	//FromJvFactoryFuncMap<void> func_map;
+	//get_jv_memb_w_stat_cast(ret, jv, name, func_map);
+	TempT temp;
+	get_jv_memb(temp, jv, name, some_nullopt);
 	ret = static_cast<RetT>(temp);
 }
 
@@ -304,38 +325,45 @@ inline void _set_jv(Json::Value& jv, const T& val)
 	//	&& !std::is_same<T, uint64_t>());
 
 	//--------
-	if constexpr (is_vec2<T>())
+	if constexpr (is_vec2<NonCvrefT>())
 	{
 		jv = vec2_to_jv(val);
 	}
-	else if constexpr (is_vec3<T>())
+	else if constexpr (is_vec3<NonCvrefT>())
 	{
 		jv = vec3_to_jv(val);
 	}
 	else if constexpr
 	(
-		is_prev_curr_pair<T>()
-		|| is_move_only_prev_curr_pair<T>()
+		is_prev_curr_pair<NonCvrefT>()
+		|| is_move_only_prev_curr_pair<NonCvrefT>()
 	)
 	{
 		_set_jv(jv["_prev"], val.prev());
 		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
-	else if constexpr (is_non_arr_std_unique_ptr<T>())
+	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>())
 	{
 		jv["obj"] = *val;
-		if constexpr (concepts::HasStaticKindStr<T>)
+		using ElemT = typename NonCvrefT::element_type;
+		//if constexpr (concepts::HasStaticKindStr<T>)
+		//{
+		//	jv["has_kind_str"] = true;
+		//	jv["kind_str"] = T::KIND_STR;
+		//}
+		//else
+		if constexpr (concepts::HasFuncKindStr<ElemT>)
 		{
-			jv["has_kind_str"] = true;
-			jv["kind_str"] = T::KIND_STR;
+			//jv["has_kind_str"] = true;
+			jv["kind_str"] = val->kind_str();
 		}
-		else
-		{
-			jv["has_kind_str"] = false;
-		}
+		//else
+		//{
+		//	jv["has_kind_str"] = false;
+		//}
 	}
-	else if constexpr (is_arr_like_std_container<T>())
+	else if constexpr (is_arr_like_std_container<NonCvrefT>())
 	{
 		jv[0] = BlankValue();
 
@@ -356,7 +384,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 			}
 		}
 	}
-	else if constexpr (is_set_like_std_container<T>())
+	else if constexpr (is_set_like_std_container<NonCvrefT>())
 	{
 		Json::ArrayIndex i = 0;
 
@@ -379,7 +407,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 			}
 		}
 	}
-	else if constexpr (is_map_like_std_container<T>())
+	else if constexpr (is_map_like_std_container<NonCvrefT>())
 	{
 		Json::ArrayIndex i = 0;
 

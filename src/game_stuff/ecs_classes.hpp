@@ -89,8 +89,8 @@ class Sys
 {
 public:		// serialization stuff
 	#define MEMB_LIST_ECS_SYS(X) \
-		X(_did_init, nullptr) \
-		X(game_mode_active, nullptr) \
+		X(_did_init, std::nullopt) \
+		X(game_mode_active, std::nullopt) \
 
 private:		// variables
 	bool _did_init = false;
@@ -144,10 +144,10 @@ public:		// constants
 		USE_CURR_FILE_NUM = -1;
 protected:		// serialized variables
 	#define MEMB_LIST_ECS_ENGINE(X) \
-		X(_next_ent_id_vec, nullptr) \
-		X(_to_destroy_set_vec, nullptr) \
-		X(_num_files, nullptr) \
-		X(_engine_comp_map_vec, &_comp_deser_func_map)
+		X(_next_ent_id_vec, std::nullopt) \
+		X(_to_destroy_set_vec, std::nullopt) \
+		X(_num_files, std::nullopt) \
+		X(_engine_comp_map_vec, _comp_deser_func_map)
 
 	std::vector<EntId> _next_ent_id_vec;
 	std::vector<EntIdSet> _to_destroy_set_vec;

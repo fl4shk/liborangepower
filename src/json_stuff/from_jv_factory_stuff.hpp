@@ -15,11 +15,19 @@ namespace json
 {
 
 template<typename BaseT>
+using FromJvFactoryFunc
+	= std::function<std::unique_ptr<BaseT>(const Json::Value&)>;
+
+template<typename BaseT>
+using FromJvFactoryFuncMap
+	= std::unordered_map<std::string, FromJvFactoryFunc<BaseT>>;
+
+template<typename BaseT>
 class FromJvFactory final
 {
 public:		// types
-	using Func = std::function<std::unique_ptr<BaseT>(const Json::Value&)>;
-	using FuncMap = std::unordered_map<std::string, Func>;
+	using Func = FromJvFactoryFunc<BaseT>;
+	using FuncMap = FromJvFactoryFuncMap<BaseT>;
 public:		// functions
 	// Create a `FuncMap` that maps each derived type's `KIND_STR` to a
 	// lambda function that generates an `std::unique_ptr<BaseT>` that
