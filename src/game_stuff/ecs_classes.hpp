@@ -31,20 +31,20 @@ static constexpr EntId ENT_NULL_ID
 
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
-using EntIdMap = std::map<std::string, EntIdVec2d>;
+using EntIdMap = std::unordered_map<std::string, EntIdVec2d>;
 using EntIdMapFullIndex = std::pair<std::string, containers::Vec2<size_t>>;
-using EntIdSet = std::set<EntId>;
+using EntIdSet = std::unordered_set<EntId>;
 
-using CompUptr = std::unique_ptr<Comp>;
-using CompMap = std::map<std::string, CompUptr>;
-using CompMapUptr = std::unique_ptr<CompMap>;
+using CompSptr = std::shared_ptr<Comp>;
+using CompMap = std::unordered_map<std::string, CompSptr>;
+//using CompMapSptr = std::shared_ptr<CompMap>;
 
-using EngineCompMap = std::map<EntId, CompMapUptr>;
+using EngineCompMap = std::unordered_map<EntId, CompMap>;
 
-using SysUptr = std::unique_ptr<Sys>;
-using SysMap = std::map<std::string, SysUptr>;
+using SysSptr = std::shared_ptr<Sys>;
+using SysMap = std::unordered_map<std::string, SysSptr>;
 
-using StrKeySet = std::set<std::string>;
+using StrKeySet = std::unordered_set<std::string>;
 //--------
 class Ent final
 {
@@ -59,9 +59,9 @@ public:		// functions
 
 	inline CompMap& comp_map() const;
 
-	inline bool insert_comp(const std::string& key, CompUptr&& comp) const;
+	inline bool insert_comp(const std::string& key, CompSptr&& comp) const;
 	inline bool insert_or_replace_comp(const std::string& key,
-		CompUptr&& comp) const;
+		CompSptr&& comp) const;
 	inline size_t erase_comp(const std::string& key) const;
 
 	GEN_GETTER_AND_SETTER_BY_VAL(id);
@@ -147,7 +147,7 @@ protected:		// serialized variables
 		X(_next_ent_id_vec, std::nullopt) \
 		X(_to_destroy_set_vec, std::nullopt) \
 		X(_num_files, std::nullopt) \
-		X(_engine_comp_map_vec, _comp_deser_func_map)
+		X(_engine_comp_map_vec, &_comp_deser_func_map)
 
 	std::vector<EntId> _next_ent_id_vec;
 	std::vector<EntIdSet> _to_destroy_set_vec;
@@ -248,7 +248,7 @@ public:		// functions
 	void destroy_all();
 	//--------
 	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set,
-		int file_num=USE_CURR_FILE_NUM) const;
+		int file_num=USE_CURR_FILE_NUM);
 	inline EntIdVec ent_id_vec_from_keys_any_v(int file_num,
 		auto&&... args)
 	{
@@ -264,7 +264,7 @@ public:		// functions
 	}
 	//--------
 	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set,
-		int file_num=USE_CURR_FILE_NUM) const;
+		int file_num=USE_CURR_FILE_NUM);
 	inline EntIdSet ent_id_set_from_keys_any_v(int file_num,
 		auto&&... args)
 	{
@@ -280,7 +280,7 @@ public:		// functions
 	}
 	//--------
 	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set,
-		int file_num=USE_CURR_FILE_NUM) const;
+		int file_num=USE_CURR_FILE_NUM);
 	inline EntIdVec ent_id_vec_from_keys_all_v(int file_num,
 		auto&&... args)
 	{
@@ -296,7 +296,7 @@ public:		// functions
 	}
 	//--------
 	EntIdSet ent_id_set_from_keys_all(const StrKeySet& key_set,
-		int file_num=USE_CURR_FILE_NUM) const;
+		int file_num=USE_CURR_FILE_NUM);
 	inline EntIdSet ent_id_set_from_keys_all_v(int file_num,
 		auto&&... args)
 	{
@@ -320,81 +320,81 @@ public:		// functions
 		return ent_at(id, curr_file_num);
 	}
 	//--------
-	inline CompMap& comp_map(EntId id, int file_num) const
+	inline CompMap& comp_map(EntId id, int file_num)
 	{
-		return *engine_comp_map(file_num).at(id);
+		return engine_comp_map(file_num).at(id);
 	}
 
-	inline CompMap& comp_map_cfn(EntId id) const
+	inline CompMap& comp_map_cfn(EntId id)
 	{
 		return comp_map(id, curr_file_num);
 	}
 	//--------
-	inline CompUptr& comp_at(EntId id, const std::string& key,
-		int file_num) const
+	inline CompSptr& comp_at(EntId id, const std::string& key,
+		int file_num)
 	{
 		return comp_map(id, file_num).at(key);
 	}
 	template<EngineDerivedFromComp T>
-	inline CompUptr& comp_at(EntId id, int file_num) const
+	inline CompSptr& comp_at(EntId id, int file_num)
 	{
 		return comp_map(id, file_num).at(T::KIND_STR);
 	}
 
-	inline CompUptr& comp_at_cfn(EntId id, const std::string& key) const
+	inline CompSptr& comp_at_cfn(EntId id, const std::string& key)
 	{
 		return comp_at(id, key, curr_file_num);
 	}
 	template<EngineDerivedFromComp T>
-	inline CompUptr& comp_at_cfn(EntId id) const
+	inline CompSptr& comp_at_cfn(EntId id)
 	{
 		return comp_at<T>(id, curr_file_num);
 	}
 	//--------
 	template<EngineDerivedFromComp T>
 	inline T* casted_comp_at(EntId id, const std::string& key,
-		int file_num) const
+		int file_num)
 	{
 		return static_cast<T*>(comp_at(id, key, file_num).get());
 	}
 	template<EngineDerivedFromComp T>
-	inline T* casted_comp_at(EntId id, int file_num) const
+	inline T* casted_comp_at(EntId id, int file_num)
 	{
 		return casted_comp_at<T>(id, T::KIND_STR, file_num);
 	}
 
 	template<EngineDerivedFromComp T>
-	inline T* casted_comp_at_cfn(EntId id, const std::string& key) const
+	inline T* casted_comp_at_cfn(EntId id, const std::string& key)
 	{
 		return casted_comp_at<T>(id, key, curr_file_num);
 	}
 	template<EngineDerivedFromComp T>
-	inline T* casted_comp_at_cfn(EntId id) const
+	inline T* casted_comp_at_cfn(EntId id)
 	{
 		return casted_comp_at<T>(id, curr_file_num);
 	}
 	//--------
-	bool insert_comp(EntId id, const std::string& key, CompUptr&& comp,
+	bool insert_comp(EntId id, const std::string& key, CompSptr&& comp,
 		int file_num);
-	inline bool insert_comp(EntId id, CompUptr&& comp, int file_num)
+	inline bool insert_comp(EntId id, CompSptr&& comp, int file_num)
 	{
 		const std::string& KIND_STR = comp->kind_str();
 		return insert_comp(id, KIND_STR, std::move(comp), file_num);
 	}
 
 	inline bool insert_comp_cfn(EntId id, const std::string& key,
-		CompUptr&& comp)
+		CompSptr&& comp)
 	{
 		return insert_comp(id, key, std::move(comp), curr_file_num);
 	}
-	inline bool insert_comp_cfn(EntId id, CompUptr&& comp)
+	inline bool insert_comp_cfn(EntId id, CompSptr&& comp)
 	{
 		return insert_comp(id, std::move(comp), curr_file_num);
 	}
 	//--------
 	bool insert_or_replace_comp(EntId id, const std::string& key,
-		CompUptr&& comp, int file_num);
-	inline bool insert_or_replace_comp(EntId id, CompUptr&& comp,
+		CompSptr&& comp, int file_num);
+	inline bool insert_or_replace_comp(EntId id, CompSptr&& comp,
 		int file_num)
 	{
 		const std::string& KIND_STR = comp->kind_str();
@@ -403,12 +403,12 @@ public:		// functions
 	}
 
 	inline bool insert_or_replace_comp_cfn(EntId id,
-		const std::string& key, CompUptr&& comp)
+		const std::string& key, CompSptr&& comp)
 	{
 		return insert_or_replace_comp(id, key, std::move(comp),
 			curr_file_num);
 	}
-	inline bool insert_or_replace_comp_cfn(EntId id, CompUptr&& comp)
+	inline bool insert_or_replace_comp_cfn(EntId id, CompSptr&& comp)
 	{
 		return insert_or_replace_comp(id, std::move(comp), curr_file_num);
 	}
@@ -430,14 +430,14 @@ public:		// functions
 		return erase_comp<T>(id, curr_file_num);
 	}
 	//--------
-	bool insert_sys(const std::string& key, SysUptr&& sys);
-	inline bool insert_sys(SysUptr&& sys)
+	bool insert_sys(const std::string& key, SysSptr&& sys);
+	inline bool insert_sys(SysSptr&& sys)
 	{
 		const std::string& KIND_STR = sys->kind_str();
 		return insert_sys(KIND_STR, std::move(sys));
 	}
-	bool insert_or_replace_sys(const std::string& key, SysUptr&& sys);
-	inline bool insert_or_replace_sys(SysUptr&& sys)
+	bool insert_or_replace_sys(const std::string& key, SysSptr&& sys);
+	inline bool insert_or_replace_sys(SysSptr&& sys)
 	{
 		const std::string& KIND_STR = sys->kind_str();
 		return insert_or_replace_sys(KIND_STR, std::move(sys));
@@ -451,24 +451,23 @@ public:		// functions
 	}
 	//--------
 	inline bool has_ent_with_comp(EntId id, const std::string& key,
-		int file_num) const
+		int file_num)
 	{
 		return (engine_comp_map(file_num).contains(id)
 			&& comp_map(id, file_num).contains(key));
 	}
 	template<EngineDerivedFromComp T>
-	inline bool has_ent_with_comp(EntId id, int file_num) const
+	inline bool has_ent_with_comp(EntId id, int file_num)
 	{
 		return has_ent_with_comp(id, T::KIND_STR, file_num);
 	}
 
 	inline bool has_ent_with_comp_cfn(EntId id, const std::string& key)
-		const
 	{
 		return has_ent_with_comp(id, key, curr_file_num);
 	}
 	template<EngineDerivedFromComp T>
-	inline bool has_ent_with_comp_cfn(EntId id) const
+	inline bool has_ent_with_comp_cfn(EntId id)
 	{
 		return has_ent_with_comp<T>(id, curr_file_num);
 	}
@@ -553,12 +552,12 @@ inline CompMap& Ent::comp_map() const
 {
 	return _engine->comp_map(id(), file_num());
 }
-inline bool Ent::insert_comp(const std::string& key, CompUptr&& comp) const
+inline bool Ent::insert_comp(const std::string& key, CompSptr&& comp) const
 {
 	return _engine->insert_comp(id(), key, std::move(comp), file_num());
 }
 inline bool Ent::insert_or_replace_comp(const std::string& key,
-	CompUptr&& comp) const
+	CompSptr&& comp) const
 {
 	return _engine->insert_or_replace_comp(id(), key, std::move(comp),
 		file_num());

@@ -34,6 +34,8 @@ using containers::is_prev_curr_pair;
 using containers::is_move_only_prev_curr_pair;
 
 using containers::is_non_arr_std_unique_ptr;
+using containers::is_non_arr_std_shared_ptr;
+using containers::is_non_arr_std_weak_ptr;
 using containers::is_std_array;
 using containers::is_std_vector;
 using containers::is_std_deque;
@@ -172,7 +174,9 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 		val_from_jv(ret(), jv["_curr"], func_map);
 	}
 	//--------
-	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>())
+	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
+		|| is_non_arr_std_shared_ptr<NonCvrefT>()
+		|| is_non_arr_std_weak_ptr<NonCvrefT>())
 	{
 		using ElemT = typename NonCvrefT::element_type;
 
@@ -228,19 +232,35 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 			}
 			else if constexpr (is_vec_like_std_container<T>())
 			{
-				typename NonCvrefT::value_type temp;
+				using ValueT = typename NonCvrefT::value_type;
+				ValueT temp;
 
 				val_from_jv(temp, jv[i], func_map);
 
-				ret.push_back(temp);
+				if constexpr (is_non_arr_std_unique_ptr<ValueT>())
+				{
+					ret.push_back(std::move(temp));
+				}
+				else
+				{
+					ret.push_back(temp);
+				}
 			}
 			else // if constexpr (is_set_like_std_container<T>())
 			{
-				typename NonCvrefT::key_type temp;
+				using KeyT = typename NonCvrefT::key_type;
+				KeyT temp;
 
 				val_from_jv(temp, jv[i], func_map);
 
-				ret.insert(temp);
+				if constexpr (is_non_arr_std_unique_ptr<KeyT>())
+				{
+					ret.insert(std::move(temp));
+				}
+				else
+				{
+					ret.insert(temp);
+				}
 			}
 		}
 	}
@@ -294,9 +314,9 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 
 template<typename T, typename BaseT>
 inline void get_jv_memb(T& ret, const Json::Value& jv,
-	const std::string& name, FromJvFactoryFuncMap<BaseT>& func_map)
+	const std::string& name, FromJvFactoryFuncMap<BaseT>* func_map)
 {
-	val_from_jv(ret, jv[name], &func_map);
+	val_from_jv(ret, jv[name], func_map);
 }
 template<typename T>
 inline void get_jv_memb(T& ret, const Json::Value& jv,
@@ -304,12 +324,13 @@ inline void get_jv_memb(T& ret, const Json::Value& jv,
 {
 	//FromJvFactoryFuncMap<void> func_map;
 	//get_jv_memb(ret, jv, name, func_map);
-	val_from_jv(ret, jv[name], std::nullopt);
+	//val_from_jv(ret, jv[name], std::nullopt);
+	val_from_jv<T, void>(ret, jv[name], nullptr);
 }
 
 template<typename TempT, typename RetT, typename BaseT>
 inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
-	const std::string& name, FromJvFactoryFuncMap<BaseT>& func_map)
+	const std::string& name, FromJvFactoryFuncMap<BaseT>* func_map)
 {
 	TempT temp;
 	get_jv_memb(temp, jv, name, func_map);
@@ -319,8 +340,6 @@ template<typename TempT, typename RetT>
 inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
 	const std::string& name, const std::nullopt_t& some_nullopt)
 {
-	//FromJvFactoryFuncMap<void> func_map;
-	//get_jv_memb_w_stat_cast(ret, jv, name, func_map);
 	TempT temp;
 	get_jv_memb(temp, jv, name, some_nullopt);
 	ret = static_cast<RetT>(temp);
@@ -355,7 +374,9 @@ inline void _set_jv(Json::Value& jv, const T& val)
 		_set_jv(jv["_curr"], val.curr());
 	}
 	//--------
-	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>())
+	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
+		|| is_non_arr_std_shared_ptr<NonCvrefT>()
+		|| is_non_arr_std_weak_ptr<NonCvrefT>())
 	{
 		//jv["obj"] = *val;
 		_set_jv(jv["obj"], *val);

@@ -10,7 +10,7 @@ class Test final
 {
 public:		// serialized variables
 	#define MEMB_LIST_TEST(X) \
-		X(data, _data_func_map)
+		X(data, &_data_func_map)
 
 	std::unordered_map<std::string, std::unique_ptr<Base>> data;
 private:		// non-serialized variables
