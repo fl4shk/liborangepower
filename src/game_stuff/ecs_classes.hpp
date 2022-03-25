@@ -143,11 +143,13 @@ public:		// constants
 	static constexpr int
 		USE_CURR_FILE_NUM = -1;
 protected:		// serialized variables
-	#define MEMB_LIST_ECS_ENGINE(X) \
+	#define MEMB_SER_LIST_ECS_ENGINE(X) \
 		X(_next_ent_id_vec, std::nullopt) \
 		X(_to_destroy_set_vec, std::nullopt) \
 		X(_num_files, std::nullopt) \
-		X(_engine_comp_map_vec, &_comp_deser_func_map)
+		X(_engine_comp_map_vec, &_comp_deser_func_map) \
+		\
+		X(curr_file_num, std::nullopt)
 
 	std::vector<EntId> _next_ent_id_vec;
 	std::vector<EntIdSet> _to_destroy_set_vec;
@@ -161,7 +163,7 @@ private:		// non-serialized variables
 	//json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
 	json::FromJvFactoryFuncMap<Comp> _comp_deser_func_map;
 	//json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
-public:		// variables
+public:		// serialized variables
 	int curr_file_num = 0;
 public:		// functions
 	//--------

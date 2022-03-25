@@ -140,7 +140,7 @@ Engine::operator Json::Value () const
 	//		}
 	//	}
 	//}
-	MEMB_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
+	MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	return ret;
 }
@@ -159,17 +159,17 @@ Engine::operator Json::Value () const
 void Engine::deserialize(const Json::Value& jv)
 {
 	//MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
-	//MEMB_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
+	MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 
-	get_jv_memb(_next_ent_id_vec, jv, "_next_ent_id_vec", std::nullopt);
-	get_jv_memb(_to_destroy_set_vec, jv, "_to_destroy_set_vec",
-		std::nullopt);
-	get_jv_memb(_num_files, jv, "_num_files", std::nullopt);
-	//get_jv_memb<decltype(_engine_comp_map_vec), Comp>
-	//	(_engine_comp_map_vec, jv, "_engine_comp_map_vec",
+	//get_jv_memb(_next_ent_id_vec, jv, "_next_ent_id_vec", std::nullopt);
+	//get_jv_memb(_to_destroy_set_vec, jv, "_to_destroy_set_vec",
+	//	std::nullopt);
+	//get_jv_memb(_num_files, jv, "_num_files", std::nullopt);
+	////get_jv_memb<decltype(_engine_comp_map_vec), Comp>
+	////	(_engine_comp_map_vec, jv, "_engine_comp_map_vec",
+	////	&_comp_deser_func_map);
+	//get_jv_memb(_engine_comp_map_vec, jv, "_engine_comp_map_vec",
 	//	&_comp_deser_func_map);
-	get_jv_memb(_engine_comp_map_vec, jv, "_engine_comp_map_vec",
-		&_comp_deser_func_map);
 
 }
 ////template<EngineDerivedFromSys FirstSysT,
