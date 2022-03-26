@@ -226,13 +226,13 @@ private:		// functions
 	////	EngineDerivedFromSys... RemSysTs>
 	//void _sys_deserialize(const Json::Value& jv);
 	//--------
-	void _inner_create(EntId id, int file_num);
+	//void _inner_create(EntId id, int file_num, bool mk_non_ser=false);
 	//--------
 public:		// functions
-	EntId create(int file_num);
-	inline EntId create_cfn()
+	EntId create(int file_num, bool mk_non_ser=false);
+	inline EntId create_cfn(bool mk_non_ser=false)
 	{
-		return create(curr_file_num);
+		return create(curr_file_num, mk_non_ser);
 	}
 
 	inline void sched_destroy(EntId id, int file_num)

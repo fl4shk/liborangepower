@@ -208,16 +208,34 @@ void Engine::deserialize(const Json::Value& jv)
 //	}
 //}
 //--------
-void Engine::_inner_create(EntId id, int file_num)
+//void Engine::_inner_create(EntId id, int file_num, bool mk_non_ser)
+//{
+//	//engine_comp_map(file_num)[id] = CompMapSptr(new CompMap());
+//	engine_comp_map(file_num)[id] = CompMap();
+//
+//	if (mk_non_ser)
+//	{
+//		insert_comp(id, CompSptr(new NonSerializable()));
+//	}
+//}
+EntId Engine::create(int file_num, bool mk_non_ser)
 {
+	//_inner_create(next_ent_id(file_num), file_num, mk_non_ser);
+
+	////_ent_id_to_comp_key_map[next_ent_id(file_num)]
+	////	= std::set<std::string>();
+
+
+	const EntId& id = next_ent_id(file_num);
+
 	//engine_comp_map(file_num)[id] = CompMapSptr(new CompMap());
 	engine_comp_map(file_num)[id] = CompMap();
-}
-EntId Engine::create(int file_num)
-{
-	_inner_create(next_ent_id(file_num), file_num);
-	//_ent_id_to_comp_key_map[next_ent_id(file_num)]
-	//	= std::set<std::string>();
+
+	if (mk_non_ser)
+	{
+		insert_comp(id, CompSptr(new NonSerializable()), file_num);
+	}
+
 	return (next_ent_id(file_num)++);
 }
 void Engine::destroy(EntId id, int file_num)
