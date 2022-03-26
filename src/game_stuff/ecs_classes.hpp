@@ -226,7 +226,7 @@ private:		// functions
 	////	EngineDerivedFromSys... RemSysTs>
 	//void _sys_deserialize(const Json::Value& jv);
 	//--------
-	//void _inner_create(EntId id, int file_num, bool mk_non_ser=false);
+	void _inner_create(EntId id, int file_num, bool mk_non_ser=false);
 	//--------
 public:		// functions
 	EntId create(int file_num, bool mk_non_ser=false);
