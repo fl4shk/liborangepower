@@ -216,11 +216,11 @@ public:		// functions
 	//--------
 private:		// functions
 	//--------
-	void _autoser_deserialize(const Json::Value& jv);
+	//void _autoser_deserialize(const Json::Value& jv);
 
-	//template<EngineDerivedFromComp FirstCompT,
-	//	EngineDerivedFromComp... RemCompTs>
-	void _ent_deserialize(const Json::Value& jv);
+	////template<EngineDerivedFromComp FirstCompT,
+	////	EngineDerivedFromComp... RemCompTs>
+	//void _ent_deserialize(const Json::Value& jv);
 
 	////template<EngineDerivedFromSys FirstSysT,
 	////	EngineDerivedFromSys... RemSysTs>
