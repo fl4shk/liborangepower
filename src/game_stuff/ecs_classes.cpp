@@ -22,7 +22,6 @@ namespace ecs
 //{
 //}
 //--------
-//--------
 std::string Comp::kind_str() const
 {
 	return "";
@@ -34,6 +33,12 @@ Comp::operator Json::Value () const
 	MEMB_LIST_ECS_COMP(JSON_MEMB_SERIALIZE);
 
 	return ret;
+}
+
+const std::string NonSerializable::KIND_STR("NonSerializable");
+std::string NonSerializable::kind_str() const
+{
+	return KIND_STR;
 }
 //--------
 //Sys::Sys(const Json::Value& jv)
@@ -120,27 +125,37 @@ Engine::operator Json::Value () const
 {
 	Json::Value ret;
 
-	//MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
+	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
-	//for (Json::ArrayIndex i=0;
-	//	i<static_cast<Json::ArrayIndex>(_num_files);
-	//	++i)
-	//{
-	//	Json::Value& inner_jv = ret["_engine_comp_map_vec"][i];
+	for (Json::ArrayIndex i=0;
+		i<static_cast<Json::ArrayIndex>(_num_files);
+		++i)
+	{
+		Json::Value& jv_ecmap = ret["_engine_comp_map_vec"][i];
 
-	//	for (const auto& ent_pair: _engine_comp_map_vec.at(i))
-	//	{
-	//		//Json::Value& ent_jv = ret["_engine_comp_map"]
-	//		//	[sconcat(ent_pair.first)];
-	//		Json::Value& ent_jv = inner_jv[sconcat(ent_pair.first)];
+		//for (const auto& ent_pair: _engine_comp_map_vec.at(i))
+		//{
+		//	//Json::Value& ent_jv = ret["_engine_comp_map"]
+		//	//	[sconcat(ent_pair.first)];
 
-	//		for (const auto& comp_pair: *ent_pair.second)
-	//		{
-	//			set_jv_memb(ent_jv, comp_pair.first, *comp_pair.second);
-	//		}
-	//	}
-	//}
-	MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
+		//	//if (!ent_pair.second.contains(NonSerializable::KIND_STR))
+		//	//{
+		//	//	//Json::Value& ent_jv = inner_jv[sconcat(ent_pair.first)];
+
+		//	//	//for (const auto& comp_pair: *ent_pair.second)
+		//	//	//{
+		//	//	//	set_jv_memb(ent_jv, comp_pair.first,
+		//	//	//		*comp_pair.second);
+		//	//	//}
+		//	//}
+		//}
+		set_jv_map_like_std_container(jv_ecmap, _engine_comp_map_vec.at(i),
+			[](const typename EngineCompMap::value_type& ent_pair) -> bool
+			{
+				return ent_pair.second.contains(NonSerializable::KIND_STR);
+			});
+	}
+	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	return ret;
 }
@@ -158,8 +173,10 @@ Engine::operator Json::Value () const
 //void Engine::_ent_deserialize(const Json::Value& jv)
 void Engine::deserialize(const Json::Value& jv)
 {
-	//MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
-	MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
+	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
+	get_jv_memb(_engine_comp_map_vec, jv, "_engine_comp_map_vec",
+		&_comp_deser_func_map);
+	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 
 	//get_jv_memb(_next_ent_id_vec, jv, "_next_ent_id_vec", std::nullopt);
 	//get_jv_memb(_to_destroy_set_vec, jv, "_to_destroy_set_vec",

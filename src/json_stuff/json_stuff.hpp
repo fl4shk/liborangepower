@@ -50,6 +50,7 @@ using containers::is_std_map;
 using containers::is_std_unordered_map;
 
 using containers::is_map_like_std_container;
+using containers::MapLikeStdCntnr;
 
 using containers::is_pseudo_vec_like_std_container;
 using containers::is_basic_indexable_std_container;
@@ -346,7 +347,51 @@ inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
 }
 
 template<typename T>
-inline void _set_jv(Json::Value& jv, const T& val)
+inline void set_jv(Json::Value& jv, const T& val);
+
+template<MapLikeStdCntnr T>
+inline void set_jv_map_like_std_container(Json::Value& jv, const T& val,
+	const std::function<bool(const typename T::value_type&)>& skip_func)
+{
+	//--------
+	jv = Json::Value();
+	//--------
+	Json::ArrayIndex i = 0;
+
+	jv[i++] = BlankValue();
+
+	for (const auto& pair: val)
+	{
+		if (!skip_func(pair))
+		{
+			Json::Value inner_jv;
+
+			set_jv(inner_jv["key"], pair.first);
+			set_jv(inner_jv["value"], pair.second);
+
+			jv[i++] = inner_jv;
+		}
+	}
+	//--------
+}
+
+template<MapLikeStdCntnr T>
+inline void set_jv_map_like_std_container(Json::Value& jv, const T& val)
+{
+	set_jv_map_like_std_container(jv, val,
+		[](const typename T::value_type& pair) -> bool
+			{ return false; });
+}
+
+//template<containers::MapLikeStdCntnr T>
+//inline void set_jv_map_like_std_container(Json::Value& jv, const T& val,
+//	const std::nullopt_t& some_nullopt)
+//{
+//	set_jv_map_like_std_container(jv, val, nullptr);
+//}
+
+template<typename T>
+inline void set_jv(Json::Value& jv, const T& val)
 {
 	using NonCvrefT = std::remove_cvref_t<T>;
 
@@ -370,8 +415,8 @@ inline void _set_jv(Json::Value& jv, const T& val)
 		|| is_move_only_prev_curr_pair<NonCvrefT>()
 	)
 	{
-		_set_jv(jv["_prev"], val.prev());
-		_set_jv(jv["_curr"], val.curr());
+		set_jv(jv["_prev"], val.prev());
+		set_jv(jv["_curr"], val.curr());
 	}
 	//--------
 	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
@@ -379,7 +424,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 		|| is_non_arr_std_weak_ptr<NonCvrefT>())
 	{
 		//jv["obj"] = *val;
-		_set_jv(jv["obj"], *val);
+		set_jv(jv["obj"], *val);
 		using ElemT = typename NonCvrefT::element_type;
 		//if constexpr (concepts::HasStaticKindStr<T>)
 		//{
@@ -408,7 +453,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 			{
 				Json::Value inner_jv;
 
-				_set_jv(inner_jv, val.at(i));
+				set_jv(inner_jv, val.at(i));
 
 				jv[i + 1] = inner_jv;
 			}
@@ -431,7 +476,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 			{
 				Json::Value inner_jv;
 
-				_set_jv(inner_jv, key);
+				set_jv(inner_jv, key);
 
 				jv[i++] = inner_jv;
 			}
@@ -443,19 +488,7 @@ inline void _set_jv(Json::Value& jv, const T& val)
 	}
 	else if constexpr (is_map_like_std_container<NonCvrefT>())
 	{
-		Json::ArrayIndex i = 0;
-
-		jv[i++] = BlankValue();
-
-		for (const auto& pair: val)
-		{
-			Json::Value inner_jv;
-
-			_set_jv(inner_jv["key"], pair.first);
-			_set_jv(inner_jv["value"], pair.second);
-
-			jv[i++] = inner_jv;
-		}
+		set_jv_map_like_std_container(jv, val);
 	}
 	//--------
 	else
@@ -486,9 +519,9 @@ inline void set_jv_memb(Json::Value& jv, const std::string& name,
 	//}
 	//else
 	//{
-	//	_set_jv(jv[name], val);
+	//	set_jv(jv[name], val);
 	//}
-	_set_jv(jv[name], val);
+	set_jv(jv[name], val);
 }
 
 std::string get_json_value_type_as_str(const Json::Value& some_value);

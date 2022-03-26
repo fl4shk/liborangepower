@@ -84,6 +84,21 @@ public:		// functions
 
 	virtual operator Json::Value () const;
 };
+
+// A `Comp`onent specifying that the entity shouldn't be serialized
+class NonSerializable: public Comp
+{
+public:		// constants
+	static const std::string KIND_STR;
+public:		// misc.
+	#define MEMB_LIST_ECS_COMP_NON_SERIALIZABLE(X)
+public:		// functions
+	NonSerializable() = default;
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(NonSerializable);
+	virtual ~NonSerializable() = default;
+
+	virtual std::string kind_str() const;
+};
 //--------
 class Sys
 {
@@ -143,13 +158,13 @@ public:		// constants
 	static constexpr int
 		USE_CURR_FILE_NUM = -1;
 protected:		// serialized variables
-	#define MEMB_SER_LIST_ECS_ENGINE(X) \
+	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X) \
 		X(_next_ent_id_vec, std::nullopt) \
 		X(_to_destroy_set_vec, std::nullopt) \
 		X(_num_files, std::nullopt) \
-		X(_engine_comp_map_vec, &_comp_deser_func_map) \
+		/* X(_engine_comp_map_vec, &_comp_deser_func_map) */ \
 		\
-		X(curr_file_num, std::nullopt)
+		/* X(curr_file_num, std::nullopt) */
 
 	std::vector<EntId> _next_ent_id_vec;
 	std::vector<EntIdSet> _to_destroy_set_vec;
