@@ -215,7 +215,7 @@ void Engine::_inner_create(EntId id, int file_num, bool mk_non_ser)
 
 	if (mk_non_ser)
 	{
-		insert_comp(id, CompSptr(new NonSerializable()));
+		insert_comp(id, CompSptr(new NonSerializable()), file_num);
 	}
 }
 EntId Engine::create(int file_num, bool mk_non_ser)
