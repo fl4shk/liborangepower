@@ -24,6 +24,7 @@
 
 #include <variant>
 #include <optional>
+#include <any>
 #include <tuple>
 
 #include <concepts>
@@ -31,11 +32,15 @@
 #include <exception>
 #include <stdexcept>
 
+#include <cstring>
+#include <cctype>
+
 
 using std::cout;
 using std::cerr;
 using std::cin;
 using std::endl;
+
 
 
 #endif		// liborangepower_misc_misc_includes_hpp

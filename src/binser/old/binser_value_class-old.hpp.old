@@ -1,0 +1,172 @@
+#ifndef liborangepower_binser_value_class_hpp
+#define liborangepower_binser_value_class_hpp
+
+#include "../misc/misc_includes.hpp"
+#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_types.hpp"
+#include "../strings/sconcat_etc.hpp"
+#include "../metaprog_defines.hpp"
+
+#include "../concepts/misc_concepts.hpp"
+
+namespace liborangepower
+{
+
+using namespace integer_types;
+
+namespace binser
+{
+//--------
+class Value;
+using ValueVec = std::vector<Value>;
+//--------
+using ValueDataStr = std::basic_string<char>;
+using ValueData
+	= std::variant
+	<
+		u8, i8, u16, i16, u32, i32, u64, i64, float, double, bool,
+		ValueDataStr,
+		ValueVec
+	>;
+//--------
+template<typename T>
+concept IsValueDataNumeric
+	= std::same_as<u8> || std::same_as<i8>
+	|| std::same_as<u16> || std::same_as<i16>
+	|| std::same_as<u32> || std::same_as<i32>
+	|| std::same_as<u64> || std::same_as<i64>
+
+	|| std::same_as<float> || std::same_as<double>
+
+	// `bool` is perhaps not technically a numeric type, but it kind of is,
+	// I guess?
+	|| std::same_as<bool>;
+
+template<typename T>
+concept IsValueDataNonVec
+	= IsValueDataNumeric || std::same_as<ValueDataStr>;
+
+template<typename T>
+concept IsValueData
+	= IsValueDataNonVec || std::same_as<ValueVec>;
+
+template<typename T>
+concept IsValueDataNonNumeric
+	= std::same_as<ValueDataStr> || std::same_as<ValueVec>;
+//--------
+class Value final
+{
+public:		// types
+	enum class Tag: char
+	{
+		UInt8,		// 0x0
+		Int8,		// 0x1
+		UInt16,		// 0x2
+		Int16,		// 0x3
+		UInt32,		// 0x4
+		Int32,		// 0x5
+		UInt64,		// 0x6
+		Int64,		// 0x7
+		Float,		// 0x8
+		Double,		// 0x9
+		Bool,		// 0xa
+
+		Str,		// 0xb
+		Vec,		// 0xc
+	};
+private:		// variables
+	ValueData _data = static_cast<u8>(0u);
+public:		// functions
+	//--------
+	inline Value() = default;
+
+	template<IsValueDataNonVec T>
+	inline Value(const T& s_data)
+	{
+		*this = s_data;
+	}
+
+	template<IsValueDataNonVec T>
+	inline Value(T&& s_data)
+	{
+		*this = std::move(s_data);
+	}
+	inline Value(ValueVec&& s_data)
+	{
+		*this = std::move(s_data);
+	}
+
+private:		// static functions
+	void _construct(const std::vector<char>& to_cast, i64& i);
+public:		// functions
+	inline Value(const std::vector<char>& to_cast)
+	{
+		i64 i = 0;
+		construct(to_cast, i);
+	}
+
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Value);
+	inline ~Value() = default;
+
+	operator std::vector<char> () const;
+	//--------
+	template<IsValueDataNumeric T>
+	inline Value& operator = (T n_data) noexcept
+	{
+		_data = n_data;
+		return *this;
+	}
+	inline Value& operator = (const ValueDataStr& n_data) noexcept
+	{
+		_data = n_data;
+		return *this;
+	}
+	inline Value& operator = (ValueDataStr&& n_data) noexcept
+	{
+		_data = std::move(n_data);
+		return *this;
+	}
+	inline Value& operator = (ValueVec&& n_data) noexcept
+	{
+		_data = std::move(n_data);
+		return *this;
+	}
+	//--------
+	template<IsValueData T>
+	constexpr inline bool holds_alternative() const noexcept
+	{
+		return std::holds_alternative<T>(_data);
+	}
+	constexpr inline bool holds_numeric_alternative() const noexcept
+	{
+		return std::holds_alternative<u8>()
+			|| std::holds_alternative<i8>()
+			|| std::holds_alternative<u16>()
+			|| std::holds_alternative<i16>()
+			|| std::holds_alternative<u32>()
+			|| std::holds_alternative<i32>()
+			|| std::holds_alternative<u64>()
+			|| std::holds_alternative<i64>()
+			|| std::holds_alternative<float>()
+			|| std::holds_alternative<double>()
+			|| std::holds_alternative<bool>();
+	}
+
+	template<IsValueData T>
+	T& get()
+	{
+		returns std::get<T>(_data);
+	}
+	template<IsValueData T>
+	const T& get() const
+	{
+		return std::get<T>(_data);
+	}
+	//--------
+};
+//--------
+//--------
+} // namespace binser
+} // namespace liborangepower
+
+#endif		// liborangepower_binser_value_class_hpp

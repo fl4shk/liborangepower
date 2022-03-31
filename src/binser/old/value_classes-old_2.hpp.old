@@ -1,0 +1,106 @@
+#ifndef liborangepower_binser_value_classes_hpp
+#define liborangepower_binser_value_classes_hpp
+
+#include "../misc/misc_includes.hpp"
+#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_types.hpp"
+#include "../strings/sconcat_etc.hpp"
+#include "../metaprog_defines.hpp"
+
+#include "../concepts/misc_concepts.hpp"
+
+namespace liborangepower
+{
+
+using integer_types::u64;
+using strings::sconcat;
+
+namespace binser
+{
+//--------
+using ValueVec = std::vector<char>;
+//--------
+// This class is intended to be used for serialization
+class ValueGen final
+{
+private:		// variables
+	ValueVec _vec;
+
+	// Short for "index". This member variable is intended to be used as
+	// the index of the next member being serialized. 
+	u64 _idx = 0;
+public:		// functions
+	inline ValueGen() = default;
+	inline ValueGen(const ValueVec& s_vec, u64 s_idx=0)
+		: _vec(s_vec), _idx(s_idx)
+	{
+	}
+	inline ValueGen(ValueVec&& s_vec, u64 s_idx=0)
+		: _vec(std::move(s_vec)), _idx(s_idx)
+	{
+	}
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ValueGen);
+	inline  ~ValueGen() = default;
+
+	inline void append(const ValueVec& to_append)
+	{
+		_vec.insert(_vec.end(), to_append.cbegin(), to_append.cend());
+	}
+
+	inline u64 next_idx(u64 to_add)
+	{
+		_idx += to_add;
+
+		return _idx;
+	}
+
+	GEN_GETTER_BY_CON_REF(vec);
+	GEN_GETTER_BY_VAL(idx);
+};
+//--------
+// This class is intended to be used for deserialization
+class ValueRef final
+{
+private:		// variables
+	ValueVec _vec;
+
+	// Short for "index". This member variable is intended to be used as an
+	// index into `_vec`, or alternatively for pointer arithmetic via
+	// `_vec.data() + _idx`.
+	u64 _idx = 0;
+public:		// functions
+	inline ValueRef() = default;
+	inline ValueRef(const ValueVec& s_vec, u64 s_idx=0)
+		: _vec(s_vec), _idx(s_idx)
+	{
+	}
+	inline ValueRef(ValueVec&& s_vec, u64 s_idx=0)
+		: _vec(std::move(s_vec)), _idx(s_idx)
+	{
+	}
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ValueRef);
+	inline ~ValueRef() = default;
+
+	inline u64 next_idx(u64 to_add)
+	{
+		if (_idx + to_add >= _vec.size())
+		{
+			throw std::invalid_argument(sconcat
+				("ValueGen::next_idx(): _idx + to_add >= _vec.size(): ",
+				_idx, " ", to_add, " ", _idx + to_add, " ",
+				_vec.size(), "."));
+		}
+
+		_idx += to_add;
+
+		return _idx;
+	}
+
+	GEN_GETTER_BY_CON_REF(vec);
+	GEN_GETTER_BY_VAL(idx);
+};
+//--------
+} // namespace binser
+} // namespace liborangepower
+
+#endif		// liborangepower_binser_value_classes_hpp

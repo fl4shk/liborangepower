@@ -16,7 +16,7 @@ concept HasStaticKindStr = requires
 template<typename T>
 concept HasFuncKindStr = requires(T obj)
 {
-	{ obj.kind_str() } -> std::same_as<std::string>;
+	{ obj.kind_str() } -> std::convertible_to<std::string>;
 };
 
 template<typename DerivedT, typename BaseT>

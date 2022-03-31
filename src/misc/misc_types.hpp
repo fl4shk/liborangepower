@@ -5,7 +5,6 @@
 
 namespace liborangepower
 {
-
 namespace integer_types
 {
 
@@ -23,9 +22,7 @@ typedef int64_t i64;
 
 typedef unsigned int uint;
 
-
 } // namespace integer_types
-
 } // namespace liborangepower
 
 

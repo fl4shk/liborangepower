@@ -6,8 +6,7 @@
 #include "../strings/sconcat_etc.hpp"
 #include "../containers/vec2_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
-#include "../json_stuff/json_stuff.hpp"
-#include "../json_stuff/from_jv_factory_stuff.hpp"
+#include "../binser/binser_serialize_funcs.hpp"
 
 #include <map>
 #include <set>
@@ -15,6 +14,7 @@
 
 namespace liborangepower
 {
+
 namespace game
 {
 namespace ecs
@@ -82,7 +82,7 @@ public:		// functions
 	// `Ent`.
 	virtual std::string kind_str() const;
 
-	virtual operator Json::Value () const;
+	virtual operator binser::Value () const;
 };
 
 // A `Comp`onent specifying that the entity shouldn't be serialized
@@ -116,13 +116,13 @@ public:		// functions
 		: game_mode_active(false, false)
 	{
 	}
-	//Sys(const Json::Value& jv);
+	//Sys(const binser::Value& bv);
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Sys);
 	virtual ~Sys() = default;
 
 	virtual std::string kind_str() const;
 
-	//operator Json::Value () const;
+	//operator binser::Value () const;
 
 	void prep_init();
 	virtual void init(Engine* ecs_engine);
@@ -143,11 +143,11 @@ protected:		// functions
 //--------
 template<typename T>
 concept EngineDerivedFromComp 
-	= json::IsValidFromJvFactoryT<T, Comp>;
+	= binser::IsValidFromBvFactoryT<T, Comp>;
 
 template<typename T>
 concept EngineDerivedFromSys
-	= json::IsValidFromJvFactoryT<T, Sys>;
+	= binser::IsValidFromBvFactoryT<T, Sys>;
 
 class Engine
 {
@@ -175,9 +175,9 @@ protected:		// serialized variables
 protected:		// non-serialized variables
 	SysMap _sys_map;
 private:		// non-serialized variables
-	//json::FromJvFactory<Comp>::FuncMap _comp_deser_func_map;
-	json::FromJvFactoryFuncMap<Comp> _comp_deser_func_map;
-	//json::FromJvFactory<Sys>::FuncMap _sys_deser_func_map;
+	//binser::FromBvFactory<Comp>::FuncMap _comp_deser_func_map;
+	binser::FromBvFactoryFuncMap<Comp> _comp_deser_func_map;
+	//binser::FromBvFactory<Sys>::FuncMap _sys_deser_func_map;
 public:		// serialized variables
 	int curr_file_num = 0;
 public:		// functions
@@ -187,13 +187,13 @@ public:		// functions
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Engine);
 	virtual ~Engine();
 	//--------
-	operator Json::Value () const;
+	operator binser::Value () const;
 	//--------
-	void deserialize(const Json::Value& jv);
+	void deserialize(const binser::Value& bv);
 	//{
-	//	_autoser_deserialize(jv);
-	//	_ent_deserialize(jv);
-	//	//_sys_deserialize(jv);
+	//	_autoser_deserialize(bv);
+	//	_ent_deserialize(bv);
+	//	//_sys_deserialize(bv);
 	//}
 	//--------
 	template<EngineDerivedFromComp FirstCompT,
@@ -201,7 +201,7 @@ public:		// functions
 	void init_comp_deserialize()
 	{
 		_comp_deser_func_map 
-			= json::FromJvFactory<Comp>::gen_func_map
+			= binser::FromBvFactory<Comp>::gen_func_map
 				<FirstCompT, RemCompTs...>();
 	}
 
@@ -210,21 +210,21 @@ public:		// functions
 	//void init_sys_deserialize()
 	//{
 	//	_sys_deser_func_map 
-	//		= json::FromJvFactory<Sys>::gen_func_map
+	//		= binser::FromBvFactory<Sys>::gen_func_map
 	//			<FirstSysT, RemSysTs...>();
 	//}
 	//--------
 private:		// functions
 	//--------
-	//void _autoser_deserialize(const Json::Value& jv);
+	//void _autoser_deserialize(const binser::Value& bv);
 
 	////template<EngineDerivedFromComp FirstCompT,
 	////	EngineDerivedFromComp... RemCompTs>
-	//void _ent_deserialize(const Json::Value& jv);
+	//void _ent_deserialize(const binser::Value& bv);
 
 	////template<EngineDerivedFromSys FirstSysT,
 	////	EngineDerivedFromSys... RemSysTs>
-	//void _sys_deserialize(const Json::Value& jv);
+	//void _sys_deserialize(const binser::Value& bv);
 	//--------
 	void _inner_create(EntId id, int file_num, bool mk_non_ser=false);
 	//--------

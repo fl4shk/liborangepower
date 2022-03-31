@@ -1,8 +1,10 @@
 #ifndef liborangepower_misc_memwhatever_wrappers_hpp
 #define liborangepower_misc_memwhatever_wrappers_hpp
 
-#include <string.h>
+#include <cstring>
 #include <array>
+#include <vector>
+#include <deque>
 
 #include "misc_includes.hpp"
 #include "misc_types.hpp"
@@ -17,23 +19,21 @@ namespace misc_util
 template<typename T>
 inline void* arr_memcpy(T* dst, const void* src, size_t num_elems)
 {
-	return memcpy((void*)dst, src, num_elems * sizeof(T) 
+	return std::memcpy((void*)dst, src, num_elems * sizeof(T) 
 		/ sizeof(integer_types::u8));
 }
 template<typename T>
 inline void* arr_memset(T* dst, int c, size_t num_elems)
 {
-	return memset((void*)dst, c, num_elems * sizeof(T) 
+	return std::memset((void*)dst, c, num_elems * sizeof(T) 
 		/ sizeof(integer_types::u8));
 }
 
-
-
-template<typename dst_type, typename src_type, size_t size>
-inline void* arr_memcpy(std::array<dst_type, size>& dst, 
-	std::array<src_type, size>& src)
+template<typename DstT, typename SrcT, size_t size>
+inline void* arr_memcpy(std::array<DstT, size>& dst, 
+	const std::array<SrcT, size>& src)
 {
-	return arr_memcpy<dst_type>(dst.data(), src.data(), size);
+	return arr_memcpy<DstT>(dst.data(), src.data(), size);
 }
 template<typename T, size_t size>
 inline void* arr_memcpy(std::array<T, size>& dst, const void* src)

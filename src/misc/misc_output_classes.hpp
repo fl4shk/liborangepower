@@ -6,10 +6,8 @@
 
 namespace liborangepower
 {
-
 namespace misc_output
 {
-
 
 template<typename... ArgTs>
 std::ostream& osprintout(std::ostream& os, ArgTs&&... args);
@@ -67,6 +65,77 @@ inline std::ostream& fprintout(std::ostream& out_file, ArgTs&&... args)
 }
 
 
+inline std::ostream& osprint_hexdump(std::ostream& os,
+	const std::vector<char>& to_print, size_t line_break=8)
+{
+	static constexpr char BLANK_TEXT_C = '.';
+
+	//for (const auto& c: ser_vec)
+	std::vector<char> text;
+	size_t i;
+
+	auto show_text
+		= [&os, &line_break, &text, &i]() -> void
+	{
+		osprintout(os, "  ||  ");
+		for (const auto& c: text)
+		{
+			if (std::isprint(c))
+			{
+				osprintout(os, c);
+			}
+			else
+			{
+				osprintout(os, BLANK_TEXT_C);
+			}
+		}
+		osprintout(os, "\n");
+		text.resize(0);
+	};
+
+	for (i=0; i<to_print.size(); ++i)
+	{
+		//text += to_print.at(i);
+		text.push_back(to_print.at(i));
+		const int c = to_print.at(i);
+		//file.put(c);
+
+		if (c < 0x10)
+		{
+			osprintout(os, 0x0);
+		}
+		osprintout(os, std::hex, c, " ", std::dec);
+
+		if (((i + 1) % line_break == 0) && (i > 0))
+		{
+			//osprintout(os, " ");
+			show_text();
+		}
+	}
+	if ((to_print.size() % line_break) > 0)
+	{
+		for (i%=line_break; i<line_break; ++i)
+		{
+			text.push_back(BLANK_TEXT_C);
+			osprintout(os, BLANK_TEXT_C, BLANK_TEXT_C, " ");
+		}
+		show_text();
+	}
+
+
+	//if ((to_print.size() > 0) && (to_print.size() % line_break != 0))
+	//{
+	//	osprintout(std::cerr, "\ntestificate\n");
+	//	show_text();
+	//}
+	//else
+	//{
+	//	osprintout(std::cerr, "\ntestificate\n");
+	//}
+	osprintout(os, "\n");
+
+	return os;
+}
 
 
 
@@ -86,7 +155,6 @@ std::ostream& osprint_arr(std::ostream& os, ArrT* to_print, size_t size)
 }
 
 } // namespace misc_output
-
 } // namespace liborangepower
 
 

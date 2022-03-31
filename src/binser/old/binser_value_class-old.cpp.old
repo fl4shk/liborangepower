@@ -1,0 +1,237 @@
+#include "value_class.hpp"
+
+namespace liborangepower
+{
+
+using strings::sconcat;
+
+namespace binser
+{
+
+void Value::construct(const std::vector<char>& to_cast, i64& i)
+{
+	//--------
+	auto do_memcpy
+		= [this, &to_cast, &i]<typename T>() -> T
+	{
+		T ret;
+
+		if (i + sizeof(T) >= to_cast.size())
+		{
+			throw std::invalid_argument(sconcat
+				("Value::Value(const std::vector<char>& to_cast): ",
+				"do_memcpy(): i + sizeof(T) >= to_cast.size(): ",
+				i, ", ", sizeof(T), ", ", to_cast.size(), "."));
+		}
+
+		std::memcpy(&ret, to_cast.data() + i, sizeof(T));
+		i += sizeof(T);
+
+		return ret;
+	};
+	//--------
+	if (i >= to_cast.size() - 1)
+	{
+		throw std::invalid_argument(sconcat
+			("Value::Value(const std::vector<char>& to_cast): ",
+			"do_memcpy(): i + sizeof(T) >= to_cast.size(): ",
+			i, ", ", sizeof(T), ", ", to_cast.size(), "."));
+	}
+	const Tag& tag = static_cast<Tag>(to_cast.at(i));
+	++i;
+
+	switch (tag)
+	{
+	//--------
+	case Tag::UInt8:
+		*this = do_memcpy<u8>();
+		break;
+	case Tag::Int8:
+		*this = do_memcpy<i8>();
+		break;
+	case Tag::UInt16:
+		*this = do_memcpy<u16>();
+		break;
+	case Tag::Int16:
+		*this = do_memcpy<i16>();
+		break;
+	case Tag::UInt32:
+		*this = do_memcpy<u32>();
+		break;
+	case Tag::Int32:
+		*this = do_memcpy<i32>();
+		break;
+	case Tag::UInt64:
+		*this = do_memcpy<u64>();
+		break;
+	case Tag::Int64:
+		*this = do_memcpy<i64>();
+		break;
+	case Tag::Float:
+		*this = do_memcpy<float>();
+		break;
+	case Tag::Double:
+		*this = do_memcpy<double>();
+		break;
+	case Tag::Bool:
+		*this = do_memcpy<bool>();
+		break;
+	case Tag::Str:
+	{
+		const u64 size = do_memcpy<u64>();
+
+		if (static_cast<i64>(to_cast.size()) - i < size * sizeof(char))
+		{
+			throw std::invalid_argument(sconcat
+				("Value::Value(const std::vector<char>& to_cast): ",
+				"ValueDataStr: to_cast.size() < size * sizeof(char): ",
+				i, ", ", to_cast.size(), ", ", sizeof(T), "."));
+		}
+
+		ValueDataStr n_data;
+
+		for (u64 j=0; j<size; ++j)
+		{
+			n_data += to_cast.at(i);
+			++i;
+		}
+
+		*this = n_data;
+	}
+		break;
+	case Tag::Vec:
+	{
+		const u64 size = do_memcpy<u64>();
+
+		ValueVec n_data;
+
+		for (u64 j=0; j<size; ++j)
+		{
+			Value temp;
+			temp.construct(to_cast, i);
+			n_data.push_back(temp);
+		}
+
+		*this = n_data;
+	}
+		break;
+	default:
+		throw std::invalid_argument(sconcat
+			("Value::Value(const std::vector<char>& to_cast): ",
+			" Unknown `Tag` ", static_cast<int>(tag), " at index ", i,
+			"."));
+		break;
+	//--------
+	}
+	//--------
+}
+
+Value::operator std::vector<char> () const
+{
+	std::vector<char> ret;
+
+	auto do_memcpy
+		= [this, &ret]<typename T>(T& value) -> void
+	{
+		const auto OLD_SIZE = ret.size();
+
+		for (size_t i=0; i<sizeof(T); ++i)
+		{
+			ret.push_back(0u);
+		}
+
+		std::memcpy(ret.data() + OLD_SIZE, &value, sizeof(T));
+	};
+
+	if (holds_alternative<u8>())
+	{
+		ret.push_back(static_cast<char>(Tag::UInt8));
+		do_memcpy(get<u8>());
+	}
+	else if (holds_alternative<i8>())
+	{
+		ret.push_back(static_cast<char>(Tag::Int8));
+		do_memcpy(get<i8>());
+	}
+	else if (holds_alternative<u16>())
+	{
+		ret.push_back(static_cast<char>(Tag::UInt16));
+		do_memcpy(get<u16>());
+	}
+	else if (holds_alternative<i16>())
+	{
+		ret.push_back(static_cast<char>(Tag::Int16));
+		do_memcpy(get<i16>());
+	}
+	else if (holds_alternative<u32>())
+	{
+		ret.push_back(static_cast<char>(Tag::UInt32));
+		do_memcpy(get<u32>());
+	}
+	else if (holds_alternative<i32>())
+	{
+		ret.push_back(static_cast<char>(Tag::Int32));
+		do_memcpy(get<i32>());
+	}
+	else if (holds_alternative<u64>())
+	{
+		ret.push_back(static_cast<char>(Tag::UInt64));
+		do_memcpy(get<u64>());
+	}
+	else if (holds_alternative<i64>())
+	{
+		ret.push_back(static_cast<char>(Tag::Int64));
+		do_memcpy(get<i64>());
+	}
+	else if (holds_alternative<float>())
+	{
+		ret.push_back(static_cast<char>(Tag::Float));
+		do_memcpy(get<float>());
+	}
+	else if (holds_alternative<double>())
+	{
+		ret.push_back(static_cast<char>(Tag::Double));
+		do_memcpy(get<double>());
+	}
+	else if (holds_alternative<bool>())
+	{
+		ret.push_back(static_cast<char>(Tag::Bool));
+		do_memcpy(get<bool>());
+	}
+	else if (std::holds_alternative<ValueDataStr>())
+	{
+		ret.push_back(static_cast<char>(Tag::Str)
+		auto& str = get<ValueDataStr>();
+
+		if (u64 size = str.size(); true)
+		{
+			do_memcpy(size);
+		}
+
+		for (const auto& c: str)
+		{
+			ret.push_back(c);
+		}
+	}
+	else // if (std::holds_alternative<ValueVec>())
+	{
+		ret.push_back(static_cast<char>(Tag::Vec));
+
+		auto& vec = get<ValueVec>();
+
+		if (u64 size = vec.size(); true)
+		{
+			do_memcpy(size);
+		}
+
+		for (auto& item: vec)
+		{
+			ret.push_back(static_cast<std::vector<char>>(item));
+		}
+	}
+
+	return ret;
+}
+
+} // namespace binser
+} // namespace liborangepower

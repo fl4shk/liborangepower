@@ -1,8 +1,6 @@
 #include "ecs_classes.hpp"
 #include "../metaprog_defines.hpp"
 
-using namespace liborangepower::json;
-
 namespace liborangepower
 {
 namespace game
@@ -26,11 +24,11 @@ std::string Comp::kind_str() const
 {
 	return "";
 }
-Comp::operator Json::Value () const
+Comp::operator binser::Value () const
 {
-	Json::Value ret;
+	binser::Value ret;
 
-	MEMB_LIST_ECS_COMP(JSON_MEMB_SERIALIZE);
+	MEMB_LIST_ECS_COMP(BINSER_MEMB_SERIALIZE);
 
 	return ret;
 }
@@ -41,19 +39,19 @@ std::string NonSerializable::kind_str() const
 	return KIND_STR;
 }
 //--------
-//Sys::Sys(const Json::Value& jv)
+//Sys::Sys(const binser::Value& bv)
 //{
-//	MEMB_LIST_ECS_SYS(JSON_MEMB_DESERIALIZE);
+//	MEMB_LIST_ECS_SYS(BINSER_MEMB_DESERIALIZE);
 //}
 std::string Sys::kind_str() const
 {
 	return "";
 }
-//Sys::operator Json::Value () const
+//Sys::operator binser::Value () const
 //{
-//	Json::Value ret;
+//	binser::Value ret;
 //
-//	MEMB_LIST_ECS_SYS(JSON_MEMB_SERIALIZE);
+//	MEMB_LIST_ECS_SYS(BINSER_MEMB_SERIALIZE);
 //
 //	return ret;
 //}
@@ -121,17 +119,19 @@ Engine::~Engine()
 {
 }
 //--------
-Engine::operator Json::Value () const
+Engine::operator binser::Value () const
 {
-	Json::Value ret;
+	binser::Value ret;
 
-	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
+	MEMB_AUTOSER_LIST_ECS_ENGINE(BINSER_MEMB_SERIALIZE);
 
-	for (Json::ArrayIndex i=0;
-		i<static_cast<Json::ArrayIndex>(_num_files);
-		++i)
+	//for (Json::ArrayIndex i=0;
+	//	i<static_cast<Json::ArrayIndex>(_num_files);
+	//	++i)
+	binser::ValueVec vec;
+	for (decltype(_num_files) i=0; i<_num_files; ++i)
 	{
-		Json::Value& jv_ecmap = ret["_engine_comp_map_vec"][i];
+		//Json::Value& jv_ecmap = ret["_engine_comp_map_vec"][i];
 
 		//for (const auto& ent_pair: _engine_comp_map_vec.at(i))
 		//{
@@ -149,12 +149,20 @@ Engine::operator Json::Value () const
 		//	//	//}
 		//	//}
 		//}
-		set_jv_map_like_std_container(jv_ecmap, _engine_comp_map_vec.at(i),
+
+		binser::Value bv_ecmap;
+
+		binser::set_bv_map_like_std_container(bv_ecmap,
+			_engine_comp_map_vec.at(i),
 			[](const typename EngineCompMap::value_type& ent_pair) -> bool
 			{
-				return ent_pair.second.contains(NonSerializable::KIND_STR);
+				return ent_pair.second.contains
+					(NonSerializable::KIND_STR);
 			});
+		vec.push_back(binser::ValueSptr(new binser::Value
+			(std::move(bv_ecmap))));
 	}
+	ret.insert("_engine_comp_map_vec", std::move(vec));
 	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	return ret;
@@ -171,10 +179,10 @@ Engine::operator Json::Value () const
 //template<EngineDerivedFromComp FirstCompT,
 //	EngineDerivedFromComp... RemCompTs>
 //void Engine::_ent_deserialize(const Json::Value& jv)
-void Engine::deserialize(const Json::Value& jv)
+void Engine::deserialize(const binser::Value& bv)
 {
-	MEMB_AUTOSER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
-	get_jv_memb(_engine_comp_map_vec, jv, "_engine_comp_map_vec",
+	MEMB_AUTOSER_LIST_ECS_ENGINE(BINSER_MEMB_DESERIALIZE);
+	get_bv_memb(_engine_comp_map_vec, bv, "_engine_comp_map_vec",
 		&_comp_deser_func_map);
 	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 
