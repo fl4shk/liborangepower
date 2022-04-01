@@ -156,9 +156,8 @@ Engine::operator binser::Value () const
 			_engine_comp_map_vec.at(i),
 			[](const typename EngineCompMap::value_type& ent_pair) -> bool
 			{
-				//return ent_pair.second.contains
-				//	(NonSerializable::KIND_STR);
-				return false;
+				return ent_pair.second.contains
+					(NonSerializable::KIND_STR);
 			});
 		vec.push_back(binser::ValueSptr(new binser::Value
 			(std::move(bv_ecmap))));
