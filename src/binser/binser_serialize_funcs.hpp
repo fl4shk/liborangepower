@@ -68,23 +68,23 @@ namespace binser
 template<typename T>
 inline Value vec2_to_bv(const containers::Vec2<T>& vec)
 {
-	ValueMap ret_map;
+	Value ret;
 
-	ret_map["x"] = vec.x;
-	ret_map["y"] = vec.y;
+	ret.insert("x", vec.x);
+	ret.insert("y", vec.y);
 
-	return Value(ret_map);
+	return ret;
 }
 template<typename T>
 inline Value vec3_to_bv(const containers::Vec3<T>& vec)
 {
-	ValueMap ret_map;
+	Value ret;
 
-	ret_map["x"] = vec.x;
-	ret_map["y"] = vec.y;
-	ret_map["z"] = vec.z;
+	ret.insert("x", vec.x);
+	ret.insert("y", vec.y);
+	ret.insert("z", vec.z);
 
-	return Value(ret_map);
+	return ret;
 }
 
 template<typename T, typename BaseT>
