@@ -60,7 +60,7 @@ namespace binser
 	set_bv_memb(ret, #name, name);
 #define BINSER_MEMB_DESERIALIZE(name, func_map) \
 	get_bv_memb(name, bv, #name, func_map);
-#define BINSER_MEMB_FROM_JV_DESERIALIZE(name, func_map) \
+#define BINSER_MEMB_FROM_BV_DESERIALIZE(name, func_map) \
 	get_bv_memb(ret.name, bv, #name, func_map);
 
 //class BlankValue;
