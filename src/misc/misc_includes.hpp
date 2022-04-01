@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <fstream>
 
 #include <set>
 #include <unordered_set>

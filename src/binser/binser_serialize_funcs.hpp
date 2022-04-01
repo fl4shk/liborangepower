@@ -546,6 +546,54 @@ inline void set_bv_memb(Value& bv, const std::string& name, const T& val)
 	//bv.insert(name, std::move(temp));
 }
 
+inline void parse_binser(std::istream& is, binser::Value& root)
+{
+	std::vector<char> vec;
+	while (!is.eof())
+	{
+		vec.push_back(is.get());
+	}
+	root = vec;
+}
+inline bool parse_binser(const std::string& input_file_name, 
+	binser::Value& root)
+{
+	if (auto file=std::fstream(input_file_name,
+		std::ios_base::in | std::ios_base::binary);
+		file.is_open())
+	{
+		parse_binser(file, root);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+inline void write_binser(std::ostream& os, const binser::Value& root)
+{
+	const auto& ser_vec = static_cast<std::vector<char>>(root);
+	for (const auto& c: ser_vec)
+	{
+		os.put(c);
+	}
+}
+inline bool write_binser(const std::string& output_file_name, 
+	const binser::Value& root)
+{
+	if (auto file=std::fstream(output_file_name,
+		std::ios_base::out | std::ios_base::binary);
+		file.is_open())
+	{
+		write_binser(file, root);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 
 //class BlankValue final
 //{

@@ -36,11 +36,13 @@ int main(int argc, char** argv)
 		//};
 		binser::Value bv_root = test_arr.at(0);
 		//osprint_hexdump(std::cout, root, 20);
-		const auto& ser_vec = static_cast<std::vector<char>>(bv_root);
-		for (const auto& c: ser_vec)
-		{
-			file.put(c);
-		}
+
+		//const auto& ser_vec = static_cast<std::vector<char>>(bv_root);
+		//for (const auto& c: ser_vec)
+		//{
+		//	file.put(c);
+		//}
+		binser::write_binser(file, bv_root);
 
 		if (auto jv_file=std::fstream("test_0.json.ignore",
 			std::ios_base::out); true)
@@ -59,14 +61,16 @@ int main(int argc, char** argv)
 	{
 		binser::Value bv_root;
 
-		{
-			std::vector<char> vec;
-			while (!file.eof())
-			{
-				vec.push_back(file.get());
-			}
-			bv_root = vec;
-		}
+		binser::parse_binser(file, bv_root);
+
+		//{
+		//	std::vector<char> vec;
+		//	while (!file.eof())
+		//	{
+		//		vec.push_back(file.get());
+		//	}
+		//	bv_root = vec;
+		//}
 
 		if (auto jv_file=std::fstream("test_1.json.ignore",
 			std::ios_base::out); true)
