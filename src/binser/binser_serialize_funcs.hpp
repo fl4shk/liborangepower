@@ -126,7 +126,12 @@ inline void val_from_bv(T& ret, const Value& bv,
 	//{
 	//	ret = bv.asString();
 	//}
-	if constexpr (IsValueDataNumOrStr<NonCvrefT>)
+	if constexpr (std::is_same<NonCvrefT, char>())
+	{
+		ret = bv.get<std::string>().at(0);
+	}
+	else if constexpr (std::is_same<NonCvrefT, std::monostate>()
+		|| IsValueDataNumOrStr<NonCvrefT>)
 	{
 		ret = bv.get<NonCvrefT>();
 	}
@@ -391,9 +396,15 @@ inline void set_bv(Value& bv, const T& val)
 
 	//static_assert(!std::is_same<T, int64_t>()
 	//	&& !std::is_same<T, uint64_t>());
-
 	//--------
-	if constexpr (is_vec2<NonCvrefT>())
+	if constexpr (std::is_same<NonCvrefT, char>())
+	{
+		std::string temp_str;
+		temp_str += val;
+		bv = std::move(temp_str);
+	}
+	//--------
+	else if constexpr (is_vec2<NonCvrefT>())
 	{
 		bv = vec2_to_bv(val);
 	}
@@ -434,7 +445,8 @@ inline void set_bv(Value& bv, const T& val)
 		if constexpr (concepts::HasFuncKindStr<ElemT>)
 		{
 			//map["has_kind_str"] = true;
-			map["kind_str"] = ValueSptr(new Value(val->kind_str()));
+			//map["kind_str"] = ValueSptr(new Value(val->kind_str()));
+			map["kind_str"] = Value::to_sptr(val->kind_str());
 		}
 		//else
 		//{
@@ -451,8 +463,8 @@ inline void set_bv(Value& bv, const T& val)
 
 		for (size_t i=0; i<val.size(); ++i)
 		{
-			if constexpr (is_basic_indexable_std_container
-				<typename NonCvrefT::value_type>())
+			//if constexpr (is_basic_indexable_std_container
+			//	<typename NonCvrefT::value_type>())
 			{
 				Value inner_bv;
 
@@ -460,20 +472,22 @@ inline void set_bv(Value& bv, const T& val)
 
 				//vec[i + 1] = inner_bv;
 				//vec[i] = inner_bv;
-				vec.push_back(ValueSptr(new Value(std::move(inner_bv))));
+				//vec.push_back(ValueSptr(new Value(std::move(inner_bv))));
+				vec.push_back(Value::to_sptr(std::move(inner_bv)));
 			}
-			else
-			{
-				//vec[i + 1] = val.at(i);
-				//vec[i] = val.at(i);
-				vec.push_back(ValueSptr(new Value(val.at(i))));
-			}
+			//else
+			//{
+			//	//vec[i + 1] = val.at(i);
+			//	//vec[i] = val.at(i);
+			//	//vec.push_back(ValueSptr(new Value(val.at(i))));
+			//	vec.push_back(Value::to_sptr(val.at(i)));
+			//}
 		}
 		bv = std::move(vec);
 	}
 	else if constexpr (is_set_like_std_container<NonCvrefT>())
 	{
-		size_t i = 0;
+		//size_t i = 0;
 		//bv = ValueVec();
 		ValueVec vec;
 
@@ -481,22 +495,24 @@ inline void set_bv(Value& bv, const T& val)
 
 		for (const auto& key: val)
 		{
-			if constexpr (is_basic_indexable_std_container
-				<typename NonCvrefT::key_type>())
+			//if constexpr (is_basic_indexable_std_container
+			//	<typename NonCvrefT::key_type>())
 			{
 				Value inner_bv = ValueMap();
 
 				set_bv(inner_bv, key);
 
 				//vec[i++] = inner_bv;
-				vec.push_back(ValueSptr(new Value(std::move(inner_bv))));
+				//vec.push_back(ValueSptr(new Value(std::move(inner_bv))));
+				vec.push_back(Value::to_sptr(std::move(inner_bv)));
 			}
-			else
-			{
-				//vec[i++] = key;
-				vec.push_back(ValueSptr(new Value(key)));
-			}
-			++i;
+			//else
+			//{
+			//	//vec[i++] = key;
+			//	//vec.push_back(ValueSptr(new Value(key)));
+			//	vec.push_back(Value::to_sptr(key));
+			//}
+			//++i;
 		}
 		bv = std::move(vec);
 	}
@@ -537,13 +553,7 @@ inline void set_bv_memb(Value& bv, const std::string& name, const T& val)
 
 	Value temp;
 	set_bv(temp, val);
-
 	bv.insert(name, std::move(temp));
-	//if (!bv.holds_alternative<ValueMap>())
-	//{
-	//	bv = ValueMap();
-	//}
-	//bv.insert(name, std::move(temp));
 }
 
 inline void parse_binser(std::istream& is, binser::Value& root)

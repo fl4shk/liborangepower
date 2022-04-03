@@ -10,7 +10,11 @@ Json::Value bv_to_jv(const binser::Value& bv)
 {
 	Json::Value ret;
 
-	if (bv.holds_alternative<u8>())
+	if (bv.holds_alternative<std::monostate>())
+	{
+		ret = std::string("null");
+	}
+	else if (bv.holds_alternative<u8>())
 	{
 		ret = static_cast<uint>(bv.get<u8>());
 	}

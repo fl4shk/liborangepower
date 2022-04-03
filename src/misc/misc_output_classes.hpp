@@ -97,14 +97,14 @@ inline std::ostream& osprint_hexdump(std::ostream& os,
 	{
 		//text += to_print.at(i);
 		text.push_back(to_print.at(i));
-		const int c = to_print.at(i);
+		const uint c = to_print.at(i);
 		//file.put(c);
 
 		if (c < 0x10)
 		{
 			osprintout(os, 0x0);
 		}
-		osprintout(os, std::hex, c, " ", std::dec);
+		osprintout(os, std::hex, c & 0xff, " ", std::dec);
 
 		if (((i + 1) % line_break == 0) && (i > 0))
 		{

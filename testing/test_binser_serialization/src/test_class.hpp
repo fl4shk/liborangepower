@@ -24,5 +24,4 @@ public:		// functions
 	virtual operator binser::Value () const;
 };
 
-
 #endif		// src_test_class_hpp

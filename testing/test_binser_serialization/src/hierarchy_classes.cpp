@@ -58,3 +58,23 @@ std::string DerivedB::kind_str() const
 	return KIND_STR;
 }
 //--------
+const std::string
+	DerivedC::KIND_STR("DerivedC");
+
+DerivedC::DerivedC(const binser::Value& bv)
+{
+	MEMB_LIST_DERIVED_C(BINSER_MEMB_DESERIALIZE);
+}
+DerivedC::operator binser::Value () const
+{
+	binser::Value ret;
+
+	MEMB_LIST_DERIVED_C(BINSER_MEMB_SERIALIZE);
+
+	return ret;
+}
+std::string DerivedC::kind_str() const
+{
+	return KIND_STR;
+}
+//--------

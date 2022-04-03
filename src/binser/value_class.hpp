@@ -40,6 +40,7 @@ using ValueMapInsertRet = std::pair<typename ValueMap::iterator, bool>;
 using ValueData
 	= std::variant
 	<
+		std::monostate,
 		u8, i8, u16, i16, u32, i32, u64, i64, float, double, bool,
 		std::string,
 		ValueVec,
@@ -67,7 +68,8 @@ concept IsValueDataNumOrStr
 
 template<typename T>
 concept IsValueData
-	= IsValueDataNumOrStr<T>
+	= std::same_as<T, std::monostate>
+	|| IsValueDataNumOrStr<T>
 	|| std::same_as<T, ValueVec>
 	//|| std::same_as<T, ValueMap<true>>
 	//|| std::same_as<T, ValueMap<false>>;
@@ -84,23 +86,25 @@ class Value final
 public:		// types
 	enum class Tag: char
 	{
-		UInt8,
-		Int8,
-		UInt16,
-		Int16,
-		UInt32,
-		Int32,
-		UInt64,
-		Int64,
+		Null,		// 0x0
 
-		Float,
-		Double,
+		UInt8,		// 0x1
+		Int8,		// 0x2
+		UInt16,		// 0x3
+		Int16,		// 0x4
+		UInt32,		// 0x5
+		Int32,		// 0x6
+		UInt64,		// 0x7
+		Int64,		// 0x8
 
-		Bool,
+		Float,		// 0x9
+		Double,		// 0xa
 
-		Str,
-		Vec,
-		Map,
+		Bool,		// 0xb
+
+		Str,		// 0xc
+		Vec,		// 0xd
+		Map,		// 0xe
 	};
 private:		// variables
 	ValueData _data = static_cast<u8>(0u);
@@ -119,7 +123,7 @@ public:		// functions
 	}
 //--------
 private:		// functions
-	template<typename T>
+	template<IsValueData T>
 	static inline T _inner_init_do_memcpy
 		(const std::vector<char>& to_cast, u64& i, const Tag& tag)
 	{
@@ -164,6 +168,26 @@ public:		// functions
 		_data = std::move(n_data);
 		return *this;
 	}
+	//--------
+	static inline ValueSptr to_sptr(const Value& to_copy)
+	{
+		return ValueSptr(new Value(to_copy));
+	}
+	static inline ValueSptr to_sptr(Value&& to_move)
+	{
+		return ValueSptr(new Value(std::move(to_move)));
+	}
+
+	//template<IsValueData T> 
+	//static inline ValueSptr to_sptr(const T& to_copy)
+	//{
+	//	return to_sptr(Value(to_copy));
+	//}
+	//template<IsValueData T> 
+	//static inline ValueSptr to_sptr(T&& to_move)
+	//{
+	//	return to_sptr(Value(std::move(to_move)));
+	//}
 	//--------
 	template<IsValueData T>
 	constexpr inline bool holds_alternative() const noexcept
@@ -258,12 +282,12 @@ public:		// functions
 	inline void push_back(const Value& to_push)
 	{
 		set_type_if_not_ha<ValueVec>();
-		as_vec().push_back(ValueSptr(new Value(to_push)));
+		as_vec().push_back(to_sptr(to_push));
 	}
 	inline void push_back(Value&& to_push)
 	{
 		set_type_if_not_ha<ValueVec>();
-		as_vec().push_back(ValueSptr(new Value(std::move(to_push))));
+		as_vec().push_back(to_sptr(std::move(to_push)));
 	}
 	//--------
 	inline Value& at(const std::string& where)
@@ -288,7 +312,7 @@ public:		// functions
 	{
 		set_type_if_not_ha<ValueMap>();
 		return as_map().insert(typename ValueMap::value_type
-			(where, ValueSptr(new Value(to_insert))));
+			(where, to_sptr(to_insert)));
 	}
 	inline ValueMapInsertRet insert(const std::string& where,
 		Value&& to_insert)

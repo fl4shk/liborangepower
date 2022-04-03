@@ -6,7 +6,8 @@ Test::Test()
 		= binser::FromBvFactory<Base>::gen_func_map
 		<
 			DerivedA,
-			DerivedB
+			DerivedB,
+			DerivedC
 		>
 		();
 }

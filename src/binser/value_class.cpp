@@ -68,6 +68,9 @@ void Value::_inner_init(const std::vector<char>& to_cast, u64& i)
 	switch (tag)
 	{
 	//--------
+	case Tag::Null:
+		*this = std::monostate();
+		break;
 	case Tag::UInt8:
 		*this = _inner_init_do_memcpy<u8>(to_cast, i, tag);
 		break;
@@ -174,7 +177,11 @@ Value::operator std::vector<char> () const
 		std::memcpy(ret.data() + OLD_SIZE, &value, sizeof(T));
 	};
 
-	if (holds_alternative<u8>())
+	if (holds_alternative<std::monostate>())
+	{
+		ret.push_back(static_cast<char>(Tag::Null));
+	}
+	else if (holds_alternative<u8>())
 	{
 		ret.push_back(static_cast<char>(Tag::UInt8));
 		do_memcpy(get<u8>());

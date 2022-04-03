@@ -28,6 +28,28 @@ int main(int argc, char** argv)
 		test_arr.at(0).data[DerivedB::KIND_STR]
 			= std::unique_ptr<Base>(new DerivedB
 				(std::string("hello test_0!")));
+
+		if (auto bv=binser::Value(); true)
+		{
+			//binser::set_bv_memb(bv, "a", );
+			//bv.insert("a", double(3.0));
+			//bv.insert("b", u32(69));
+
+			if (auto bv1=binser::Value(); true)
+			{
+				//set_bv_memb(bv, "c", bv1);
+				//bv1.push_back(i32(326));
+				bv1.push_back(std::string("bananas"));
+				bv1.push_back(u64(326));
+				bv1.push_back(i64(-326));
+				//bv1.push_back(std::monostate());
+				bv.insert("c", std::move(bv1));
+			}
+			//c.c_vec = std::vector<char>(bv);
+			test_arr.at(0).data[DerivedC::KIND_STR]
+				= std::unique_ptr<Base>(new DerivedC
+					(std::vector<char>(bv)));
+		}
 		//test_arr.at(0).data
 		//= {
 		//	{DerivedA::KIND_STR, std::unique_ptr<Base>(new DerivedA(3))},
@@ -73,7 +95,8 @@ int main(int argc, char** argv)
 		//}
 
 		if (auto jv_file=std::fstream("test_1.json.ignore",
-			std::ios_base::out); true)
+			std::ios_base::out);
+			true)
 		{
 			Json::Value jv_root = binser::bv_to_jv(bv_root);
 			json::write_json(jv_file, &jv_root);
@@ -97,12 +120,19 @@ int main(int argc, char** argv)
 
 			if (p2->kind_str() == DerivedA::KIND_STR)
 			{
-				auto derived_a = static_cast<DerivedA*>(p2.get());
-				printout(derived_a->asdf, " ", derived_a->ghdl);
+				auto a = static_cast<DerivedA*>(p2.get());
+				printout(a->asdf, " ", a->ghdl);
 			}
 			else if (p2->kind_str() == DerivedB::KIND_STR)
 			{
-				printout(static_cast<DerivedB*>(p2.get())->spunk);
+				auto b = static_cast<DerivedB*>(p2.get());
+				printout(b->spunk);
+			}
+			else if (p2->kind_str() == DerivedC::KIND_STR)
+			{
+				printout("\n");
+				auto c = static_cast<DerivedC*>(p2.get());
+				osprint_hexdump(std::cout, c->c_vec, 20);
 			}
 			else
 			{

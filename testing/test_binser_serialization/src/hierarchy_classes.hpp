@@ -69,5 +69,27 @@ public:		// functions
 	virtual std::string kind_str() const;
 };
 //--------
+class DerivedC: public Base
+{
+public:		// constants
+	static const std::string KIND_STR;
+public:		// variables
+	#define MEMB_LIST_DERIVED_C(X) \
+		X(c_vec, std::nullopt)
+
+	std::vector<char> c_vec;
+public:		// functions
+	DerivedC() = default;
+	inline DerivedC(const std::vector<char>& s_c_vec)
+		: c_vec(s_c_vec)
+	{
+	}
+	DerivedC(const binser::Value& bv);
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(DerivedC);
+	virtual ~DerivedC() = default;
+
+	virtual operator binser::Value () const;
+	virtual std::string kind_str() const;
+};
 
 #endif		// src_hierarchy_classes_hpp
