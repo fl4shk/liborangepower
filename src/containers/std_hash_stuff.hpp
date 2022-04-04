@@ -12,7 +12,8 @@ template<typename FirstT, typename... RemTs>
 inline std::size_t hash_va(const FirstT& first_arg,
 	const RemTs&&...  rem_args)
 {
-	const std::size_t h = std::hash<FirstT>{}(first_arg);
+	const std::size_t& h = std::hash<std::remove_cvref_t<FirstT>>{}
+		(first_arg);
 
 	if constexpr (sizeof...(rem_args) > 0)
 	{
