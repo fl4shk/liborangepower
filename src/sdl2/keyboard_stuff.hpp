@@ -4,6 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
+#include "../containers/std_hash_stuff.hpp"
 
 #include <functional>
 #include <string>
@@ -205,9 +206,10 @@ struct hash<liborangepower::sdl::KeycModPair>
 	std::size_t operator ()
 		(const liborangepower::sdl::KeycModPair& kmp) const noexcept
 	{
-		std::size_t h0 = std::hash<SDL_Keycode>{}(kmp.sym());
-		std::size_t h1 = std::hash<Uint16>{}(kmp.mod());
-		return (h0 ^ (h1 << static_cast<std::size_t>(1)));
+		//std::size_t h0 = std::hash<SDL_Keycode>{}(kmp.sym());
+		//std::size_t h1 = std::hash<Uint16>{}(kmp.mod());
+		//return (h0 ^ (h1 << static_cast<std::size_t>(1)));
+		return liborangepower::containers::hash_va(kmp.sym(), kmp.mod());
 	}
 };
 
@@ -217,10 +219,11 @@ struct hash<liborangepower::sdl::KeyStatus>
 	std::size_t operator ()
 		(const liborangepower::sdl::KeyStatus& ks) const noexcept
 	{
-		std::size_t h0 = std::hash<liborangepower::sdl::KeycModPair>{}
-			(ks.kmp());
-		std::size_t h1 = std::hash<bool>{}(ks.down());
-		return (h0 ^ (h1 << static_cast<std::size_t>(1)));
+		//std::size_t h0 = std::hash<liborangepower::sdl::KeycModPair>{}
+		//	(ks.kmp());
+		//std::size_t h1 = std::hash<bool>{}(ks.down());
+		//return (h0 ^ (h1 << static_cast<std::size_t>(1)));
+		return liborangepower::containers::hash_va(ks.kmp(), ks.down());
 	}
 };
 } // namespace std

@@ -3,6 +3,7 @@
 
 #include "../gen_class_innards_defines.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
+#include "std_hash_stuff.hpp"
 
 #include <cmath>
 #include <cstdint>
@@ -201,5 +202,18 @@ constexpr inline bool is_vec2()
 
 } // namespace containers
 } // namespace liborangepower
+
+namespace std
+{
+template<typename T>
+struct hash<liborangepower::containers::Vec2<T>>
+{
+	std::size_t operator ()
+		(const liborangepower::containers::Vec2<T>& vec2) const noexcept
+		{
+			return liborangepower::containers::hash_va(vec2.x, vec2.y);
+		}
+};
+} // namespace std
 
 #endif		// liborangepower_containers_vec2_classes_hpp

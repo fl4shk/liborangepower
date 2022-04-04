@@ -192,5 +192,27 @@ constexpr inline bool is_vec3()
 }
 } // namespace containers
 } // namespace liborangepower
+
+namespace std
+{
+
+template<typename T>
+struct hash<liborangepower::containers::Vec3<T>>
+{
+	std::size_t operator ()
+		(const liborangepower::containers::Vec3<T>& vec3) const noexcept
+	{
+		//const std::size_t& hx = std::hash<T>{}(vec3.x);
+		//const std::size_t& hy = std::hash<T>{}(vec3.y);
+		//const std::size_t& hz = std::hash<T>{}(vec3.z);
+
+		//return ((hx 
+		//	^ (hy << std::size_t(1)))
+		//	^ (hz << std::size_t(1)));
+		return liborangepower::containers::hash_va(vec3.x, vec3.y, vec3.z);
+	}
+};
+
+} // namespace std
 #endif		// liborangepower_containers_vec3_classes_hpp
 
