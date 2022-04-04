@@ -16,7 +16,7 @@ inline std::size_t hash_va(const FirstT& first_arg,
 
 	if constexpr (sizeof...(rem_args) > 0)
 	{
-		return h ^ (hash_va<RemTs...>(rem_args) << std::size_t(1));
+		return h ^ (hash_va<RemTs...>(rem_args...) << std::size_t(1));
 	}
 	else
 	{
