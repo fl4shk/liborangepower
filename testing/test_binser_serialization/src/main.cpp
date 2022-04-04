@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 				bv1.push_back(std::string("bananas"));
 				bv1.push_back(u64(326));
 				bv1.push_back(i64(-326));
-				//bv1.push_back(std::monostate());
+				bv1.push_back(std::monostate());
 				bv.insert("c", std::move(bv1));
 			}
 			//c.c_vec = std::vector<char>(bv);
@@ -133,6 +133,15 @@ int main(int argc, char** argv)
 				printout("\n");
 				auto c = static_cast<DerivedC*>(p2.get());
 				osprint_hexdump(std::cout, c->c_vec, 20);
+
+				if (auto jv_file=std::fstream("test_2.json.ignore",
+					std::ios_base::out);
+					true)
+				{
+					Json::Value jv_root = binser::bv_to_jv
+						(binser::Value(c->c_vec));
+					json::write_json(jv_file, &jv_root);
+				}
 			}
 			else
 			{

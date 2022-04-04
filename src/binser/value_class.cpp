@@ -4,6 +4,7 @@ namespace liborangepower
 {
 
 using strings::sconcat;
+using namespace misc_output;
 
 namespace binser
 {
@@ -11,10 +12,17 @@ namespace binser
 void Value::_inner_init(const std::vector<char>& to_cast, u64& i)
 {
 	//--------
-	if (i >= to_cast.size() - 1)
+	//if (i == 0)
+	//{
+	//	printout("<BEGIN>\n");
+	//	osprint_hexdump(std::cout, to_cast, 20);
+	//	printout("<END>\n\n");
+	//}
+	//--------
+	if (i >= to_cast.size())
 	{
 		throw std::invalid_argument(sconcat
-			("Value::_inner_init(): i >= to_cast.size() - 1",
+			("Value::_inner_init(): i >= to_cast.size() - 1: ",
 			i, " ", to_cast.size(), "."));
 	}
 	const Tag& tag = static_cast<Tag>(to_cast.at(i));

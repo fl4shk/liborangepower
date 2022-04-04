@@ -132,7 +132,7 @@ inline std::ostream& osprint_hexdump(std::ostream& os,
 	//{
 	//	osprintout(std::cerr, "\ntestificate\n");
 	//}
-	osprintout(os, "\n");
+	//osprintout(os, "\n");
 
 	return os;
 }

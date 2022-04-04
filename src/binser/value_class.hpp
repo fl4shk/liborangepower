@@ -129,7 +129,7 @@ private:		// functions
 	{
 		T temp_ret;
 
-		if (i + sizeof(T) >= to_cast.size())
+		if (i - sizeof(tag) + sizeof(T) >= to_cast.size())
 		{
 			throw std::invalid_argument(strings::sconcat
 				("Value::_inner_init_do_memcpy(): ",

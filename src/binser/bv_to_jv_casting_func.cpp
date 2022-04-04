@@ -12,7 +12,8 @@ Json::Value bv_to_jv(const binser::Value& bv)
 
 	if (bv.holds_alternative<std::monostate>())
 	{
-		ret = std::string("null");
+		//ret = std::string("null");
+		ret = Json::nullValue;
 	}
 	else if (bv.holds_alternative<u8>())
 	{
