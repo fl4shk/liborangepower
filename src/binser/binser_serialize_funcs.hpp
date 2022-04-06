@@ -128,12 +128,19 @@ inline void val_from_bv(T& ret, const Value& bv,
 	//}
 	if constexpr (std::is_same<NonCvrefT, char>())
 	{
-		ret = bv.get<std::string>().at(0);
+		ret = bv.get<std::string>().front();
 	}
 	else if constexpr (std::is_same<NonCvrefT, std::monostate>()
 		|| IsValueDataNumOrStr<NonCvrefT>)
 	{
 		ret = bv.get<NonCvrefT>();
+	}
+	else if constexpr (std::is_enum<NonCvrefT>())
+	{
+		//ret = bv.get<std::underlying_type_t<NonCvrefT>>();
+		std::underlying_type_t<NonCvrefT> temp;
+		val_from_bv(temp, bv, func_map);
+		ret = NonCvrefT(temp);
 	}
 	//--------
 	else if constexpr (is_vec2<NonCvrefT>())
@@ -403,6 +410,10 @@ inline void set_bv(Value& bv, const T& val)
 		temp_str += val;
 		bv = std::move(temp_str);
 	}
+	else if constexpr (std::is_enum<NonCvrefT>())
+	{
+		set_bv(bv, std::underlying_type_t<NonCvrefT>(val));
+	}
 	//--------
 	else if constexpr (is_vec2<NonCvrefT>())
 	{
@@ -540,11 +551,11 @@ inline void set_bv_memb(Value& bv, const std::string& name, const T& val)
 	//	|| std::is_same<T, uint64_t>())
 	//{
 	//	bv[sconcat(name, ".high")] 
-	//		= static_cast<uint32_t>(static_cast<uint64_t>(val)
-	//			>> static_cast<uint64_t>(32u));
+	//		= uint32_t(uint64_t(val)
+	//			>> uint64_t(32u));
 	//	bv[sconcat(name, ".low")]
-	//		= static_cast<uint32_t>(static_cast<uint64_t>(val)
-	//			& static_cast<uint64_t>(0xffffffffu));
+	//		= uint32_t(uint64_t(val)
+	//			& uint64_t(0xffffffffu));
 	//}
 	//else
 	//{
@@ -583,7 +594,7 @@ inline bool parse_binser(const std::string& input_file_name,
 
 inline void write_binser(std::ostream& os, const binser::Value& root)
 {
-	const auto& ser_vec = static_cast<std::vector<char>>(root);
+	const auto& ser_vec = std::vector<char>(root);
 	for (const auto& c: ser_vec)
 	{
 		os.put(c);
