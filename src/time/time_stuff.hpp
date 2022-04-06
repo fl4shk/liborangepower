@@ -10,6 +10,10 @@
 
 namespace liborangepower
 {
+
+using integer_types::u64;
+using integer_types::i64;
+
 namespace time
 {
 
@@ -25,9 +29,6 @@ inline auto get_hrc_now_time_t()
 class Prng
 {
 public:		// types
-	using integer_types::i64;
-	using integer_types::u64;
-
 	using SeedT = decltype(get_hrc_now().time_since_epoch().count());
 
 	//using InstanceT = std::minstd_rand;
