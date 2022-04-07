@@ -9,15 +9,17 @@ namespace liborangepower
 namespace misc_output
 {
 
-template<typename... ArgTs>
-std::ostream& osprintout(std::ostream& os, ArgTs&&... args);
+template<typename CharT, typename Traits, typename... ArgTs>
+std::basic_ostream<CharT, Traits>&
+	osprintout(std::basic_ostream<CharT, Traits>& os, ArgTs&&... args);
 
 class AnyPrintoutBackend
 {
 private:		// functions
-	template<typename FirstArgT, typename... RemArgTs>
-	static void func(std::ostream& os, FirstArgT&& first_val, 
-		RemArgTs&&... rem_args)
+	template<typename CharT, typename Traits, typename FirstArgT,
+		typename... RemArgTs>
+	static void func(std::basic_ostream<CharT, Traits>& os,
+		FirstArgT&& first_val, RemArgTs&&... rem_args)
 	{
 		typedef typename std::remove_reference<decltype(first_val)>::type
 			Temp0;
@@ -33,13 +35,14 @@ private:		// functions
 		}
 	}
 
-	template<typename... ArgTs>
-	friend std::ostream& osprintout(std::ostream& os, 
-		ArgTs&&... args);
+	template<typename CharT, typename Traits, typename... ArgTs>
+	friend std::basic_ostream<CharT, Traits>&
+		osprintout(std::basic_ostream<CharT, Traits>& os, ArgTs&&... args);
 };
 
-template<typename... ArgTs>
-inline std::ostream& osprintout(std::ostream& os, ArgTs&&... args)
+template<typename CharT, typename Traits, typename... ArgTs>
+inline std::basic_ostream<CharT, Traits>& osprintout
+	(std::basic_ostream<CharT, Traits>& os, ArgTs&&... args)
 {
 	AnyPrintoutBackend::func(os, args...);
 	return os;
@@ -58,14 +61,17 @@ inline std::ostream& printerr(ArgTs&&... args)
 }
 
 // Alternate name for osprintout
-template<typename... ArgTs>
-inline std::ostream& fprintout(std::ostream& out_file, ArgTs&&... args)
+template<typename CharT, typename Traits, typename... ArgTs>
+inline std::basic_ostream<CharT, Traits>& 
+	fprintout(std::basic_ostream<CharT, Traits>& out_file, ArgTs&&... args)
 {
 	return osprintout(out_file, args...);
 }
 
 
-inline std::ostream& osprint_hexdump(std::ostream& os,
+template<typename CharT, typename Traits>
+inline std::basic_ostream<CharT, Traits>&
+	osprint_hexdump(std::basic_ostream<CharT, Traits>& os,
 	const std::vector<char>& to_print, size_t line_break=8)
 {
 	static constexpr char BLANK_TEXT_C = '.';
@@ -137,10 +143,10 @@ inline std::ostream& osprint_hexdump(std::ostream& os,
 	return os;
 }
 
-
-
-template<typename ArrT>
-std::ostream& osprint_arr(std::ostream& os, ArrT* to_print, size_t size)
+template<typename CharT, typename Traits, typename ArrT>
+std::basic_ostream<CharT, Traits>&
+	osprint_arr(std::basic_ostream<CharT, Traits>& os, ArrT* to_print,
+	size_t size)
 {
 	for (size_t i=0; i<size; ++i)
 	{
@@ -152,6 +158,13 @@ std::ostream& osprint_arr(std::ostream& os, ArrT* to_print, size_t size)
 	}
 
 	return os;
+}
+template<typename CharT, typename Traits, typename ElemT, size_t size>
+std::basic_ostream<CharT, Traits>&
+	osprint_arr(std::basic_ostream<CharT, Traits>& os,
+	const std::array<ElemT, size>& to_print)
+{
+	return osprint_arr(os, to_print.data(), size);
 }
 
 } // namespace misc_output

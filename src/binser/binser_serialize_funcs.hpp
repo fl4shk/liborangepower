@@ -188,7 +188,8 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			if (!func_map)
 			{
-				throw std::invalid_argument(sconcat("val_from_bv(): ",
+				throw std::invalid_argument(sconcat
+					("liborangepower::binser::val_from_bv(): ",
 					"Need a non-null `func_map` in this case"));
 			}
 			std::string kind_str;

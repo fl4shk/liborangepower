@@ -26,6 +26,7 @@ inline auto get_hrc_now_time_t()
 	return std::chrono::high_resolution_clock::to_time_t(get_hrc_now());
 }
 
+template<typename _InstanceT=std::mt19937_64>
 class Prng
 {
 public:		// types
@@ -33,7 +34,8 @@ public:		// types
 
 	//using InstanceT = std::minstd_rand;
 	//using InstanceT = std::mt19937;
-	using InstanceT = std::mt19937_64;
+	//using InstanceT = std::mt19937_64;
+	using InstanceT = _InstanceT;
 
 protected:		// variables
 	i64 _param_0, _param_1;
@@ -90,6 +92,22 @@ public:		// functions
 	inline auto run()
 	{
 		return static_cast<T>(_instance());
+	}
+
+	// For serialization
+	template<typename CharT, typename Traits>
+	inline std::basic_ostream<CharT, Traits>& operator <<
+		(std::basic_ostream<CharT, Traits>& os) const
+	{
+		os << _instance;
+		return os;
+	}
+	template<typename CharT, typename Traits>
+	inline std::basic_istream<CharT, Traits>& operator >>
+		(std::basic_istream<CharT, Traits>& is)
+	{
+		is >> _instance;
+		return is;
 	}
 
 	GEN_GETTER_BY_VAL(param_0)
