@@ -25,12 +25,16 @@ inline auto get_hrc_now_time_t()
 {
 	return std::chrono::high_resolution_clock::to_time_t(get_hrc_now());
 }
+inline auto get_hrc_now_rng_seed()
+{
+	return get_hrc_now().time_since_epoch().count();
+}
 
 template<typename _InstanceT=std::mt19937_64>
 class Prng
 {
 public:		// types
-	using SeedT = decltype(get_hrc_now().time_since_epoch().count());
+	using SeedT = decltype(get_hrc_now_rng_seed());
 
 	//using InstanceT = std::minstd_rand;
 	//using InstanceT = std::mt19937;
@@ -46,7 +50,7 @@ protected:		// functions
 	inline SeedT _default_initial_seed()
 	{
 		// I have no idea how good this is, but it seems to work?
-		return (get_hrc_now().time_since_epoch().count() * (param_0() + 1))
+		return (get_hrc_now_rng_seed() * (param_0() + 1))
 			+ param_1();
 	}
 
