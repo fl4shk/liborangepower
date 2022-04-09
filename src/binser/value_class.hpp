@@ -233,7 +233,8 @@ public:		// functions
 		}
 		catch (const std::exception& e)
 		{
-			misc_output::printerr("T& get() error: ", _data.index(), "\n");
+			misc_output::printerr("T& get() error: ",
+				_data.index(), " ", typeid(T()).name(), "\n");
 			throw e;
 		}
 	}
@@ -247,7 +248,7 @@ public:		// functions
 		catch (const std::exception& e)
 		{
 			misc_output::printerr("const T& get() const error: ",
-				_data.index(), "\n");
+				_data.index(), " ", typeid(T()).name(), "\n");
 			throw e;
 		}
 	}
