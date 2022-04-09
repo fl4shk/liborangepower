@@ -224,7 +224,8 @@ inline void val_from_bv(T& ret, const Value& bv,
 	{
 		//ret = NonCvrefT();
 
-		val_from_bv(ret.data, bv.at("data"), func_map);
+		//val_from_bv(ret.data, bv.at("data"), func_map);
+		val_from_bv(ret.data, bv, func_map);
 		if (ret.checked_size != ret.data.size())
 		{
 			throw std::invalid_argument(sconcat
@@ -509,8 +510,10 @@ inline void set_bv(Value& bv, const T& val)
 		//	vec.push_back(Value::to_sptr(std::move(inner_bv)));
 		//}
 		//bv = std::move(vec);
+		set_bv(bv, val.data);
+
 		//bv.insert("data", val.data);
-		set_bv_memb(bv, "data", val.data);
+		//set_bv_memb(bv, "data", val.data);
 	}
 	else if constexpr (is_arr_like_std_container<NonCvrefT>())
 	{
