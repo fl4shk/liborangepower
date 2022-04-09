@@ -509,7 +509,8 @@ inline void set_bv(Value& bv, const T& val)
 		//	vec.push_back(Value::to_sptr(std::move(inner_bv)));
 		//}
 		//bv = std::move(vec);
-		bv.insert("data", val.data);
+		//bv.insert("data", val.data);
+		set_bv_memb(bv, "data", val.data);
 	}
 	else if constexpr (is_arr_like_std_container<NonCvrefT>())
 	{
