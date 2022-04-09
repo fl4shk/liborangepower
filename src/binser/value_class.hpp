@@ -227,11 +227,13 @@ public:		// functions
 	template<IsValueData T>
 	T& get()
 	{
+		printout("T& get(): ", _data.index, "\n");
 		return std::get<T>(_data);
 	}
 	template<IsValueData T>
 	const T& get() const
 	{
+		printout("const T& get() const: ", _data.index, "\n");
 		return std::get<T>(_data);
 	}
 
