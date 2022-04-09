@@ -6,7 +6,7 @@
 #include "../strings/sconcat_etc.hpp"
 #include "../containers/vec2_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
-#include "../binser/binser_serialize_funcs.hpp"
+#include "../binser/serialize_funcs.hpp"
 
 #include <map>
 #include <set>
@@ -154,7 +154,7 @@ class Engine
 	friend class Ent;
 public:		// constants
 	static constexpr size_t
-		DEFAULT_NUM_FILES = 9;
+		DEFAULT_NUM_FILES = 3;
 	static constexpr int
 		USE_CURR_FILE_NUM = -1;
 protected:		// serialized variables
@@ -163,22 +163,20 @@ protected:		// serialized variables
 		X(_to_destroy_set_vec, std::nullopt) \
 		X(_num_files, std::nullopt) \
 		/* X(_engine_comp_map_vec, &_comp_deser_func_map) */ \
-		\
-		/* X(curr_file_num, std::nullopt) */
 
-	std::vector<EntId> _next_ent_id_vec;
-	std::vector<EntIdSet> _to_destroy_set_vec;
+	binser::VectorWithExtras<EntId> _next_ent_id_vec;
+	binser::VectorWithExtras<EntIdSet> _to_destroy_set_vec;
 	integer_types::u64 _num_files = DEFAULT_NUM_FILES;
 	// All `EntId` are stored as just the keys of each `EngineCompMap`,
 	// with no other storage for them.
-	std::vector<EngineCompMap> _engine_comp_map_vec;
+	binser::VectorWithExtras<EngineCompMap> _engine_comp_map_vec;
 protected:		// non-serialized variables
 	SysMap _sys_map;
 private:		// non-serialized variables
 	//binser::FromBvFactory<Comp>::FuncMap _comp_deser_func_map;
 	binser::FromBvFactoryFuncMap<Comp> _comp_deser_func_map;
 	//binser::FromBvFactory<Sys>::FuncMap _sys_deser_func_map;
-public:		// serialized variables
+public:		// non-serialized variables
 	int curr_file_num = 0;
 public:		// functions
 	//--------
@@ -493,11 +491,11 @@ public:		// functions
 	//--------
 	inline EntId& next_ent_id(int file_num)
 	{
-		return _next_ent_id_vec.at(_sel_file_num(file_num));
+		return _next_ent_id_vec.data.at(_sel_file_num(file_num));
 	}
 	inline const EntId& next_ent_id(int file_num) const
 	{
-		return _next_ent_id_vec.at(_sel_file_num(file_num));
+		return _next_ent_id_vec.data.at(_sel_file_num(file_num));
 	}
 
 	inline EntId& next_ent_id_cfn()
@@ -511,11 +509,11 @@ public:		// functions
 	//--------
 	inline EntIdSet& to_destroy_set(int file_num)
 	{
-		return _to_destroy_set_vec.at(_sel_file_num(file_num));
+		return _to_destroy_set_vec.data.at(_sel_file_num(file_num));
 	}
 	inline const EntIdSet& to_destroy_set(int file_num) const
 	{
-		return _to_destroy_set_vec.at(_sel_file_num(file_num));
+		return _to_destroy_set_vec.data.at(_sel_file_num(file_num));
 	}
 
 	inline EntIdSet& to_destroy_set_cfn()
@@ -529,11 +527,11 @@ public:		// functions
 	//--------
 	inline EngineCompMap& engine_comp_map(int file_num)
 	{
-		return _engine_comp_map_vec.at(_sel_file_num(file_num));
+		return _engine_comp_map_vec.data.at(_sel_file_num(file_num));
 	}
 	inline const EngineCompMap& engine_comp_map(int file_num) const
 	{
-		return _engine_comp_map_vec.at(_sel_file_num(file_num));
+		return _engine_comp_map_vec.data.at(_sel_file_num(file_num));
 	}
 
 	inline EngineCompMap& engine_comp_map_cfn()

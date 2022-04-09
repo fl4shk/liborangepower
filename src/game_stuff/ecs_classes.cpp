@@ -105,14 +105,23 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 }
 //--------
 Engine::Engine(integer_types::u64 s_num_files)
-	: _next_ent_id_vec(s_num_files, 0),
-	_to_destroy_set_vec(s_num_files, EntIdSet()),
+	: _next_ent_id_vec
+	({
+		.data=std::vector<EntId>(s_num_files, 0),
+		.checked_size=s_num_files
+	}),
+	_to_destroy_set_vec
+	({
+		.data=std::vector<EntIdSet>(s_num_files, EntIdSet()),
+		.checked_size=s_num_files
+	}),
 	_num_files(s_num_files)
 	//_engine_comp_map_vec(s_num_files, EngineCompMap())
 {
+	_engine_comp_map_vec.checked_size = s_num_files;
 	for (integer_types::u64 i=0; i<_num_files; ++i)
 	{
-		_engine_comp_map_vec.push_back(EngineCompMap());
+		_engine_comp_map_vec.data.push_back(EngineCompMap());
 	}
 }
 Engine::~Engine()
@@ -153,7 +162,7 @@ Engine::operator binser::Value () const
 		binser::Value bv_ecmap;
 
 		binser::set_bv_map_like_std_container(bv_ecmap,
-			_engine_comp_map_vec.at(i),
+			_engine_comp_map_vec.data.at(i),
 			[](const typename EngineCompMap::value_type& ent_pair) -> bool
 			{
 				return ent_pair.second.contains
@@ -184,6 +193,7 @@ void Engine::deserialize(const binser::Value& bv)
 	MEMB_AUTOSER_LIST_ECS_ENGINE(BINSER_MEMB_DESERIALIZE);
 	get_bv_memb(_engine_comp_map_vec, bv, "_engine_comp_map_vec",
 		&_comp_deser_func_map);
+
 	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 
 	//get_jv_memb(_next_ent_id_vec, jv, "_next_ent_id_vec", std::nullopt);

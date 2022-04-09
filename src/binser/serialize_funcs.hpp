@@ -1,5 +1,5 @@
-#ifndef liborangepower_binser_binser_serialize_funcs_hpp
-#define liborangepower_binser_binser_serialize_funcs_hpp
+#ifndef liborangepower_binser_serialize_funcs_hpp
+#define liborangepower_binser_serialize_funcs_hpp
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
@@ -15,6 +15,7 @@
 
 #include "value_class.hpp"
 #include "from_bv_factory_stuff.hpp"
+#include "containers_with_extras_classes.hpp"
 
 namespace liborangepower
 {
@@ -190,6 +191,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 			{
 				throw std::invalid_argument(sconcat
 					("liborangepower::binser::val_from_bv(): ",
+					"is non-array smart pointer: ",
 					"Need a non-null `func_map` in this case"));
 			}
 			std::string kind_str;
@@ -207,6 +209,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
+				"is_std_array<NonCvrefT>(): ",
 				"ret.size() != bv.size(): ",
 				ret.size(), " ", bv.size()));
 		}
@@ -216,6 +219,21 @@ inline void val_from_bv(T& ret, const Value& bv,
 			val_from_bv(ret[i], bv.at(i), func_map);
 		}
 	}
+	else if constexpr (is_vector_with_extras<NonCvrefT>()
+		|| is_deque_with_extras<NonCvrefT>())
+	{
+		//ret = NonCvrefT();
+
+		val_from_bv(ret.data, bv.at("data"), func_map);
+		if (ret.checked_size != ret.data.size())
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is vector/deque with extras: ",
+				"ret.checked_size != ret.data.size(): ",
+				ret.checked_size, " ", ret.data.size()));
+		}
+	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
 	{
 		ret = NonCvrefT();
@@ -223,11 +241,6 @@ inline void val_from_bv(T& ret, const Value& bv,
 		//for (size_t i=1; i<bv.size(); ++i)
 		for (size_t i=0; i<bv.size(); ++i)
 		{
-			//if constexpr (is_std_array<T>())
-			//{
-			//	val_from_bv(ret[i], bv.at(i), func_map);
-			//}
-			//else
 			if constexpr (is_vec_like_std_container<T>())
 			{
 				using ValueT = typename NonCvrefT::value_type;
@@ -484,65 +497,40 @@ inline void set_bv(Value& bv, const T& val)
 		//}
 		bv = std::move(map);
 	}
-	else if constexpr (is_arr_like_std_container<NonCvrefT>())
+	else if constexpr (is_vector_with_extras<NonCvrefT>()
+		|| is_deque_with_extras<NonCvrefT>())
 	{
-		//bv = ValueVec();
 		ValueVec vec;
 
-		//vec[0] = BlankValue();
+		for (size_t i=0; i<val.data.size(); ++i)
+		{
+			Value inner_bv;
+			set_bv(inner_bv, val.data.at(i));
+			vec.push_back(Value::to_sptr(std::move(inner_bv)));
+		}
+		bv = std::move(vec);
+	}
+	else if constexpr (is_arr_like_std_container<NonCvrefT>())
+	{
+		ValueVec vec;
 
 		for (size_t i=0; i<val.size(); ++i)
 		{
-			//if constexpr (is_basic_indexable_std_container
-			//	<typename NonCvrefT::value_type>())
-			{
-				Value inner_bv;
-
-				set_bv(inner_bv, val.at(i));
-
-				//vec[i + 1] = inner_bv;
-				//vec[i] = inner_bv;
-				//vec.push_back(ValueSptr(new Value(std::move(inner_bv))));
-				vec.push_back(Value::to_sptr(std::move(inner_bv)));
-			}
-			//else
-			//{
-			//	//vec[i + 1] = val.at(i);
-			//	//vec[i] = val.at(i);
-			//	//vec.push_back(ValueSptr(new Value(val.at(i))));
-			//	vec.push_back(Value::to_sptr(val.at(i)));
-			//}
+			Value inner_bv;
+			set_bv(inner_bv, val.at(i));
+			vec.push_back(Value::to_sptr(std::move(inner_bv)));
 		}
 		bv = std::move(vec);
 	}
 	else if constexpr (is_set_like_std_container<NonCvrefT>())
 	{
-		//size_t i = 0;
-		//bv = ValueVec();
 		ValueVec vec;
-
-		//vec[i++] = BlankValue();
 
 		for (const auto& key: val)
 		{
-			//if constexpr (is_basic_indexable_std_container
-			//	<typename NonCvrefT::key_type>())
-			{
-				Value inner_bv = ValueMap();
-
-				set_bv(inner_bv, key);
-
-				//vec[i++] = inner_bv;
-				//vec.push_back(ValueSptr(new Value(std::move(inner_bv))));
-				vec.push_back(Value::to_sptr(std::move(inner_bv)));
-			}
-			//else
-			//{
-			//	//vec[i++] = key;
-			//	//vec.push_back(ValueSptr(new Value(key)));
-			//	vec.push_back(Value::to_sptr(key));
-			//}
-			//++i;
+			Value inner_bv = ValueMap();
+			set_bv(inner_bv, key);
+			vec.push_back(Value::to_sptr(std::move(inner_bv)));
 		}
 		bv = std::move(vec);
 	}
@@ -657,4 +645,4 @@ inline bool write_binser(const std::string& output_file_name,
 } // namespace binser
 } // namespace liborangepower
 
-#endif		// liborangepower_binser_binser_serialize_funcs_hpp
+#endif		// liborangepower_binser_serialize_funcs_hpp
