@@ -227,30 +227,30 @@ public:		// functions
 	template<IsValueData T>
 	T& get()
 	{
-		try
-		{
+		//try
+		//{
 			return std::get<T>(_data);
-		}
-		catch (const std::exception& e)
-		{
-			misc_output::printerr("T& get() error: ",
-				_data.index(), " ", typeid(T()).name(), "\n");
-			throw e;
-		}
+		//}
+		//catch (const std::exception& e)
+		//{
+		//	misc_output::printerr("T& get() error: ",
+		//		_data.index(), " ", typeid(T()).name(), "\n");
+		//	throw e;
+		//}
 	}
 	template<IsValueData T>
 	const T& get() const
 	{
-		try
-		{
+		//try
+		//{
 			return std::get<T>(_data);
-		}
-		catch (const std::exception& e)
-		{
-			misc_output::printerr("const T& get() const error: ",
-				_data.index(), " ", typeid(T()).name(), "\n");
-			throw e;
-		}
+		//}
+		//catch (const std::exception& e)
+		//{
+		//	misc_output::printerr("const T& get() const error: ",
+		//		_data.index(), " ", typeid(T()).name(), "\n");
+		//	throw e;
+		//}
 	}
 
 	inline std::string& as_str()

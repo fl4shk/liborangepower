@@ -500,15 +500,16 @@ inline void set_bv(Value& bv, const T& val)
 	else if constexpr (is_vector_with_extras<NonCvrefT>()
 		|| is_deque_with_extras<NonCvrefT>())
 	{
-		ValueVec vec;
+		//ValueVec vec;
 
-		for (size_t i=0; i<val.data.size(); ++i)
-		{
-			Value inner_bv;
-			set_bv(inner_bv, val.data.at(i));
-			vec.push_back(Value::to_sptr(std::move(inner_bv)));
-		}
-		bv = std::move(vec);
+		//for (size_t i=0; i<val.data.size(); ++i)
+		//{
+		//	Value inner_bv;
+		//	set_bv(inner_bv, val.data.at(i));
+		//	vec.push_back(Value::to_sptr(std::move(inner_bv)));
+		//}
+		//bv = std::move(vec);
+		bv.insert("data", val.data);
 	}
 	else if constexpr (is_arr_like_std_container<NonCvrefT>())
 	{
