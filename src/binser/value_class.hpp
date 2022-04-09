@@ -227,14 +227,29 @@ public:		// functions
 	template<IsValueData T>
 	T& get()
 	{
-		printout("T& get(): ", _data.index(), "\n");
-		return std::get<T>(_data);
+		try
+		{
+			return std::get<T>(_data);
+		}
+		catch (const std::exception& e)
+		{
+			misc_output::printerr("T& get() error: ", _data.index(), "\n");
+			throw e;
+		}
 	}
 	template<IsValueData T>
 	const T& get() const
 	{
-		printout("const T& get() const: ", _data.index(), "\n");
-		return std::get<T>(_data);
+		try
+		{
+			return std::get<T>(_data);
+		}
+		catch (const std::exception& e)
+		{
+			misc_output::printerr("const T& get() const error: ",
+				_data.index(), "\n");
+			throw e;
+		}
 	}
 
 	inline std::string& as_str()
