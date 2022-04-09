@@ -199,6 +199,23 @@ inline void val_from_bv(T& ret, const Value& bv,
 			ret = func_map->at(kind_str)(obj);
 		}
 	}
+	else if constexpr (is_std_array<NonCvrefT>())
+	{
+		ret = NonCvrefT();
+
+		if (ret.size() != bv.size())
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"ret.size() != bv.size(): ",
+				ret.size(), " ", bv.size()));
+		}
+
+		for (size_t i=0; i<bv.size(); ++i)
+		{
+			val_from_bv(ret[i], bv.at(i), func_map);
+		}
+	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
 	{
 		ret = NonCvrefT();
@@ -206,11 +223,12 @@ inline void val_from_bv(T& ret, const Value& bv,
 		//for (size_t i=1; i<bv.size(); ++i)
 		for (size_t i=0; i<bv.size(); ++i)
 		{
-			if constexpr (is_std_array<T>())
-			{
-				val_from_bv(ret[i], bv.at(i), func_map);
-			}
-			else if constexpr (is_vec_like_std_container<T>())
+			//if constexpr (is_std_array<T>())
+			//{
+			//	val_from_bv(ret[i], bv.at(i), func_map);
+			//}
+			//else
+			if constexpr (is_vec_like_std_container<T>())
 			{
 				using ValueT = typename NonCvrefT::value_type;
 				ValueT temp;

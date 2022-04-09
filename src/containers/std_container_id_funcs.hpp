@@ -201,9 +201,18 @@ constexpr inline bool is_pseudo_vec_like_std_container()
 {
 	return
 	(
-		is_arr_like_std_container<T>()
-		//is_vec_like_std_container<T>()
+		//is_arr_like_std_container<T>()
+		is_vec_like_std_container<T>()
 		|| is_set_like_std_container<T>()
+	);
+}
+template<typename T>
+constexpr inline bool is_pseudo_arr_like_std_container()
+{
+	return
+	(
+		is_arr_like_std_container<T>()
+		|| is_pseudo_vec_like_std_container<T>()
 	);
 }
 template<typename T>
