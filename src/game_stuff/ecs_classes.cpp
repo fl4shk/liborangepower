@@ -11,7 +11,7 @@ namespace ecs
 //EngineCompMapValue::EngineCompMapValue()
 //{
 //}
-//EngineCompMapValue::EngineCompMapValue(int s_file_num,
+//EngineCompMapValue::EngineCompMapValue(FileNum s_file_num,
 //	CompMapSptr&& s_comp_map_uptr)
 //	: file_num(s_file_num), comp_map_uptr(std::move(s_comp_map_uptr))
 //{
@@ -104,7 +104,7 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 	return false;
 }
 //--------
-Engine::Engine(integer_types::u64 s_num_files)
+Engine::Engine(u64 s_num_files)
 	: _next_ent_id_vec
 	({
 		.data=std::vector<EntId>(s_num_files, 0),
@@ -119,7 +119,7 @@ Engine::Engine(integer_types::u64 s_num_files)
 	//_engine_comp_map_vec(s_num_files, EngineCompMap())
 {
 	_engine_comp_map_vec.checked_size = s_num_files;
-	for (integer_types::u64 i=0; i<_num_files; ++i)
+	for (FileNum i=0; i<_num_files; ++i)
 	{
 		_engine_comp_map_vec.data.push_back(EngineCompMap());
 	}
@@ -138,7 +138,7 @@ Engine::operator binser::Value () const
 	//	i<static_cast<Json::ArrayIndex>(_num_files);
 	//	++i)
 	binser::ValueVec vec;
-	for (decltype(_num_files) i=0; i<_num_files; ++i)
+	for (FileNum i=0; i<_num_files; ++i)
 	{
 		//Json::Value& jv_ecmap = ret["_engine_comp_map_vec"][i];
 
@@ -175,6 +175,51 @@ Engine::operator binser::Value () const
 	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	return ret;
+}
+//--------
+void Engine::copy_file()
+{
+	if ((src_file_num < 0) || (src_file_num >= _num_files))
+	{
+		throw std::invalid_argument(sconcat
+			("liborangepower::game::ecs::Engine::copy_file(): "
+			"Invalid `src_file_num`: ",
+			src_file_num, " ", _num_files));
+	}
+	if ((copy_dst_file_num < 0) || (copy_dst_file_num >= _num_files))
+	{
+		throw std::invalid_argument(sconcat
+			("liborangepower::game::ecs::Engine::copy_file(): "
+			"Invalid `copy_dst_file_num`: ",
+			copy_dst_file_num, " ", _num_files));
+	}
+	_next_ent_id_vec.data.at(copy_dst_file_num)
+		= _next_ent_id_vec.data.at(src_file_num);
+	_to_destroy_set_vec.data.at(copy_dst_file_num)
+		= _to_destroy_set_vec.data.at(src_file_num);
+	_engine_comp_map_vec.data.at(copy_dst_file_num)
+		= _engine_comp_map_vec.data.at(src_file_num);
+}
+void Engine::erase_file()
+{
+	if ((src_file_num < 0) || (src_file_num >= _num_files))
+	{
+		throw std::invalid_argument(sconcat
+			("liborangepower::game::ecs::Engine::copy_file(): "
+			"Invalid `src_file_num`: ",
+			src_file_num, " ", _num_files));
+	}
+	_next_ent_id_vec.data.at(copy_dst_file_num)
+		= std::move(_next_ent_id_vec.data.at(src_file_num));
+	_next_ent_id_vec.data.at(src_file_num) = EntId();
+
+	_to_destroy_set_vec.data.at(copy_dst_file_num)
+		= std::move(_to_destroy_set_vec.data.at(src_file_num));
+	_to_destroy_set_vec.data.at(src_file_num) = EntIdSet();
+
+	_engine_comp_map_vec.data.at(copy_dst_file_num)
+		= std::move(_engine_comp_map_vec.data.at(src_file_num));
+	_engine_comp_map_vec.data.at(src_file_num) = EngineCompMap();
 }
 //--------
 //void Engine::deserialize(const Json::Value& jv)
@@ -226,7 +271,7 @@ void Engine::deserialize(const binser::Value& bv)
 //	}
 //}
 //--------
-void Engine::_inner_create(EntId id, int file_num, bool mk_non_ser)
+void Engine::_inner_create(EntId id, FileNum file_num, bool mk_non_ser)
 {
 	//engine_comp_map(file_num)[id] = CompMapSptr(new CompMap());
 	engine_comp_map(file_num)[id] = CompMap();
@@ -236,7 +281,7 @@ void Engine::_inner_create(EntId id, int file_num, bool mk_non_ser)
 		insert_comp(id, CompSptr(new NonSerializable()), file_num);
 	}
 }
-EntId Engine::create(int file_num, bool mk_non_ser)
+EntId Engine::create(FileNum file_num, bool mk_non_ser)
 {
 	_inner_create(next_ent_id(file_num), file_num, mk_non_ser);
 
@@ -256,7 +301,7 @@ EntId Engine::create(int file_num, bool mk_non_ser)
 
 	return (next_ent_id(file_num)++);
 }
-void Engine::destroy(EntId id, int file_num)
+void Engine::destroy(EntId id, FileNum file_num)
 {
 	comp_map(id, file_num).clear();
 	if (to_destroy_set(file_num).contains(id))
@@ -264,7 +309,7 @@ void Engine::destroy(EntId id, int file_num)
 		to_destroy_set(file_num).erase(id);
 	}
 }
-void Engine::destroy(int file_num)
+void Engine::destroy(FileNum file_num)
 {
 	for (auto id: to_destroy_set(file_num))
 	{
@@ -273,7 +318,7 @@ void Engine::destroy(int file_num)
 	to_destroy_set(file_num).clear();
 }
 
-void Engine::destroy_all(int file_num)
+void Engine::destroy_all(FileNum file_num)
 {
 	next_ent_id(file_num) = EntId();
 	engine_comp_map(file_num).clear();
@@ -281,7 +326,7 @@ void Engine::destroy_all(int file_num)
 
 void Engine::destroy_all()
 {
-	for (decltype(_num_files) i=0; i<num_files(); ++i)
+	for (FileNum i=0; i<num_files(); ++i)
 	{
 		destroy_all(i);
 	}
@@ -289,7 +334,7 @@ void Engine::destroy_all()
 
 //--------
 EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set,
-	int file_num)
+	FileNum file_num)
 {
 	EntIdVec ret;
 
@@ -311,7 +356,7 @@ EntIdVec Engine::ent_id_vec_from_keys_any(const StrKeySet& key_set,
 	return ret;
 }
 EntIdSet Engine::ent_id_set_from_keys_any(const StrKeySet& key_set,
-	int file_num)
+	FileNum file_num)
 {
 	const EntIdVec vec(ent_id_vec_from_keys_any(key_set, file_num));
 
@@ -326,7 +371,7 @@ EntIdSet Engine::ent_id_set_from_keys_any(const StrKeySet& key_set,
 }
 
 EntIdVec Engine::ent_id_vec_from_keys_all(const StrKeySet& key_set,
-	int file_num)
+	FileNum file_num)
 {
 	EntIdVec ret;
 
@@ -353,7 +398,7 @@ EntIdVec Engine::ent_id_vec_from_keys_all(const StrKeySet& key_set,
 	return ret;
 }
 EntIdSet Engine::ent_id_set_from_keys_all(const StrKeySet& key_set,
-	int file_num)
+	FileNum file_num)
 {
 	const EntIdVec vec(ent_id_vec_from_keys_all(key_set, file_num));
 
@@ -368,7 +413,7 @@ EntIdSet Engine::ent_id_set_from_keys_all(const StrKeySet& key_set,
 }
 //--------
 bool Engine::insert_comp(EntId id, const std::string& key, CompSptr&& comp,
-	int file_num)
+	FileNum file_num)
 {
 	auto& the_comp_map = comp_map(id, file_num);
 
@@ -381,7 +426,7 @@ bool Engine::insert_comp(EntId id, const std::string& key, CompSptr&& comp,
 	return true;
 }
 bool Engine::insert_or_replace_comp(EntId id, const std::string& key,
-	CompSptr&& comp, int file_num)
+	CompSptr&& comp, FileNum file_num)
 {
 	auto& the_comp_map = comp_map(id, file_num);
 	//_ent_id_to_comp_key_map.at(id).insert(key);
@@ -390,7 +435,8 @@ bool Engine::insert_or_replace_comp(EntId id, const std::string& key,
 	the_comp_map[key] = std::move(comp);
 	return ret;
 }
-size_t Engine::erase_comp(EntId id, const std::string& key, int file_num)
+size_t Engine::erase_comp(EntId id, const std::string& key,
+	FileNum file_num)
 {
 	auto& the_comp_map = comp_map(id, file_num);
 	// A bad key will be handled by the `erase()` call itself.
