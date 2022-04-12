@@ -209,16 +209,8 @@ void Engine::erase_file()
 			"Invalid `src_file_num`: ",
 			src_file_num, " ", _num_files));
 	}
-	_next_ent_id_vec.data.at(copy_dst_file_num)
-		= std::move(_next_ent_id_vec.data.at(src_file_num));
 	_next_ent_id_vec.data.at(src_file_num) = EntId();
-
-	_to_destroy_set_vec.data.at(copy_dst_file_num)
-		= std::move(_to_destroy_set_vec.data.at(src_file_num));
 	_to_destroy_set_vec.data.at(src_file_num) = EntIdSet();
-
-	_engine_comp_map_vec.data.at(copy_dst_file_num)
-		= std::move(_engine_comp_map_vec.data.at(src_file_num));
 	_engine_comp_map_vec.data.at(src_file_num) = EngineCompMap();
 }
 //--------
