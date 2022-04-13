@@ -21,9 +21,10 @@ private:		// functions
 	static void func(std::basic_ostream<CharT, Traits>& os,
 		FirstArgT&& first_val, RemArgTs&&... rem_args)
 	{
-		typedef typename std::remove_reference<decltype(first_val)>::type
-			Temp0;
-		typedef typename std::remove_const<Temp0>::type Temp1;
+		//typedef typename std::remove_reference<decltype(first_val)>::type
+		//	Temp0;
+		//typedef typename std::remove_const<Temp0>::type Temp1;
+		using Temp1 = std::remove_cvref_t<FirstArgT>;
 		static_assert(!(std::is_same<const std::string*, Temp1>()
 			|| std::is_same<std::string*, Temp1>()),
 			"Please dereference the std::string.");
