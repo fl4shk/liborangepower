@@ -285,13 +285,10 @@ inline void val_from_bv(T& ret, const Value& bv,
 		//for (size_t i=1; i<bv.size(); ++i)
 		for (size_t i=0; i<bv.size(); i+=2)
 		{
-			//ret[i]["key"] = val_from_bv
 			KeyT key;
-			//val_from_bv(key, bv.at(i).at("key"), func_map);
 			val_from_bv(key, bv.at(i), func_map);
 
 			MappedT value;
-			//val_from_bv(value, bv.at(i).at("value"), func_map);
 			val_from_bv(value, bv.at(i + 1), func_map);
 
 			if constexpr (is_non_arr_std_unique_ptr<MappedT>())
@@ -376,30 +373,12 @@ inline void set_bv_map_like_std_container(Value& bv, const T& val,
 	const std::function<bool(const typename T::value_type&)>& skip_func)
 {
 	//--------
-	//bv = Value(ValueVec());
 	bv = ValueVec();
 	//--------
-	//size_t i = 0;
-
-	//bv.at(i++) = BlankValue();
-
 	for (const auto& pair: val)
 	{
 		if (!skip_func(pair))
 		{
-			//Value inner_bv = Value(ValueMap());
-
-			//set_bv(inner_bv.at("key"), pair.first);
-			//set_bv(inner_bv.at("value"), pair.second);
-
-			//bv.at(i++) = std::move(inner_bv);
-
-			//ValueMap map;
-
-			//set_bv_sptr_w_rst(map["key"], pair.first);
-			//set_bv_sptr_w_rst(map["value"], pair.second);
-
-			//bv.push_back(std::move(map));
 			Value to_push;
 
 			set_bv(to_push, pair.first);
