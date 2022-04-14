@@ -50,32 +50,36 @@ inline std::string sconcat(const auto& first_arg, const auto&... rem_args)
 //	return ret;
 //}
 
-class InvSconcatBackend final
-{
-private:		// functions
-	static void func(std::stringstream& sstm, auto& first_arg,
-		auto&... rem_args)
-	{
-		sstm >> first_arg;
-
-		if constexpr (sizeof...(rem_args) > 0)
-		{
-			func(sstm, rem_args...);
-		}
-	}
-
-	friend std::stringstream inv_sconcat(const std::string& str,
-		auto& first_arg, auto&... rem_args);
-};
+//class InvSconcatBackend final
+//{
+//private:		// functions
+//	//static void func(std::stringstream& sstm, auto& first_arg,
+//	//	auto&... rem_args)
+//	//{
+//	//	sstm >> first_arg;
+//
+//	//	if constexpr (sizeof...(rem_args) > 0)
+//	//	{
+//	//		func(sstm, rem_args...);
+//	//	}
+//	//}
+//
+//	static void func(std::stringstream& sstm, auto&... args)
+//	{
+//		(sstm << ... << args);
+//	}
+//
+//	friend std::stringstream inv_sconcat(const std::string& str,
+//		auto& first_arg, auto&... rem_args);
+//};
 
 inline std::stringstream inv_sconcat(const std::string& str,
-	auto& first_arg, auto&... rem_args)
+	auto&... args)
 {
 	std::stringstream sstm;
 
 	sstm << str;
-
-	InvSconcatBackend::func(sstm, first_arg, rem_args...);
+	(sstm >> ... >> args);
 
 	return sstm;
 }
@@ -85,14 +89,11 @@ inline std::string strjoin(const std::string& sep)
 	return std::string();
 }
 
-//template<typename FirstArgT>
-inline std::string strjoin(const std::string& sep,
-	const auto& first_arg)
+inline std::string strjoin(const std::string& sep, const auto& first_arg)
 {
 	return sconcat(first_arg, sep);
 }
 
-//template<typename FirstArgT, typename... RemArgTs>
 inline std::string strjoin(const std::string& sep,
 	const auto& first_arg, const auto&... rem_args)
 {
@@ -104,7 +105,6 @@ inline std::string strjoin(const std::string& sep,
 	}
 	return ret;
 }
-//template<typename... ArgTs>
 inline std::string strjoin2(const std::string& sep, const auto&... args)
 {
 	auto temp = strjoin(sep, args...);
@@ -122,13 +122,11 @@ inline std::string strjoin2(const std::string& sep, const auto&... args)
 	return ret;
 }
 
-//template<typename... ArgTs>
 inline std::string strappcom(const auto&... args)
 {
 	return strjoin(", ", args...);
 }
 
-//template<typename... ArgTs>
 inline std::string strappcom2(const auto&... args)
 {
 	return strjoin2(", ", args...);
