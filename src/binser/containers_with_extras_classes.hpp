@@ -16,6 +16,7 @@ public:		// serialized variables
 	std::vector<T, Allocator> data;
 public:		// non-serialized variables
 	u64 checked_size;
+	bool cs_is_max = false;
 };
 
 template<typename T>
@@ -31,6 +32,7 @@ public:		// serialized variables
 	std::deque<T, Allocator> data;
 public:		// non-serialized variables
 	u64 checked_size;
+	bool cs_is_max = false;
 };
 
 template<typename T>
