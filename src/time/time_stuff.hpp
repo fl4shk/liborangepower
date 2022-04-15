@@ -72,24 +72,19 @@ public:		// types
 	//using InstanceT = std::mt19937;
 	//using InstanceT = std::mt19937_64;
 	using InstanceT = _InstanceT;
-
-protected:		// variables
-	i64 _param_0, _param_1;
+private:		// variables
+	//i64 _param_0, _param_1;
 
 	InstanceT _instance;
-
-protected:		// functions
-	inline SeedT _default_initial_seed()
+private:		// functions
+	inline SeedT _default_initial_seed(i64 param_0, i64 param_1)
 	{
 		// I have no idea how good this is, but it seems to work?
-		return (get_hrc_now_rng_seed() * (param_0() + 1))
-			+ param_1();
+		return (get_hrc_now_rng_seed() * (param_0 + i64(1))) + param_1;
 	}
-
 public:		// functions
-	inline Prng(i64 s_param_0=0, i64 s_param_1=0) 
-		: _param_0(s_param_0), _param_1(s_param_1),
-		_instance(_default_initial_seed())
+	inline Prng(i64 param_0=0, i64 param_1=0)
+		: _instance(_default_initial_seed(param_0, param_1))
 	{
 	}
 	inline Prng(SeedT s_seed)
@@ -103,9 +98,10 @@ public:		// functions
 	{
 		return _instance();
 	}
-	inline auto operator () (u64 max_val, bool saturate=false)
+	template<typename T>
+	inline auto operator () (const T& max_val, bool saturate=false)
 	{
-		auto ret = (*this)();
+		T ret = (*this)();
 
 		if (!saturate)
 		{
@@ -122,26 +118,20 @@ public:		// functions
 		return ret;
 	}
 	template<typename T>
-	inline auto run()
+	inline auto rand()
 	{
 		return T((*this)());
 	}
-	template<typename T>
-	inline auto run(const T& max_val, bool saturate=false)
+	template<std::floating_point FloatT>
+	inline auto rand(const FloatT& scale)
 	{
-		//return T(_instance());
-		return T((*this)(u64(max_val), saturate));
+		return rand<FloatT>() * scale;
 	}
-	template<std::floating_point FloatT=float>
-	inline auto run(FloatT scale)
-	{
-		return run<Float>() * scale;
-	}
-	template<std::floating_point FloatT=float>
-	inline auto run(FloatT scale, FloatT max_val,
+	template<std::floating_point FloatT>
+	inline auto rand(const FloatT& scale, const FloatT& max_val,
 		bool saturate=false)
 	{
-		return run<FloatT>(max_val, saturate) * scale;
+		return (*this)(max_val, saturate) * scale;
 	}
 
 	// For serialization
@@ -160,8 +150,8 @@ public:		// functions
 		return is;
 	}
 
-	GEN_GETTER_BY_VAL(param_0)
-	GEN_GETTER_BY_VAL(param_1)
+	//GEN_GETTER_BY_VAL(param_0)
+	//GEN_GETTER_BY_VAL(param_1)
 	GEN_GETTER_BY_CON_REF(instance)
 };
 //--------
