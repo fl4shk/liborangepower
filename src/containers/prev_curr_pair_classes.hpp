@@ -24,6 +24,12 @@ class PrevCurrPair final
 {
 public:		// types
 	using ElemT = T;
+
+	class CtorArgs final
+	{
+	public:		// variables
+		ElemT prev, curr;
+	};
 private:		// variables
 	T _prev, _curr;
 
@@ -35,6 +41,15 @@ public:		// functions
 	}
 	inline PrevCurrPair(T&& s_prev, T&& s_curr)
 		: _prev(std::move(s_prev)), _curr(std::move(s_curr))
+	{
+	}
+	inline PrevCurrPair(const CtorArgs& ctor_args)
+		: _prev(ctor_args.prev), _curr(ctor_args.curr)
+	{
+	}
+	inline PrevCurrPair(CtorArgs&& ctor_args)
+		: _prev(std::move(ctor_args.prev)),
+		_curr(std::move(ctor_args.curr))
 	{
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(PrevCurrPair);
@@ -157,10 +172,25 @@ class MoveOnlyPrevCurrPair final
 {
 public:		// types
 	using ElemT = T;
+
+	class CtorArgs final
+	{
+	public:		// variables
+		T prev, curr;
+	};
 private:		// variables
 	T _prev, _curr;
 public:		// functions
 	inline MoveOnlyPrevCurrPair() = default;
+	inline MoveOnlyPrevCurrPair(T&& s_prev, T&& s_curr)
+		: _prev(std::move(s_prev)), _curr(std::move(s_curr))
+	{
+	}
+	inline MoveOnlyPrevCurrPair(CtorArgs&& ctor_args)
+		: _prev(std::move(ctor_args.prev)),
+		_curr(std::move(ctor_args.curr))
+	{
+	}
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(MoveOnlyPrevCurrPair);
 	~MoveOnlyPrevCurrPair() = default;
 

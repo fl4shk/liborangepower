@@ -34,6 +34,12 @@ class Vec2
 {
 public:		// types
 	using ElemT = T;
+
+	class CtorArgs final
+	{
+	public:		// variables
+		ElemT x, y;
+	};
 public:		// variables
 	T x, y;
 public:		// functions
@@ -41,6 +47,18 @@ public:		// functions
 	inline Vec2() = default;
 	inline Vec2(const T& s_x, const T& s_y)
 		: x(s_x), y(s_y)
+	{
+	}
+	inline Vec2(T&& s_x, T&& s_y)
+		: x(std::move(s_x)), y(std::move(s_y))
+	{
+	}
+	inline Vec2(const CtorArgs& ctor_args)
+		: x(ctor_args.x), y(ctor_args.y)
+	{
+	}
+	inline Vec2(CtorArgs&& ctor_args)
+		: x(std::move(ctor_args.x)), y(std::move(ctor_args.y))
 	{
 	}
 

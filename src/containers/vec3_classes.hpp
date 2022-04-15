@@ -28,6 +28,12 @@ class Vec3
 {
 public:		// types
 	using ElemT = T;
+
+	class CtorArgs final
+	{
+	public:		// variables
+		ElemT x, y, z;
+	};
 public:		// variables
 	T x, y, z;
 public:		// functions
@@ -35,6 +41,20 @@ public:		// functions
 	inline Vec3() = default;
 	inline Vec3(const T& s_x, const T& s_y, const T& s_z)
 		: x(s_x), y(s_y), z(s_z)
+	{
+	}
+	inline Vec3(T&& s_x, T&& s_y, T&& s_z)
+		: x(std::move(s_x)), y(std::move(s_y)), z(std::move(s_z))
+	{
+	}
+	inline Vec3(const CtorArgs& ctor_args)
+		: x(ctor_args.x), y(ctor_args.y), z(ctor_args.z)
+	{
+	}
+	inline Vec3(CtorArgs&& ctor_args)
+		: x(std::move(ctor_args.x)),
+		y(std::move(ctor_args.y)),
+		z(std::move(ctor_args.z))
 	{
 	}
 
