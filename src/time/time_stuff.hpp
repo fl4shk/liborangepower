@@ -62,7 +62,49 @@ inline auto put_now_as_gmtime()
 	return std::put_time(now_as_gmtime(), "%Y-%m-%d %H:%M:%S %Z");
 }
 //--------
-template<typename _InstanceT=pcg64>
+template<typename RngT>
+concept CallableLikeRng = requires(RngT rng)
+{
+	{ rng() };
+};
+
+template<typename T, CallableLikeRng RngT>
+inline auto rng_run(RngT& rng)
+{
+	return T(rng());
+}
+template<typename T, CallableLikeRng RngT>
+inline auto rng_run(RngT& rng, const T& max_val, bool saturate=false)
+{
+	T ret = rng_run<T>(rng);
+
+	if (!saturate)
+	{
+		ret %= max_val;
+	}
+	else // if (saturate)
+	{
+		if (ret > max_val)
+		{
+			ret = max_val;
+		}
+	}
+
+	return ret;
+}
+template<typename T, CallableLikeRng RngT>
+inline auto rng_run_scaled(RngT& rng, const T& scale)
+{
+	return rng_run<T>(rng) * scale;
+}
+template<typename T, CallableLikeRng RngT>
+inline auto rng_run_scaled(RngT& rng, const T& scale, const T& max_val,
+	bool saturate=false)
+{
+	return rng_run<T>(rng, max_val, saturate) * scale;
+}
+
+template<typename _InstanceT=std::mt19937_64>
 class Prng final
 {
 public:		// types
@@ -94,45 +136,33 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Prng);
 	inline ~Prng() = default;
 
-	inline auto operator () ()
+	inline auto operator ()
 	{
-		return _instance();
+		return rng_run<decltype(_instance())>(_instance);
 	}
 	template<typename T>
 	inline auto operator () (const T& max_val, bool saturate=false)
 	{
-		T ret = (*this)();
-
-		if (!saturate)
-		{
-			ret %= max_val;
-		}
-		else // if (saturate)
-		{
-			if (ret > max_val)
-			{
-				ret = max_val;
-			}
-		}
-
-		return ret;
+		return rng_run<T>(_instance, max_val, saturate);
 	}
 	template<typename T>
-	inline auto rand()
+	inline auto run()
 	{
-		return T((*this)());
+		return rng_run<T>(_instance);
 	}
-	template<std::floating_point FloatT>
-	inline auto rand(const FloatT& scale)
+	template<typename T>
+	inline auto run_scale(const T& scale)
 	{
-		return rand<FloatT>() * scale;
+		return rng_run_scaled<T>(_instance, scale);
 	}
-	template<std::floating_point FloatT>
-	inline auto rand(const FloatT& scale, const FloatT& max_val,
+	template<typename T>
+	inline auto run_scaled(const T& scale, const T& max_val,
 		bool saturate=false)
 	{
-		return (*this)(max_val, saturate) * scale;
+		return rng_run_scaled<T>(_instance, scale, max_val, saturate);
 	}
+
+
 
 	// For serialization
 	template<typename CharT, typename Traits=std::char_traits<CharT>>
