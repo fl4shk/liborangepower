@@ -136,7 +136,7 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Prng);
 	inline ~Prng() = default;
 
-	inline auto operator ()
+	inline auto operator () ()
 	{
 		return rng_run<decltype(_instance())>(_instance);
 	}
