@@ -226,13 +226,27 @@ inline void val_from_bv(T& ret, const Value& bv,
 
 		//val_from_bv(ret.data, bv.at("data"), func_map);
 		val_from_bv(ret.data, bv, func_map);
-		if (ret.checked_size != ret.data.size())
+		if (!ret.cs_is_max)
 		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is vector/deque with extras: ",
-				"ret.checked_size != ret.data.size(): ",
-				ret.checked_size, " ", ret.data.size()));
+			if (ret.data.size() != ret.checked_size)
+			{
+				throw std::invalid_argument(sconcat
+					("liborangepower::binser::val_from_bv(): ",
+					"is vector/deque with extras: ",
+					"ret.data.size() != ret.checked_size: ",
+					ret.data.size(), " ", ret.checked_size));
+			}
+		}
+		else // if (ret.cs_is_max)
+		{
+			if (ret.data.size() > ret.checked_size)
+			{
+				throw std::invalid_argument(sconcat
+					("liborangepower::binser::val_from_bv(): ",
+					"is vector/deque with extras: ",
+					"ret.data.size() > ret.checked_size: ",
+					ret.data.size(), " ", ret.checked_size));
+			}
 		}
 	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
