@@ -13,15 +13,21 @@ namespace liborangepower
 namespace binser
 {
 //--------
-template<typename T, typename Allocator=std::allocator<T>>
-class VectorEx final
+template<template<typename...> typename CntnrEtcT,
+	typename FirstT, typename... RemTs>
+class CsCntnrExBase
 {
 public:		// serialized variables
-	std::vector<T, Allocator> data;
+	CntnrEtcT<FirstT, RemTs...> data;
 public:		// non-serialized variables
 	u64 checked_size;
 	bool cs_is_max = false;
 	u64 min_size = 0;
+};
+//--------
+template<typename T, typename Allocator=std::allocator<T>>
+class VectorEx final: public CsCntnrExBase<std::vector, T, Allocator>
+{
 };
 
 template<typename T>
@@ -31,14 +37,8 @@ constexpr inline bool is_vector_ex()
 }
 //--------
 template<typename T, typename Allocator=std::allocator<T>>
-class DequeEx final
+class DequeEx final: public CsCntnrExBase<std::deque, T, Allocator>
 {
-public:		// serialized variables
-	std::deque<T, Allocator> data;
-public:		// non-serialized variables
-	u64 checked_size;
-	bool cs_is_max = false;
-	u64 min_size = 0;
 };
 
 template<typename T>
@@ -47,15 +47,10 @@ constexpr inline bool is_deque_ex()
 	return concepts::is_specialization<T, DequeEx>();
 }
 //--------
-template<typename T>
-class IndCircLinkListEx final
+template<typename T, typename ArgIndexT=uint64_t>
+class IndCircLinkListEx final:
+	public CsCntnrExBase<containers::IndCircLinkList, T, ArgIndexT>
 {
-public:		// serialized variables
-	containers::IndCircLinkList<T> data;
-public:		// non-serialized variables
-	u64 checked_size;
-	bool cs_is_max = false;
-	u64 min_size = 0;
 };
 
 template<typename T>
@@ -65,19 +60,22 @@ constexpr inline bool is_ind_circ_link_list_ex()
 }
 //--------
 template<typename T>
-class ScalarEx final
+class JustMaxMinCntnrExBase
 {
 public:		// variables
 	T data;
 public:		// non-serialized variables
 	T max, min;
 public:		// variables
-	//--------
 	inline operator T () const
 	{
 		return data;
 	}
-	//--------
+};
+//--------
+template<typename T>
+class ScalarEx final: public JustMaxMinCntnrExBase<T>
+{
 };
 
 template<typename T>
@@ -87,12 +85,8 @@ constexpr inline bool is_scalar_ex()
 }
 //--------
 template<typename T>
-class Vec2Ex final
+class Vec2Ex final: public JustMaxMinCntnrExBase<containers::Vec2<T>>
 {
-public:		// serialized variables
-	containers::Vec2<T> data;
-public:		// non-serialized variables
-	containers::Vec2<T> max, min;
 public:		// functions
 	//--------
 	inline T& x()
@@ -112,11 +106,6 @@ public:		// functions
 		return data.y;
 	}
 	//--------
-	inline operator containers::Vec2<T> () const
-	{
-		return data;
-	}
-	//--------
 };
 
 template<typename T>
@@ -128,10 +117,6 @@ constexpr inline bool is_vec2_ex()
 template<typename T>
 class Vec3Ex final
 {
-public:		// serialized variables
-	containers::Vec3<T> data;
-public:		// non-serialized variables
-	containers::Vec3<T> max, min;
 public:		// functions
 	//--------
 	inline T& x()
@@ -157,11 +142,6 @@ public:		// functions
 	inline const T& z() const
 	{
 		return data.z;
-	}
-	//--------
-	inline operator containers::Vec3<T> () const
-	{
-		return data;
 	}
 	//--------
 };
