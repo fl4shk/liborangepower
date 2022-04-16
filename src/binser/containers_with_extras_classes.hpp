@@ -4,6 +4,9 @@
 #include "../misc/misc_includes.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
 
+#include "../containers/vec2_classes.hpp"
+#include "../containers/vec3_classes.hpp"
+
 namespace liborangepower
 {
 namespace binser
@@ -17,6 +20,7 @@ public:		// serialized variables
 public:		// non-serialized variables
 	u64 checked_size;
 	bool cs_is_max = false;
+	u64 min_size = 0;
 };
 
 template<typename T>
@@ -33,12 +37,43 @@ public:		// serialized variables
 public:		// non-serialized variables
 	u64 checked_size;
 	bool cs_is_max = false;
+	u64 min_size = 0;
 };
 
 template<typename T>
 constexpr inline bool is_deque_with_extras()
 {
 	return concepts::is_specialization<T, DequeWithExtras>();
+}
+//--------
+template<typename T>
+class Vec2WithExtras final
+{
+public:		// serialized variables
+	Vec2<T> data;
+public:		// non-serialized variables
+	Vec2<T> max, min;
+};
+
+template<typename T>
+constexpr inline bool is_vec2_with_extras()
+{
+	return concepts::is_specialization<T, Vec2WithExtras>();
+}
+//--------
+template<typename T>
+class Vec3WithExtras final
+{
+public:		// serialized variables
+	Vec3<T> data;
+public:		// non-serialized variables
+	Vec3<T> max, min;
+};
+
+template<typename T>
+constexpr inline bool is_vec3_with_extras()
+{
+	return concepts::is_specialization<T, Vec3WithExtras>();
 }
 //--------
 } // namespace binser

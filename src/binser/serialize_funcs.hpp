@@ -155,6 +155,61 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv(ret.y, bv.at("y"), func_map);
 		val_from_bv(ret.z, bv.at("z"), func_map);
 	}
+	else if constexpr (is_vec2_with_extras<NonCvrefT>())
+	{
+		val_from_bv(ret.data, bv, func_map);
+
+		if (ret.data.x < ret.min.x || ret.data.x > ret.max.x)
+		{
+			const std::string err_msg(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_vec2_with_extras: ",
+				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
+				ret.data.x, " ", ret.min.x, " ", ret.max.x));
+			throw std::invalid_argument(err_msg.c_str());
+		}
+		if (ret.data.y < ret.min.y || ret.data.y > ret.max.y)
+		{
+			const std::string err_msg(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_vec2_with_extras: ",
+				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
+				ret.data.y, " ", ret.min.y, " ", ret.max.y));
+			throw std::invalid_argument(err_msg.c_str());
+		}
+	}
+	else if constexpr (is_vec3_with_extras<NonCvrefT>())
+	{
+		val_from_bv(ret.data, bv, func_map);
+
+		if (ret.data.x < ret.min.x || ret.data.x > ret.max.x)
+		{
+			const std::string err_msg(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_vec3_with_extras: ",
+				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
+				ret.data.x, " ", ret.min.x, " ", ret.max.x));
+			throw std::invalid_argument(err_msg.c_str());
+		}
+		if (ret.data.y < ret.min.y || ret.data.y > ret.max.y)
+		{
+			const std::string err_msg(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_vec3_with_extras: ",
+				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
+				ret.data.y, " ", ret.min.y, " ", ret.max.y));
+			throw std::invalid_argument(err_msg.c_str());
+		}
+		if (ret.data.z < ret.min.z || ret.data.z > ret.max.z)
+		{
+			const std::string err_msg(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_vec3_with_extras: ",
+				"ret.data.z < ret.min.z || ret.data.z > ret.max.z: ",
+				ret.data.z, " ", ret.min.z, " ", ret.max.z));
+			throw std::invalid_argument(err_msg.c_str());
+		}
+	}
 	else if constexpr
 	(
 		is_prev_curr_pair<NonCvrefT>()
@@ -207,11 +262,12 @@ inline void val_from_bv(T& ret, const Value& bv,
 
 		if (ret.size() != bv.size())
 		{
-			throw std::invalid_argument(sconcat
+			const std::string err_msg(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_std_array<NonCvrefT>(): ",
 				"ret.size() != bv.size(): ",
 				ret.size(), " ", bv.size()));
+			throw std::invalid_argument(err_msg.c_str());
 		}
 
 		for (size_t i=0; i<bv.size(); ++i)
@@ -230,22 +286,27 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			if (ret.data.size() != ret.checked_size)
 			{
-				throw std::invalid_argument(sconcat
+				const std::string err_msg(sconcat
 					("liborangepower::binser::val_from_bv(): ",
 					"is vector/deque with extras: ",
 					"ret.data.size() != ret.checked_size: ",
 					ret.data.size(), " ", ret.checked_size));
+				throw std::invalid_argument(err_msg.c_str());
 			}
 		}
 		else // if (ret.cs_is_max)
 		{
-			if (ret.data.size() > ret.checked_size)
+			if (ret.data.size() < ret.min_size
+				|| ret.data.size() > ret.checked_size)
 			{
-				throw std::invalid_argument(sconcat
+				const std::string err_msg(sconcat
 					("liborangepower::binser::val_from_bv(): ",
 					"is vector/deque with extras: ",
-					"ret.data.size() > ret.checked_size: ",
-					ret.data.size(), " ", ret.checked_size));
+					"ret.data.size() < ret.min_size ",
+					"|| ret.data.size() > ret.checked_size: ",
+					ret.data.size(), " ", ret.min_size, " ",
+					ret.checked_size));
+				throw std::invalid_argument(err_msg.c_str());
 			}
 		}
 	}
@@ -448,6 +509,11 @@ inline void set_bv(Value& bv, const T& val)
 	else if constexpr (is_vec3<NonCvrefT>())
 	{
 		bv = vec3_to_bv(val);
+	}
+	else if constexpr (is_vec2_with_extras<NonCvrefT>()
+		|| is_vec3_with_extras<NonCvrefT>())
+	{
+		set_bv(bv, val.data);
 	}
 	else if constexpr
 	(
