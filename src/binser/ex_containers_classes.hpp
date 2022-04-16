@@ -56,7 +56,7 @@ class IndCircLinkListEx final:
 template<typename T>
 constexpr inline bool is_ind_circ_link_list_ex()
 {
-	return concepts::is_specialization<T, IndCircLinkListEx>;
+	return concepts::is_specialization<T, IndCircLinkListEx>();
 }
 //--------
 template<typename T>
