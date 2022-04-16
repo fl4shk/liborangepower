@@ -15,7 +15,7 @@
 
 #include "value_class.hpp"
 #include "from_bv_factory_stuff.hpp"
-#include "containers_with_extras_classes.hpp"
+#include "containers_ex_classes.hpp"
 
 namespace liborangepower
 {
@@ -155,7 +155,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv(ret.y, bv.at("y"), func_map);
 		val_from_bv(ret.z, bv.at("z"), func_map);
 	}
-	else if constexpr (is_vec2_with_extras<NonCvrefT>())
+	else if constexpr (is_vec2_ex<NonCvrefT>())
 	{
 		val_from_bv(ret.data, bv, func_map);
 
@@ -163,7 +163,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			const std::string err_msg(sconcat
 				("liborangepower::binser::val_from_bv(): ",
-				"is_vec2_with_extras: ",
+				"is_vec2_ex: ",
 				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
 				ret.data.x, " ", ret.min.x, " ", ret.max.x));
 			throw std::invalid_argument(err_msg.c_str());
@@ -172,13 +172,13 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			const std::string err_msg(sconcat
 				("liborangepower::binser::val_from_bv(): ",
-				"is_vec2_with_extras: ",
+				"is_vec2_ex: ",
 				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
 				ret.data.y, " ", ret.min.y, " ", ret.max.y));
 			throw std::invalid_argument(err_msg.c_str());
 		}
 	}
-	else if constexpr (is_vec3_with_extras<NonCvrefT>())
+	else if constexpr (is_vec3_ex<NonCvrefT>())
 	{
 		val_from_bv(ret.data, bv, func_map);
 
@@ -186,7 +186,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			const std::string err_msg(sconcat
 				("liborangepower::binser::val_from_bv(): ",
-				"is_vec3_with_extras: ",
+				"is_vec3_ex: ",
 				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
 				ret.data.x, " ", ret.min.x, " ", ret.max.x));
 			throw std::invalid_argument(err_msg.c_str());
@@ -195,7 +195,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			const std::string err_msg(sconcat
 				("liborangepower::binser::val_from_bv(): ",
-				"is_vec3_with_extras: ",
+				"is_vec3_ex: ",
 				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
 				ret.data.y, " ", ret.min.y, " ", ret.max.y));
 			throw std::invalid_argument(err_msg.c_str());
@@ -204,7 +204,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			const std::string err_msg(sconcat
 				("liborangepower::binser::val_from_bv(): ",
-				"is_vec3_with_extras: ",
+				"is_vec3_ex: ",
 				"ret.data.z < ret.min.z || ret.data.z > ret.max.z: ",
 				ret.data.z, " ", ret.min.z, " ", ret.max.z));
 			throw std::invalid_argument(err_msg.c_str());
@@ -275,8 +275,8 @@ inline void val_from_bv(T& ret, const Value& bv,
 			val_from_bv(ret[i], bv.at(i), func_map);
 		}
 	}
-	else if constexpr (is_vector_with_extras<NonCvrefT>()
-		|| is_deque_with_extras<NonCvrefT>())
+	else if constexpr (is_vector_ex<NonCvrefT>()
+		|| is_deque_ex<NonCvrefT>())
 	{
 		//ret = NonCvrefT();
 
@@ -510,8 +510,8 @@ inline void set_bv(Value& bv, const T& val)
 	{
 		bv = vec3_to_bv(val);
 	}
-	else if constexpr (is_vec2_with_extras<NonCvrefT>()
-		|| is_vec3_with_extras<NonCvrefT>())
+	else if constexpr (is_vec2_ex<NonCvrefT>()
+		|| is_vec3_ex<NonCvrefT>())
 	{
 		set_bv(bv, val.data);
 	}
@@ -557,8 +557,8 @@ inline void set_bv(Value& bv, const T& val)
 		//}
 		bv = std::move(map);
 	}
-	else if constexpr (is_vector_with_extras<NonCvrefT>()
-		|| is_deque_with_extras<NonCvrefT>())
+	else if constexpr (is_vector_ex<NonCvrefT>()
+		|| is_deque_ex<NonCvrefT>())
 	{
 		//ValueVec vec;
 
