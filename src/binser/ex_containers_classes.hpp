@@ -6,6 +6,7 @@
 
 #include "../containers/vec2_classes.hpp"
 #include "../containers/vec3_classes.hpp"
+#include "../containers/linked_list_classes.hpp"
 
 namespace liborangepower
 {
@@ -44,6 +45,23 @@ template<typename T>
 constexpr inline bool is_deque_ex()
 {
 	return concepts::is_specialization<T, DequeEx>();
+}
+//--------
+template<typename T>
+class IndCircLinkListEx final
+{
+public:		// serialized variables
+	containers::IndCircLinkList<T> data;
+public:		// non-serialized variables
+	u64 checked_size;
+	bool cs_is_max = false;
+	u64 min_size = 0;
+};
+
+template<typename T>
+constexpr inline bool is_ind_circ_link_list_ex()
+{
+	return concepts::is_specialization<T, IndCircLinkListEx>;
 }
 //--------
 template<typename T>

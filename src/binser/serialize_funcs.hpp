@@ -6,6 +6,7 @@
 #include "../containers/vec2_classes.hpp"
 #include "../containers/vec3_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
+#include "../containers/linked_list_classes.hpp"
 #include "../containers/std_container_id_funcs.hpp"
 #include "../strings/sconcat_etc.hpp"
 #include "../metaprog_defines.hpp"
@@ -29,6 +30,8 @@ using containers::is_vec3;
 
 using containers::is_prev_curr_pair;
 //using containers::is_move_only_prev_curr_pair;
+
+using containers::is_ind_circ_link_list;
 
 using containers::is_non_arr_std_unique_ptr;
 using containers::is_non_arr_std_shared_ptr;
@@ -230,6 +233,28 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv(ret(), bv.at("_curr"), func_map);
 	}
 	//--------
+	else if constexpr (is_ind_circ_link_list<NonCvrefT>())
+	{
+		ret = NonCvrefT();
+
+		for (size_t i=0; i<bv.size(); ++i)
+		{
+			using ElemT = typename NonCvrefT::ElemT;
+			ElemT temp;
+
+			val_from_bv(temp, bv.at(i), func_map);
+
+			if constexpr (is_non_arr_std_unique_ptr<ElemT>())
+			{
+				ret.push_back(std::move(temp));
+			}
+			else
+			{
+				ret.push_back(temp);
+			}
+		}
+	}
+	//--------
 	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
 		|| is_non_arr_std_shared_ptr<NonCvrefT>()
 		|| is_non_arr_std_weak_ptr<NonCvrefT>())
@@ -284,34 +309,39 @@ inline void val_from_bv(T& ret, const Value& bv,
 		}
 	}
 	else if constexpr (is_vector_ex<NonCvrefT>()
-		|| is_deque_ex<NonCvrefT>())
+		|| is_deque_ex<NonCvrefT>()
+		|| is_ind_circ_link_list_ex<NonCvrefT>())
 	{
 		//ret = NonCvrefT();
 
 		//val_from_bv(ret.data, bv.at("data"), func_map);
 		val_from_bv(ret.data, bv, func_map);
+
+		// Prevent multiple O(n) computations of `ret.data.size()` when
+		// `is_ind_circ_link_list_ex<NonCvrefT>()` is `true`.
+		const auto& ret_data_size = ret.data.size();
 		if (!ret.cs_is_max)
 		{
-			if (ret.data.size() != ret.checked_size)
+			if (ret_data_size != ret.checked_size)
 			{
 				throw std::invalid_argument(sconcat
 					("liborangepower::binser::val_from_bv(): ",
 					"is vector/deque with extras: ",
-					"ret.data.size() != ret.checked_size: ",
-					ret.data.size(), " ", ret.checked_size));
+					"ret_data_size != ret.checked_size: ",
+					ret_data_size, " ", ret.checked_size));
 			}
 		}
 		else // if (ret.cs_is_max)
 		{
-			if (ret.data.size() < ret.min_size
-				|| ret.data.size() > ret.checked_size)
+			if (ret_data_size < ret.min_size
+				|| ret_data_size > ret.checked_size)
 			{
 				throw std::invalid_argument(sconcat
 					("liborangepower::binser::val_from_bv(): ",
 					"is vector/deque with extras: ",
-					"ret.data.size() < ret.min_size ",
-					"|| ret.data.size() > ret.checked_size: ",
-					ret.data.size(), " ", ret.min_size, " ",
+					"ret_data_size < ret.min_size ",
+					"|| ret_data_size > ret.checked_size: ",
+					ret_data_size, " ", ret.min_size, " ",
 					ret.checked_size));
 			}
 		}
@@ -323,7 +353,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		//for (size_t i=1; i<bv.size(); ++i)
 		for (size_t i=0; i<bv.size(); ++i)
 		{
-			if constexpr (is_vec_like_std_container<T>())
+			if constexpr (is_vec_like_std_container<NonCvrefT>())
 			{
 				using ValueT = typename NonCvrefT::value_type;
 				ValueT temp;
@@ -339,7 +369,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 					ret.push_back(temp);
 				}
 			}
-			else // if constexpr (is_set_like_std_container<T>())
+			else // if constexpr (is_set_like_std_container<NonCvrefT>())
 			{
 				using KeyT = typename NonCvrefT::key_type;
 				KeyT temp;
@@ -389,12 +419,12 @@ inline void val_from_bv(T& ret, const Value& bv,
 	}
 	else if constexpr (std::is_constructible<NonCvrefT, Value>())
 	{
-		ret = T(bv);
+		ret = NonCvrefT(bv);
 	}
 	else
 	{
 		// Assume a static member function called `from_bv` exists
-		ret = T::from_bv(bv);
+		ret = NonCvrefT::from_bv(bv);
 	}
 	//--------
 }
@@ -569,30 +599,20 @@ inline void set_bv(Value& bv, const T& val)
 		bv = std::move(map);
 	}
 	else if constexpr (is_vector_ex<NonCvrefT>()
-		|| is_deque_ex<NonCvrefT>())
+		|| is_deque_ex<NonCvrefT>()
+		|| is_ind_circ_link_list_ex<NonCvrefT>())
 	{
-		//ValueVec vec;
-
-		//for (size_t i=0; i<val.data.size(); ++i)
-		//{
-		//	Value inner_bv;
-		//	set_bv(inner_bv, val.data.at(i));
-		//	vec.push_back(Value::to_sptr(std::move(inner_bv)));
-		//}
-		//bv = std::move(vec);
 		set_bv(bv, val.data);
-
-		//bv.insert("data", val.data);
-		//set_bv_memb(bv, "data", val.data);
 	}
-	else if constexpr (is_arr_like_std_container<NonCvrefT>())
+	else if constexpr (is_arr_like_std_container<NonCvrefT>()
+		|| is_ind_circ_link_list<NonCvrefT>())
 	{
 		ValueVec vec;
 
-		for (size_t i=0; i<val.size(); ++i)
+		for (const auto& item: val)
 		{
 			Value inner_bv;
-			set_bv(inner_bv, val.at(i));
+			set_bv(inner_bv, item);
 			vec.push_back(Value::to_sptr(std::move(inner_bv)));
 		}
 		bv = std::move(vec);

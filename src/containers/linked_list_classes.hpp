@@ -9,20 +9,23 @@
 #include <type_traits>
 #include "../gen_class_innards_defines.hpp"
 
+#include "../concepts/is_specialization_concepts.hpp"
+
 namespace liborangepower
 {
-
 namespace containers
 {
-
+//--------
 template<typename T>
 class PtrCircLinkList
 {
 public:		// types
+	//--------
+	using ElemT = T;
+	//--------
 	class Node final
 	{
 		friend class PtrCircLinkList;
-
 	public:		// types
 		template<typename OtherT>
 		using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
@@ -31,13 +34,10 @@ public:		// types
 		template<typename OtherT>
 		using MoveConstructEnIf = std::enable_if<std::is_move_assignable
 			<OtherT>::value, Node>;
-
 	private:		// variables
 		Node * _next = nullptr, * _prev = nullptr;
-
 	public:		// variables
 		T data;
-
 	public:		// functions
 		Node() = default;
 
@@ -66,18 +66,16 @@ public:		// types
 		GEN_GETTER_BY_VAL(next)
 		GEN_GETTER_BY_VAL(prev)
 	};
-
+	//--------
 	template<bool _reverse> 
 	class NodeIterator final
 	{
 		friend class PtrCircLinkList;
-
 	public:		// constants
-		static constexpr bool REVERSE = _reverse;
-
+		static constexpr bool
+			REVERSE = _reverse;
 	private:		// variables
 		Node* _node = nullptr;
-
 	public:		// functions
 		NodeIterator() = default;
 		inline NodeIterator(Node* s_node)
@@ -96,13 +94,11 @@ public:		// types
 			_node = !REVERSE ? _node->next() : _node->prev();
 			return *this;
 		}
-
 		inline NodeIterator& operator -- ()
 		{
 			_node = !REVERSE ? _node->prev() : _node->next();
 			return *this;
 		}
-
 		inline operator Node* () const
 		{
 			return _node;
@@ -117,7 +113,6 @@ public:		// types
 		{
 			return *_node;
 		}
-
 		inline Node* operator -> () const
 		{
 			return _node;
@@ -133,27 +128,27 @@ public:		// types
 			return (_node != other._node);
 		}
 	};
-
+	//--------
 	template<bool _reverse, typename OtherT>
 	using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
 		<OtherT>::value, NodeIterator<_reverse>>;
 	template<bool _reverse, typename OtherT>
 	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
 		<OtherT>::value, NodeIterator<_reverse>>;
-
+	//--------
 private:		// variables
+	//--------
 	Node _head;
-
+	//--------
 public:		// functions
+	//--------
 	inline PtrCircLinkList()
 	{
 		_head._next = &_head;
 		_head._prev = &_head;
 	}
-
 	//GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList);
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList)
-
 	virtual inline ~PtrCircLinkList()
 	{
 		//for (auto iter=_head.next(); iter!=&_head; )
@@ -173,17 +168,16 @@ public:		// functions
 			pop_front();
 		}
 	}
-
+	//--------
 	inline Node* head()
 	{
 		return &_head;
 	}
-
 	inline bool empty() const
 	{
 		return (_head._next == &_head);
 	}
-
+	//--------
 	inline NodeIterator<false> begin()
 	{
 		return NodeIterator<false>(head()->next());
@@ -234,7 +228,7 @@ public:		// functions
 	{
 		return NodeIterator<true>(_head._prev->_next);
 	}
-
+	//--------
 	bool contains(Node* where) const
 	{
 		//for (auto iter : *this)
@@ -248,7 +242,6 @@ public:		// functions
 
 		return false;
 	}
-
 	size_t size() const
 	{
 		size_t ret = 0;
@@ -261,7 +254,7 @@ public:		// functions
 
 		return ret;
 	}
-
+	//--------
 	template<bool reverse=false>
 	inline NodeIterator<reverse> front()
 	{
@@ -272,7 +265,7 @@ public:		// functions
 	{
 		return NodeIterator<reverse>(_head._prev);
 	}
-
+	//--------
 	template<bool reverse=false, typename OtherT=T>
 	inline UpdateByCopyEnIf<reverse, OtherT>::type push_front
 		(const OtherT& to_push)
@@ -306,8 +299,7 @@ public:		// functions
 	{
 		remove_before(head());
 	}
-
-
+	//--------
 	template<bool reverse=false, typename OtherT=T>
 	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_before
 		(Node* where, const OtherT& to_insert)
@@ -341,7 +333,7 @@ public:		// functions
 		node->data = std::move(to_insert);
 		return _inner_insert_after<reverse>(where, node);
 	}
-
+	//--------
 	inline void remove_before(Node* where)
 	{
 		auto old_prev = where->_prev;
@@ -373,8 +365,9 @@ public:		// functions
 
 		delete where;
 	}
-
+	//--------
 private:		// functions
+	//--------
 	template<bool reverse=false>
 	inline NodeIterator<reverse> _inner_insert_before(Node* where,
 		Node* what)
@@ -389,7 +382,6 @@ private:		// functions
 
 		return NodeIterator<reverse>(what);
 	}
-
 	template<bool reverse=false>
 	inline NodeIterator<reverse> _inner_insert_after(Node* where,
 		Node* what)
@@ -404,23 +396,28 @@ private:		// functions
 
 		return NodeIterator<reverse>(what);
 	}
+	//--------
 };
 
-template<typename T, typename ArgIndexT=int64_t>
+template<typename T>
+constexpr inline bool is_ptr_circ_link_list()
+{
+	return concepts::is_specialization<T, PtrCircLinkList>;
+}
+//--------
+template<typename T, typename ArgIndexT=uint64_t>
 class IndCircLinkList
 {
 public:		// types
 	using IndexT = ArgIndexT;
-
+	using ElemT = T;
 public:		// constants
-	static constexpr IndexT NULL_INDEX = -1;
-
+	static constexpr IndexT
+		NULL_INDEX = -1;
 public:		// types
-
 	class Node final
 	{
 		friend class IndCircLinkList;
-
 	public:		// types
 		template<typename OtherT>
 		using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
@@ -429,14 +426,10 @@ public:		// types
 		template<typename OtherT>
 		using MoveConstructEnIf = std::enable_if<std::is_move_assignable
 			<OtherT>::value, Node>;
-
 	private:		// variables
 		ArgIndexT _next = NULL_INDEX, _prev = NULL_INDEX;
-
 	public:		// variables
 		T data;
-
-
 	public:		// functions
 		Node() = default;
 
@@ -470,14 +463,11 @@ public:		// types
 	class NodeIterator final
 	{
 		friend class IndCircLinkList;
-
 	public:		// constants
 		static constexpr bool REVERSE = _reverse;
-
 	private:		// variables
 		IndCircLinkList* _list = nullptr;
 		IndexT _node_index = NULL_INDEX;
-
 	public:		// functions
 		NodeIterator() = default;
 		inline NodeIterator(IndCircLinkList* s_list, IndexT s_node_index)
@@ -490,9 +480,7 @@ public:		// types
 			_node_index(s_node_index)
 		{
 		}
-
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
-
 		~NodeIterator() = default;
 
 		inline Node& node()
@@ -508,7 +496,6 @@ public:		// types
 		{
 			return node();
 		}
-
 		inline Node& operator * () const
 		{
 			return _list->at(_node_index);
@@ -523,7 +510,6 @@ public:		// types
 			_node_index = !_reverse ? node().next() : node().prev();
 			return *this;
 		}
-
 		inline NodeIterator& operator -- ()
 		{
 			_node_index = !_reverse ? node().prev() : node().next();
@@ -549,13 +535,12 @@ public:		// types
 	template<bool _reverse, typename OtherT>
 	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
 		<OtherT>::value, NodeIterator<_reverse>>;
-
 public:		// constants
-	static constexpr IndexT HEAD_INDEX = 0;
+	static constexpr IndexT
+		HEAD_INDEX = 0;
 private:		// variables
 	std::vector<IndexT> _avail_index_stack;
 	std::vector<Node> _node_vec;
-
 public:		// functions
 	inline IndCircLinkList()
 	{
@@ -824,9 +809,13 @@ private:		// functions
 	}
 };
 
-
+template<typename T>
+constexpr inline bool is_ind_circ_link_list()
+{
+	return concepts::is_specialization<T, IndCircLinkList>;
+}
+//--------
 } // namespace containers
-
 } // namespace liborangepower
 
 template<typename T>
