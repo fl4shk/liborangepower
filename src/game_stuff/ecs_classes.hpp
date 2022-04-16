@@ -171,12 +171,12 @@ protected:		// serialized variables
 		X(_num_files, std::nullopt) \
 		/* X(_engine_comp_map_vec, &_comp_deser_func_map) */ \
 
-	binser::VectorWithExtras<EntId> _next_ent_id_vec;
-	binser::VectorWithExtras<EntIdSet> _to_destroy_set_vec;
+	binser::VectorEx<EntId> _next_ent_id_vec;
+	binser::VectorEx<EntIdSet> _to_destroy_set_vec;
 	FileNum _num_files = DEFAULT_NUM_FILES;
 	// All `EntId` are stored as just the keys of each `EngineCompMap`,
 	// with no other storage for them.
-	binser::VectorWithExtras<EngineCompMap> _engine_comp_map_vec;
+	binser::VectorEx<EngineCompMap> _engine_comp_map_vec;
 protected:		// non-serialized variables
 	SysMap _sys_map;
 private:		// non-serialized variables
