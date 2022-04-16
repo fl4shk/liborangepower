@@ -75,7 +75,7 @@ public:		// functions
 		requires LikeVec2<Vec2<T>, OtherVec2T>
 	inline Vec2& operator += (const OtherVec2T& other) const
 	{
-		*this = (*this) + other;
+		*this = *this + other;
 		return *this;
 	}
 
@@ -89,7 +89,7 @@ public:		// functions
 		requires LikeVec2<Vec2<T>, OtherVec2T>
 	inline Vec2& operator -= (const OtherVec2T& other) const
 	{
-		*this = (*this) - other;
+		*this = *this - other;
 		return *this;
 	}
 
@@ -106,7 +106,7 @@ public:		// functions
 	template<std::convertible_to<T> OtherT>
 	inline Vec2& operator *= (const OtherT& other) const
 	{
-		*this = (*this) * other;
+		*this = *this * other;
 		return *this;
 	}
 
@@ -118,7 +118,7 @@ public:		// functions
 	template<std::convertible_to<T> OtherT>
 	inline Vec2& operator /= (const OtherT& scale) const
 	{
-		*this = (*this) / scale;
+		*this = *this / scale;
 		return *this;
 	}
 	//--------
@@ -159,7 +159,7 @@ public:		// functions
 		requires LikeVec2<Vec2<T>, OtherVec2T>
 	inline bool operator != (const OtherVec2T& other) const
 	{
-		return (!((*this) == other));
+		return (!(*this == other));
 	}
 
 	template<typename OtherVec2T>
@@ -178,13 +178,13 @@ public:		// functions
 		requires LikeVec2<Vec2<T>, OtherVec2T>
 	inline bool operator <= (const OtherVec2T& other) const
 	{
-		return (!((*this) > other));
+		return (!(*this > other));
 	}
 	template<typename OtherVec2T>
 		requires LikeVec2<Vec2<T>, OtherVec2T>
 	inline bool operator >= (const OtherVec2T& other) const
 	{
-		return (!((*this) < other));
+		return (!(*this < other));
 	}
 	//--------
 };
