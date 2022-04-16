@@ -1,5 +1,5 @@
-#ifndef liborangepower_binser_containers_ex_classes_hpp
-#define liborangepower_binser_containers_ex_classes_hpp
+#ifndef liborangepower_binser_ex_containers_classes_hpp
+#define liborangepower_binser_ex_containers_classes_hpp
 
 #include "../misc/misc_includes.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
@@ -79,4 +79,4 @@ constexpr inline bool is_vec3_ex()
 } // namespace binser
 } // namespace liborangepower
 
-#endif		// liborangepower_binser_containers_ex_classes_hpp
+#endif		// liborangepower_binser_ex_containers_classes_hpp
