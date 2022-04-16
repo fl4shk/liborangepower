@@ -87,23 +87,25 @@ constexpr inline bool is_scalar_ex()
 template<typename T>
 class Vec2Ex final: public JustMaxMinCntnrExBase<containers::Vec2<T>>
 {
+public:		// types
+	using Base = JustMaxMinCntnrExBase<containers::Vec2<T>>;
 public:		// functions
 	//--------
 	inline T& x()
 	{
-		return data.x;
+		return Base::data.x;
 	}
 	inline const T& x() const
 	{
-		return data.x;
+		return Base::data.x;
 	}
 	inline T& y()
 	{
-		return data.y;
+		return Base::data.y;
 	}
 	inline const T& y() const
 	{
-		return data.y;
+		return Base::data.y;
 	}
 	//--------
 };
@@ -117,31 +119,33 @@ constexpr inline bool is_vec2_ex()
 template<typename T>
 class Vec3Ex final: public JustMaxMinCntnrExBase<containers::Vec3<T>>
 {
+public:		// types
+	using Base = JustMaxMinCntnrExBase<containers::Vec3<T>>;
 public:		// functions
 	//--------
 	inline T& x()
 	{
-		return data.x;
+		return Base::data.x;
 	}
 	inline const T& x() const
 	{
-		return data.x;
+		return Base::data.x;
 	}
 	inline T& y()
 	{
-		return data.y;
+		return Base::data.y;
 	}
 	inline const T& y() const
 	{
-		return data.y;
+		return Base::data.y;
 	}
 	inline T& z()
 	{
-		return data.z;
+		return Base::data.z;
 	}
 	inline const T& z() const
 	{
-		return data.z;
+		return Base::data.z;
 	}
 	//--------
 };
