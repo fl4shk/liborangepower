@@ -64,7 +64,7 @@ template<typename T, typename ArgIndexT=uint64_t>
 class IndCircLinkListEx final
 {
 public:		// serialized variables
-	containers::IndCircLinkList<T, Allocator> data;
+	containers::IndCircLinkList<T, ArgIndexT> data;
 public:		// non-serialized variables
 	u64 checked_size;
 	bool cs_is_max = false;
