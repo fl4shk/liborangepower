@@ -144,6 +144,20 @@ inline void val_from_bv(T& ret, const Value& bv,
 		ret = NonCvrefT(temp);
 	}
 	//--------
+	else if constexpr (is_scalar_ex<NonCvrefT>())
+	{
+		val_from_bv(ret.data, bv, func_map);
+
+		if (ret.data < ret.min || ret.data > ret.max)
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_scalar_ex: ",
+				"ret.data < ret.min || ret.data > ret.max: ",
+				ret.data, " ", ret.min, " ", ret.max));
+		}
+	}
+	//--------
 	else if constexpr (is_vec2<NonCvrefT>())
 	{
 		val_from_bv(ret.x, bv.at("x"), func_map);
@@ -161,21 +175,19 @@ inline void val_from_bv(T& ret, const Value& bv,
 
 		if (ret.data.x < ret.min.x || ret.data.x > ret.max.x)
 		{
-			const std::string err_msg(sconcat
+			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_vec2_ex: ",
 				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
 				ret.data.x, " ", ret.min.x, " ", ret.max.x));
-			throw std::invalid_argument(err_msg.c_str());
 		}
 		if (ret.data.y < ret.min.y || ret.data.y > ret.max.y)
 		{
-			const std::string err_msg(sconcat
+			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_vec2_ex: ",
 				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
 				ret.data.y, " ", ret.min.y, " ", ret.max.y));
-			throw std::invalid_argument(err_msg.c_str());
 		}
 	}
 	else if constexpr (is_vec3_ex<NonCvrefT>())
@@ -184,30 +196,27 @@ inline void val_from_bv(T& ret, const Value& bv,
 
 		if (ret.data.x < ret.min.x || ret.data.x > ret.max.x)
 		{
-			const std::string err_msg(sconcat
+			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_vec3_ex: ",
 				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
 				ret.data.x, " ", ret.min.x, " ", ret.max.x));
-			throw std::invalid_argument(err_msg.c_str());
 		}
 		if (ret.data.y < ret.min.y || ret.data.y > ret.max.y)
 		{
-			const std::string err_msg(sconcat
+			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_vec3_ex: ",
 				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
 				ret.data.y, " ", ret.min.y, " ", ret.max.y));
-			throw std::invalid_argument(err_msg.c_str());
 		}
 		if (ret.data.z < ret.min.z || ret.data.z > ret.max.z)
 		{
-			const std::string err_msg(sconcat
+			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_vec3_ex: ",
 				"ret.data.z < ret.min.z || ret.data.z > ret.max.z: ",
 				ret.data.z, " ", ret.min.z, " ", ret.max.z));
-			throw std::invalid_argument(err_msg.c_str());
 		}
 	}
 	else if constexpr
@@ -262,12 +271,11 @@ inline void val_from_bv(T& ret, const Value& bv,
 
 		if (ret.size() != bv.size())
 		{
-			const std::string err_msg(sconcat
+			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_std_array<NonCvrefT>(): ",
 				"ret.size() != bv.size(): ",
 				ret.size(), " ", bv.size()));
-			throw std::invalid_argument(err_msg.c_str());
 		}
 
 		for (size_t i=0; i<bv.size(); ++i)
@@ -286,12 +294,11 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			if (ret.data.size() != ret.checked_size)
 			{
-				const std::string err_msg(sconcat
+				throw std::invalid_argument(sconcat
 					("liborangepower::binser::val_from_bv(): ",
 					"is vector/deque with extras: ",
 					"ret.data.size() != ret.checked_size: ",
 					ret.data.size(), " ", ret.checked_size));
-				throw std::invalid_argument(err_msg.c_str());
 			}
 		}
 		else // if (ret.cs_is_max)
@@ -299,14 +306,13 @@ inline void val_from_bv(T& ret, const Value& bv,
 			if (ret.data.size() < ret.min_size
 				|| ret.data.size() > ret.checked_size)
 			{
-				const std::string err_msg(sconcat
+				throw std::invalid_argument(sconcat
 					("liborangepower::binser::val_from_bv(): ",
 					"is vector/deque with extras: ",
 					"ret.data.size() < ret.min_size ",
 					"|| ret.data.size() > ret.checked_size: ",
 					ret.data.size(), " ", ret.min_size, " ",
 					ret.checked_size));
-				throw std::invalid_argument(err_msg.c_str());
 			}
 		}
 	}
@@ -500,6 +506,11 @@ inline void set_bv(Value& bv, const T& val)
 	else if constexpr (std::is_enum<NonCvrefT>())
 	{
 		set_bv(bv, std::underlying_type_t<NonCvrefT>(val));
+	}
+	//--------
+	else if constexpr (is_scalar_ex<NonCvrefT>())
+	{
+		set_bv(bv, val.data);
 	}
 	//--------
 	else if constexpr (is_vec2<NonCvrefT>())

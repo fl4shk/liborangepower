@@ -61,6 +61,12 @@ public:		// variables
 	}
 	//--------
 };
+
+template<typename T>
+constexpr inline bool is_scalar_ex()
+{
+	return concepts::is_specialization<T, ScalarEx>();
+}
 //--------
 template<typename T>
 class Vec2Ex final
