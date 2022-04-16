@@ -52,10 +52,10 @@ class Vec2Ex final
 public:		// serialized variables
 	containers::Vec2<T> data;
 public:		// non-serialized variables
+	containers::Vec2<T> max, min;
 	T
 		& x = data.x,
 		& y = data.y;
-	containers::Vec2<T> max, min;
 public:		// functions
 	//--------
 	inline operator containers::Vec2<T> () const
@@ -77,11 +77,11 @@ class Vec3Ex final
 public:		// serialized variables
 	containers::Vec3<T> data;
 public:		// non-serialized variables
+	containers::Vec3<T> max, min;
 	T
 		& x = data.x,
 		& y = data.y,
 		& z = data.z;
-	containers::Vec3<T> max, min;
 public:		// functions
 	//--------
 	inline operator containers::Vec3<T> () const
