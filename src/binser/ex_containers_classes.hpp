@@ -115,7 +115,7 @@ constexpr inline bool is_vec2_ex()
 }
 //--------
 template<typename T>
-class Vec3Ex final
+class Vec3Ex final: public JustMaxMinCntnrExBase<containers::Vec3<T>>
 {
 public:		// functions
 	//--------
