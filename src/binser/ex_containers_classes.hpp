@@ -47,6 +47,22 @@ constexpr inline bool is_deque_ex()
 }
 //--------
 template<typename T>
+class ScalarEx final
+{
+public:		// variables
+	T data;
+public:		// non-serialized variables
+	T max, min;
+public:		// variables
+	//--------
+	inline operator T () const
+	{
+		return data;
+	}
+	//--------
+};
+//--------
+template<typename T>
 class Vec2Ex final
 {
 public:		// serialized variables
