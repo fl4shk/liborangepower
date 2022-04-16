@@ -402,7 +402,7 @@ private:		// functions
 template<typename T>
 constexpr inline bool is_ptr_circ_link_list()
 {
-	return concepts::is_specialization<T, PtrCircLinkList>;
+	return concepts::is_specialization<T, PtrCircLinkList>();
 }
 //--------
 template<typename T, typename ArgIndexT=uint64_t>
@@ -812,7 +812,7 @@ private:		// functions
 template<typename T>
 constexpr inline bool is_ind_circ_link_list()
 {
-	return concepts::is_specialization<T, IndCircLinkList>;
+	return concepts::is_specialization<T, IndCircLinkList>();
 }
 //--------
 } // namespace containers
