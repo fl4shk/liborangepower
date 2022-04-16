@@ -72,7 +72,7 @@ public:		// functions
 		return data.y;
 	}
 	//--------
-	inline operator Vec2<T> () const
+	inline operator containers::Vec2<T> () const
 	{
 		return data;
 	}
@@ -119,7 +119,7 @@ public:		// functions
 		return data.z;
 	}
 	//--------
-	inline operator Vec3<T> () const
+	inline operator containers::Vec3<T> () const
 	{
 		return data;
 	}
