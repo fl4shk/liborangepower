@@ -53,6 +53,30 @@ public:		// serialized variables
 	containers::Vec2<T> data;
 public:		// non-serialized variables
 	containers::Vec2<T> max, min;
+public:		// functions
+	//--------
+	inline T& x()
+	{
+		return data.x;
+	}
+	inline const T& x() const
+	{
+		return data.x;
+	}
+	inline T& y()
+	{
+		return data.y;
+	}
+	inline const T& y() const
+	{
+		return data.y;
+	}
+	//--------
+	inline operator Vec2<T> () const
+	{
+		return data;
+	}
+	//--------
 };
 
 template<typename T>
@@ -68,6 +92,38 @@ public:		// serialized variables
 	containers::Vec3<T> data;
 public:		// non-serialized variables
 	containers::Vec3<T> max, min;
+public:		// functions
+	//--------
+	inline T& x()
+	{
+		return data.x;
+	}
+	inline const T& x() const
+	{
+		return data.x;
+	}
+	inline T& y()
+	{
+		return data.y;
+	}
+	inline const T& y() const
+	{
+		return data.y;
+	}
+	inline T& z()
+	{
+		return data.z;
+	}
+	inline const T& z() const
+	{
+		return data.z;
+	}
+	//--------
+	inline operator Vec3<T> () const
+	{
+		return data;
+	}
+	//--------
 };
 
 template<typename T>
