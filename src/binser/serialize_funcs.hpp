@@ -60,28 +60,29 @@ namespace binser
 
 // These are for use with X macros that call a macro on at least some
 // members of a class to serialize or deserialize
-#define BINSER_MEMB_SERIALIZE(name, unused_arg) \
+#define BINSER_MEMB_SERIALIZE(name, ...) \
 	set_bv_memb(ret, #name, name);
-#define BINSER_MEMB_DESERIALIZE(name, func_map) \
+#define BINSER_MEMB_DESERIALIZE(name, func_map, ...) \
 	get_bv_memb(name, bv, #name, func_map);
-#define BINSER_MEMB_DESERIALIZE_EX_MM(temp_type, temp_name, name, max_arg, min_arg, func_map) \
-	if (temp_type temp_name \
-		= {.data=decltype(name)(), .max=max_arg, .min=min_arg}; \
-		true) \
+#define BINSER_MEMB_FROM_BV_DESERIALIZE(name, func_map, ...) \
+	get_bv_memb(ret.name, bv, #name, func_map);
+
+#define BINSER_MEMB_DESERIALIZE_EX_MM(name, func_map, temp_type, temp_name, max_arg, min_arg, func_map) \
+	if (temp_type temp_name; true) \
 	{ \
-		get_bv_memb(temp_pos, bv, #name, func_map); \
+		temp_name.max = max_arg; \
+		temp_name.min = min_arg; \
+		get_bv_memb(temp_name, bv, #name, func_map); \
 		name = std::move(temp_name.data); \
 	}
-#define BINSER_MEMB_FROM_BV_DESERIALIZE_EX_MM(temp_type, temp_name, name, max_arg, min_arg, func_map) \
-	if (temp_type temp_name \
-		= {.data=decltype(name)(), .max=max_arg, .min=min_arg}; \
-		true) \
+#define BINSER_MEMB_FROM_BV_DESERIALIZE_EX_MM(name, func_map, temp_type, temp_name, max_arg, min_arg) \
+	if (temp_type temp_name; true) \
 	{ \
-		get_bv_memb(temp_pos, bv, #name, func_map); \
+		temp_name.max = max_arg; \
+		temp_name.min = min_arg; \
+		get_bv_memb(temp_name, bv, #name, func_map); \
 		ret.name = std::move(temp_name.data); \
 	}
-#define BINSER_MEMB_FROM_BV_DESERIALIZE(name, func_map) \
-	get_bv_memb(ret.name, bv, #name, func_map);
 
 //class BlankValue;
 
