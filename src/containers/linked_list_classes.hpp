@@ -429,18 +429,14 @@ public:		// types
 	public:		// functions
 		Node() = default;
 
-		template<typename OtherT=T>
-		static inline CopyConstructEnIf<OtherT>::type construct
-			(const T& s_data)
+		static inline Node construct(const T& s_data)
 		{
 			Node ret;
 			ret.data = s_data;
 			return ret;
 		}
 
-		template<typename OtherT=T>
-		static inline MoveConstructEnIf<OtherT>::type construct
-			(T&& s_data)
+		static inline Node construct(T&& s_data)
 		{
 			Node ret;
 			ret.data = std::move(s_data);
