@@ -67,7 +67,7 @@ namespace binser
 #define BINSER_MEMB_FROM_BV_DESERIALIZE(name, func_map, ...) \
 	get_bv_memb(ret.name, bv, #name, func_map);
 
-#define BINSER_MEMB_DESERIALIZE_EX_MM(name, func_map, temp_type, temp_name, max_arg, min_arg, func_map) \
+#define BINSER_MEMB_DESERIALIZE_EX_MM(name, func_map, temp_type, temp_name, max_arg, min_arg) \
 	if (temp_type temp_name; true) \
 	{ \
 		temp_name.max = max_arg; \
