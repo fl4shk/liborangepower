@@ -621,22 +621,8 @@ inline void set_bv(Value& bv, const T& val)
 	{
 		set_bv(bv, val.data);
 	}
-	else if constexpr (is_ind_circ_link_list<NonCvrefT>())
-	{
-		ValueVec vec;
-
-		for (const auto& item: val)
-		{
-			for (const auto& item: val)
-			{
-				Value inner_bv;
-				set_bv(inner_bv, item.data);
-				vec.push_back(Value::to_sptr(std::move(inner_bv)));
-			}
-		}
-		bs = std::move(vec);
-	}
 	else if constexpr (is_arr_like_std_container<NonCvrefT>())
+		
 	{
 		ValueVec vec;
 

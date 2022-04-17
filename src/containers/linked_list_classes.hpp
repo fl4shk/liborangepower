@@ -68,7 +68,7 @@ public:		// types
 	};
 	//--------
 	template<bool _reverse> 
-	class NodeIterator final
+	class Iterator final
 	{
 		friend class PtrCircLinkList;
 	public:		// constants
@@ -77,52 +77,52 @@ public:		// types
 	private:		// variables
 		Node* _node = nullptr;
 	public:		// functions
-		NodeIterator() = default;
-		inline NodeIterator(Node* s_node)
+		Iterator() = default;
+		inline Iterator(Node* s_node)
 			: _node(s_node)
 		{
 		}
 
-		//GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
-		//GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
+		//GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Iterator);
+		//GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Iterator);
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Iterator);
 
-		~NodeIterator() = default;
+		~Iterator() = default;
 
-		inline NodeIterator& operator ++ ()
+		inline Iterator& operator ++ ()
 		{
 			_node = !REVERSE ? _node->next() : _node->prev();
 			return *this;
 		}
-		inline NodeIterator& operator -- ()
+		inline Iterator& operator -- ()
 		{
 			_node = !REVERSE ? _node->prev() : _node->next();
 			return *this;
 		}
-		inline operator Node* () const
-		{
-			return _node;
-		}
+		//inline operator Node* () const
+		//{
+		//	return _node;
+		//}
 
 		//inline T& operator * () const
 		//inline Node& operator * ()
 		//{
 		//	return *_node;
 		//}
-		inline Node& operator * () const
+		inline T& operator * () const
 		{
-			return *_node;
+			return _node->data;
 		}
-		inline Node* operator -> () const
+		inline T* operator -> () const
 		{
-			return _node;
+			return &_node->data;
 		}
 
-		inline bool operator == (const NodeIterator& other) const
+		inline bool operator == (const Iterator& other) const
 		{
 			return (_node == other._node);
 		}
-		inline bool operator != (const NodeIterator& other) const
+		inline bool operator != (const Iterator& other) const
 		{
 			//return (!((*this) == other));
 			return (_node != other._node);
@@ -131,10 +131,10 @@ public:		// types
 	//--------
 	template<bool _reverse, typename OtherT>
 	using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
-		<OtherT>::value, NodeIterator<_reverse>>;
+		<OtherT>::value, Iterator<_reverse>>;
 	template<bool _reverse, typename OtherT>
 	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
-		<OtherT>::value, NodeIterator<_reverse>>;
+		<OtherT>::value, Iterator<_reverse>>;
 	//--------
 private:		// variables
 	//--------
@@ -178,55 +178,55 @@ public:		// functions
 		return (_head._next == &_head);
 	}
 	//--------
-	inline NodeIterator<false> begin()
+	inline Iterator<false> begin()
 	{
-		return NodeIterator<false>(head()->next());
+		return Iterator<false>(head()->next());
 	}
-	inline const NodeIterator<false> begin() const
+	inline const Iterator<false> begin() const
 	{
-		return NodeIterator<false>(head()->next());
+		return Iterator<false>(head()->next());
 	}
-	inline NodeIterator<false> end()
+	inline Iterator<false> end()
 	{
-		return NodeIterator<false>(head());
+		return Iterator<false>(head());
 	}
-	inline const NodeIterator<false> end() const
+	inline const Iterator<false> end() const
 	{
-		return NodeIterator<false>(head());
-	}
-
-	inline NodeIterator<true> rbegin()
-	{
-		return NodeIterator<true>(_head._prev);
-	}
-	inline const NodeIterator<true> rbegin() const
-	{
-		return NodeIterator<true>(_head._prev);
-	}
-	inline NodeIterator<true> rend()
-	{
-		return NodeIterator<true>(_head._prev->_next);
-	}
-	inline const NodeIterator<true> rend() const
-	{
-		return NodeIterator<true>(_head._prev->_next);
+		return Iterator<false>(head());
 	}
 
-	inline const NodeIterator<false> cbegin() const
+	inline Iterator<true> rbegin()
 	{
-		return NodeIterator<false>(_head._next);
+		return Iterator<true>(_head._prev);
 	}
-	inline const NodeIterator<false> cend() const
+	inline const Iterator<true> rbegin() const
 	{
-		return NodeIterator<false>(_head._next->_prev);
+		return Iterator<true>(_head._prev);
 	}
-	inline const NodeIterator<true> crbegin() const
+	inline Iterator<true> rend()
 	{
-		return NodeIterator<true>(_head._prev);
+		return Iterator<true>(_head._prev->_next);
 	}
-	inline const NodeIterator<true> crend() const
+	inline const Iterator<true> rend() const
 	{
-		return NodeIterator<true>(_head._prev->_next);
+		return Iterator<true>(_head._prev->_next);
+	}
+
+	inline const Iterator<false> cbegin() const
+	{
+		return Iterator<false>(_head._next);
+	}
+	inline const Iterator<false> cend() const
+	{
+		return Iterator<false>(_head._next->_prev);
+	}
+	inline const Iterator<true> crbegin() const
+	{
+		return Iterator<true>(_head._prev);
+	}
+	inline const Iterator<true> crend() const
+	{
+		return Iterator<true>(_head._prev->_next);
 	}
 	//--------
 	bool contains(Node* where) const
@@ -256,14 +256,14 @@ public:		// functions
 	}
 	//--------
 	template<bool reverse=false>
-	inline NodeIterator<reverse> front()
+	inline Iterator<reverse> front()
 	{
-		return NodeIterator<reverse>(_head._next);
+		return Iterator<reverse>(_head._next);
 	}
 	template<bool reverse=false>
-	inline NodeIterator<reverse> back()
+	inline Iterator<reverse> back()
 	{
-		return NodeIterator<reverse>(_head._prev);
+		return Iterator<reverse>(_head._prev);
 	}
 	//--------
 	template<bool reverse=false, typename OtherT=T>
@@ -369,7 +369,7 @@ public:		// functions
 private:		// functions
 	//--------
 	template<bool reverse=false>
-	inline NodeIterator<reverse> _inner_insert_before(Node* where,
+	inline Iterator<reverse> _inner_insert_before(Node* where,
 		Node* what)
 	{
 		auto old_prev = where->_prev;
@@ -380,10 +380,10 @@ private:		// functions
 		where->_prev = what;
 		what->_next = where;
 
-		return NodeIterator<reverse>(what);
+		return Iterator<reverse>(what);
 	}
 	template<bool reverse=false>
-	inline NodeIterator<reverse> _inner_insert_after(Node* where,
+	inline Iterator<reverse> _inner_insert_after(Node* where,
 		Node* what)
 	{
 		auto old_next = where->_next;
@@ -394,7 +394,7 @@ private:		// functions
 		where->_next = what;
 		what->_prev = where;
 
-		return NodeIterator<reverse>(what);
+		return Iterator<reverse>(what);
 	}
 	//--------
 };
@@ -460,7 +460,7 @@ public:		// types
 	};
 
 	template<bool _reverse> 
-	class NodeIterator final
+	class Iterator final
 	{
 		friend class IndCircLinkList;
 	public:		// constants
@@ -469,19 +469,19 @@ public:		// types
 		IndCircLinkList* _list = nullptr;
 		IndexT _node_index = NULL_INDEX;
 	public:		// functions
-		NodeIterator() = default;
-		inline NodeIterator(IndCircLinkList* s_list, IndexT s_node_index)
+		Iterator() = default;
+		inline Iterator(IndCircLinkList* s_list, IndexT s_node_index)
 			: _list(s_list), _node_index(s_node_index)
 		{
 		}
-		inline NodeIterator(const IndCircLinkList* s_list,
+		inline Iterator(const IndCircLinkList* s_list,
 			IndexT s_node_index)
 			: _list(const_cast<IndCircLinkList*>(s_list)),
 			_node_index(s_node_index)
 		{
 		}
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(NodeIterator);
-		~NodeIterator() = default;
+		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Iterator);
+		~Iterator() = default;
 
 		inline Node& node()
 		{
@@ -492,36 +492,36 @@ public:		// types
 			return _list->at(_node_index);
 		}
 
-		inline operator Node* () const
+		//inline operator Node* () const
+		//{
+		//	return &node();
+		//}
+		inline T& operator * () const
 		{
-			return node();
+			return _list->at(_node_index).data;
 		}
-		inline Node& operator * () const
+		inline T* operator -> () const
 		{
-			return _list->at(_node_index);
-		}
-		inline Node* operator -> () const
-		{
-			return &_list->at(_node_index);
+			return &(_list->at(_node_index).data);
 		}
 
-		inline NodeIterator& operator ++ ()
+		inline Iterator& operator ++ ()
 		{
 			_node_index = !_reverse ? node().next() : node().prev();
 			return *this;
 		}
-		inline NodeIterator& operator -- ()
+		inline Iterator& operator -- ()
 		{
 			_node_index = !_reverse ? node().prev() : node().next();
 			return *this;
 		}
 
-		inline bool operator == (const NodeIterator& other) const
+		inline bool operator == (const Iterator& other) const
 		{
 			return ((_list == other._list)
 				&& (_node_index == other._node_index));
 		}
-		inline bool operator != (const NodeIterator& other) const
+		inline bool operator != (const Iterator& other) const
 		{
 			return ((_list != other._list)
 				|| (_node_index != other._node_index));
@@ -530,11 +530,11 @@ public:		// types
 
 	template<bool _reverse, typename OtherT>
 	using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
-		<OtherT>::value, NodeIterator<_reverse>>;
+		<OtherT>::value, Iterator<_reverse>>;
 
 	template<bool _reverse, typename OtherT>
 	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
-		<OtherT>::value, NodeIterator<_reverse>>;
+		<OtherT>::value, Iterator<_reverse>>;
 public:		// constants
 	static constexpr IndexT
 		HEAD_INDEX = 0;
@@ -576,55 +576,55 @@ public:		// functions
 		return (head()._next == HEAD_INDEX);
 	}
 
-	inline NodeIterator<false> begin()
+	inline Iterator<false> begin()
 	{
-		return NodeIterator<false>(this, head().next());
+		return Iterator<false>(this, head().next());
 	}
-	inline const NodeIterator<false> begin() const
+	inline const Iterator<false> begin() const
 	{
-		return NodeIterator<false>(this, head().next());
+		return Iterator<false>(this, head().next());
 	}
-	inline NodeIterator<false> end()
+	inline Iterator<false> end()
 	{
-		return NodeIterator<false>(this, HEAD_INDEX);
+		return Iterator<false>(this, HEAD_INDEX);
 	}
-	inline const NodeIterator<false> end() const
+	inline const Iterator<false> end() const
 	{
-		return NodeIterator<false>(this, HEAD_INDEX);
-	}
-
-	inline NodeIterator<true> rbegin()
-	{
-		return NodeIterator<true>(this, head().prev());
-	}
-	inline const NodeIterator<true> rbegin() const
-	{
-		return NodeIterator<true>(this, head().prev());
-	}
-	inline NodeIterator<true> rend()
-	{
-		return NodeIterator<true>(this, HEAD_INDEX);
-	}
-	inline const NodeIterator<true> rend() const
-	{
-		return NodeIterator<true>(this, HEAD_INDEX);
+		return Iterator<false>(this, HEAD_INDEX);
 	}
 
-	inline const NodeIterator<false> cbegin() const
+	inline Iterator<true> rbegin()
 	{
-		return NodeIterator<false>(this, head().next());
+		return Iterator<true>(this, head().prev());
 	}
-	inline const NodeIterator<false> cend() const
+	inline const Iterator<true> rbegin() const
 	{
-		return NodeIterator<false>(this, HEAD_INDEX);
+		return Iterator<true>(this, head().prev());
 	}
-	inline const NodeIterator<true> crbegin() const
+	inline Iterator<true> rend()
 	{
-		return NodeIterator<true>(this, head().prev());
+		return Iterator<true>(this, HEAD_INDEX);
 	}
-	inline const NodeIterator<true> crend() const
+	inline const Iterator<true> rend() const
 	{
-		return NodeIterator<true>(this, HEAD_INDEX);
+		return Iterator<true>(this, HEAD_INDEX);
+	}
+
+	inline const Iterator<false> cbegin() const
+	{
+		return Iterator<false>(this, head().next());
+	}
+	inline const Iterator<false> cend() const
+	{
+		return Iterator<false>(this, HEAD_INDEX);
+	}
+	inline const Iterator<true> crbegin() const
+	{
+		return Iterator<true>(this, head().prev());
+	}
+	inline const Iterator<true> crend() const
+	{
+		return Iterator<true>(this, HEAD_INDEX);
 	}
 
 	size_t size() const
@@ -641,14 +641,14 @@ public:		// functions
 	}
 
 	template<bool reverse=false>
-	inline NodeIterator<reverse> front()
+	inline Iterator<reverse> front()
 	{
-		return NodeIterator<reverse>(this, head().next());
+		return Iterator<reverse>(this, head().next());
 	}
 	template<bool reverse=false>
-	inline NodeIterator<reverse> back()
+	inline Iterator<reverse> back()
 	{
-		return NodeIterator<reverse>(this, head().prev());
+		return Iterator<reverse>(this, head().prev());
 	}
 
 	template<bool reverse=false, typename OtherT=T>
@@ -758,7 +758,7 @@ public:		// functions
 
 private:		// functions
 	template<bool reverse=false>
-	inline NodeIterator<reverse> _inner_insert_before(IndexT where,
+	inline Iterator<reverse> _inner_insert_before(IndexT where,
 		Node&& what)
 	{
 		const auto what_index = _alloc_what_index(std::move(what));
@@ -771,11 +771,11 @@ private:		// functions
 		at(where)._prev = what_index;
 		at(what_index)._next = where;
 
-		return NodeIterator<reverse>(this, what_index);
+		return Iterator<reverse>(this, what_index);
 	}
 
 	template<bool reverse=false>
-	inline NodeIterator<reverse> _inner_insert_after(IndexT where,
+	inline Iterator<reverse> _inner_insert_after(IndexT where,
 		Node&& what)
 	{
 		const auto what_index = _alloc_what_index(std::move(what));
@@ -788,7 +788,7 @@ private:		// functions
 		at(where)._next = what_index;
 		at(what_index)._prev = where;
 
-		return NodeIterator<reverse>(this, what_index);
+		return Iterator<reverse>(this, what_index);
 	}
 
 	inline IndexT _alloc_what_index(Node&& what)
