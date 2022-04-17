@@ -26,5 +26,6 @@ using namespace liborangepower::bitwise;
 using namespace liborangepower::strings;
 namespace json = liborangepower::json;
 namespace binser = liborangepower::binser;
+using namespace liborangepower::containers;
 
 #endif		// src_misc_includes_hpp

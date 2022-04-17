@@ -621,8 +621,8 @@ inline void set_bv(Value& bv, const T& val)
 	{
 		set_bv(bv, val.data);
 	}
-	else if constexpr (is_arr_like_std_container<NonCvrefT>())
-		
+	else if constexpr (is_arr_like_std_container<NonCvrefT>()
+		|| is_ind_circ_link_list<NonCvrefT>())
 	{
 		ValueVec vec;
 

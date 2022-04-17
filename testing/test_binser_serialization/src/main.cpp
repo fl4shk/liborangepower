@@ -3,23 +3,78 @@
 #include "hierarchy_classes.hpp"
 #include "test_class.hpp"
 
+class IcllTest final
+{
+public:		// variables
+	#define MEMB_LIST_ICLL_TEST(X) \
+		X(x, std::nullopt) \
+		X(str, std::nullopt) \
+
+	u32 x;
+	std::string str;
+public:		// functions
+	static inline IcllTest from_bv(const binser::Value& bv)
+	{
+		IcllTest ret;
+
+		MEMB_LIST_ICLL_TEST(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+
+	inline operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_ICLL_TEST(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
+};
+
+std::ostream& operator << (std::ostream& os, const IcllTest& icll_test)
+{
+	return osprintout(os,
+		"x: ", icll_test.x, ", ",
+		"str: ", icll_test.str);
+}
 
 int main(int argc, char** argv)
 {
 	//--------
-	std::vector<std::string> test_vec;
-	test_vec.push_back("asdf");
-	test_vec.push_back("jkl;");
+	IndCircLinkList<IcllTest> cll;
+	cll.push_back({.x=42, .str="The answer to everything"});
+	cll.push_back({.x=9001, .str="It's over nine thousand!"});
+	cll.push_back({.x=420, .str="smoave"});
+
+	for (const auto& item: cll)
+	{
+		printout(item, "\n");
+	}
 
 	binser::Value bv;
-	binser::set_bv(bv, test_vec);
+	binser::set_bv(bv, cll);
 
-	if (auto jv_file=std::fstream("test_vec.json.ignore",
+	if (auto jv_file=std::fstream("cll.json.ignore",
 		std::ios_base::out); true)
 	{
 		Json::Value jv_root = binser::bv_to_jv(bv);
 		json::write_json(jv_file, &jv_root);
 	}
+	//--------
+	//std::vector<std::string> test_vec;
+	//test_vec.push_back("asdf");
+	//test_vec.push_back("jkl;");
+
+	//binser::Value bv;
+	//binser::set_bv(bv, test_vec);
+
+	//if (auto jv_file=std::fstream("test_vec.json.ignore",
+	//	std::ios_base::out); true)
+	//{
+	//	Json::Value jv_root = binser::bv_to_jv(bv);
+	//	json::write_json(jv_file, &jv_root);
+	//}
 	//--------
 	//binser::Value val = binser::ValueMap();
 	//val.insert("0", binser::Value(std::string("asdf")));

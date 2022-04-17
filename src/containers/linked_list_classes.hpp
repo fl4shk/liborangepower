@@ -41,18 +41,16 @@ public:		// types
 	public:		// functions
 		Node() = default;
 
-		template<typename OtherT=T>
-		static inline CopyConstructEnIf<OtherT>::type construct
-			(const OtherT& s_data)
+		template<std::copy_constructible OtherT=T>
+		static inline Node construct(const OtherT& s_data)
 		{
 			Node ret;
 			ret.data = s_data;
 			return ret;
 		}
 
-		template<typename OtherT=T>
-		static inline MoveConstructEnIf<OtherT>::type construct
-			(OtherT&& s_data)
+		template<std::move_constructible OtherT=T>
+		static inline Node construct(OtherT&& s_data)
 		{
 			Node ret;
 			ret.data = std::move(s_data);
@@ -129,12 +127,12 @@ public:		// types
 		}
 	};
 	//--------
-	template<bool _reverse, typename OtherT>
-	using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
-		<OtherT>::value, Iterator<_reverse>>;
-	template<bool _reverse, typename OtherT>
-	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
-		<OtherT>::value, Iterator<_reverse>>;
+	//template<bool _reverse, typename OtherT>
+	//using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
+	//	<OtherT>::value, Iterator<_reverse>>;
+	//template<bool _reverse, typename OtherT>
+	//using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
+	//	<OtherT>::value, Iterator<_reverse>>;
 	//--------
 private:		// variables
 	//--------
@@ -266,28 +264,29 @@ public:		// functions
 		return Iterator<reverse>(_head._prev);
 	}
 	//--------
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type push_front
-		(const OtherT& to_push)
+	//template<bool reverse=false, typename OtherT=T>
+	//inline UpdateByCopyEnIf<reverse, OtherT>::type push_front
+	//	(const OtherT& to_push)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> push_front(const OtherT& to_push)
 	{
 		return insert_after<reverse, OtherT>(head(), to_push);
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type push_front
-		(OtherT&& to_push)
+	//template<bool reverse=false, typename OtherT=T>
+	//inline UpdateByMoveEnIf<reverse, OtherT>::type push_front
+	//	(OtherT&& to_push)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> push_front(OtherT&& to_push)
 	{
-		return insert_after<reverse, OtherT>(head(),
-			std::move(to_push));
+		return insert_after<reverse, OtherT>(head(), std::move(to_push));
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type push_back
-		(const OtherT& to_push)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> push_back(const OtherT& to_push)
 	{
 		return insert_before<reverse, OtherT>(head(), to_push);
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type push_back
-		(OtherT&& to_push)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> push_back(OtherT&& to_push)
 	{
 		return insert_before<reverse, T>(head(), std::move(to_push));
 	}
@@ -300,34 +299,32 @@ public:		// functions
 		remove_before(head());
 	}
 	//--------
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_before
-		(Node* where, const OtherT& to_insert)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> insert_before(Node* where,
+		const OtherT& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_before<reverse>(where, node);
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_before
-		(Node* where, OtherT&& to_insert)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> insert_before(Node* where, OtherT&& to_insert)
 	{
 		Node* node = new Node();
 		node->data = std::move(to_insert);
 		return _inner_insert_before<reverse>(where, node);
 	}
 
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_after
-		(Node* where, const OtherT& to_insert)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> insert_after(Node* where,
+		const OtherT& to_insert)
 	{
 		Node* node = new Node();
 		node->data = to_insert;
 		return _inner_insert_after<reverse>(where, node);
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_after
-		(Node* where, OtherT&& to_insert)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> insert_after(Node* where, OtherT&& to_insert)
 	{
 		Node* node = new Node();
 		node->data = std::move(to_insert);
@@ -528,13 +525,13 @@ public:		// types
 		}
 	};
 
-	template<bool _reverse, typename OtherT>
-	using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
-		<OtherT>::value, Iterator<_reverse>>;
+	//template<bool _reverse, typename OtherT>
+	//using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
+	//	<OtherT>::value, Iterator<_reverse>>;
 
-	template<bool _reverse, typename OtherT>
-	using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
-		<OtherT>::value, Iterator<_reverse>>;
+	//template<bool _reverse, typename OtherT>
+	//using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
+	//	<OtherT>::value, Iterator<_reverse>>;
 public:		// constants
 	static constexpr IndexT
 		HEAD_INDEX = 0;
@@ -651,28 +648,30 @@ public:		// functions
 		return Iterator<reverse>(this, head().prev());
 	}
 
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type push_front
-		(const OtherT& to_push)
+	//template<bool reverse=false, typename OtherT=T>
+	//inline UpdateByCopyEnIf<reverse, OtherT>::type push_front
+	//	(const OtherT& to_push)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> push_front(const OtherT& to_push)
 	{
 		return insert_after<reverse, OtherT>(HEAD_INDEX, to_push);
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type push_front
-		(OtherT&& to_push)
+	//template<bool reverse=false, typename OtherT=T>
+	//inline UpdateByMoveEnIf<reverse, OtherT>::type push_front
+	//	(OtherT&& to_push)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> push_front(OtherT&& to_push)
 	{
 		return insert_after<reverse, OtherT>(HEAD_INDEX,
 			std::move(to_push));
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type push_back
-		(const OtherT& to_push)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> push_back(const OtherT& to_push)
 	{
 		return insert_before<reverse, OtherT>(HEAD_INDEX, to_push);
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type push_back
-		(OtherT&& to_push)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> push_back(OtherT&& to_push)
 	{
 		return insert_before<reverse, OtherT>(HEAD_INDEX,
 			std::move(to_push));
@@ -686,31 +685,31 @@ public:		// functions
 		remove_before(HEAD_INDEX);
 	}
 
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_before
-		(IndexT where, const OtherT& to_insert)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> insert_before(IndexT where,
+		const OtherT& to_insert)
 	{
 		return _inner_insert_before<reverse>(where,
 			Node::construct(to_insert));
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_before
-		(IndexT where, OtherT&& to_insert)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> insert_before(IndexT where,
+		OtherT&& to_insert)
 	{
 		return _inner_insert_before<reverse>(where,
 			Node::construct(std::move(to_insert)));
 	}
 
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByCopyEnIf<reverse, OtherT>::type insert_after
-		(IndexT where, const OtherT& to_insert)
+	template<bool reverse=false, std::copy_constructible OtherT=T>
+	inline Iterator<reverse> insert_after(IndexT where,
+		const OtherT& to_insert)
 	{
 		return _inner_insert_after<reverse>(where,
 			Node::construct(to_insert));
 	}
-	template<bool reverse=false, typename OtherT=T>
-	inline UpdateByMoveEnIf<reverse, OtherT>::type insert_after
-		(IndexT where, OtherT&& to_insert)
+	template<bool reverse=false, std::move_constructible OtherT=T>
+	inline Iterator<reverse> insert_after(IndexT where,
+		OtherT&& to_insert)
 	{
 		return _inner_insert_after<reverse>(where,
 			Node::construct(std::move(to_insert)));
