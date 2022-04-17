@@ -5,22 +5,23 @@ namespace liborangepower
 namespace gfx
 {
 
-std::vector<Vec2<i32>> bresenham(const Vec2<i32>& p0, const Vec2<i32>& p1)
+std::vector<Vec2<int32_t>> bresenham(const Vec2<int32_t>& p0,
+	const Vec2<int32_t>& p1)
 {
-	std::vector<Vec2<i32>> ret;
+	std::vector<Vec2<int32_t>> ret;
 
-	const Vec2<i32> delta(std::abs(p1.x - p0.x) << 1,
+	const Vec2<int32_t> delta(std::abs(p1.x - p0.x) << 1,
 		std::abs(p1.y - p0.y) << 1);
-	const Vec2<i32> plus_amount((delta.x > 0) - (delta.x < 0),
+	const Vec2<int32_t> plus_amount((delta.x > 0) - (delta.x < 0),
 		(delta.y > 0) - (delta.y < 0));
 
-	Vec2<i32> p(p0);
+	Vec2<int32_t> p(p0);
 
 	ret.push_back(p);
 
 	if (delta.x >= delta.y)
 	{
-		i32 error = delta.y - (delta.x >> 1);
+		int32_t error = delta.y - (delta.x >> 1);
 
 		while (p.x != p1.x)
 		{
@@ -38,7 +39,7 @@ std::vector<Vec2<i32>> bresenham(const Vec2<i32>& p0, const Vec2<i32>& p1)
 	}
 	else // if (delta.x < delta.y)
 	{
-		i32 error = delta.x - (delta.y >> 1);
+		int32_t error = delta.x - (delta.y >> 1);
 
 		while (p.y != p1.y)
 		{

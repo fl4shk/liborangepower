@@ -18,7 +18,8 @@ using containers::Vec2;
 namespace gfx
 {
 
-std::vector<Vec2<i32>> bresenham(const Vec2<i32>& p0, const Vec2<i32>& p1);
+std::vector<Vec2<int32_t>> bresenham(const Vec2<int32_t>& p0,
+	const Vec2<int32_t>& p1);
 
 } // namespace gfx
 } // namespace liborangepower
