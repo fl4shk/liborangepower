@@ -30,6 +30,7 @@ class Hit2 final
 public:		// types
 	using ElemT = T;
 public:		// variables
+	//--------
 	#define MEMB_LIST_SHAPE_HIT2(X) \
 		X(pos, std::nullopt) \
 		X(normal, std::nullopt) \
@@ -53,6 +54,27 @@ public:		// variables
 	// is a fraction from 0 to 1 indicating how far along the line of
 	// collision
 	T tm;
+	//--------
+public:		// functions
+	//--------
+	static Hit2 from_bv(const binser::Value& bv)
+	{
+		Hit2 ret;
+
+		MEMB_LIST_SHAPE_HIT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+
+	operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_HIT2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
+	//--------
 };
 
 template<typename T, typename CharT,
@@ -102,10 +124,30 @@ public:		// variables
 	// object didn't hit anything during the sweep
 	T tm = T(1);
 public:		// functions
+	//--------
+	static Sweep2 from_bv(const binser::Value& bv)
+	{
+		Sweep2 ret;
+
+		MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+
+	operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
+	//--------
 	constexpr inline T didnt_hit() const
 	{
 		return tm == T(1);
 	}
+	//--------
 };
 
 template
@@ -155,6 +197,24 @@ public:		// variables
 		p1;
 public:		// functions
 	//--------
+	static LineSeg2 from_bv(const binser::Value& bv)
+	{
+		LineSeg2 ret;
+
+		MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+
+	operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
+	//--------
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline auto operator <=> (const LineSeg2<OtherElemT>& to_cmp)
 		const
@@ -190,6 +250,25 @@ public:		// variables
 		pos = Vec2<T>(),
 		size_2d = Vec2<T>();
 public:		// functions
+	//--------
+	static Rect2 from_bv(const binser::Value& bv)
+	{
+		Rect2 ret;
+
+		MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+
+	operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
+	//--------
 	//--------
 	//inline auto operator <=> (const Rect2& to_cmp) const = default;
 	template<std::convertible_to<T> OtherElemT>
