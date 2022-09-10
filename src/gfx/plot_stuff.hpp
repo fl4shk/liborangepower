@@ -20,7 +20,7 @@ namespace gfx
 
 template
 <
-	typename PosElemT=int32_t
+	typename PosElemT=int32_t,
 	typename Allocator=std::allocator<Vec2<PosElemT>>
 >
 std::vector<Vec2<PosElemT>, Allocator>
