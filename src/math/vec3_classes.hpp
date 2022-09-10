@@ -44,9 +44,9 @@ public:		// variables
 		X(z, std::nullopt) \
 
 	T
-		x=T(),
-		y=T(),
-		z=T();
+		x = T(),
+		y = T(),
+		z = T();
 public:		// functions
 	//--------
 	constexpr inline Vec3() = default;

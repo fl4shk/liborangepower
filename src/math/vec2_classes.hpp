@@ -50,8 +50,8 @@ public:		// variables
 		X(y, std::nullopt) \
 
 	T
-		x,
-		y;
+		x = T(),
+		y = T();
 public:		// functions
 	//--------
 	constexpr inline Vec2() = default;

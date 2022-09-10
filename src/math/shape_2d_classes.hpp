@@ -3,6 +3,7 @@
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
+#include "../strings/sconcat_etc.hpp"
 
 #include "../containers/std_hash_stuff.hpp"
 
@@ -59,14 +60,27 @@ template<typename T, typename CharT,
 inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 	const Hit2<T>& arg)
 {
+	std::string temp_str;
+
 	return misc_output::osprintout
 	(
 		os,
 		"{",
-			arg.pos, " ",
-			arg.normal, " ",
-			arg.delta, " ",
-			arg.tm,
+			//arg.pos, " ",
+			//arg.normal, " ",
+			//arg.delta, " ",
+			//arg.tm,
+
+			#define X(memb, dummy_arg) \
+				arg . memb ,
+
+			strings::strjoin2
+			(
+				" ",
+				MEMB_LIST_SHAPE_HIT2(X)
+			),
+
+			#undef X
 		"}"
 	);
 }
@@ -77,6 +91,11 @@ class Sweep2 final
 public:		// types
 	using ElemT = T;
 public:		// variables
+	#define MEMB_LIST_SHAPE_SWEEP2(X) \
+		X(hit, std::nullopt) \
+		X(pos, std::nullopt) \
+		X(tm, std::nullopt) \
+
 	std::optional<Hit2<T>> hit = std::nullopt;
 	Vec2<T> pos;
 
@@ -99,13 +118,24 @@ template
 inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 	const Sweep2<T>& arg)
 {
-	misc_output::osprintout
+	return misc_output::osprintout
 	(
 		os,
 		"{",
-			arg.hit, " ",
-			arg.pos, " ",
-			arg.tm,
+			//arg.hit, " ",
+			//arg.pos, " ",
+			//arg.tm,
+
+			#define X(memb, dummy_arg) \
+				arg . memb ,
+
+			strings::strjoin2
+			(
+				" ",
+				MEMB_LIST_SHAPE_SWEEP2(X)
+			),
+
+			#undef X
 		"}"
 	);
 }
@@ -116,6 +146,10 @@ class LineSeg2
 public:		// types
 	using ElemT = T;
 public:		// variables
+	#define MEMB_LIST_SHAPE_LINE_SEG2(X) \
+		X(p0, std::nullopt) \
+		X(p1, std::nullopt) \
+
 	Vec2<T>
 		p0,
 		p1;
@@ -146,6 +180,10 @@ class Rect2
 public:		// types
 	using ElemT = T;
 public:		// variables
+	#define MEMB_LIST_SHAPE_RECT2(X) \
+		X(pos, std::nullopt) \
+		X(size_2d, std::nullopt) \
+
 	// The top-left position, with larger values growing down and to the
 	// right
 	Vec2<T>
