@@ -75,7 +75,12 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3 operator + (const Vec3<OtherElemT>& other) const
 	{
-		return Vec3<T>(x + other.x, y + other.y, z + other.z);
+		//return Vec3<T>(x + other.x, y + other.y, z + other.z);
+		Vec3<T> ret;
+		ret.x = x + other.x;
+		ret.y = y + other.y;
+		ret.z = z + other.z;
+		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3& operator += (const Vec3<OtherElemT>& other)
@@ -88,7 +93,12 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3 operator - (const Vec3<OtherElemT>& other) const
 	{
-		return Vec3<T>(x - other.x, y - other.y, z - other.z);
+		//return Vec3<T>(x - other.x, y - other.y, z - other.z);
+		Vec3<T> ret;
+		ret.x = x - other.x;
+		ret.y = y - other.y;
+		ret.z = z - other.z;
+		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3& operator -= (const Vec3<OtherElemT>& other)
@@ -100,13 +110,23 @@ public:		// functions
 
 	constexpr inline Vec3 operator - () const
 	{
-		return Vec3<T>({.x=-x, .y=-y, .z=-z});
+		//return Vec3<T>({.x=-x, .y=-y, .z=-z});
+		Vec3<T> ret;
+		ret.x = -x;
+		ret.y = -y;
+		ret.z = -z;
+		return ret;
 	}
 
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3 operator * (const OtherT& scale) const
 	{
-		return Vec3<T>({.x=x * scale, .y=y * scale, .z=z * scale});
+		//return Vec3<T>({.x=x * scale, .y=y * scale, .z=z * scale});
+		Vec3<T> ret;
+		ret.x = x * scale;
+		ret.y = y * scale;
+		ret.z = z * scale;
+		return ret;
 	}
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3& operator *= (const OtherT& other) const
@@ -118,7 +138,12 @@ public:		// functions
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3 operator / (const OtherT& scale) const
 	{
-		return Vec3<T>(x / scale, y / scale, z / scale);
+		//return Vec3<T>(x / scale, y / scale, z / scale);
+		Vec3<T> ret;
+		ret.x = x / scale;
+		ret.y = y / scale;
+		ret.z = z / scale;
+		return ret;
 	}
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3& operator /= (const OtherT& scale) const
@@ -138,12 +163,17 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3 cross(const Vec3<OtherElemT>& other) const
 	{
-		return Vec3<T>
-		({
-			.x=(y * other.z) - (z * other.y),
-			.y=(z * other.x) - (x * other.z),
-			.z=(x * other.y) - (y * other.x)
-		});
+		//return Vec3<T>
+		//({
+		//	.x=(y * other.z) - (z * other.y),
+		//	.y=(z * other.x) - (x * other.z),
+		//	.z=(x * other.y) - (y * other.x)
+		//});
+		Vec3<T> ret;
+		ret.x = (y * other.z) - (z * other.y);
+		ret.y = (z * other.x) - (x * other.z);
+		ret.z = (x * other.y) - (y * other.x);
+		return ret;
 	}
 
 	inline T norm() const
@@ -169,14 +199,14 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator < (const Vec3<OtherElemT>& other) const
 	{
-		return (z < other.z
-			|| (z == other.z && Vec2(x, y) < Vec2(other.x, other.y)));
+		return ((z < other.z)
+			|| ((z == other.z) && (Vec2(x, y) < Vec2(other.x, other.y))));
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator > (const Vec3<OtherElemT>& other) const
 	{
-		return (z > other.z
-			|| (z == other.z && Vec2(x, y) > Vec2(other.x, other.y)));
+		return ((z > other.z)
+			|| ((z == other.z) && (Vec2(x, y) > Vec2(other.x, other.y))));
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator <= (const Vec3<OtherElemT>& other) const
@@ -194,24 +224,35 @@ template<typename T, std::convertible_to<T> OtherElemT>
 constexpr inline Vec3<T> operator * (const OtherElemT& scale,
 	const Vec3<T>& self)
 {
-	return Vec3<T>
-	({
-		.x=scale * self.x,
-		.y=scale * self.y,
-		.z=scale * self.z
-	});
+	//return Vec3<T>
+	//({
+	//	.x=scale * self.x,
+	//	.y=scale * self.y,
+	//	.z=scale * self.z
+	//});
+	Vec3<T> ret;
+	ret.x = scale * self.x;
+	ret.y = scale * self.y;
+	ret.z = scale * self.z;
+	return ret;
 	//return self * scale;
 }
 template<typename T, std::convertible_to<T> OtherElemT>
 constexpr inline Vec3<T> operator / (const OtherElemT& inv_scale,
 	const Vec3<T>& self)
 {
-	return Vec3<T>
-	({
-		.x=inv_scale / self.x,
-		.y=inv_scale / self.y,
-		.z=inv_scale / self.z,
-	});
+	//return Vec3<T>
+	//({
+	//	.x=inv_scale / self.x,
+	//	.y=inv_scale / self.y,
+	//	.z=inv_scale / self.z,
+	//});
+
+	Vec3<T> ret;
+	ret.x = inv_scale / self.x;
+	ret.y = inv_scale / self.y;
+	ret.z = inv_scale / self.z;
+	return ret;
 }
 template<typename T, typename CharT, typename Traits>
 inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
