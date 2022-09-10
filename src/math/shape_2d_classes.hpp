@@ -60,8 +60,6 @@ template<typename T, typename CharT,
 inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 	const Hit2<T>& arg)
 {
-	std::string temp_str;
-
 	return misc_output::osprintout
 	(
 		os,
@@ -74,10 +72,11 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			#define X(memb, dummy_arg) \
 				arg . memb ,
 
-			strings::strjoin2
+			strings::strjoin2_rm_last
 			(
 				" ",
 				MEMB_LIST_SHAPE_HIT2(X)
+				std::string()
 			),
 
 			#undef X
@@ -129,10 +128,11 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			#define X(memb, dummy_arg) \
 				arg . memb ,
 
-			strings::strjoin2
+			strings::strjoin2_rm_last
 			(
 				" ",
 				MEMB_LIST_SHAPE_SWEEP2(X)
+				std::string()
 			),
 
 			#undef X

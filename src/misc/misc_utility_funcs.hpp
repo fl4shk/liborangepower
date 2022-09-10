@@ -3,10 +3,8 @@
 
 namespace liborangepower
 {
-
 namespace misc_util
 {
-
 
 //template<typename T>
 //inline T custom_abs(const T& val)
@@ -106,10 +104,52 @@ bool anything_matches(const FirstArgT& first_val,
 		return anything_matches(first_val, rem_args...);
 	}
 }
+//--------
+// `std::tuple` stuff
+template<size_t index, typename FirstArgT, typename... RemArgTs>
+inline auto _tuple_rm_last_backend
+	(const std::tuple<FirstArgT, RemArgTs...>& tup)
+{
+	constexpr auto
+		tup_cnt = std::tuple_size<std::remove_cvref_t<decltype(tup)>>{};
 
+	if constexpr (index < tup_cnt)
+	{
+		return std::tuple_cat(std::make_tuple(std::get<index>(tup)),
+			_tuple_rm_last_backend<index + size_t(1)>(tup));
+	}
+	else // if constexpr (index >= tup_cnt)
+	{
+		return std::make_tuple();
+	}
+}
+template<typename FirstArgT, typename... RemArgTs>
+inline auto tuple_rm_last(const std::tuple<FirstArgT, RemArgTs...>& tup)
+{
+	//if constexpr (sizeof...(RemArgTs) > 0)
+	//{
+	//}
+	//else // if constexpr (sizeof...(RemArgTs) == 0)
+	//{
+	//}
+	return _tuple_rm_last_backend<0>(tup);
+}
 
+inline auto make_tuple_rm_last(const auto& first_arg,
+	const auto&... rem_args)
+{
+	if constexpr (sizeof...(rem_args) > 0)
+	{
+		return std::tuple_cat(std::make_tuple(first_arg),
+			make_tuple_rm_last(rem_args...));
+	}
+	else // if constexpr (sizeof...(rem_args) == 0)
+	{
+		return std::make_tuple();
+	}
+}
+//--------
 } // namespace misc_util
-
 } // namespace liborangepower
 
 #endif		// liborangepower_misc_misc_utility_funcs_hpp

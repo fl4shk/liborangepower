@@ -115,7 +115,7 @@ constexpr inline T clamp(const T& val, const T& min, const T& max)
 		return val;
 	}
 }
-
+//--------
 //template<typename T>
 //constexpr inline T max_va
 //--------
