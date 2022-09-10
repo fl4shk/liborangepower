@@ -243,7 +243,7 @@ inline std::string strappcom2(const auto&... args)
 {
 	return strjoin2(", ", args...);
 }
-inline std::string strappcom2(const auto&... args)
+inline std::string strappcom2_rm_last(const auto&... args)
 {
 	return strjoin2_rm_last(", ", args...);
 }
