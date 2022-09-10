@@ -15,7 +15,14 @@ namespace liborangepower
 {
 namespace containers
 {
+//--------
 using concepts::is_specialization;
+//--------
+template<typename ToCheckT>
+constexpr inline bool is_std_optional()
+{
+	return is_specialization<ToCheckT, std::optional>();
+}
 //--------
 template<typename FirstT, typename... RemTs>
 extern uint8_t _is_std_unique_ptr_check(const FirstT&);

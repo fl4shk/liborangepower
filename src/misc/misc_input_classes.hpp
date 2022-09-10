@@ -7,7 +7,6 @@
 
 namespace liborangepower
 {
-
 namespace misc_input
 {
 
@@ -65,9 +64,7 @@ inline std::string get_stdin_as_str()
 	return get_istream_as_str(cin);
 }
 
-
 } // namespace misc_input
-
 } // namespace liborangepower
 
 

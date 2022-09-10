@@ -4,8 +4,8 @@
 #include "../misc/misc_includes.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
 
-#include "../containers/vec2_classes.hpp"
-#include "../containers/vec3_classes.hpp"
+#include "../math/vec2_classes.hpp"
+#include "../math/vec3_classes.hpp"
 #include "../containers/linked_list_classes.hpp"
 
 namespace liborangepower
@@ -103,9 +103,9 @@ template<typename T>
 class Vec2Ex final
 {
 public:		// serialized variables
-	containers::Vec2<T> data;
+	math::Vec2<T> data;
 public:		// non-serialized variables
-	containers::Vec2<T> max, min;
+	math::Vec2<T> max, min;
 public:		// functions
 	//--------
 	inline T& x()
@@ -125,7 +125,7 @@ public:		// functions
 		return data.y;
 	}
 	//--------
-	inline operator containers::Vec2<T> () const
+	inline operator math::Vec2<T> () const
 	{
 		return data;
 	}
@@ -142,9 +142,9 @@ template<typename T>
 class Vec3Ex final
 {
 public:		// serialized variables
-	containers::Vec3<T> data;
+	math::Vec3<T> data;
 public:		// non-serialized variables
-	containers::Vec3<T> max, min;
+	math::Vec3<T> max, min;
 public:		// functions
 	//--------
 	inline T& x()
@@ -172,7 +172,7 @@ public:		// functions
 		return data.z;
 	}
 	//--------
-	inline operator containers::Vec3<T> () const
+	inline operator math::Vec3<T> () const
 	{
 		return data;
 	}

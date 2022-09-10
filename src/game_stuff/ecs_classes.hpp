@@ -4,7 +4,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_types.hpp"
 #include "../strings/sconcat_etc.hpp"
-#include "../containers/vec2_classes.hpp"
+#include "../math/vec2_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
 #include "../binser/serialize_funcs.hpp"
 
@@ -37,7 +37,7 @@ static constexpr EntId
 using EntIdVec = std::vector<EntId>;
 using EntIdVec2d = std::vector<EntIdVec>;
 using EntIdMap = std::unordered_map<std::string, EntIdVec2d>;
-using EntIdMapFullIndex = std::pair<std::string, containers::Vec2<size_t>>;
+using EntIdMapFullIndex = std::pair<std::string, math::Vec2<size_t>>;
 using EntIdSet = std::unordered_set<EntId>;
 
 using CompSptr = std::shared_ptr<Comp>;

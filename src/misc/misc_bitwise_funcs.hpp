@@ -9,7 +9,6 @@
 
 namespace liborangepower
 {
-
 namespace bitwise
 {
 
@@ -272,9 +271,7 @@ constexpr size_t count_leading_zeros(const T& x)
 //	return (sizeof(T) * 8 - 1 - basic_count_leading_zeros(x));
 //}
 
-
 } // namespace bitwise
-
 } // namespace liborangepower
 
 

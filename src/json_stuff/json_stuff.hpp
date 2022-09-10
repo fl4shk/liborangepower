@@ -3,8 +3,8 @@
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
-#include "../containers/vec2_classes.hpp"
-#include "../containers/vec3_classes.hpp"
+#include "../math/vec2_classes.hpp"
+#include "../math/vec3_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
 #include "../containers/std_container_id_funcs.hpp"
 #include "../strings/sconcat_etc.hpp"
@@ -27,8 +27,8 @@ using strings::sconcat;
 
 using concepts::is_specialization;
 
-using containers::is_vec2;
-using containers::is_vec3;
+using math::is_vec2;
+using math::is_vec3;
 
 using containers::is_prev_curr_pair;
 using containers::is_move_only_prev_curr_pair;
@@ -70,17 +70,17 @@ namespace json
 class BlankValue;
 
 //template<typename T>
-//inline containers::Vec2<T> vec2_from_jv(const Json::Value& jv)
+//inline math::Vec2<T> vec2_from_jv(const Json::Value& jv)
 //{
 //	return
-//		containers::Vec2<T>
+//		math::Vec2<T>
 //	(
 //		val_from_jv<T>(jv["x"]),
 //		val_from_jv<T>(jv["y"])
 //	);
 //}
 template<typename T>
-inline Json::Value vec2_to_jv(const containers::Vec2<T>& vec)
+inline Json::Value vec2_to_jv(const math::Vec2<T>& vec)
 {
 	Json::Value ret;
 
@@ -91,10 +91,10 @@ inline Json::Value vec2_to_jv(const containers::Vec2<T>& vec)
 }
 //
 //template<typename T>
-//inline containers::Vec3<T> vec3_from_jv(const Json::Value& jv)
+//inline math::Vec3<T> vec3_from_jv(const Json::Value& jv)
 //{
 //	return
-//		containers::Vec3<T>
+//		math::Vec3<T>
 //	(
 //		val_from_jv<T>(jv["x"]),
 //		val_from_jv<T>(jv["y"]),
@@ -102,7 +102,7 @@ inline Json::Value vec2_to_jv(const containers::Vec2<T>& vec)
 //	);
 //}
 template<typename T>
-inline Json::Value vec3_to_jv(const containers::Vec3<T>& vec)
+inline Json::Value vec3_to_jv(const math::Vec3<T>& vec)
 {
 	Json::Value ret;
 

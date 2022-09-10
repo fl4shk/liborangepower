@@ -3,8 +3,8 @@
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
-#include "../containers/vec2_classes.hpp"
-#include "../containers/vec3_classes.hpp"
+#include "../math/vec2_classes.hpp"
+#include "../math/vec3_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
 #include "../containers/linked_list_classes.hpp"
 #include "../containers/std_container_id_funcs.hpp"
@@ -25,8 +25,8 @@ using strings::sconcat;
 
 using concepts::is_specialization;
 
-using containers::is_vec2;
-using containers::is_vec3;
+using math::is_vec2;
+using math::is_vec3;
 
 using containers::is_prev_curr_pair;
 //using containers::is_move_only_prev_curr_pair;
@@ -106,7 +106,7 @@ namespace binser
 //class BlankValue;
 
 template<typename T>
-inline Value vec2_to_bv(const containers::Vec2<T>& vec)
+inline Value vec2_to_bv(const math::Vec2<T>& vec)
 {
 	Value ret;
 
@@ -116,7 +116,7 @@ inline Value vec2_to_bv(const containers::Vec2<T>& vec)
 	return ret;
 }
 template<typename T>
-inline Value vec3_to_bv(const containers::Vec3<T>& vec)
+inline Value vec3_to_bv(const math::Vec3<T>& vec)
 {
 	Value ret;
 

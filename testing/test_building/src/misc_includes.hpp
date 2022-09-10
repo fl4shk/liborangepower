@@ -26,7 +26,7 @@
 #include "liborangepower_src/containers/prev_curr_pair_classes.hpp"
 #include "liborangepower_src/containers/array_2d_helper_classes.hpp"
 #include "liborangepower_src/containers/array_helper_classes.hpp"
-#include "liborangepower_src/containers/vec2_classes.hpp"
+#include "liborangepower_src/math/vec2_classes.hpp"
 #include "liborangepower_src/containers/linked_list_classes.hpp"
 #include "liborangepower_src/time/time_stuff.hpp"
 #include "liborangepower_src/gmp_stuff/gmp_stuff.hpp"

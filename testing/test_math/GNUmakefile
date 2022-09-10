@@ -4,10 +4,9 @@
 
 
 SHARED_SRC_DIRS:=src \
-	src/liborangepower_src/json_stuff \
 	src/liborangepower_src/binser \
-	src/liborangepower_src/binser_plus_json_stuff \
-	src/liborangepower_src/game_stuff \
+	#src/liborangepower_src/binser_plus_json_stuff \
+
 
 CXX_DIRS:=$(SHARED_SRC_DIRS)
 # End of source directories
@@ -33,16 +32,18 @@ PROJ:=$(shell basename $(CURDIR))$(DEBUG_SUFFIX)
 
 # Compilers and initial compiler flags
 CXX:=$(PREFIX)g++
-CXX_FLAGS:=$(CXX_FLAGS) -std=c++20 -fcoroutines -fmodules-ts -Wall \
-	$(shell pkg-config --cflags jsoncpp)
+CXX_FLAGS:=$(CXX_FLAGS) -std=c++20 -fcoroutines -fmodules-ts -Wall
+
+ifdef DEBUG
+	CXX_FLAGS:=$(CXX_FLAGS) -DDEBUG=1
+endif
 OBJDUMP:=$(PREFIX)objdump
 
 
 LD:=$(CXX)
 
 # Initial linker flags
-LD_FLAGS:=$(LD_FLAGS) -lm \
-	$(shell pkg-config --libs jsoncpp) \
+LD_FLAGS:=$(LD_FLAGS) -lm
 
 
 
@@ -72,7 +73,6 @@ LD_FLAGS:=$(LD_FLAGS) $(EXTRA_LD_FLAGS) $(COMMON_LD_FLAGS)
 OBJDIR:=objs$(DEBUG_SUFFIX)
 ASMOUTDIR:=asmouts$(DEBUG_SUFFIX)
 DEPDIR:=deps$(DEBUG_SUFFIX)
-PREPROCDIR:=preprocs$(DEBUG_SUFFIX)
 
 
 
@@ -92,10 +92,6 @@ OFILES:=$(CXX_OFILES)
 # PFILES are used for automatic dependency generation
 PFILES:=$(CXX_PFILES)
 ASMOUTS:=$(CXX_ASMOUTS)
-
-# Preprocessed output of C++ and/or C files
-CXX_EFILES := $(CXX_SOURCES:%.cpp=$(PREPROCDIR)/%.E)
-EFILES:=$(CXX_EFILES)
 
 
 .PHONY : all
@@ -157,28 +153,6 @@ $(CXX_ASMOUTS) : $(ASMOUTDIR)/%.s : %.cpp
 -include $(PFILES)
 
 #¯\(°_o)/¯
-
-.PHONY : only_preprocess
-only_preprocess : only_preprocess_pre $(EFILES)
-
-.PHONY : only_preprocess_pre
-only_preprocess_pre :
-	mkdir -p $(DEPDIR) $(PREPROCDIR)
-	@for efile in $(EFILES); \
-	do \
-		mkdir -p $$(dirname $$efile); \
-	done
-	@for pfile in $(PFILES); \
-	do \
-		mkdir -p $$(dirname $$pfile); \
-	done
-
-
-$(CXX_EFILES) : $(PREPROCDIR)/%.E : %.cpp
-	$(CXX) $(CXX_FLAGS) -MMD -E $< -o $@
-	@cp $(PREPROCDIR)/$*.d $(DEPDIR)/$*.P
-	@rm -f $(PREPROCDIR)/$*.d
-
 
 
 .PHONY : clean

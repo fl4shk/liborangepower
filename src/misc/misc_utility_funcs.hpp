@@ -7,64 +7,19 @@ namespace liborangepower
 namespace misc_util
 {
 
-// Don't use weird things with this.
-template<typename FirstArgT, typename SecondArgT>
-FirstArgT max_va(const FirstArgT& arg_0, const SecondArgT& arg_1)
-{
-	if (arg_0 >= arg_1)
-	{
-		return arg_0;
-	}
-	else
-	{
-		return arg_1;
-	}
-}
 
-template<typename FirstArgT, typename SecondArgT, 
-	typename... RemainingTs>
-inline FirstArgT max_va(const FirstArgT& arg_0, 
-	const SecondArgT& arg_1, RemainingTs... remaining_args )
-{
-	return max_va(max_va(arg_0, arg_1), remaining_args...);
-}
-
-
-template<typename FirstArgT, typename SecondArgT>
-inline FirstArgT min_va(const FirstArgT& arg_0, 
-	const SecondArgT& arg_1)
-{
-	if (arg_0 <= arg_1)
-	{
-		return arg_0;
-	}
-	else
-	{
-		return arg_1;
-	}
-}
-
-template<typename FirstArgT, typename SecondArgT, 
-	typename... RemainingTs>
-inline FirstArgT min_va(const FirstArgT& arg_0, 
-	const SecondArgT& arg_1, RemainingTs... remaining_args )
-{
-	return min_va(min_va(arg_0, arg_1), remaining_args...);
-}
-
-
-template<typename T>
-inline T custom_abs(const T& val)
-{
-	if (val < static_cast<T>(0))
-	{
-		return -val;
-	}
-	else
-	{
-		return val;
-	}
-}
+//template<typename T>
+//inline T custom_abs(const T& val)
+//{
+//	if (val < static_cast<T>(0))
+//	{
+//		return -val;
+//	}
+//	else
+//	{
+//		return val;
+//	}
+//}
 
 
 template<typename T, size_t index>

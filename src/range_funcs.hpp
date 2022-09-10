@@ -32,9 +32,9 @@ inline bool in_range_inclusive(FirstArgT range_start_inclusive,
 }
 
 //template<typename T>
-//inline bool vec2_in_range(containers::Vec2<T> range_start_inclusive, 
-//	containers::Vec2<T> range_end_exclusive, 
-//	containers::Vec2<T> to_check)
+//inline bool vec2_in_range(math::Vec2<T> range_start_inclusive, 
+//	math::Vec2<T> range_end_exclusive, 
+//	math::Vec2<T> to_check)
 //{
 //	return (to_check.x >= range_start_inclusive.x 
 //		&& to_check.x < range_end_exclusive.x
