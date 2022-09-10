@@ -198,7 +198,7 @@ inline std::string strjoin(const std::string& sep,
 	return strjoin(sep, std::make_tuple(first_arg, rem_args...));
 }
 inline std::string strjoin2(const std::string& sep, const auto& first_arg,
-	const auto&... rem_args);
+	const auto&... rem_args)
 {
 	//auto temp = strjoin(sep, args...);
 
