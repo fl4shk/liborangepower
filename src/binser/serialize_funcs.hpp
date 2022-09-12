@@ -212,7 +212,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 	{
 		val_from_bv(ret.data, bv, func_map);
 
-		if (ret.data.x < ret.min.x || ret.data.x > ret.max.x)
+		if ((ret.data.x < ret.min.x) || (ret.data.x > ret.max.x))
 		{
 			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
@@ -220,7 +220,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
 				ret.data.x, " ", ret.min.x, " ", ret.max.x));
 		}
-		if (ret.data.y < ret.min.y || ret.data.y > ret.max.y)
+		if ((ret.data.y < ret.min.y) || (ret.data.y > ret.max.y))
 		{
 			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
@@ -233,7 +233,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 	{
 		val_from_bv(ret.data, bv, func_map);
 
-		if (ret.data.x < ret.min.x || ret.data.x > ret.max.x)
+		if ((ret.data.x < ret.min.x) || (ret.data.x > ret.max.x))
 		{
 			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
@@ -241,7 +241,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
 				ret.data.x, " ", ret.min.x, " ", ret.max.x));
 		}
-		if (ret.data.y < ret.min.y || ret.data.y > ret.max.y)
+		if ((ret.data.y < ret.min.y) || (ret.data.y > ret.max.y))
 		{
 			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
@@ -249,13 +249,105 @@ inline void val_from_bv(T& ret, const Value& bv,
 				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
 				ret.data.y, " ", ret.min.y, " ", ret.max.y));
 		}
-		if (ret.data.z < ret.min.z || ret.data.z > ret.max.z)
+		if ((ret.data.z < ret.min.z) || (ret.data.z > ret.max.z))
 		{
 			throw std::invalid_argument(sconcat
 				("liborangepower::binser::val_from_bv(): ",
 				"is_vec3_ex: ",
 				"ret.data.z < ret.min.z || ret.data.z > ret.max.z: ",
 				ret.data.z, " ", ret.min.z, " ", ret.max.z));
+		}
+	}
+	else if constexpr (is_line_seg2_ex<NonCvrefT>())
+	{
+		val_from_bv(ret.data, bv, func_map);
+
+		if ((ret.data.p0.x < ret.min.p0.x)
+			|| (ret.data.p0.x > ret.max.p0.x))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_line_seg2_ex: ",
+				"ret.data.p0.x < ret.min.p0.x ",
+				"|| ret.data.p0.x > ret.max.p0.x: ",
+				ret.data.p0.x, " ", ret.min.p0.x, " ", ret.max.p0.x));
+		}
+		if ((ret.data.p0.y < ret.min.p0.y)
+			|| (ret.data.p0.y > ret.max.p0.y))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_line_seg2_ex: ",
+				"ret.data.p0.y < ret.min.p0.y ",
+				"|| ret.data.p0.y > ret.max.p0.y: ",
+				ret.data.p0.y, " ", ret.min.p0.y, " ", ret.max.p0.y));
+		}
+		if ((ret.data.p1.x < ret.min.p1.x)
+			|| (ret.data.p1.x > ret.max.p1.x))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_line_seg2_ex: ",
+				"ret.data.p1.x < ret.min.p1.x ",
+				"|| ret.data.p1.x > ret.max.p1.x: ",
+				ret.data.p1.x, " ", ret.min.p1.x, " ", ret.max.p1.x));
+		}
+		if ((ret.data.p1.y < ret.min.p1.y)
+			|| (ret.data.p1.y > ret.max.p1.y))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_line_seg2_ex: ",
+				"ret.data.p1.y < ret.min.p1.y ",
+				"|| ret.data.p1.y > ret.max.p1.y: ",
+				ret.data.p1.y, " ", ret.min.p1.y, " ", ret.max.p1.y));
+		}
+	}
+	else if constexpr (is_rect2_ex<NonCvrefT>())
+	{
+		val_from_bv(ret.data, bv, func_map);
+
+		if ((ret.data.pos.x < ret.min.pos.x)
+			|| (ret.data.pos.x > ret.max.pos.x))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_rect2_ex: ",
+				"ret.data.pos.x < ret.min.pos.x ",
+				"|| ret.data.pos.x > ret.max.pos.x: ",
+				ret.data.pos.x, " ", ret.min.pos.x, " ", ret.max.pos.x));
+		}
+		if ((ret.data.pos.y < ret.min.pos.y)
+			|| (ret.data.pos.y > ret.max.pos.y))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_rect2_ex: ",
+				"ret.data.pos.y < ret.min.pos.y ",
+				"|| ret.data.pos.y > ret.max.pos.y: ",
+				ret.data.pos.y, " ", ret.min.pos.y, " ", ret.max.pos.y));
+		}
+		if ((ret.data.size_2d.x < ret.min.size_2d.x)
+			|| (ret.data.size_2d.x > ret.max.size_2d.x))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_rect2_ex: ",
+				"ret.data.size_2d.x < ret.min.size_2d.x ",
+				"|| ret.data.size_2d.x > ret.max.size_2d.x: ",
+				ret.data.size_2d.x, " ", ret.min.size_2d.x,
+				" ", ret.max.size_2d.x));
+		}
+		if ((ret.data.size_2d.y < ret.min.size_2d.y)
+			|| (ret.data.size_2d.y > ret.max.size_2d.y))
+		{
+			throw std::invalid_argument(sconcat
+				("liborangepower::binser::val_from_bv(): ",
+				"is_rect2_ex: ",
+				"ret.data.size_2d.y < ret.min.size_2d.y ",
+				"|| ret.data.size_2d.y > ret.max.size_2d.y: ",
+				ret.data.size_2d.y, " ", ret.min.size_2d.y,
+				" ", ret.max.size_2d.y));
 		}
 	}
 	else if constexpr
@@ -588,7 +680,9 @@ inline void set_bv(Value& bv, const T& val)
 		bv = vec3_to_bv(val);
 	}
 	else if constexpr (is_vec2_ex<NonCvrefT>()
-		|| is_vec3_ex<NonCvrefT>())
+		|| is_vec3_ex<NonCvrefT>()
+		|| is_line_seg2_ex<NonCvrefT>()
+		|| is_rect2_ex<NonCvrefT>())
 	{
 		set_bv(bv, val.data);
 	}

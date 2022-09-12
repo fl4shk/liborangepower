@@ -6,6 +6,7 @@
 
 #include "../math/vec2_classes.hpp"
 #include "../math/vec3_classes.hpp"
+#include "../math/shape_2d_classes.hpp"
 #include "../containers/linked_list_classes.hpp"
 
 namespace liborangepower
@@ -183,6 +184,101 @@ template<typename T>
 constexpr inline bool is_vec3_ex()
 {
 	return concepts::is_specialization<T, Vec3Ex>();
+}
+//--------
+//template<typename T>
+//class Hit2Ex final
+//{
+//};
+//template<typename T>
+//constexpr inline bool is_hit2_ex()
+//{
+//	return concepts::is_specialization<T, Hit2Ex>();
+//}
+//--------
+//template<typename T>
+//constexpr inline bool is_sweep2_ex()
+//{
+//	return concepts::is_specialization<T, Sweep2Ex>();
+//}
+//--------
+template<typename T>
+class LineSeg2Ex final
+{
+public:		// serialized variables
+	math::LineSeg2<T> data;
+public:		// non-serialized variables
+	math::LineSeg2<T> max, min;
+public:		// functions
+	//--------
+	inline math::Vec2<T>& p0()
+	{
+		return data.p0;
+	}
+	inline const math::Vec2<T>& p0() const
+	{
+		return data.p0;
+	}
+
+	inline math::Vec2<T>& p1()
+	{
+		return data.p1;
+	}
+	inline const math::Vec2<T>& p1() const
+	{
+		return data.p1;
+	}
+	//--------
+	inline operator math::LineSeg2<T> () const
+	{
+		return data;
+	}
+	//--------
+};
+template<typename T>
+constexpr inline bool is_line_seg2_ex()
+{
+	return concepts::is_specialization<T, LineSeg2Ex>();
+}
+//--------
+template<typename T>
+class Rect2Ex final
+{
+public:		// serialized variables
+	math::Rect2<T> data;
+public:		// non-serialized variables
+	math::Rect2<T> max, min;
+public:		// functions
+	//--------
+	inline math::Vec2<T>& pos()
+	{
+		return data.pos;
+	}
+	inline const math::Vec2<T>& pos() const
+	{
+		return data.pos;
+	}
+
+	inline math::Vec2<T>& size_2d()
+	{
+		return data.size_2d;
+	}
+	inline const math::Vec2<T>& size_2d() const
+	{
+		return data.size_2d;
+	}
+	//--------
+	inline operator math::Rect2<T> () const
+	{
+		return data;
+	}
+	//--------
+};
+
+template<typename T>
+constexpr inline bool is_rect2_ex()
+{
+	return concepts::is_specialization<T, Rect2Ex>();
 }
 //--------
 } // namespace binser
