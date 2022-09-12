@@ -662,7 +662,7 @@ namespace math
 template<typename T>
 inline auto Hit2<T>::from_bv(const binser::Value& bv) -> Hit2
 {
-	Hit2 ret;
+	Hit2<T> ret;
 
 	MEMB_LIST_SHAPE_HIT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
 
@@ -682,7 +682,7 @@ inline Hit2<T>::operator binser::Value () const
 template<typename T>
 inline auto Sweep2<T>::from_bv(const binser::Value& bv) -> Sweep2
 {
-	Sweep2 ret;
+	Sweep2<T> ret;
 
 	MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_FROM_BV_DESERIALIZE);
 
@@ -702,7 +702,7 @@ inline Sweep2<T>::operator binser::Value () const
 template<typename T>
 inline auto LineSeg2<T>::from_bv(const binser::Value& bv) -> LineSeg2
 {
-	LineSeg2 ret;
+	LineSeg2<T> ret;
 
 	MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_FROM_BV_DESERIALIZE);
 
@@ -722,7 +722,7 @@ inline LineSeg2<T>::operator binser::Value () const
 template<typename T>
 inline auto Rect2<T>::from_bv(const binser::Value& bv) -> Rect2
 {
-	Rect2 ret;
+	Rect2<T> ret;
 
 	MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
 
