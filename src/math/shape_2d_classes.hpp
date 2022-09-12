@@ -151,7 +151,7 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			strings::strjoin2_rm_last
 			(
 				" ",
-				(X)
+				MEMB_LIST_SHAPE_SWEEP2(X)
 				std::string()
 			),
 
