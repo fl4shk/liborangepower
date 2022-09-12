@@ -8,6 +8,7 @@
 #include "../containers/std_hash_stuff.hpp"
 
 //#include "../binser/serialize_funcs.hpp"
+#include "../binser/serialize_defines.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
 #include "../concepts/math_concepts.hpp"
 
@@ -150,7 +151,7 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			strings::strjoin2_rm_last
 			(
 				" ",
-				MEMB_LIST_SHAPE_SWEEP2(X)
+				(X)
 				std::string()
 			),
 
@@ -679,65 +680,65 @@ inline Hit2<T>::operator binser::Value () const
 	return ret;
 }
 //--------
-//template<typename T>
-//inline auto Sweep2<T>::from_bv(const binser::Value& bv) -> Sweep2
-//{
-//	Sweep2<T> ret;
-//
-//	MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_FROM_BV_DESERIALIZE);
-//
-//	return ret;
-//}
-//
-//template<typename T>
-//inline Sweep2<T>::operator binser::Value () const
-//{
-//	binser::Value ret;
-//
-//	MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_SERIALIZE);
-//
-//	return ret;
-//}
+template<typename T>
+inline auto Sweep2<T>::from_bv(const binser::Value& bv) -> Sweep2
+{
+	Sweep2<T> ret;
+
+	MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+	return ret;
+}
+
+template<typename T>
+inline Sweep2<T>::operator binser::Value () const
+{
+	binser::Value ret;
+
+	MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_SERIALIZE);
+
+	return ret;
+}
 //--------
-//template<typename T>
-//inline auto LineSeg2<T>::from_bv(const binser::Value& bv) -> LineSeg2
-//{
-//	LineSeg2<T> ret;
-//
-//	MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_FROM_BV_DESERIALIZE);
-//
-//	return ret;
-//}
-//
-//template<typename T>
-//inline LineSeg2<T>::operator binser::Value () const
-//{
-//	binser::Value ret;
-//
-//	MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_SERIALIZE);
-//
-//	return ret;
-//}
+template<typename T>
+inline auto LineSeg2<T>::from_bv(const binser::Value& bv) -> LineSeg2
+{
+	LineSeg2<T> ret;
+
+	MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+	return ret;
+}
+
+template<typename T>
+inline LineSeg2<T>::operator binser::Value () const
+{
+	binser::Value ret;
+
+	MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_SERIALIZE);
+
+	return ret;
+}
 //--------
-//template<typename T>
-//inline auto Rect2<T>::from_bv(const binser::Value& bv) -> Rect2
-//{
-//	Rect2<T> ret;
-//
-//	MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
-//
-//	return ret;
-//}
-//
-//template<typename T>
-//inline Rect2<T>::operator binser::Value () const
-//{
-//	binser::Value ret;
-//
-//	MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_SERIALIZE);
-//
-//	return ret;
-//}
+template<typename T>
+inline auto Rect2<T>::from_bv(const binser::Value& bv) -> Rect2
+{
+	Rect2<T> ret;
+
+	MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+	return ret;
+}
+
+template<typename T>
+inline Rect2<T>::operator binser::Value () const
+{
+	binser::Value ret;
+
+	MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_SERIALIZE);
+
+	return ret;
+}
 //--------
 } // namespace math
 } // namespace liborangepower
