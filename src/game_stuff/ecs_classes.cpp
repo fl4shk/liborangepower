@@ -60,8 +60,8 @@ std::string Sys::kind_str() const
 void Sys::prep_init()
 {
 	_did_init = false;
-	game_mode_active.back_up_and_update(false);
-	game_mode_active.back_up_and_update(true);
+	active.back_up_and_update(false);
+	active.back_up_and_update(true);
 }
 void Sys::init(Engine* ecs_engine)
 {
@@ -86,13 +86,13 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 {
 	if (cond)
 	{
-		if (game_mode_active() && game_mode_active.has_changed())
+		if (active() && active.has_changed())
 		{
-			game_mode_active.back_up();
+			active.back_up();
 
 			return false;
 		}
-		else if (game_mode_active())
+		else if (active())
 		{
 			if (!_did_init)
 			{

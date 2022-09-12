@@ -108,17 +108,17 @@ public:		// functions
 class Sys
 {
 public:		// serialization stuff
-	#define MEMB_LIST_ECS_SYS(X) \
-		X(_did_init, std::nullopt) \
-		X(game_mode_active, std::nullopt) \
+	/* #define MEMB_LIST_ECS_SYS(X) */ \
+	/*	X(_did_init, std::nullopt) */ \
+	/*	X(active, std::nullopt) */ \
 
 private:		// variables
 	bool _did_init = false;
 public:		// variables
-	containers::PrevCurrPair<bool> game_mode_active;
+	containers::PrevCurrPair<bool>
+		active = {false, false};
 public:		// functions
 	inline Sys()
-		: game_mode_active(false, false)
 	{
 	}
 	//Sys(const binser::Value& bv);
