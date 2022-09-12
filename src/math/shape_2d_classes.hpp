@@ -660,7 +660,7 @@ namespace math
 {
 //--------
 template<typename T>
-inline auto Hit2<T>from_bv(const binser::Value& bv) -> Hit2
+inline auto Hit2<T>::from_bv(const binser::Value& bv) -> Hit2
 {
 	Hit2 ret;
 
@@ -730,7 +730,7 @@ inline auto Rect2<T>::from_bv(const binser::Value& bv) -> Rect2
 }
 
 template<typename T>
-inline Rect2<T>::operator binser::Value
+inline Rect2<T>::operator binser::Value () const
 {
 	binser::Value ret;
 
