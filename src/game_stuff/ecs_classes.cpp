@@ -1,4 +1,5 @@
 #include "ecs_classes.hpp"
+#include "../binser/serialize_defines.hpp"
 #include "../metaprog_defines.hpp"
 
 namespace liborangepower
