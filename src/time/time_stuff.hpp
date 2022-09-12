@@ -6,6 +6,8 @@
 #include "../misc/misc_includes.hpp"
 #include "../gen_class_innards_defines.hpp"
 
+#include "../math/misc_funcs.hpp"
+
 #include <iomanip>
 
 #include <pcg_random.hpp>
@@ -74,34 +76,47 @@ inline auto rng_run(RngT& rng)
 	return T(rng());
 }
 template<typename T, CallableLikeRng RngT>
-inline auto rng_run(RngT& rng, const T& max_val, bool saturate=false)
+inline auto rng_run(RngT& rng, const T& max, bool saturate=false)
 {
 	T ret = rng_run<T>(rng);
 
 	if (!saturate)
 	{
-		ret %= max_val;
+		ret %= max;
 	}
 	else // if (saturate)
 	{
-		if (ret > max_val)
+		if (ret > max)
 		{
-			ret = max_val;
+			ret = max;
 		}
 	}
 
 	return ret;
 }
 template<typename T, CallableLikeRng RngT>
+inline auto rng_run_mm(RngT& rng, const T& max, const T& min,
+	bool saturate=false)
+{
+	return rng_run<T>(rng, math::cstm_abs(max - min), saturate) + min;
+}
+
+template<typename T, CallableLikeRng RngT>
 inline auto rng_run_scaled(RngT& rng, const T& scale)
 {
 	return rng_run<T>(rng) * scale;
 }
 template<typename T, CallableLikeRng RngT>
-inline auto rng_run_scaled(RngT& rng, const T& scale, const T& max_val,
+inline auto rng_run_scaled(RngT& rng, const T& scale, const T& max,
 	bool saturate=false)
 {
-	return rng_run<T>(rng, max_val, saturate) * scale;
+	return rng_run<T>(rng, max, saturate) * scale;
+}
+template<typename T, CallableLikeRng RngT>
+inline auto rng_run_scaled_mm(RngT& rng, const T& scale, const T& max,
+	const T& min, bool saturate=false)
+{
+	return rng_run_mm<T>(rng, max, min, saturate) * scale;
 }
 
 template<typename _InstanceT=std::mt19937_64>
@@ -141,9 +156,9 @@ public:		// functions
 		return rng_run<decltype(_instance())>(_instance);
 	}
 	template<typename T>
-	inline auto operator () (const T& max_val, bool saturate=false)
+	inline auto operator () (const T& max, bool saturate=false)
 	{
-		return rng_run<T>(_instance, max_val, saturate);
+		return rng_run<T>(_instance, max, saturate);
 	}
 	template<typename T>
 	inline auto run()
@@ -156,10 +171,10 @@ public:		// functions
 		return rng_run_scaled<T>(_instance, scale);
 	}
 	template<typename T>
-	inline auto run_scaled(const T& scale, const T& max_val,
+	inline auto run_scaled(const T& scale, const T& max,
 		bool saturate=false)
 	{
-		return rng_run_scaled<T>(_instance, scale, max_val, saturate);
+		return rng_run_scaled<T>(_instance, scale, max, saturate);
 	}
 
 
