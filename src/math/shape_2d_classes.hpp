@@ -279,23 +279,19 @@ public:		// functions
 	// `ret.pos` and `ret.delta` will be set to the nearest edge of the
 	// `Rect2`
 	constexpr std::optional<Hit2<T>> intersect(const Vec2<T>& arg,
-		const Vec2<T>& padding=Vec2<T>()) const
+		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
-		if (padding != Vec2<T>())
+		if (arg_padding != Vec2<T>())
 		{
-			//return intersect(LineSeg2<T>{arg, arg}, padding);
+			//return intersect(LineSeg2<T>{arg, arg}, arg_padding);
 			const Rect2<T>
 				rect
 				{
-					.pos
-					{
-						arg.x - (padding / T(2)),
-						arg.y - (padding / T(2)),
-					},
-					.size_2d=padding
+					.pos=arg - (arg_padding / T(2)),
+					.size_2d=arg_padding
 				};
 
-			return intersect(rect);
+			return intersect(rect, exclusive, Vec2<T>());
 		}
 		//--------
 		const Vec2<T>
@@ -307,7 +303,8 @@ public:		// functions
 		const T
 			dx = arg.x - temp_cpos.x,
 			px = temp_hsize.x - cstm_abs(dx);
-		if (px <= T(0))
+		if ((exclusive && (px <= T(0))) || (!exclusive && (px < T(0))))
+		//if (px <= T(0))
 		//if (px < T(0))
 		{
 			return std::nullopt;
@@ -316,7 +313,8 @@ public:		// functions
 		const ElemT
 			dy = arg.y - temp_cpos.y,
 			py = temp_hsize.y - cstm_abs(dy);
-		if (py <= T(0))
+		if ((exclusive && (py <= T(0))) || (!exclusive && (py < T(0))))
+		//if (py <= T(0))
 		//if (py < T(0))
 		{
 			return std::nullopt;
@@ -347,7 +345,7 @@ public:		// functions
 		//--------
 	}
 	constexpr std::optional<Hit2<T>> intersect(const LineSeg2<T>& arg,
-		const Vec2<T>& padding=Vec2<T>()) const
+		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		//--------
 		//using misc_output::printout;
@@ -371,13 +369,13 @@ public:		// functions
 			//	{
 			//		.pos
 			//		{
-			//			pi.x - (padding.x / T(2)),
-			//			pi.y - (padding.y / T(2))
+			//			pi.x - (arg_padding.x / T(2)),
+			//			pi.y - (arg_padding.y / T(2))
 			//		},
 			//		.size_2d
 			//		{
-			//			(pa.x - pi.x) + (padding.x / T(2)),
-			//			(pa.y - pi.y) + (padding.y / T(2))
+			//			(pa.x - pi.x) + (arg_padding.x / T(2)),
+			//			(pa.y - pi.y) + (arg_padding.y / T(2))
 			//		},
 			//	};
 
@@ -386,49 +384,49 @@ public:		// functions
 			if (arg.p0.x < arg.p1.x)
 			{
 				// In this case, we have `arg.p0.y == arg.p1.y`
-				rect.pos.x = arg.p0.x - (padding.x / T(2));
-				rect.pos.y = arg.p0.y - (padding.y / T(2));
+				rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
+				rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
 
-				rect.size_2d.x = (arg.p1.x - arg.p0.x) + padding.x;
-				rect.size_2d.y = padding.y;
+				rect.size_2d.x = (arg.p1.x - arg.p0.x) + arg_padding.x;
+				rect.size_2d.y = arg_padding.y;
 			}
 			else if (arg.p0.x == arg.p1.x)
 			{
 				if (arg.p0.y < arg.p1.y)
 				{
-					rect.pos.x = arg.p0.x - (padding.x / T(2));
-					rect.pos.y = arg.p0.y - (padding.y / T(2));
+					rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
+					rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
 
-					rect.size_2d.x = padding.x;
-					rect.size_2d.y = (arg.p1.y - arg.p0.y) + padding.x;
+					rect.size_2d.x = arg_padding.x;
+					rect.size_2d.y = (arg.p1.y - arg.p0.y) + arg_padding.x;
 				}
 				else if (arg.p0.y == arg.p1.y)
 				{
-					rect.pos.x = arg.p0.x - (padding.x / T(2));
-					rect.pos.y = arg.p0.y - (padding.y / T(2));
+					rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
+					rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
 
-					rect.size_2d = padding;
+					rect.size_2d = arg_padding;
 				}
 				else // if (arg.p0.y > arg.p1.y)
 				{
-					rect.pos.x = arg.p1.x - (padding.x / T(2));
-					rect.pos.y = arg.p1.y - (padding.y / T(2));
+					rect.pos.x = arg.p1.x - (arg_padding.x / T(2));
+					rect.pos.y = arg.p1.y - (arg_padding.y / T(2));
 
-					rect.size_2d.x = padding.x;
-					rect.size_2d.y = (arg.p0.y - arg.p1.y) + padding.x;
+					rect.size_2d.x = arg_padding.x;
+					rect.size_2d.y = (arg.p0.y - arg.p1.y) + arg_padding.x;
 				}
 			}
 			else // if (arg.p0.x > arg.p1.x)
 			{
 				// In this case, we have `arg.p0.y == arg.p1.y`
-				rect.pos.x = arg.p1.x - (padding.x / T(2));
-				rect.pos.y = arg.p0.y - (padding.y / T(2));
+				rect.pos.x = arg.p1.x - (arg_padding.x / T(2));
+				rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
 
-				rect.size_2d.x = (arg.p0.x - arg.p1.x) + padding.x;
-				rect.size_2d.y = padding.y;
+				rect.size_2d.x = (arg.p0.x - arg.p1.x) + arg_padding.x;
+				rect.size_2d.y = arg_padding.y;
 			}
 
-			return intersect(rect);
+			return intersect(rect, exclusive, Vec2<T>());
 		}
 		//--------
 		auto calc_scale = [](const Vec2<T>& some_delta) -> Vec2<T>
@@ -467,8 +465,8 @@ public:		// functions
 			}),
 			partial_time_vec
 			({
-				.x=sign.x * (temp_hsize.x + padding.x),
-				.y=sign.y * (temp_hsize.y + padding.y),
+				.x=sign.x * (temp_hsize.x + arg_padding.x),
+				.y=sign.y * (temp_hsize.y + arg_padding.y),
 			}),
 			near_time_vec
 			({
@@ -505,10 +503,10 @@ public:		// functions
 
 		//printout("nt ft: ", near_time, " ", far_time, "\n");
 
-		if (near_time >= T(1) || far_time <= T(0))
-		// The below line is my modification, which may not be correct.
-		// That is why I am not using it.
+		//if (near_time >= T(1) || far_time <= T(0))
 		//if (near_time > T(1) || far_time < T(0))
+		if ((exclusive && (near_time >= T(1) || far_time <= T(0)))
+			|| (!exclusive && (near_time > T(1) || far_time < T(0))))
 		{
 			//printout("!hit\n");
 			return std::nullopt;
@@ -547,7 +545,7 @@ public:		// functions
 		//--------
 	}
 	constexpr std::optional<Hit2<T>> intersect(const Rect2& arg,
-		const Vec2<T>& padding=Vec2<T>()) const
+		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		//--------
 		const Rect2<T>
@@ -555,26 +553,26 @@ public:		// functions
 			{
 				.pos
 				{
-					pos.x - (padding.x / T(2)),
-					pos.y - (padding.y / T(2))
+					pos.x - (arg_padding.x / T(2)),
+					pos.y - (arg_padding.y / T(2))
 				},
 				.size_2d
 				{
-					size_2d.x + padding.x,
-					size_2d.y + padding.y
+					size_2d.x + arg_padding.x,
+					size_2d.y + arg_padding.y
 				}
 			},
 			temp_rect_1
 			{
 				.pos
 				{
-					arg.pos.x - (padding.x / T(2)),
-					arg.pos.y - (padding.y / T(2))
+					arg.pos.x - (arg_padding.x / T(2)),
+					arg.pos.y - (arg_padding.y / T(2))
 				},
 				.size_2d
 				{
-					arg.size_2d.x + padding.x,
-					arg.size_2d.y + padding.y
+					arg.size_2d.x + arg_padding.x,
+					arg.size_2d.y + arg_padding.y
 				}
 			};
 		//--------
@@ -594,8 +592,10 @@ public:		// functions
 		const T
 			dx = temp_arg_cpos.x - temp_cpos.x,
 			px = (temp_arg_hsize.x + temp_hsize.x) - cstm_abs(dx);
-		if (px <= T(0))
+		//if (px <= T(0))
 		//if (px < T(0))
+		if ((exclusive && (px <= T(0)))
+			|| (!exclusive && (px < T(0))))
 		{
 			return std::nullopt;
 		}
@@ -603,8 +603,10 @@ public:		// functions
 		const T
 			dy = temp_arg_cpos.y - temp_cpos.y,
 			py = (temp_arg_hsize.y + temp_hsize.y) - cstm_abs(dy);
-		if (py <= T(0))
+		//if (py <= T(0))
 		//if (py < T(0))
+		if ((exclusive && (py <= T(0)))
+			|| (!exclusive && (py < T(0))))
 		{
 			return std::nullopt;
 		}
@@ -632,20 +634,21 @@ public:		// functions
 		//--------
 	}
 
-	// Whether or not the *argument* is inside this `Rect2`, inclusive
-	inline bool arg_inside_inclusive(const LineSeg2<T>& arg,
-		const Vec2<T>& padding=Vec2<T>()) const
+	// Whether or not the *argument* is inside this `Rect2`, exclusive,
+	// such that there's not
+	inline bool arg_inside(const LineSeg2<T>& arg,
+		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
-		return intersect(arg.p0, padding)
-			&& intersect(arg.p1, padding);
+		return intersect(arg.p0, exclusive, arg_padding)
+			&& intersect(arg.p1, exclusive, arg_padding);
 	}
-	inline bool arg_inside_inclusive(const Rect2& arg,
-		const Vec2<T>& padding=Vec2<T>()) const
+	inline bool arg_inside(const Rect2& arg, bool exclusive=false,
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
-		return intersect(arg.tl_corner(), padding)
-			&& intersect(arg.tr_corner(), padding)
-			&& intersect(arg.bl_corner(), padding)
-			&& intersect(arg.br_corner(), padding);
+		return intersect(arg.tl_corner(), exclusive, arg_padding)
+			&& intersect(arg.tr_corner(), exclusive, arg_padding)
+			&& intersect(arg.bl_corner(), exclusive, arg_padding)
+			&& intersect(arg.br_corner(), exclusive, arg_padding);
 	}
 	//--------
 };
