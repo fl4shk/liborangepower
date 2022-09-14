@@ -5,7 +5,9 @@
 #include "../misc/misc_output_classes.hpp"
 #include "../gen_class_innards_defines.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
+#include "../concepts/math_concepts.hpp"
 #include "../containers/std_hash_stuff.hpp"
+#include "misc_funcs.hpp"
 
 #include <cmath>
 #include <cstdint>
@@ -151,6 +153,11 @@ public:		// functions
 	{
 		*this = *this / scale;
 		return *this;
+	}
+
+	constexpr inline Vec2 div_2() const
+	{
+		return Vec2({.x=math::div_2(x), .y=math::div_2(y)});
 	}
 	//--------
 	// Dot product

@@ -3,6 +3,7 @@
 
 #include "../gen_class_innards_defines.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
+#include "../concepts/math_concepts.hpp"
 #include "vec2_classes.hpp"
 
 #include <cstdint>
@@ -150,6 +151,16 @@ public:		// functions
 	{
 		*this = *this / scale;
 		return *this;
+	}
+
+	constexpr inline Vec3 div_2() const
+	{
+		return Vec3
+		({
+			.x=math::div_2(x),
+			.y=math::div_2(y),
+			.z=math::div_2(z),
+		});
 	}
 	//--------
 	// Dot product

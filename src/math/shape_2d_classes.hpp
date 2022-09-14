@@ -239,7 +239,15 @@ public:		// functions
 		//return tl_corner() + ((size_2d - Vec2<T>(T(1), T(1))) / T(2));
 		//return tl_corner() + (br_corner() / T(2));
 		//return tl_corner() + (size_2d / T(2));
-		return size_2d / T(2);
+		//if constexpr (concepts::HasArithDiv2MbrFunc<T>)
+		//{
+		//	return {div_2(size_2d.x), div_2(size_2d.y)}
+		//}
+		//else
+		//{
+		//	return size_2d / T(2);
+		//}
+		return div_2(size_2d);
 	}
 
 	constexpr inline T l_side_x() const
@@ -287,7 +295,8 @@ public:		// functions
 			const Rect2<T>
 				rect
 				{
-					.pos=arg - (arg_padding / T(2)),
+					//.pos=arg - (arg_padding / T(2)),
+					.pos=arg - div_2(arg_padding),
 					.size_2d=arg_padding
 				};
 
@@ -368,15 +377,17 @@ public:		// functions
 			//	rect
 			//	{
 			//		.pos
-			//		{
-			//			pi.x - (arg_padding.x / T(2)),
-			//			pi.y - (arg_padding.y / T(2))
-			//		},
+			//		//{
+			//		//	pi.x - (arg_padding.x / T(2)),
+			//		//	pi.y - (arg_padding.y / T(2))
+			//		//},
+			//			=pi - div_2(arg_padding),
 			//		.size_2d
-			//		{
-			//			(pa.x - pi.x) + (arg_padding.x / T(2)),
-			//			(pa.y - pi.y) + (arg_padding.y / T(2))
-			//		},
+			//		//{
+			//		//	(pa.x - pi.x) + (arg_padding.x / T(2)),
+			//		//	(pa.y - pi.y) + (arg_padding.y / T(2))
+			//		//},
+			//			=(pa - pi) + div_2(arg_padding),
 			//	};
 
 			Rect2<T> rect;
@@ -384,8 +395,9 @@ public:		// functions
 			if (arg.p0.x < arg.p1.x)
 			{
 				// In this case, we have `arg.p0.y == arg.p1.y`
-				rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
-				rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+				//rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
+				//rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+				rect.pos = arg.p0 - div_2(arg_padding);
 
 				rect.size_2d.x = (arg.p1.x - arg.p0.x) + arg_padding.x;
 				rect.size_2d.y = arg_padding.y;
@@ -394,23 +406,29 @@ public:		// functions
 			{
 				if (arg.p0.y < arg.p1.y)
 				{
-					rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
-					rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+					//rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
+					//rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+					rect.pos.x = arg.p0.x - div_2(arg_padding.x);
+					rect.pos.y = arg.p0.y - div_2(arg_padding.y);
 
 					rect.size_2d.x = arg_padding.x;
 					rect.size_2d.y = (arg.p1.y - arg.p0.y) + arg_padding.x;
 				}
 				else if (arg.p0.y == arg.p1.y)
 				{
-					rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
-					rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+					//rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
+					//rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+					rect.pos.x = arg.p0.x - div_2(arg_padding.x);
+					rect.pos.y = arg.p0.y - div_2(arg_padding.y);
 
 					rect.size_2d = arg_padding;
 				}
 				else // if (arg.p0.y > arg.p1.y)
 				{
-					rect.pos.x = arg.p1.x - (arg_padding.x / T(2));
-					rect.pos.y = arg.p1.y - (arg_padding.y / T(2));
+					//rect.pos.x = arg.p1.x - (arg_padding.x / T(2));
+					//rect.pos.y = arg.p1.y - (arg_padding.y / T(2));
+					rect.pos.x = arg.p1.x - div_2(arg_padding.x);
+					rect.pos.y = arg.p1.y - div_2(arg_padding.y);
 
 					rect.size_2d.x = arg_padding.x;
 					rect.size_2d.y = (arg.p0.y - arg.p1.y) + arg_padding.x;
@@ -419,8 +437,10 @@ public:		// functions
 			else // if (arg.p0.x > arg.p1.x)
 			{
 				// In this case, we have `arg.p0.y == arg.p1.y`
-				rect.pos.x = arg.p1.x - (arg_padding.x / T(2));
-				rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+				//rect.pos.x = arg.p1.x - (arg_padding.x / T(2));
+				//rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+				rect.pos.x = arg.p1.x - div_2(arg_padding.x);
+				rect.pos.y = arg.p0.y - div_2(arg_padding.y);
 
 				rect.size_2d.x = (arg.p0.x - arg.p1.x) + arg_padding.x;
 				rect.size_2d.y = arg_padding.y;
@@ -552,28 +572,32 @@ public:		// functions
 			temp_rect_0
 			{
 				.pos
-				{
-					pos.x - (arg_padding.x / T(2)),
-					pos.y - (arg_padding.y / T(2))
-				},
+				//{
+				//	pos.x - (arg_padding.x / T(2)),
+				//	pos.y - (arg_padding.y / T(2))
+				//},
+					=pos - div_2(arg_padding),
 				.size_2d
-				{
-					size_2d.x + arg_padding.x,
-					size_2d.y + arg_padding.y
-				}
+				//{
+				//	size_2d.x + arg_padding.x,
+				//	size_2d.y + arg_padding.y
+				//}
+					=size_2d + arg_padding,
 			},
 			temp_rect_1
 			{
 				.pos
-				{
-					arg.pos.x - (arg_padding.x / T(2)),
-					arg.pos.y - (arg_padding.y / T(2))
-				},
+				//{
+				//	arg.pos.x - (arg_padding.x / T(2)),
+				//	arg.pos.y - (arg_padding.y / T(2))
+				//},
+					=arg.pos - div_2(arg_padding),
 				.size_2d
-				{
-					arg.size_2d.x + arg_padding.x,
-					arg.size_2d.y + arg_padding.y
-				}
+				//{
+				//	arg.size_2d.x + arg_padding.x,
+				//	arg.size_2d.y + arg_padding.y
+				//}
+					=arg.size_2d + arg_padding,
 			};
 		//--------
 		const Vec2<T>

@@ -115,6 +115,31 @@ constexpr inline T clamp(const T& val, const T& min, const T& max)
 		return val;
 	}
 }
+
+//template<typename T>
+//constexpr inline auto recip(const T& val)
+//{
+//	if constexpr (concepts::HasArithRecipMbrFunc<T>)
+//	{
+//		return val.recip();
+//	}
+//	else
+//	{
+//		return (1.0 / val);
+//	}
+//}
+template<typename T>
+constexpr inline auto div_2(const T& val)
+{
+	if constexpr (concepts::HasArithDiv2MbrFunc<T>)
+	{
+		return val.div_2();
+	}
+	else
+	{
+		return val / 2;
+	}
+}
 //--------
 //template<typename T>
 //constexpr inline T max_va

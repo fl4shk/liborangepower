@@ -2,6 +2,9 @@
 #define liborangepower_math_fixed_pt_class_hpp
 
 #include "../misc/misc_includes.hpp"
+#include "../misc/misc_defines.hpp"
+#include "../misc/misc_types.hpp"
+#include "../misc/misc_bitwise_funcs.hpp"
 #include "misc_funcs.hpp"
 #include "misc_types.hpp"
 
@@ -9,6 +12,14 @@ namespace liborangepower
 {
 
 using bitwise::width_of_type;
+using integer_types::u8;
+using integer_types::i8;
+using integer_types::u16;
+using integer_types::i16;
+using integer_types::u32;
+using integer_types::i32;
+using integer_types::u64;
+using integer_types::i64;
 
 namespace math
 {
@@ -16,7 +27,7 @@ namespace math
 // A class implementing fixed-point arithmetic with `constexpr` functions.
 // Of course, this can be used in runtime code.
 template<std::integral _IntT, size_t _FRAC_WIDTH>
-class CxFixedPt final
+class CxFixedPt
 {
 public:		// types
 	using IntT = _IntT;
@@ -39,10 +50,12 @@ public:		// constants
 	//	? FRAC_WIDTH - OTHER_FRAC_WIDTH
 	//	: OTHER_FRAC_WIDTH - FRAC_WIDTH;
 
+	static_assert(FRAC_WIDTH >= 1,
+		"`FRAC_WIDTH` < 1");
 	static_assert(FRAC_WIDTH < INT_T_WIDTH,
 		"`FRAC_WIDTH >= INT_T_WIDTH`");
 public:		// types
-	using MaxIntT 
+	using MaxIntT
 		= PickT
 		<
 			std::unsigned_integral<IntT>,
@@ -64,7 +77,7 @@ public:		// functions
 	}
 	//--------
 	explicit constexpr inline CxFixedPt(std::integral auto to_conv)
-		: data(to_conv << FRAC_WIDTH)
+		: data(to_conv << MaxIntT(FRAC_WIDTH))
 	{
 	}
 
@@ -108,7 +121,30 @@ public:		// functions
 	template<std::integral CastIntT>
 	explicit constexpr inline operator CastIntT () const
 	{
-		return data >> FRAC_WIDTH;
+		return MaxIntT(data) >> FRAC_WIDTH;
+		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
+	}
+	template<std::floating_point CastFloatT>
+	explicit constexpr inline operator CastFloatT () const
+	{
+		return (long double)(whole_part<MaxIntT>())
+			/ (MaxIntT(1) << MaxIntT(FRAC_WIDTH));
+	}
+	//--------
+	template<std::integral CastIntT=IntT>
+	constexpr inline CastIntT whole_part() const
+	{
+		return CastIntT(*this);
+	}
+	constexpr inline IntT frac_part() const
+	{
+		//return data & ((MaxIntT(1) << MaxIntT(FRAC_WIDTH)) - MaxIntT(1));
+		return bitwise::get_bits_with_range
+		(
+			data,
+			MaxIntT(FRAC_WIDTH) - MaxIntT(1),
+			0
+		);
 	}
 	//--------
 	constexpr inline CxFixedPt operator + (const CxFixedPt& other) const
@@ -160,26 +196,30 @@ public:		// functions
 		return 1.0d 
 			/ (DATA_DBL / (MaxIntT(1) << MaxIntT(FRAC_WIDTH)));
 	}
+	constexpr inline CxFixedPt& div_2() const
+	{
+		return CxFixedPt(data >> IntT(1));
+	}
 	//--------
 };
 //--------
 // 16
-using CxFixedI8p8 = CxFixedPt<int16_t, 8>;
-using CxFixedU8p8 = CxFixedPt<uint16_t, 8>;
-using CxFixedI12p4 = CxFixedPt<int16_t, 4>;
-using CxFixedU12p4 = CxFixedPt<uint16_t, 4>;
+using CxFixedI8p8 = CxFixedPt<i16, 8>;
+using CxFixedU8p8 = CxFixedPt<u16, 8>;
+using CxFixedI12p4 = CxFixedPt<i16, 4>;
+using CxFixedU12p4 = CxFixedPt<u16, 4>;
 
 // 32
-using CxFixedI16p16 = CxFixedPt<int32_t, 16>;
-using CxFixedU16p16 = CxFixedPt<uint32_t, 16>;
-using CxFixedI24p8 = CxFixedPt<int32_t, 8>;
-using CxFixedU24p8 = CxFixedPt<uint32_t, 8>;
+using CxFixedI16p16 = CxFixedPt<i32, 16>;
+using CxFixedU16p16 = CxFixedPt<u32, 16>;
+using CxFixedI24p8 = CxFixedPt<i32, 8>;
+using CxFixedU24p8 = CxFixedPt<u32, 8>;
 
 // 64
-using CxFixedI32p32 = CxFixedPt<int64_t, 32>;
-using CxFixedU32p32 = CxFixedPt<uint64_t, 32>;
-using CxFixedI48p16 = CxFixedPt<int64_t, 16>;
-using CxFixedU48p16 = CxFixedPt<uint64_t, 16>;
+using CxFixedI32p32 = CxFixedPt<i64, 32>;
+using CxFixedU32p32 = CxFixedPt<u64, 32>;
+using CxFixedI48p16 = CxFixedPt<i64, 16>;
+using CxFixedU48p16 = CxFixedPt<u64, 16>;
 //--------
 } // namespace math
 } // namespace liborangepower

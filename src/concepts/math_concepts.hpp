@@ -63,6 +63,11 @@ concept HasArithRecipMbrFunc = requires(T c)
 {
 	{ c.recip() } -> std::convertible_to<T>;
 };
+template<typename T>
+concept HasArithDiv2MbrFunc = requires(T c)
+{
+	{ c.div_2() } -> std::convertible_to<T>;
+};
 //--------
 template<typename T, typename OtherT=T>
 concept HasCmpEqNeBinops = requires(T c, OtherT other)
