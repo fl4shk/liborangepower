@@ -97,6 +97,8 @@
 #define EVAL1(...) __VA_ARGS__
 
 // `MAP` is one of the main components of this metaprogramming library.
+// This macro is mainly intended to be used as, when called, the argument
+// to `EVAL`.
 
 // `__VA_OPT__` makes it so that its arguments expand only when there's at
 // least one argument to `__VA_ARGS__`. It is almost the same as

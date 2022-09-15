@@ -3,6 +3,7 @@
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_defines.hpp"
 #include "../math/vec2_classes.hpp"
 #include "../math/vec3_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"
@@ -16,7 +17,7 @@
 
 #include "value_class.hpp"
 #include "from_bv_factory_stuff.hpp"
-#include "ex_containers_classes.hpp"
+#include "ex_container_classes.hpp"
 
 namespace liborangepower
 {
@@ -82,6 +83,129 @@ inline Value vec3_to_bv(const math::Vec3<T>& vec)
 	return ret;
 }
 
+template<typename ValT>
+inline void val_from_bv_test_ex_cs
+(
+	const std::optional<std::string>& func_name,
+	const std::optional<std::string>& msg,
+	const auto& ret_data_size, const std::string& ret_data_size_str,
+	const ValT& data, const std::string& data_str,
+	const ExSizeT& checked_size, const std::string& checked_size_str,
+	const ExBoolT& cs_is_max, const std::string& cs_is_max_str,
+	const ExSizeT& min_size, const std::string& min_size_str
+)
+{
+	//const auto& ret_data_size = ret.data.size();
+	//if (!ret.cs_is_max)
+	//{
+	//	if (ret_data_size != ret.checked_size)
+	//	{
+	//		throw std::invalid_argument(sconcat
+	//			("liborangepower::binser::val_from_bv(): ",
+	//			"is vector/deque with extras: ",
+	//			"ret_data_size != ret.checked_size: ",
+	//			ret_data_size, " ", ret.checked_size));
+	//	}
+	//}
+	//else // if (ret.cs_is_max)
+	//{
+	//	if (ret_data_size < ret.min_size
+	//		|| ret_data_size > ret.checked_size)
+	//	{
+	//		throw std::invalid_argument(sconcat
+	//			("liborangepower::binser::val_from_bv(): ",
+	//			"is vector/deque with extras: ",
+	//			"ret_data_size < ret.min_size ",
+	//			"|| ret_data_size > ret.checked_size: ",
+	//			ret_data_size, " ", ret.min_size, " ",
+	//			ret.checked_size));
+	//	}
+	//}
+	if (!cs_is_max)
+	{
+		if (ret_data_size != checked_size)
+		{
+			throw std::invalid_argument
+			(
+				sconcat
+				(
+					(
+						func_name
+						? sconcat(*func_name, "(): ")
+						: std::string()
+					),
+					(msg ? sconcat(*msg, ": ") : std::string()),
+					"(!", cs_is_max_str, ") "
+						"&& "
+						"(",
+							ret_data_size_str, " != ", checked_size_str,
+						"): ",
+					ret_data_size, " ", checked_size
+				)
+			);
+		}
+	}
+	else // if (cs_is_max)
+	{
+		if (ret_data_size < min_size
+			|| ret_data_size > checked_size)
+		{
+			throw std::invalid_argument
+			(
+				sconcat
+				(
+					(
+						func_name 
+						? sconcat(*func_name, "(): ")
+						: std::string()
+					),
+					(msg ? sconcat(*msg, ": ") : std::string()),
+					cs_is_max_str, 
+						" && (", 
+							ret_data_size_str, " < ", min_size_str,
+							" || ", ret_data_size_str > checked_size_str, 
+						"): ",
+					ret_data_size, " ", min_size, " ", checked_size
+				)
+			);
+		}
+	}
+}
+template<typename ValT>
+inline void val_from_bv_test_ex_mm
+(
+	const std::optional<std::string>& func_name,
+	const std::optional<std::string>& msg,
+	const ValT& data, const std::string& data_str, 
+	const ValT& min, const std::string& min_str,
+	const ValT& max, const std::string& max_str
+)
+{
+	//if ((ret.data.x < ret.min.x) || (ret.data.x > ret.max.x))
+	//{
+	//	throw std::invalid_argument(sconcat
+	//		("liborangepower::binser::val_from_bv(): ",
+	//		"is_vec3_ex: ",
+	//		"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
+	//		ret.data.x, " ", ret.min.x, " ", ret.max.x));
+	//}
+	if (data < min || data > max)
+	{
+		throw std::invalid_argument
+		(
+			sconcat
+			(
+				(func_name ? sconcat(*func_name, "(): ") : std::string()),
+				(msg ? sconcat(*msg, ": ") : std::string()),
+				data_str, " < ", min_str,
+					" || ", data_str, " || ", max_str,
+					": ",
+				data, " ", min, " ", max
+			)
+		);
+	}
+}
+
 template<typename T, typename BaseT>
 inline void val_from_bv(T& ret, const Value& bv,
 	FromBvFactoryFuncMap<BaseT>* func_map)
@@ -142,14 +266,15 @@ inline void val_from_bv(T& ret, const Value& bv,
 	{
 		val_from_bv(ret.data, bv, func_map);
 
-		if (ret.data < ret.min || ret.data > ret.max)
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_scalar_ex: ",
-				"ret.data < ret.min || ret.data > ret.max: ",
-				ret.data, " ", ret.min, " ", ret.max));
-		}
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_scalar_ex: ",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data,
+				ret.min,
+				ret.max))
+		);
 	}
 	//--------
 	else if constexpr (is_vec2<NonCvrefT>())
@@ -167,143 +292,138 @@ inline void val_from_bv(T& ret, const Value& bv,
 	{
 		val_from_bv(ret.data, bv, func_map);
 
-		if ((ret.data.x < ret.min.x) || (ret.data.x > ret.max.x))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_vec2_ex: ",
-				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
-				ret.data.x, " ", ret.min.x, " ", ret.max.x));
-		}
-		if ((ret.data.y < ret.min.y) || (ret.data.y > ret.max.y))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_vec2_ex: ",
-				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
-				ret.data.y, " ", ret.min.y, " ", ret.max.y));
-		}
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_vec2_ex: ",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.x,
+				ret.min.x,
+				ret.max.x))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_vec2_ex: ",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.y,
+				ret.min.y,
+				ret.max.y))
+		);
 	}
 	else if constexpr (is_vec3_ex<NonCvrefT>())
 	{
 		val_from_bv(ret.data, bv, func_map);
 
-		if ((ret.data.x < ret.min.x) || (ret.data.x > ret.max.x))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_vec3_ex: ",
-				"ret.data.x < ret.min.x || ret.data.x > ret.max.x: ",
-				ret.data.x, " ", ret.min.x, " ", ret.max.x));
-		}
-		if ((ret.data.y < ret.min.y) || (ret.data.y > ret.max.y))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_vec3_ex: ",
-				"ret.data.y < ret.min.y || ret.data.y > ret.max.y: ",
-				ret.data.y, " ", ret.min.y, " ", ret.max.y));
-		}
-		if ((ret.data.z < ret.min.z) || (ret.data.z > ret.max.z))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_vec3_ex: ",
-				"ret.data.z < ret.min.z || ret.data.z > ret.max.z: ",
-				ret.data.z, " ", ret.min.z, " ", ret.max.z));
-		}
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_vec3_ex: ",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.x,
+				ret.min.x,
+				ret.max.x))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_vec3_ex: ",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.y,
+				ret.min.y,
+				ret.max.y))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_vec3_ex: ",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.z,
+				ret.min.z,
+				ret.max.z))
+		);
 	}
 	else if constexpr (is_line_seg2_ex<NonCvrefT>())
 	{
 		val_from_bv(ret.data, bv, func_map);
 
-		if ((ret.data.p0.x < ret.min.p0.x)
-			|| (ret.data.p0.x > ret.max.p0.x))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_line_seg2_ex: ",
-				"ret.data.p0.x < ret.min.p0.x ",
-				"|| ret.data.p0.x > ret.max.p0.x: ",
-				ret.data.p0.x, " ", ret.min.p0.x, " ", ret.max.p0.x));
-		}
-		if ((ret.data.p0.y < ret.min.p0.y)
-			|| (ret.data.p0.y > ret.max.p0.y))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_line_seg2_ex: ",
-				"ret.data.p0.y < ret.min.p0.y ",
-				"|| ret.data.p0.y > ret.max.p0.y: ",
-				ret.data.p0.y, " ", ret.min.p0.y, " ", ret.max.p0.y));
-		}
-		if ((ret.data.p1.x < ret.min.p1.x)
-			|| (ret.data.p1.x > ret.max.p1.x))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_line_seg2_ex: ",
-				"ret.data.p1.x < ret.min.p1.x ",
-				"|| ret.data.p1.x > ret.max.p1.x: ",
-				ret.data.p1.x, " ", ret.min.p1.x, " ", ret.max.p1.x));
-		}
-		if ((ret.data.p1.y < ret.min.p1.y)
-			|| (ret.data.p1.y > ret.max.p1.y))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_line_seg2_ex: ",
-				"ret.data.p1.y < ret.min.p1.y ",
-				"|| ret.data.p1.y > ret.max.p1.y: ",
-				ret.data.p1.y, " ", ret.min.p1.y, " ", ret.max.p1.y));
-		}
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_line_seg2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.p0.x,
+				ret.min.p0.x,
+				ret.max.p0.x))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_line_seg2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.p0.y,
+				ret.min.p0.y,
+				ret.max.p0.y))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_line_seg2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.p1.x,
+				ret.min.p1.x,
+				ret.max.p1.x))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_line_seg2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.p1.y,
+				ret.min.p1.y,
+				ret.max.p1.y))
+		);
 	}
 	else if constexpr (is_rect2_ex<NonCvrefT>())
 	{
 		val_from_bv(ret.data, bv, func_map);
 
-		if ((ret.data.pos.x < ret.min.pos.x)
-			|| (ret.data.pos.x > ret.max.pos.x))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_rect2_ex: ",
-				"ret.data.pos.x < ret.min.pos.x ",
-				"|| ret.data.pos.x > ret.max.pos.x: ",
-				ret.data.pos.x, " ", ret.min.pos.x, " ", ret.max.pos.x));
-		}
-		if ((ret.data.pos.y < ret.min.pos.y)
-			|| (ret.data.pos.y > ret.max.pos.y))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_rect2_ex: ",
-				"ret.data.pos.y < ret.min.pos.y ",
-				"|| ret.data.pos.y > ret.max.pos.y: ",
-				ret.data.pos.y, " ", ret.min.pos.y, " ", ret.max.pos.y));
-		}
-		if ((ret.data.size_2d.x < ret.min.size_2d.x)
-			|| (ret.data.size_2d.x > ret.max.size_2d.x))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_rect2_ex: ",
-				"ret.data.size_2d.x < ret.min.size_2d.x ",
-				"|| ret.data.size_2d.x > ret.max.size_2d.x: ",
-				ret.data.size_2d.x, " ", ret.min.size_2d.x,
-				" ", ret.max.size_2d.x));
-		}
-		if ((ret.data.size_2d.y < ret.min.size_2d.y)
-			|| (ret.data.size_2d.y > ret.max.size_2d.y))
-		{
-			throw std::invalid_argument(sconcat
-				("liborangepower::binser::val_from_bv(): ",
-				"is_rect2_ex: ",
-				"ret.data.size_2d.y < ret.min.size_2d.y ",
-				"|| ret.data.size_2d.y > ret.max.size_2d.y: ",
-				ret.data.size_2d.y, " ", ret.min.size_2d.y,
-				" ", ret.max.size_2d.y));
-		}
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_rect2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.pos.x,
+				ret.min.pos.x,
+				ret.max.pos.x))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_rect2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.pos.y,
+				ret.min.pos.y,
+				ret.max.pos.y))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_rect2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.size_2d.x,
+				ret.min.size_2d.x,
+				ret.max.size_2d.x))
+		);
+		val_from_bv_test_ex_mm
+		(
+			"liborangepower::binser::val_from_bv",
+			"is_rect2_ex",
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data.size_2d.y,
+				ret.min.size_2d.y,
+				ret.max.size_2d.y))
+		);
 	}
 	else if constexpr
 	(
@@ -402,32 +522,50 @@ inline void val_from_bv(T& ret, const Value& bv,
 
 		// Prevent multiple O(n) computations of `ret.data.size()` when
 		// `is_ind_circ_link_list_ex<NonCvrefT>()` is `true`.
-		const auto& ret_data_size = ret.data.size();
-		if (!ret.cs_is_max)
-		{
-			if (ret_data_size != ret.checked_size)
-			{
-				throw std::invalid_argument(sconcat
-					("liborangepower::binser::val_from_bv(): ",
-					"is vector/deque with extras: ",
-					"ret_data_size != ret.checked_size: ",
-					ret_data_size, " ", ret.checked_size));
-			}
-		}
-		else // if (ret.cs_is_max)
-		{
-			if (ret_data_size < ret.min_size
-				|| ret_data_size > ret.checked_size)
-			{
-				throw std::invalid_argument(sconcat
-					("liborangepower::binser::val_from_bv(): ",
-					"is vector/deque with extras: ",
-					"ret_data_size < ret.min_size ",
-					"|| ret_data_size > ret.checked_size: ",
-					ret_data_size, " ", ret.min_size, " ",
-					ret.checked_size));
-			}
-		}
+		//const auto& ret_data_size = ret.data.size();
+		//if (!ret.cs_is_max)
+		//{
+		//	if (ret_data_size != ret.checked_size)
+		//	{
+		//		throw std::invalid_argument(sconcat
+		//			("liborangepower::binser::val_from_bv(): ",
+		//			"is vector/deque with extras: ",
+		//			"ret_data_size != ret.checked_size: ",
+		//			ret_data_size, " ", ret.checked_size));
+		//	}
+		//}
+		//else // if (ret.cs_is_max)
+		//{
+		//	if (ret_data_size < ret.min_size
+		//		|| ret_data_size > ret.checked_size)
+		//	{
+		//		throw std::invalid_argument(sconcat
+		//			("liborangepower::binser::val_from_bv(): ",
+		//			"is vector/deque with extras: ",
+		//			"ret_data_size < ret.min_size ",
+		//			"|| ret_data_size > ret.checked_size: ",
+		//			ret_data_size, " ", ret.min_size, " ",
+		//			ret.checked_size));
+		//	}
+		//}
+		val_from_bv_test_ex_cs
+		(
+			"liborangepower::binser::val_from_bv",
+			"is vector/deque with extras",
+			ret.data.size(),
+			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
+				ret.data,
+				ret.checked_size,
+				ret.cs_is_max,
+				ret.min_size))
+		);
+		//#define TEST_MAP_MACRO(x) printout(x, "\n")
+		//EVAL(MAP(TEST_MAP_MACRO, SEMICOLON,
+		//	ret.data,
+		//	ret.checked_size,
+		//	ret.cs_is_max,
+		//	ret.min_size));
+		//#undef TEST_MAP_MACRO
 	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
 	{

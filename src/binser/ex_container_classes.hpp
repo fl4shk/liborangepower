@@ -1,5 +1,5 @@
-#ifndef liborangepower_binser_ex_containers_classes_hpp
-#define liborangepower_binser_ex_containers_classes_hpp
+#ifndef liborangepower_binser_ex_container_classes_hpp
+#define liborangepower_binser_ex_container_classes_hpp
 
 #include "../misc/misc_includes.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
@@ -27,15 +27,38 @@ namespace binser
 //	u64 min_size = 0;
 //};
 //--------
+using ExSizeT
+	= u64;
+using ExBoolT
+	= bool;
+
+template<typename ExCntnrEtcT>
+concept LikeExCs = requires(ExCntnrEtcT c)
+{
+	{ c.data } -> std::same_as<typename ExCntnrEtcT::DataT>;
+	{ c.checked_size } -> std::same_as<ExSizeT>;
+	{ c.cs_is_max } -> std::same_as<ExBoolT>;
+	{ c.min_size } -> std::same_as<ExSizeT>;
+};
+template<typename ExCntnrEtcT>
+concept LikeExMm = requires(ExCntnrEtcT c)
+{
+	{ c.data } -> std::same_as<typename ExCntnrEtcT::DataT>;
+	{ c.max } -> std::same_as<typename ExCntnrEtcT::DataT>;
+	{ c.min } -> std::same_as<typename ExCntnrEtcT::DataT>;
+};
+//--------
 template<typename T, typename Allocator=std::allocator<T>>
 class VectorEx final
 {
+public:		// types
+	using DataT = std::vector<T, Allocator>;
 public:		// serialized variables
-	std::vector<T, Allocator> data;
+	DataT data;
 public:		// non-serialized variables
-	u64 checked_size;
-	bool cs_is_max = false;
-	u64 min_size = 0;
+	ExSizeT checked_size;
+	ExBoolT cs_is_max = false;
+	ExSizeT min_size = 0;
 };
 
 template<typename T>
@@ -47,12 +70,14 @@ constexpr inline bool is_vector_ex()
 template<typename T, typename Allocator=std::allocator<T>>
 class DequeEx final
 {
+public:		// types
+	using DataT = std::deque<T, Allocator>;
 public:		// serialized variables
-	std::deque<T, Allocator> data;
+	DataT data;
 public:		// non-serialized variables
-	u64 checked_size;
-	bool cs_is_max = false;
-	u64 min_size = 0;
+	ExSizeT checked_size;
+	ExBoolT cs_is_max = false;
+	ExSizeT min_size = 0;
 };
 
 template<typename T>
@@ -61,15 +86,17 @@ constexpr inline bool is_deque_ex()
 	return concepts::is_specialization<T, DequeEx>();
 }
 //--------
-template<typename T, typename ArgIndexT=uint64_t>
+template<typename T, typename ArgIndexT=u64>
 class IndCircLinkListEx final
 {
+public:		// types
+	using DataT = containers::IndCircLinkList<T, ArgIndexT>;
 public:		// serialized variables
-	containers::IndCircLinkList<T, ArgIndexT> data;
+	DataT data;
 public:		// non-serialized variables
-	u64 checked_size;
-	bool cs_is_max = false;
-	u64 min_size = 0;
+	ExSizeT checked_size;
+	ExBoolT cs_is_max = false;
+	ExSizeT min_size = 0;
 };
 
 template<typename T>
@@ -81,13 +108,15 @@ constexpr inline bool is_ind_circ_link_list_ex()
 template<typename T>
 class ScalarEx final
 {
+public:		// types
+	using DataT = T;
 public:		// serialized variables
-	T data;
+	DataT data;
 public:		// non-serialized variables
-	T max, min;
+	DataT max, min;
 public:		// functions
 	//--------
-	inline operator T () const
+	inline operator DataT () const
 	{
 		return data;
 	}
@@ -103,10 +132,12 @@ constexpr inline bool is_scalar_ex()
 template<typename T>
 class Vec2Ex final
 {
+public:		// types
+	using DataT = math::Vec2<T>;
 public:		// serialized variables
-	math::Vec2<T> data;
+	DataT data;
 public:		// non-serialized variables
-	math::Vec2<T> max, min;
+	DataT max, min;
 public:		// functions
 	//--------
 	inline T& x()
@@ -126,7 +157,7 @@ public:		// functions
 		return data.y;
 	}
 	//--------
-	inline operator math::Vec2<T> () const
+	inline operator DataT () const
 	{
 		return data;
 	}
@@ -142,10 +173,12 @@ constexpr inline bool is_vec2_ex()
 template<typename T>
 class Vec3Ex final
 {
+public:		// types
+	using DataT = math::Vec3<T>;
 public:		// serialized variables
-	math::Vec3<T> data;
+	DataT data;
 public:		// non-serialized variables
-	math::Vec3<T> max, min;
+	DataT max, min;
 public:		// functions
 	//--------
 	inline T& x()
@@ -173,7 +206,7 @@ public:		// functions
 		return data.z;
 	}
 	//--------
-	inline operator math::Vec3<T> () const
+	inline operator DataT () const
 	{
 		return data;
 	}
@@ -205,10 +238,12 @@ constexpr inline bool is_vec3_ex()
 template<typename T>
 class LineSeg2Ex final
 {
+public:		// types
+	using DataT = math::LineSeg2<T>;
 public:		// serialized variables
-	math::LineSeg2<T> data;
+	DataT data;
 public:		// non-serialized variables
-	math::LineSeg2<T> max, min;
+	DataT max, min;
 public:		// functions
 	//--------
 	inline math::Vec2<T>& p0()
@@ -229,7 +264,7 @@ public:		// functions
 		return data.p1;
 	}
 	//--------
-	inline operator math::LineSeg2<T> () const
+	inline operator DataT () const
 	{
 		return data;
 	}
@@ -244,10 +279,12 @@ constexpr inline bool is_line_seg2_ex()
 template<typename T>
 class Rect2Ex final
 {
+public:		// types
+	using DataT = math::Rect2<T>;
 public:		// serialized variables
-	math::Rect2<T> data;
+	DataT data;
 public:		// non-serialized variables
-	math::Rect2<T> max, min;
+	DataT max, min;
 public:		// functions
 	//--------
 	inline math::Vec2<T>& pos()
@@ -268,7 +305,7 @@ public:		// functions
 		return data.size_2d;
 	}
 	//--------
-	inline operator math::Rect2<T> () const
+	inline operator DataT () const
 	{
 		return data;
 	}
@@ -284,4 +321,4 @@ constexpr inline bool is_rect2_ex()
 } // namespace binser
 } // namespace liborangepower
 
-#endif		// liborangepower_binser_ex_containers_classes_hpp
+#endif		// liborangepower_binser_ex_container_classes_hpp
