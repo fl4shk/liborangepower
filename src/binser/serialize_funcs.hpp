@@ -83,6 +83,7 @@ inline Value vec3_to_bv(const math::Vec3<T>& vec)
 	return ret;
 }
 
+
 template<typename ValT>
 inline void val_from_bv_test_ex_cs
 (
@@ -172,6 +173,29 @@ inline void val_from_bv_test_ex_cs
 	}
 }
 template<typename ValT>
+inline void val_from_bv_test_ex_mm_err
+(
+	const std::optional<std::string>& func_name,
+	const std::optional<std::string>& msg,
+	const ValT& data, const std::string& data_str, 
+	const ValT& min, const std::string& min_str,
+	const ValT& max, const std::string& max_str
+)
+{
+	throw std::invalid_argument
+	(
+		sconcat
+		(
+			(func_name ? sconcat(*func_name, "(): ") : std::string()),
+			(msg ? sconcat(*msg, ": ") : std::string()),
+			data_str, " < ", min_str,
+				" || ", data_str, " || ", max_str,
+				": ",
+			data, " ", min, " ", max
+		)
+	);
+}
+template<typename ValT>
 inline void val_from_bv_test_ex_mm
 (
 	const std::optional<std::string>& func_name,
@@ -191,17 +215,12 @@ inline void val_from_bv_test_ex_mm
 	//}
 	if (data < min || data > max)
 	{
-		throw std::invalid_argument
+		val_from_bv_test_ex_mm_err
 		(
-			sconcat
-			(
-				(func_name ? sconcat(*func_name, "(): ") : std::string()),
-				(msg ? sconcat(*msg, ": ") : std::string()),
-				data_str, " < ", min_str,
-					" || ", data_str, " || ", max_str,
-					": ",
-				data, " ", min, " ", max
-			)
+			func_name, msg,
+			data, data_str,
+			min, min_str,
+			max, max_str
 		);
 	}
 }
