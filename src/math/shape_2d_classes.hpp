@@ -293,9 +293,8 @@ public:		// functions
 	//--------
 	// `ret.pos` and `ret.delta` will be set to the nearest edge of the
 	// `Rect2`
-	constexpr inline std::optional<Hit2<T>> intersect
-		(const Vec2<T>& arg, bool exclusive=false,
-		const Vec2<T>& arg_padding=Vec2<T>()) const
+	constexpr inline std::optional<Hit2<T>> intersect(const Vec2<T>& arg,
+		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		if (arg_padding != Vec2<T>())
 		{
@@ -489,29 +488,29 @@ public:		// functions
 			//--------
 			scale(calc_scale(delta)),
 			sign
-			({
+			{
 				.x=cstm_sign(scale.x),
 				.y=cstm_sign(scale.y),
-			}),
+			},
 			partial_time_vec
-			({
+			{
 				.x=sign.x * (temp_hsize.x + arg_padding.x),
 				.y=sign.y * (temp_hsize.y + arg_padding.y),
-			}),
+			},
 			near_time_vec
-			({
+			{
 				.x=(temp_cpos.x - partial_time_vec.x - arg.p0.x)
 					* scale.x,
 				.y=(temp_cpos.y - partial_time_vec.y - arg.p0.y)
 					* scale.y,
-			}),
+			},
 			far_time_vec
-			({
+			{
 				.x=(temp_cpos.x + partial_time_vec.x - arg.p0.x)
 					* scale.x,
 				.y=(temp_cpos.y + partial_time_vec.y - arg.p0.y)
 					* scale.y,
-			});
+			};
 			//--------
 		//--------
 		//printout("ntv ftv: ", near_time_vec, " ", far_time_vec, "\n");
@@ -574,9 +573,8 @@ public:		// functions
 		return ret;
 		//--------
 	}
-	constexpr inline std::optional<Hit2<T>> intersect
-		(const Rect2& arg, bool exclusive=false,
-		const Vec2<T>& arg_padding=Vec2<T>()) const
+	constexpr inline std::optional<Hit2<T>> intersect(const Rect2& arg,
+		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		//--------
 		const Rect2<T>
@@ -584,8 +582,8 @@ public:		// functions
 			{
 				.pos
 				//{
-				//	pos.x - (arg_padding.x / T(2)),
-				//	pos.y - (arg_padding.y / T(2))
+				//	.x=pos.x - div_2(arg_padding.x),
+				//	.y=pos.y - div_2(arg_padding.y),
 				//},
 					=pos - div_2(arg_padding),
 				.size_2d
@@ -599,8 +597,8 @@ public:		// functions
 			{
 				.pos
 				//{
-				//	arg.pos.x - (arg_padding.x / T(2)),
-				//	arg.pos.y - (arg_padding.y / T(2))
+				//	arg.pos.x - div_2(arg_padding.x),
+				//	arg.pos.y - div_2(arg_padding.y)
 				//},
 					=arg.pos - div_2(arg_padding),
 				.size_2d
@@ -699,7 +697,7 @@ public:		// functions
 		//--------
 		ret.hit = intersect
 		(
-			LineSeg2{.p0=temp_arg_cpos, .p1=arg_delta},
+			LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
 			exclusive,
 			temp_arg_hsize
 		);
@@ -710,7 +708,7 @@ public:		// functions
 			(
 				ret.hit->tm - EPSILON,
 				T(0),
-				T(Sweep2<T>::DIDNT_HIT_TM)
+				T(1)
 			);
 			ret.pos.x = temp_arg_cpos.x + (arg_delta.x * ret.tm);
 			ret.pos.y = temp_arg_cpos.y + (arg_delta.y * ret.tm);
@@ -762,7 +760,7 @@ public:		// functions
 		for (const auto& item: coll_contnr)
 		{
 			const Sweep2<T>
-				temp_sweep(item.sweep(*this, self_delta));
+				temp_sweep(item.sweep(*this, self_delta, exclusive));
 			if (temp_sweep.tm < nearest.tm)
 			{
 				nearest = temp_sweep;
