@@ -432,7 +432,7 @@ inline void set_jv(Json::Value& jv, const T& val)
 		//	jv["kind_str"] = T::KIND_STR;
 		//}
 		//else
-		if constexpr (concepts::HasFuncKindStr<ElemT>)
+		if constexpr (concepts::HasKindStrMbrFunc<ElemT>)
 		{
 			//jv["has_kind_str"] = true;
 			jv["kind_str"] = val->kind_str();

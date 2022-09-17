@@ -73,7 +73,7 @@ constexpr inline FirstArgT min_va(const FirstArgT& arg_0,
 template<typename T>
 constexpr inline T clamp(const T& val, const T& min, const T& max)
 	requires
-		concepts::HasCmpLtBinop<T> && concepts::HasCmpGtBinop<T>
+		(concepts::HasCmpLtBinop<T> && concepts::HasCmpGtBinop<T>)
 {
 	//if (val < min)
 	//{
@@ -104,9 +104,9 @@ constexpr inline T clamp(const T& val, const T& min, const T& max)
 template<typename T>
 constexpr inline auto cstm_sign(const T& val)
 	requires 
-		std::integral<T> || std::floating_point<T>
+		(std::integral<T> || std::floating_point<T>
 		|| concepts::HasArithSignMbrFunc<T>
-		|| concepts::HasCmpLtBinop<T>
+		|| concepts::HasCmpLtBinop<T>)
 {
 	if constexpr (std::integral<T> || std::floating_point<T>)
 	{
@@ -125,9 +125,9 @@ constexpr inline auto cstm_sign(const T& val)
 template<typename T>
 constexpr inline auto cstm_abs(const T& val)
 	requires
-		std::integral<T> || std::floating_point<T>
+		(std::integral<T> || std::floating_point<T>
 		|| concepts::HasArithAbsMbrFunc<T>
-		|| (concepts::HasCmpLtBinop<T> && concepts::HasArithSUnop<T>)
+		|| (concepts::HasCmpLtBinop<T> && concepts::HasArithSUnop<T>))
 {
 	if constexpr (std::integral<T> || std::floating_point<T>)
 	{

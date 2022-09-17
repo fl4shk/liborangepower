@@ -320,7 +320,7 @@ public:		// functions
 		const T
 			dx = arg.x - temp_cpos.x,
 			px = temp_hsize.x - cstm_abs(dx);
-		if ((exclusive && (px <= T(0))) || (!exclusive && (px < T(0))))
+		if ((exclusive && px <= T(0)) || (!exclusive && px < T(0)))
 		//if (px <= T(0))
 		//if (px < T(0))
 		{
@@ -330,7 +330,7 @@ public:		// functions
 		const ElemT
 			dy = arg.y - temp_cpos.y,
 			py = temp_hsize.y - cstm_abs(dy);
-		if ((exclusive && (py <= T(0))) || (!exclusive && (py < T(0))))
+		if ((exclusive && py <= T(0)) || (!exclusive && py < T(0)))
 		//if (py <= T(0))
 		//if (py < T(0))
 		{
@@ -629,8 +629,7 @@ public:		// functions
 			px = (temp_arg_hsize.x + temp_hsize.x) - cstm_abs(dx);
 		//if (px <= T(0))
 		//if (px < T(0))
-		if ((exclusive && (px <= T(0)))
-			|| (!exclusive && (px < T(0))))
+		if ((exclusive && px <= T(0)) || (!exclusive && px < T(0)))
 		{
 			return std::nullopt;
 		}
@@ -640,8 +639,7 @@ public:		// functions
 			py = (temp_arg_hsize.y + temp_hsize.y) - cstm_abs(dy);
 		//if (py <= T(0))
 		//if (py < T(0))
-		if ((exclusive && (py <= T(0)))
-			|| (!exclusive && (py < T(0))))
+		if ((exclusive && py <= T(0)) || (!exclusive && py < T(0)))
 		{
 			return std::nullopt;
 		}
@@ -701,7 +699,7 @@ public:		// functions
 		//--------
 		ret.hit = intersect
 		(
-			LineSeg2({.p0=temp_arg_cpos, .p1=arg_delta}),
+			LineSeg2{.p0=temp_arg_cpos, .p1=arg_delta},
 			exclusive,
 			temp_arg_hsize
 		);

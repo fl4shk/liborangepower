@@ -809,7 +809,7 @@ inline void set_bv(Value& bv, const T& val)
 		//	map["kind_str"] = T::KIND_STR;
 		//}
 		//else
-		if constexpr (concepts::HasFuncKindStr<ElemT>)
+		if constexpr (concepts::HasKindStrMbrFunc<ElemT>)
 		{
 			//map["has_kind_str"] = true;
 			//map["kind_str"] = ValueSptr(new Value(val->kind_str()));
