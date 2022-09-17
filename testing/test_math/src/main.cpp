@@ -83,7 +83,7 @@ int main(int argc, char** argv)
 			.arg{0.1, 0.1},
 		},
 		{
-			.rect{{0.0, 0.0}, {1, 1}},
+			.rect{.pos{0.0, 0.0}, .size_2d{1, 1}},
 			.arg{0.1, 0.1},
 		},
 	});
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 			.size_2d{test_dim, test_dim},
 		};
 	const Vec2<double>
-		test_arg_padding_for_lseg{0.1, 0.1};
+		test_arg_padding_for_lseg(0.1, 0.1);
 	const std::vector<TestPair<LineSeg2, double>> test_vec_lseg
 	({
 		//--------

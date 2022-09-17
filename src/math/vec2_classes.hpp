@@ -38,14 +38,6 @@ class Vec2
 {
 public:		// types
 	using ElemT = T;
-
-	class CtorArgs final
-	{
-	public:		// variables
-		T
-			x,
-			y;
-	};
 public:		// variables
 	#define MEMB_LIST_VEC2(X) \
 		X(x, std::nullopt) \
@@ -56,38 +48,15 @@ public:		// variables
 		y = T();
 public:		// functions
 	//--------
-	constexpr inline Vec2() = default;
-	constexpr inline Vec2(const T& s_x, const T& s_y)
-		: x(s_x), y(s_y)
-	{
-	}
-	constexpr inline Vec2(T&& s_x, T&& s_y)
-		: x(std::move(s_x)), y(std::move(s_y))
-	{
-	}
-	constexpr inline Vec2(const CtorArgs& ctor_args)
-		: x(ctor_args.x), y(ctor_args.y)
-	{
-	}
-	constexpr inline Vec2(CtorArgs&& ctor_args)
-		: x(std::move(ctor_args.x)), y(std::move(ctor_args.y))
-	{
-	}
-
-	constexpr inline Vec2(const Vec2&) = default;
-	constexpr inline Vec2(Vec2&&) = default;
-
-	constexpr inline Vec2& operator = (const Vec2&) = default;
-	constexpr inline Vec2& operator = (Vec2&&) = default;
-	//--------
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2 operator + (const Vec2<OtherElemT>& other) const
 	{
 		//return Vec2<T>({.x=x + other.x, .y=y + other.y});
-		Vec2<T> ret;
-		ret.x = x + other.x;
-		ret.y = y + other.y;
-		return ret;
+		return Vec2<T>(x + other.x, y + other.y);
+		//Vec2<T> ret;
+		//ret.x = x + other.x;
+		//ret.y = y + other.y;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2& operator += (const Vec2<OtherElemT>& other)
@@ -101,10 +70,11 @@ public:		// functions
 	constexpr inline Vec2 operator - (const Vec2<OtherElemT>& other) const
 	{
 		//return Vec2<T>({.x=x - other.x, .y=y - other.y});
-		Vec2<T> ret;
-		ret.x = x - other.x;
-		ret.y = y - other.y;
-		return ret;
+		return Vec2<T>(x - other.x, y - other.y);
+		//Vec2<T> ret;
+		//ret.x = x - other.x;
+		//ret.y = y - other.y;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2& operator -= (const Vec2<OtherElemT>& other)
@@ -117,20 +87,22 @@ public:		// functions
 	constexpr inline Vec2 operator - () const
 	{
 		//return Vec2<T>({.x=-x, .y=-y});
-		Vec2<T> ret;
-		ret.x = -x;
-		ret.y = -y;
-		return ret;
+		return Vec2<T>(-x, -y);
+		//Vec2<T> ret;
+		//ret.x = -x;
+		//ret.y = -y;
+		//return ret;
 	}
 
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2 operator * (const OtherElemT& scale) const
 	{
 		//return Vec2<T>({.x=x * scale, .y=y * scale});
-		Vec2<T> ret;
-		ret.x = x * scale;
-		ret.y = y * scale;
-		return ret;
+		return Vec2<T>(x * scale, y * scale);
+		//Vec2<T> ret;
+		//ret.x = x * scale;
+		//ret.y = y * scale;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2& operator *= (const OtherElemT& other) const
@@ -143,10 +115,11 @@ public:		// functions
 	constexpr inline Vec2 operator / (const OtherElemT& scale) const
 	{
 		//return Vec2<T>({.x=x / scale, .y=y / scale});
-		Vec2<T> ret;
-		ret.x = x / scale;
-		ret.y = y / scale;
-		return ret;
+		return Vec2<T>(x / scale, y / scale);
+		//Vec2<T> ret;
+		//ret.x = x / scale;
+		//ret.y = y / scale;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2& operator /= (const OtherElemT& scale) const
@@ -157,7 +130,21 @@ public:		// functions
 
 	constexpr inline Vec2 div_2() const
 	{
-		return Vec2({.x=math::div_2(x), .y=math::div_2(y)});
+		//return Vec2({.x=math::div_2(x), .y=math::div_2(y)});
+		return Vec2<T>(math::div_2(x), math::div_2(y));
+		//Vec2 ret;
+		//ret.x = math::div_2(x);
+		//ret.y = math::div_2(y);
+		//return ret;
+	}
+	constexpr inline Vec2 recip() const
+	{
+		//return Vec2({.x=math::recip(x), .y=math::recip(y)});
+		return Vec2(math::recip(x), math::recip(y));
+		//Vec2 ret;
+		//ret.x = math::recip(x);
+		//ret.y = math::recip(y);
+		//return ret;
 	}
 	//--------
 	// Dot product
@@ -165,7 +152,7 @@ public:		// functions
 	constexpr inline T dot(const Vec2<OtherElemT>& other) const
 	{
 		//return T((x * other.x) + (y * other.y));
-		const T ret = (x * other ) + (y * other.y);
+		const T ret = (x * other.x) + (y * other.y);
 		return ret;
 	}
 
@@ -179,9 +166,14 @@ public:		// functions
 		return ret;
 	}
 
-	inline T norm() const
+	constexpr inline T magnitude() const
 	{
-		return std::sqrt(dot(*this));
+		//return std::sqrt(dot(*this));
+		return math::cstm_sqrt(dot(*this));
+	}
+	constexpr inline Vec2<T> norm() const
+	{
+		return *this / magnitude();
 	}
 	//--------
 	// Templates can't be defaulted for some reason
@@ -191,7 +183,7 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator == (const Vec2<OtherElemT>& other) const
 	{
-		return (x == other.x) && (y == other.y);
+		return x == other.x && y == other.y;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator != (const Vec2<OtherElemT>& other) const
@@ -202,12 +194,12 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator < (const Vec2<OtherElemT>& other) const
 	{
-		return ((y < other.y) || ((y == other.y) && (x < other.x)));
+		return y < other.y || (y == other.y && x < other.x);
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator > (const Vec2<OtherElemT>& other) const
 	{
-		return ((y > other.y) || ((y == other.y) && (x > other.x)));
+		return y > other.y || (y == other.y && x > other.x);
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator <= (const Vec2<OtherElemT>& other) const
@@ -227,10 +219,15 @@ constexpr inline Vec2<T> operator * (const OtherElemT& scale,
 	const Vec2<T>& self)
 {
 	//return Vec2<T>({.x=scale * self.x, .y=scale * self.y});
-	Vec2<T> ret;
-	ret.x = scale * self.x;
-	ret.y = scale * self.y;
-	return ret;
+	return Vec2<T>
+	(
+		scale * self.x,
+		scale * self.y
+	);
+	//Vec2<T> ret;
+	//ret.x = scale * self.x;
+	//ret.y = scale * self.y;
+	//return ret;
 	//return self * scale;
 }
 template<typename T, std::convertible_to<T> OtherElemT>
@@ -238,10 +235,15 @@ constexpr inline Vec2<T> operator / (const OtherElemT& inv_scale,
 	const Vec2<T>& self)
 {
 	//return Vec2<T>({.x=inv_scale / self.x, .y=inv_scale / self.y});
-	Vec2<T> ret;
-	ret.x = inv_scale / self.x;
-	ret.y = inv_scale / self.y;
-	return ret;
+	return Vec2<T>
+	(
+		inv_scale / self.x,
+		inv_scale / self.y
+	);
+	//Vec2<T> ret;
+	//ret.x = inv_scale / self.x;
+	//ret.y = inv_scale / self.y;
+	//return ret;
 }
 
 template<typename T, typename CharT, typename Traits>

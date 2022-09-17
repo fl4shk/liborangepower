@@ -15,12 +15,12 @@ namespace binser
 {
 //--------
 // This didn't work
-//template<template<typename...> typename CntnrEtcT,
+//template<template<typename...> typename ContnrEtcT,
 //	typename FirstT, typename... RemTs>
-//class CsCntnrExBase
+//class CsContnrExBase
 //{
 //public:		// serialized variables
-//	CntnrEtcT<FirstT, RemTs...> data;
+//	ContnrEtcT<FirstT, RemTs...> data;
 //public:		// non-serialized variables
 //	u64 checked_size;
 //	bool cs_is_max = false;
@@ -32,20 +32,20 @@ using ExSizeT
 using ExBoolT
 	= bool;
 
-template<typename ExCntnrEtcT>
-concept LikeExCs = requires(ExCntnrEtcT c)
+template<typename ExContnrEtcT>
+concept LikeExCs = requires(ExContnrEtcT c)
 {
-	{ c.data } -> std::same_as<typename ExCntnrEtcT::DataT>;
+	{ c.data } -> std::same_as<typename ExContnrEtcT::DataT>;
 	{ c.checked_size } -> std::same_as<ExSizeT>;
 	{ c.cs_is_max } -> std::same_as<ExBoolT>;
 	{ c.min_size } -> std::same_as<ExSizeT>;
 };
-template<typename ExCntnrEtcT>
-concept LikeExMm = requires(ExCntnrEtcT c)
+template<typename ExContnrEtcT>
+concept LikeExMm = requires(ExContnrEtcT c)
 {
-	{ c.data } -> std::same_as<typename ExCntnrEtcT::DataT>;
-	{ c.max } -> std::same_as<typename ExCntnrEtcT::DataT>;
-	{ c.min } -> std::same_as<typename ExCntnrEtcT::DataT>;
+	{ c.data } -> std::same_as<typename ExContnrEtcT::DataT>;
+	{ c.max } -> std::same_as<typename ExContnrEtcT::DataT>;
+	{ c.min } -> std::same_as<typename ExContnrEtcT::DataT>;
 };
 //--------
 template<typename T, typename Allocator=std::allocator<T>>

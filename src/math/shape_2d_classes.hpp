@@ -21,14 +21,14 @@
 
 namespace liborangepower
 {
-
+//--------
 namespace binser
 {
 //--------
 class Value;
 //--------
 };
-
+//--------
 namespace math
 {
 //--------
@@ -37,6 +37,9 @@ class Hit2 final
 {
 public:		// types
 	using ElemT = T;
+public:		// static constants
+	static constexpr int
+		DIDNT_HIT_TM = 1;
 public:		// variables
 	//--------
 	#define MEMB_LIST_SHAPE_HIT2(X) \
@@ -104,6 +107,9 @@ class Sweep2 final
 {
 public:		// types
 	using ElemT = T;
+public:		// static constants
+	static constexpr int
+		DIDNT_HIT_TM = 1;
 public:		// variables
 	#define MEMB_LIST_SHAPE_SWEEP2(X) \
 		X(hit, std::nullopt) \
@@ -113,9 +119,9 @@ public:		// variables
 	std::optional<Hit2<T>> hit = std::nullopt;
 	Vec2<T> pos;
 
-	// This is a copy of `hit->time`, offset by epsiol=Ton, or 1 if the
+	// This is a copy of `hit->time`, offset by EPSILON, or 1 if the
 	// object didn't hit anything during the sweep
-	T tm = T(1);
+	T tm = T(DIDNT_HIT_TM);
 public:		// functions
 	//--------
 	static inline Sweep2 from_bv(const binser::Value& bv);
@@ -123,7 +129,7 @@ public:		// functions
 	//--------
 	constexpr inline T didnt_hit() const
 	{
-		return tm == T(1);
+		return tm == T(DIDNT_HIT_TM);
 	}
 	//--------
 };
@@ -159,6 +165,7 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 		"}"
 	);
 }
+//--------
 //--------
 template<typename T>
 class LineSeg2
@@ -286,8 +293,9 @@ public:		// functions
 	//--------
 	// `ret.pos` and `ret.delta` will be set to the nearest edge of the
 	// `Rect2`
-	constexpr std::optional<Hit2<T>> intersect(const Vec2<T>& arg,
-		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+	constexpr inline std::optional<Hit2<T>> intersect
+		(const Vec2<T>& arg, bool exclusive=false,
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		if (arg_padding != Vec2<T>())
 		{
@@ -353,8 +361,9 @@ public:		// functions
 		return ret;
 		//--------
 	}
-	constexpr std::optional<Hit2<T>> intersect(const LineSeg2<T>& arg,
-		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+	constexpr inline std::optional<Hit2<T>> intersect
+		(const LineSeg2<T>& arg, bool exclusive=false,
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		//--------
 		//using misc_output::printout;
@@ -395,8 +404,8 @@ public:		// functions
 			if (arg.p0.x < arg.p1.x)
 			{
 				// In this case, we have `arg.p0.y == arg.p1.y`
-				//rect.pos.x = arg.p0.x - (arg_padding.x / T(2));
-				//rect.pos.y = arg.p0.y - (arg_padding.y / T(2));
+				//rect.pos.x = arg.p0.x - div_2(arg_padding.x);
+				//rect.pos.y = arg.p0.y - div_2(arg_padding.y);
 				rect.pos = arg.p0 - div_2(arg_padding);
 
 				rect.size_2d.x = (arg.p1.x - arg.p0.x) + arg_padding.x;
@@ -451,24 +460,25 @@ public:		// functions
 		//--------
 		auto calc_scale = [](const Vec2<T>& some_delta) -> Vec2<T>
 		{
-			if constexpr (concepts::HasArithRecipMbrFunc<T>)
-			{
-				return
-					typename Vec2<T>::CtorArgs
-					{
-						.x=some_delta.x.recip(),
-						.y=some_delta.y.recip(),
-					};
-			}
-			else
-			{
-				return
-					typename Vec2<T>::CtorArgs
-					{
-						.x=T(1) / some_delta.x,
-						.y=T(1) / some_delta.y,
-					};
-			}
+			//if constexpr (concepts::HasArithRecipMbrFunc<T>)
+			//{
+			//	return
+			//		typename Vec2<T>::CtorArgs
+			//		{
+			//			.x=some_delta.x.recip(),
+			//			.y=some_delta.y.recip(),
+			//		};
+			//}
+			//else
+			//{
+			//	return
+			//		typename Vec2<T>::CtorArgs
+			//		{
+			//			.x=T(1) / some_delta.x,
+			//			.y=T(1) / some_delta.y,
+			//		};
+			//}
+			return math::recip(some_delta.recip());
 		};
 		//--------
 		const Vec2<T>
@@ -564,8 +574,9 @@ public:		// functions
 		return ret;
 		//--------
 	}
-	constexpr std::optional<Hit2<T>> intersect(const Rect2& arg,
-		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+	constexpr inline std::optional<Hit2<T>> intersect
+		(const Rect2& arg, bool exclusive=false,
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		//--------
 		const Rect2<T>
@@ -657,17 +668,123 @@ public:		// functions
 		return ret;
 		//--------
 	}
+	// For this function, `arg` is the moving `Rect2`, and `this` `Rect2`
+	// is not moving.
+	constexpr inline Sweep2<T> sweep(const Rect2<T>& arg,
+		const Vec2<T>& arg_delta, bool exclusive=false) const
+	{
+		//--------
+		static const T
+			EPSILON = T(1e-8);
 
-	// Whether or not the *argument* is inside this `Rect2`, exclusive,
-	// such that there's not
-	inline bool arg_inside(const LineSeg2<T>& arg,
+		const Vec2<T>
+			temp_cpos(cntr_pos()),
+			temp_hsize(half_size()),
+
+			temp_arg_cpos(arg.cntr_pos()),
+			temp_arg_hsize(arg.half_size());
+
+		Sweep2<T> ret;
+		//--------
+		if (arg_delta == Vec2<T>())
+		{
+			ret.pos.x = temp_arg_cpos.x;
+			ret.pos.y = temp_arg_cpos.y;
+			ret.hit = intersect(arg, exclusive);
+			ret.tm
+				= ret.hit
+				? (ret.hit->tm == T(0))
+				: T(Sweep2<T>::DIDNT_HIT_TM);
+
+			return ret;
+		}
+		//--------
+		ret.hit = intersect
+		(
+			LineSeg2({.p0=temp_arg_cpos, .p1=arg_delta}),
+			exclusive,
+			temp_arg_hsize
+		);
+
+		if (ret.hit)
+		{
+			ret.tm = clamp
+			(
+				ret.hit->tm - EPSILON,
+				T(0),
+				T(Sweep2<T>::DIDNT_HIT_TM)
+			);
+			ret.pos.x = temp_arg_cpos.x + (arg_delta.x * ret.tm);
+			ret.pos.y = temp_arg_cpos.y + (arg_delta.y * ret.tm);
+
+			const Vec2<T>
+				direction(arg_delta.norm());
+
+			ret.hit->pos.x = clamp
+			(
+				ret.hit->pos.x + (direction.x * temp_arg_hsize.x),
+				temp_cpos.x - temp_hsize.x,
+				temp_cpos.x + temp_hsize.x
+			);
+			ret.hit->pos.y = clamp
+			(
+				ret.hit->pos.y + (direction.y * temp_arg_hsize.y),
+				temp_cpos.y - temp_hsize.y,
+				temp_cpos.y + temp_hsize.y
+			);
+		}
+		else
+		{
+			ret.pos.x = temp_arg_cpos.x + arg_delta.x;
+			ret.pos.y = temp_arg_cpos.y + arg_delta.y;
+			ret.tm = Sweep2<T>::DIDNT_HIT_TM;
+		}
+		//--------
+		return ret;
+		//--------
+	}
+	template<template<typename, typename...> typename ContnrEtcT,
+		typename... RemTs>
+	constexpr inline Sweep2<T> sweep_into
+		(const ContnrEtcT<Rect2<T>, RemTs...>& coll_contnr,
+		const Vec2<T>& self_delta, bool exclusive=false) const
+	{
+		//--------
+		//const Vec2<T>
+		//	temp_cpos(cntr_pos());
+		//--------
+		Sweep2<T> nearest;
+		//--------
+		nearest.tm = T(Sweep2<T>::DIDNT_HIT_TM);
+		//nearest.pos.x = temp_cpos.x + self_delta.x;
+		//nearest.pos.y = temp_cpos.y + self_delta.y;
+		nearest.pos = cntr_pos() + self_delta;
+
+		//for (size_t i=0; i<coll_contnr.size(); ++i)
+		for (const auto& item: coll_contnr)
+		{
+			const Sweep2<T>
+				temp_sweep(item.sweep(*this, self_delta));
+			if (temp_sweep.tm < nearest.tm)
+			{
+				nearest = temp_sweep;
+			}
+		}
+		//--------
+		return nearest;
+		//--------
+	}
+
+	// These functions return whether or not the *argument* is inside this
+	// `Rect2`.
+	constexpr inline bool arg_inside(const LineSeg2<T>& arg,
 		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		return intersect(arg.p0, exclusive, arg_padding)
 			&& intersect(arg.p1, exclusive, arg_padding);
 	}
-	inline bool arg_inside(const Rect2& arg, bool exclusive=false,
-		const Vec2<T>& arg_padding=Vec2<T>()) const
+	constexpr inline bool arg_inside(const Rect2& arg,
+		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		return intersect(arg.tl_corner(), exclusive, arg_padding)
 			&& intersect(arg.tr_corner(), exclusive, arg_padding)
@@ -676,6 +793,19 @@ public:		// functions
 	}
 	//--------
 };
+//--------
+//template<typename T>
+//using MultiSweepElem
+//	= std::variant
+//	<
+//		std::monostate,
+//		Rect2<T>
+//	>;
+//template<typename T>
+//constexpr inline Sweep2<T> multi_sweep_rect
+//	(const auto& world_coll, const Rect2<T>& self,
+//	const Vec2<T> self_delta);
+
 //--------
 } // namespace math
 } // namespace liborangepower

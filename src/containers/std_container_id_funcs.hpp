@@ -201,7 +201,7 @@ constexpr inline bool is_map_like_std_container()
 }
 
 template<typename T>
-concept MapLikeStdCntnr = is_map_like_std_container<T>();
+concept MapLikeStdContnr = is_map_like_std_container<T>();
 //--------
 template<typename T>
 constexpr inline bool is_pseudo_vec_like_std_container()

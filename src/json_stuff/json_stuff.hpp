@@ -50,7 +50,7 @@ using containers::is_std_map;
 using containers::is_std_unordered_map;
 
 using containers::is_map_like_std_container;
-using containers::MapLikeStdCntnr;
+using containers::MapLikeStdContnr;
 
 using containers::is_pseudo_vec_like_std_container;
 using containers::is_basic_indexable_std_container;
@@ -349,7 +349,7 @@ inline void get_jv_memb_w_stat_cast(RetT& ret, const Json::Value& jv,
 template<typename T>
 inline void set_jv(Json::Value& jv, const T& val);
 
-template<MapLikeStdCntnr T>
+template<MapLikeStdContnr T>
 inline void set_jv_map_like_std_container(Json::Value& jv, const T& val,
 	const std::function<bool(const typename T::value_type&)>& skip_func)
 {
@@ -375,7 +375,7 @@ inline void set_jv_map_like_std_container(Json::Value& jv, const T& val,
 	//--------
 }
 
-template<MapLikeStdCntnr T>
+template<MapLikeStdContnr T>
 inline void set_jv_map_like_std_container(Json::Value& jv, const T& val)
 {
 	set_jv_map_like_std_container(jv, val,
@@ -383,7 +383,7 @@ inline void set_jv_map_like_std_container(Json::Value& jv, const T& val)
 			{ return false; });
 }
 
-//template<containers::MapLikeStdCntnr T>
+//template<containers::MapLikeStdContnr T>
 //inline void set_jv_map_like_std_container(Json::Value& jv, const T& val,
 //	const std::nullopt_t& some_nullopt)
 //{

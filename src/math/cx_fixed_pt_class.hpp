@@ -77,7 +77,11 @@ public:		// functions
 	}
 	//--------
 	explicit constexpr inline CxFixedPt(std::integral auto to_conv)
-		: data(to_conv << MaxIntT(FRAC_WIDTH))
+		: data(to_conv << FRAC_WIDTH)
+	{
+	}
+	explicit constexpr inline CxFixedPt(std::floating_point auto to_conv)
+		: data((long double)(to_conv) * (MaxIntT(1) << FRAC_WIDTH))
 	{
 	}
 
@@ -128,7 +132,7 @@ public:		// functions
 	explicit constexpr inline operator CastFloatT () const
 	{
 		return (long double)(whole_part<MaxIntT>())
-			/ (MaxIntT(1) << MaxIntT(FRAC_WIDTH));
+			/ (MaxIntT(1) << FRAC_WIDTH);
 	}
 	//--------
 	template<std::integral CastIntT=IntT>
@@ -138,11 +142,11 @@ public:		// functions
 	}
 	constexpr inline IntT frac_part() const
 	{
-		//return data & ((MaxIntT(1) << MaxIntT(FRAC_WIDTH)) - MaxIntT(1));
+		//return data & ((MaxIntT(1) << FRAC_WIDTH) - MaxIntT(1));
 		return bitwise::get_bits_with_range
 		(
 			data,
-			MaxIntT(FRAC_WIDTH) - MaxIntT(1),
+			FRAC_WIDTH - MaxIntT(1),
 			0
 		);
 	}
@@ -189,14 +193,18 @@ public:		// functions
 		return *this;
 	}
 	//--------
-	constexpr inline double recip_dbl() const
+	constexpr inline long double recip_ldbl() const
 	{
 		const long double
 			DATA_DBL = data;
 		return 1.0d 
-			/ (DATA_DBL / (MaxIntT(1) << MaxIntT(FRAC_WIDTH)));
+			/ (DATA_DBL / (MaxIntT(1) << FRAC_WIDTH));
 	}
-	constexpr inline CxFixedPt& div_2() const
+	constexpr inline long double sqrt_ldbl() const
+	{
+		return std::sqrt((long double)(*this));
+	}
+	constexpr inline CxFixedPt div_2() const
 	{
 		return CxFixedPt(data >> IntT(1));
 	}

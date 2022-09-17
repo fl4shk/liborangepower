@@ -29,15 +29,6 @@ class Vec3
 {
 public:		// types
 	using ElemT = T;
-
-	class CtorArgs final
-	{
-	public:		// variables
-		T
-			x=T(),
-			y=T(),
-			z=T();
-	};
 public:		// variables
 	#define MEMB_LIST_VEC3(X) \
 		X(x, std::nullopt) \
@@ -50,38 +41,21 @@ public:		// variables
 		z = T();
 public:		// functions
 	//--------
-	constexpr inline Vec3() = default;
-	constexpr inline Vec3(const T& s_x, const T& s_y, const T& s_z)
-		: x(s_x), y(s_y), z(s_z)
-	{
-	}
-	constexpr inline Vec3(T&& s_x, T&& s_y, T&& s_z)
-		: x(std::move(s_x)), y(std::move(s_y)), z(std::move(s_z))
-	{
-	}
-	constexpr inline Vec3(const CtorArgs& ctor_args)
-		: x(ctor_args.x), y(ctor_args.y), z(ctor_args.z)
-	{
-	}
-	constexpr inline Vec3(CtorArgs&& ctor_args)
-		: x(std::move(ctor_args.x)),
-		y(std::move(ctor_args.y)),
-		z(std::move(ctor_args.z))
-	{
-	}
-
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Vec3);
-	virtual inline ~Vec3() = default;
-	//--------
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3 operator + (const Vec3<OtherElemT>& other) const
 	{
 		//return Vec3<T>(x + other.x, y + other.y, z + other.z);
-		Vec3<T> ret;
-		ret.x = x + other.x;
-		ret.y = y + other.y;
-		ret.z = z + other.z;
-		return ret;
+		return Vec3
+		(
+			x + other.x,
+			y + other.y,
+			z + other.z
+		);
+		//Vec3<T> ret;
+		//ret.x = x + other.x;
+		//ret.y = y + other.y;
+		//ret.z = z + other.z;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3& operator += (const Vec3<OtherElemT>& other)
@@ -95,11 +69,17 @@ public:		// functions
 	constexpr inline Vec3 operator - (const Vec3<OtherElemT>& other) const
 	{
 		//return Vec3<T>(x - other.x, y - other.y, z - other.z);
-		Vec3<T> ret;
-		ret.x = x - other.x;
-		ret.y = y - other.y;
-		ret.z = z - other.z;
-		return ret;
+		return Vec3
+		(
+			x - other.x,
+			y - other.y,
+			z - other.z
+		);
+		//Vec3<T> ret;
+		//ret.x = x - other.x;
+		//ret.y = y - other.y;
+		//ret.z = z - other.z;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3& operator -= (const Vec3<OtherElemT>& other)
@@ -112,22 +92,34 @@ public:		// functions
 	constexpr inline Vec3 operator - () const
 	{
 		//return Vec3<T>({.x=-x, .y=-y, .z=-z});
-		Vec3<T> ret;
-		ret.x = -x;
-		ret.y = -y;
-		ret.z = -z;
-		return ret;
+		return Vec3
+		(
+			-x,
+			-y,
+			-z
+		);
+		//Vec3<T> ret;
+		//ret.x = -x;
+		//ret.y = -y;
+		//ret.z = -z;
+		//return ret;
 	}
 
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3 operator * (const OtherT& scale) const
 	{
 		//return Vec3<T>({.x=x * scale, .y=y * scale, .z=z * scale});
-		Vec3<T> ret;
-		ret.x = x * scale;
-		ret.y = y * scale;
-		ret.z = z * scale;
-		return ret;
+		return Vec3
+		(
+			x * scale,
+			y * scale,
+			z * scale
+		);
+		//Vec3<T> ret;
+		//ret.x = x * scale;
+		//ret.y = y * scale;
+		//ret.z = z * scale;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3& operator *= (const OtherT& other) const
@@ -139,12 +131,17 @@ public:		// functions
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3 operator / (const OtherT& scale) const
 	{
-		//return Vec3<T>(x / scale, y / scale, z / scale);
-		Vec3<T> ret;
-		ret.x = x / scale;
-		ret.y = y / scale;
-		ret.z = z / scale;
-		return ret;
+		return Vec3
+		(
+			x / scale,
+			y / scale,
+			z / scale
+		);
+		//Vec3<T> ret;
+		//ret.x = x / scale;
+		//ret.y = y / scale;
+		//ret.z = z / scale;
+		//return ret;
 	}
 	template<std::convertible_to<T> OtherT>
 	constexpr inline Vec3& operator /= (const OtherT& scale) const
@@ -155,19 +152,42 @@ public:		// functions
 
 	constexpr inline Vec3 div_2() const
 	{
+		//return Vec3
+		//({
+		//	.x=math::div_2(x),
+		//	.y=math::div_2(y),
+		//	.z=math::div_2(z),
+		//});
 		return Vec3
-		({
-			.x=math::div_2(x),
-			.y=math::div_2(y),
-			.z=math::div_2(z),
-		});
+		(
+			math::div_2(x),
+			math::div_2(y),
+			math::div_2(z)
+		);
+	}
+	constexpr inline Vec3 recip() const
+	{
+		//return Vec3
+		//({
+		//	.x=math::recip(x),
+		//	.y=math::recip(y),
+		//	.z=math::recip(z),
+		//});
+		return Vec3
+		(
+			math::recip(x),
+			math::recip(y),
+			math::recip(z)
+		);
 	}
 	//--------
 	// Dot product
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline T dot(const Vec3<OtherElemT>& other) const
 	{
-		return ((x * other.x) + (y * other.y) + (z * other.z));
+		//return ((x * other.x) + (y * other.y) + (z * other.z));
+		const T ret = (x * other.x) + (y * other.y) + (z * other.z);
+		return ret;
 	}
 
 	// Cross product
@@ -180,16 +200,27 @@ public:		// functions
 		//	.y=(z * other.x) - (x * other.z),
 		//	.z=(x * other.y) - (y * other.x)
 		//});
-		Vec3<T> ret;
-		ret.x = (y * other.z) - (z * other.y);
-		ret.y = (z * other.x) - (x * other.z);
-		ret.z = (x * other.y) - (y * other.x);
-		return ret;
+		return Vec3<T>
+		(
+			(y * other.z) - (z * other.y),
+			(z * other.x) - (x * other.z),
+			(x * other.y) - (y * other.x)
+		);
+		//Vec3<T> ret;
+		//ret.x = (y * other.z) - (z * other.y);
+		//ret.y = (z * other.x) - (x * other.z);
+		//ret.z = (x * other.y) - (y * other.x);
+		//return ret;
 	}
 
-	inline T norm() const
+	constexpr inline T magnitude() const
 	{
-		return std::sqrt(dot(*this));
+		//return std::sqrt(dot(*this));
+		return math::cstm_sqrt(dot(*this));
+	}
+	constexpr inline Vec3<T> norm() const
+	{
+		return *this / magnitude();
 	}
 	//--------
 	// Templates can't be defaulted for some reason
@@ -199,7 +230,7 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator == (const Vec3<OtherElemT>& other) const
 	{
-		return ((x == other.x) && (y == other.y) && (z == other.z));
+		return (x == other.x && y == other.y && z == other.z);
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator != (const Vec3<OtherElemT>& other) const
@@ -210,14 +241,14 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator < (const Vec3<OtherElemT>& other) const
 	{
-		return ((z < other.z)
-			|| ((z == other.z) && (Vec2(x, y) < Vec2(other.x, other.y))));
+		return z < other.z
+			|| (z == other.z && Vec2(x, y) < Vec2(other.x, other.y));
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator > (const Vec3<OtherElemT>& other) const
 	{
-		return ((z > other.z)
-			|| ((z == other.z) && (Vec2(x, y) > Vec2(other.x, other.y))));
+		return z > other.z
+			|| (z == other.z && Vec2(x, y) > Vec2(other.x, other.y));
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator <= (const Vec3<OtherElemT>& other) const
@@ -241,11 +272,17 @@ constexpr inline Vec3<T> operator * (const OtherElemT& scale,
 	//	.y=scale * self.y,
 	//	.z=scale * self.z
 	//});
-	Vec3<T> ret;
-	ret.x = scale * self.x;
-	ret.y = scale * self.y;
-	ret.z = scale * self.z;
-	return ret;
+	return Vec3<T>
+	(
+		scale * self.x,
+		scale * self.y,
+		scale * self.z
+	);
+	//Vec3<T> ret;
+	//ret.x = scale * self.x;
+	//ret.y = scale * self.y;
+	//ret.z = scale * self.z;
+	//return ret;
 	//return self * scale;
 }
 template<typename T, std::convertible_to<T> OtherElemT>
@@ -258,12 +295,18 @@ constexpr inline Vec3<T> operator / (const OtherElemT& inv_scale,
 	//	.y=inv_scale / self.y,
 	//	.z=inv_scale / self.z,
 	//});
+	return Vec3<T>
+	(
+		inv_scale / self.x,
+		inv_scale / self.y,
+		inv_scale / self.z
+	);
 
-	Vec3<T> ret;
-	ret.x = inv_scale / self.x;
-	ret.y = inv_scale / self.y;
-	ret.z = inv_scale / self.z;
-	return ret;
+	//Vec3<T> ret;
+	//ret.x = inv_scale / self.x;
+	//ret.y = inv_scale / self.y;
+	//ret.z = inv_scale / self.z;
+	//return ret;
 }
 template<typename T, typename CharT, typename Traits>
 inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
@@ -307,7 +350,7 @@ constexpr inline bool is_vec3()
 
 namespace std
 {
-
+//--------
 template<typename T>
 struct hash<liborangepower::math::Vec3<T>>
 {
@@ -324,6 +367,6 @@ struct hash<liborangepower::math::Vec3<T>>
 		return liborangepower::containers::hash_va(vec3.x, vec3.y, vec3.z);
 	}
 };
-
+//--------
 } // namespace std
 #endif		// liborangepower_math_vec3_classes_hpp

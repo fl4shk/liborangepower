@@ -1,5 +1,5 @@
 # Lib Orange Power
-Generic C++20 library.
+Generic C++23 library.
 
 `jsoncpp` is used for JSON support:  https://github.com/open-source-parsers/jsoncpp
 SDL2 is the version of SDL supported by `src/sdl`

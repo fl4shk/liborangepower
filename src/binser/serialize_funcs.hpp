@@ -51,7 +51,7 @@ using containers::is_std_map;
 using containers::is_std_unordered_map;
 
 using containers::is_map_like_std_container;
-using containers::MapLikeStdCntnr;
+using containers::MapLikeStdContnr;
 
 using containers::is_pseudo_vec_like_std_container;
 using containers::is_basic_indexable_std_container;
@@ -700,7 +700,7 @@ inline void set_bv_sptr_w_rst(ValueSptr& bv_sptr, const T& val)
 	bv_sptr.reset(new Value(std::move(bv)));
 }
 
-template<MapLikeStdCntnr T>
+template<MapLikeStdContnr T>
 inline void set_bv_map_like_std_container(Value& bv, const T& val,
 	const std::function<bool(const typename T::value_type&)>& skip_func)
 {
@@ -723,7 +723,7 @@ inline void set_bv_map_like_std_container(Value& bv, const T& val,
 	//--------
 }
 
-template<MapLikeStdCntnr T>
+template<MapLikeStdContnr T>
 inline void set_bv_map_like_std_container(Value& bv, const T& val)
 {
 	set_bv_map_like_std_container(bv, val,
@@ -731,7 +731,7 @@ inline void set_bv_map_like_std_container(Value& bv, const T& val)
 			{ return false; });
 }
 
-//template<containers::MapLikeStdCntnr T>
+//template<containers::MapLikeStdContnr T>
 //inline void set_bv_map_like_std_container(Value& bv, const T& val,
 //	const std::nullopt_t& some_nullopt)
 //{
