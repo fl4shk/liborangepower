@@ -1,8 +1,9 @@
 #ifndef liborangepower_misc_misc_output_classes_hpp
 #define liborangepower_misc_misc_output_classes_hpp
 
-#include "misc_types.hpp"
 #include "misc_includes.hpp"
+#include "misc_types.hpp"
+#include "../containers/std_container_id_funcs.hpp"
 
 namespace liborangepower
 {
@@ -29,10 +30,48 @@ private:		// functions
 		//	Temp0;
 		//typedef typename std::remove_const<Temp0>::type Temp1;
 		using Temp1 = std::remove_cvref_t<FirstArgT>;
-		static_assert(!(std::is_same<const std::string*, Temp1>()
-			|| std::is_same<std::string*, Temp1>()),
-			"Please dereference the std::string.");
-		os << first_val;
+		//static_assert(!(std::is_same<const std::string*, Temp1>()
+		//	|| std::is_same<std::string*, Temp1>()),
+		//	"Please dereference the std::string.");
+
+		//static_assert
+		//(
+		//	(!concepts::IsSpecialization<Temp2, const std::basic_string*>)
+		//	&& (!concepts::IsSpecialization<Temp1, std::basic_string*>),
+		//	"Please dereference the `std::basic_string`."
+		//);
+		if constexpr (std::is_pointer<Temp1>())
+		{
+			using Temp2
+				= std::remove_cvref_t<decltype(*std::declval<Temp1>())>;
+			static_assert
+			(
+				!concepts::IsSpecialization<Temp2, std::basic_string>,
+				"Please dereference the `std::basic_string`."
+			);
+			static_assert
+			(
+				!concepts::IsSpecialization<Temp2, std::optional>,
+				"Please dereference the `std::optional`."
+			);
+		}
+
+		// Decided not to use this special behavior for `std::optional`
+		//if constexpr (containers::is_std_optional<Temp1>())
+		//{
+		//	if (first_val)
+		//	{
+		//		os << *first_val;
+		//	}
+		//	else
+		//	{
+		//		os << "(nullopt)";
+		//	}
+		//}
+		//else
+		{
+			os << first_val;
+		}
 
 		if constexpr (sizeof...(rem_args) > 0)
 		{

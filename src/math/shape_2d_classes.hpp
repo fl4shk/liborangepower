@@ -88,7 +88,7 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			//arg.tm,
 
 			#define X(memb, dummy_arg) \
-				arg . memb ,
+				( arg . memb ),
 
 			strings::strjoin2_rm_last
 			(
@@ -152,7 +152,7 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			//arg.tm,
 
 			#define X(memb, dummy_arg) \
-				arg . memb ,
+				( arg . memb ),
 
 			strings::strjoin2_rm_last
 			(
@@ -203,6 +203,33 @@ public:		// functions
 	}
 	//--------
 };
+
+template<typename T, typename CharT,
+	typename Traits=std::char_traits<CharT>>
+inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
+	const LineSeg2<T>& arg)
+{
+	return misc_output::osprintout
+	(
+		os,
+		"{",
+			//arg.p0, " ",
+			//arg.p1,
+
+			#define X(memb, dummy_arg) \
+				( arg . memb ),
+
+			strings::strjoin2_rm_last
+			(
+				" ",
+				MEMB_LIST_SHAPE_LINE_SEG2(X)
+				std::string()
+			),
+
+			#undef X
+		"}"
+	);
+}
 //--------
 template<typename T>
 class Rect2
@@ -789,6 +816,33 @@ public:		// functions
 	}
 	//--------
 };
+
+template<typename T, typename CharT,
+	typename Traits=std::char_traits<CharT>>
+inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
+	const Rect2<T>& arg)
+{
+	return misc_output::osprintout
+	(
+		os,
+		"{",
+			//arg.pos, " ",
+			//arg.size_2d,
+
+			#define X(memb, dummy_arg) \
+				( arg . memb ),
+
+			strings::strjoin2_rm_last
+			(
+				" ",
+				MEMB_LIST_SHAPE_RECT2(X)
+				std::string()
+			),
+
+			#undef X
+		"}"
+	);
+}
 //--------
 //template<typename T>
 //using MultiSweepElem

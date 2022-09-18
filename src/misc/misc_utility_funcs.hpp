@@ -126,12 +126,6 @@ inline auto _tuple_rm_last_backend
 template<typename FirstArgT, typename... RemArgTs>
 inline auto tuple_rm_last(const std::tuple<FirstArgT, RemArgTs...>& tup)
 {
-	//if constexpr (sizeof...(RemArgTs) > 0)
-	//{
-	//}
-	//else // if constexpr (sizeof...(RemArgTs) == 0)
-	//{
-	//}
 	return _tuple_rm_last_backend<0>(tup);
 }
 
