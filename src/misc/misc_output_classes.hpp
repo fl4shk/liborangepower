@@ -4,27 +4,38 @@
 #include "misc_includes.hpp"
 #include "misc_types.hpp"
 #include "../containers/std_container_id_funcs.hpp"
+#include "../concepts/std_stream_concepts.hpp"
 
 namespace liborangepower
 {
 
-template<typename CharT, typename Traits=std::char_traits<CharT>>
-using BasOstm = std::basic_ostream<CharT, Traits>;
+//template<typename CharT, typename Traits=std::char_traits<CharT>>
+//using BasOstm = std::basic_ostream<CharT, Traits>;
 
 namespace misc_output
 {
 
-template<typename CharT, typename Traits, typename... ArgTs>
-BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
-	ArgTs&&...  args);
+//template<typename CharT, typename Traits, typename... ArgTs>
+//BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
+//	ArgTs&&...  args);
+template<concepts::HasStdOstmOpLshift... ArgTs>
+constexpr inline std::ostream& osprintout(std::ostream& os,
+	ArgTs&&... args);
 
 class AnyPrintoutBackend
 {
 private:		// functions
-	template<typename CharT, typename Traits, typename FirstArgT,
-		typename... RemArgTs>
-	static void func(BasOstm<CharT, Traits>& os, FirstArgT&& first_val,
-		RemArgTs&&... rem_args)
+	template
+	<
+		//typename CharT,
+		//typename Traits,
+		concepts::HasStdOstmOpLshift FirstArgT,
+		concepts::HasStdOstmOpLshift... RemArgTs
+	>
+	//static void func(BasOstm<CharT, Traits>& os, FirstArgT&& first_val,
+	//	RemArgTs&&... rem_args)
+	static constexpr inline void func(std::ostream& os,
+		FirstArgT&& first_val, RemArgTs&&... rem_args)
 	{
 		//typedef typename std::remove_reference<decltype(first_val)>::type
 		//	Temp0;
@@ -79,48 +90,60 @@ private:		// functions
 		}
 	}
 
-	template<typename CharT, typename Traits, typename... ArgTs>
-	friend BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
+	template<concepts::HasStdOstmOpLshift... ArgTs>
+	friend constexpr inline std::ostream& osprintout(std::ostream& os,
 		ArgTs&&... args);
 };
 
-template<typename CharT, typename Traits, typename... ArgTs>
-inline BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
+//template<typename CharT, typename Traits, typename... ArgTs>
+//inline BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
+//	ArgTs&&... args)
+template<concepts::HasStdOstmOpLshift... ArgTs>
+constexpr inline std::ostream& osprintout(std::ostream& os,
 	ArgTs&&... args)
 {
-	AnyPrintoutBackend::func(os, args...);
+	if constexpr (sizeof...(args) > 0)
+	{
+		AnyPrintoutBackend::func(os, args...);
+	}
 	return os;
 }
 
-template<typename... ArgTs>
-inline auto& printout(ArgTs&&... args)
+template<concepts::HasStdOstmOpLshift... ArgTs>
+constexpr inline auto& printout(ArgTs&&... args)
 {
 	return osprintout(cout, args...);
 }
 
-template<typename... ArgTs>
-inline auto& printerr(ArgTs&&... args)
+template<concepts::HasStdOstmOpLshift... ArgTs>
+constexpr inline auto& printerr(ArgTs&&... args)
 {
 	return osprintout(cerr, args...);
 }
 
 // Alternate name for osprintout
-template<typename CharT, typename Traits, typename... ArgTs>
-inline BasOstm<CharT, Traits>& fprintout(BasOstm<CharT, Traits>& out_file,
+//template<typename CharT, typename Traits, typename... ArgTs>
+//inline BasOstm<CharT, Traits>& fprintout(BasOstm<CharT, Traits>& out_file,
+//	ArgTs&&... args)
+template<concepts::HasStdOstmOpLshift... ArgTs>
+constexpr inline  std::ostream& fprintout(std::ostream&& out_file,
 	ArgTs&&... args)
 {
 	return osprintout(out_file, args...);
 }
 
 
-template<typename CharT, typename Traits>
-inline BasOstm<CharT, Traits>& osprint_hexdump(BasOstm<CharT, Traits>& os,
-	const std::vector<char>& to_print, size_t line_break=8)
+//template<typename CharT, typename Traits>
+//inline BasOstm<CharT, Traits>& osprint_hexdump(BasOstm<CharT, Traits>& os,
+//	const std::vector<char>& to_print, size_t line_break=8)
+template<typename Alloc=std::allocator<char>>
+constexpr inline std::ostream& osprint_hexdump(std::ostream& os,
+	const std::vector<char, Alloc>& to_print, size_t line_break=8)
 {
 	static constexpr char BLANK_TEXT_C = '.';
 
 	//for (const auto& c: ser_vec)
-	std::vector<char> text;
+	std::vector<char, Alloc> text;
 	size_t i;
 
 	auto show_text
@@ -186,8 +209,11 @@ inline BasOstm<CharT, Traits>& osprint_hexdump(BasOstm<CharT, Traits>& os,
 	return os;
 }
 
-template<typename CharT, typename Traits, typename ArrT>
-BasOstm<CharT, Traits>& osprint_arr(BasOstm<CharT, Traits>& os,
+//template<typename CharT, typename Traits, typename ArrT>
+//BasOstm<CharT, Traits>& osprint_arr(BasOstm<CharT, Traits>& os,
+//	ArrT* to_print, size_t size)
+template<typename ArrT>
+constexpr inline std::ostream& osprint_arr(std::ostream& os,
 	ArrT* to_print, size_t size)
 {
 	for (size_t i=0; i<size; ++i)
@@ -201,8 +227,11 @@ BasOstm<CharT, Traits>& osprint_arr(BasOstm<CharT, Traits>& os,
 
 	return os;
 }
-template<typename CharT, typename Traits, typename ElemT, size_t size>
-BasOstm<CharT, Traits>& osprint_arr(BasOstm<CharT, Traits>& os,
+//template<typename CharT, typename Traits, typename ElemT, size_t size>
+//BasOstm<CharT, Traits>& osprint_arr(BasOstm<CharT, Traits>& os,
+//	const std::array<ElemT, size>& to_print)
+template<typename ElemT, size_t size>
+constexpr inline std::ostream& osprint_arr(std::ostream& os,
 	const std::array<ElemT, size>& to_print)
 {
 	return osprint_arr(os, to_print.data(), size);

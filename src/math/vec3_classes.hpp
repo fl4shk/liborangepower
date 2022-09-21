@@ -316,9 +316,29 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 	(
 		os,
 		"{",
-			arg.x, ", ",
-			arg.y, ", ",
-			arg.z,
+			//arg.x, ", ",
+			//arg.y, ", ",
+			//arg.z,
+
+			#define X(memb, dummy_arg) \
+				strings::sconcat( arg . memb ),
+
+			strings::strjoin2
+			(
+				std::string(", "),
+				std::vector<std::string>
+				({
+					MEMB_LIST_VEC3(X)
+				})
+				//std::make_tuple
+				//(
+				//	sconcat(arg.x),
+				//	sconcat(arg.y),
+				//	sconcat(arg.z)
+				//)
+			),
+
+			#undef X
 		"}"
 	);
 }

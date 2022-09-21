@@ -88,13 +88,15 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			//arg.tm,
 
 			#define X(memb, dummy_arg) \
-				( arg . memb ),
+				strings::sconcat( arg . memb ),
 
-			strings::strjoin2_rm_last
+			strings::strjoin2
 			(
-				" ",
-				MEMB_LIST_SHAPE_HIT2(X)
-				std::string()
+				std::string(" "),
+				std::vector
+				({
+					MEMB_LIST_SHAPE_HIT2(X)
+				})
 			),
 
 			#undef X
@@ -152,13 +154,15 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			//arg.tm,
 
 			#define X(memb, dummy_arg) \
-				( arg . memb ),
+				strings::sconcat( arg . memb ),
 
-			strings::strjoin2_rm_last
+			strings::strjoin2
 			(
-				" ",
-				MEMB_LIST_SHAPE_SWEEP2(X)
-				std::string()
+				std::string(" "),
+				std::vector
+				({
+					MEMB_LIST_SHAPE_SWEEP2(X)
+				})
 			),
 
 			#undef X
@@ -217,13 +221,15 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			//arg.p1,
 
 			#define X(memb, dummy_arg) \
-				( arg . memb ),
+				strings::sconcat( arg . memb ),
 
-			strings::strjoin2_rm_last
+			strings::strjoin2
 			(
-				" ",
-				MEMB_LIST_SHAPE_LINE_SEG2(X)
-				std::string()
+				std::string(" "),
+				std::vector
+				({
+					MEMB_LIST_SHAPE_LINE_SEG2(X)
+				})
 			),
 
 			#undef X
@@ -830,13 +836,15 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 			//arg.size_2d,
 
 			#define X(memb, dummy_arg) \
-				( arg . memb ),
+				strings::sconcat( arg . memb ),
 
-			strings::strjoin2_rm_last
+			strings::strjoin2
 			(
-				" ",
-				MEMB_LIST_SHAPE_RECT2(X)
-				std::string()
+				std::string(" "),
+				std::vector
+				({
+					MEMB_LIST_SHAPE_RECT2(X)
+				})
 			),
 
 			#undef X

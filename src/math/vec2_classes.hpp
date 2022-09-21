@@ -3,6 +3,8 @@
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_output_classes.hpp"
+#include "../strings/sconcat_etc.hpp"
+
 #include "../gen_class_innards_defines.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
 #include "../concepts/math_concepts.hpp"
@@ -246,18 +248,42 @@ constexpr inline Vec2<T> operator / (const OtherElemT& inv_scale,
 	//return ret;
 }
 
-template<typename T, typename CharT, typename Traits>
-inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
-	const Vec2<T>& arg)
+template<typename T>
+inline std::ostream& operator << (std::ostream& os, const Vec2<T>& arg)
 {
 	return misc_output::osprintout
 	(
 		os,
 		"{",
-			arg.x, ", ",
-			arg.y,
+			//arg.x, ", ",
+			//arg.y,
+
+			#define X(memb, dummy_arg) \
+				strings::sconcat( arg . memb ),
+
+			strings::strjoin2
+			(
+				std::string(", "),
+				std::vector<std::string>
+				({
+					//strings::sconcat<CharT, Traits>(arg.x),
+					//strings::sconcat<CharT, Traits>(arg.y)
+					MEMB_LIST_VEC2(X)
+					//strings::sconcat(arg.x),
+					//strings::sconcat(arg.y)
+				})
+			),
+
+			#undef X
 		"}"
 	);
+	//misc_output::osprintout(os, "{");
+
+	//#define X(memb, dummy_arg) misc_output::osprintout(os, ( arg . memb ));
+	//MEMB_LIST_VEC2(X)
+	//#undef X
+
+	//misc_output::osprintout(os, "});
 }
 
 //template<typename T>

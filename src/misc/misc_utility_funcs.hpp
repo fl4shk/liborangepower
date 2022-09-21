@@ -28,22 +28,20 @@ inline void _init_array_backend(T* all_values_arr,
 	all_values_arr[index] = to_copy;
 }
 
-template<typename T, size_t index, typename... RemainingTs>
+template<typename T, size_t index, typename... RemTs>
 inline void _init_array_backend(T* all_values_arr, 
-	const T& first_value, const RemainingTs&... remaining_values)
+	const T& first_value, const RemTs&... remaining_values)
 {
 	_init_array_backend<T, index>(all_values_arr, first_value);
 
-	_init_array_backend<T, index + 1>(all_values_arr, 
-		remaining_values...);
+	_init_array_backend<T, index + 1>(all_values_arr, remaining_values...);
 }
 
 template<typename T, typename... AllTheTs>
 inline void init_array(T* all_values_arr, 
 	const AllTheTs&...  all_the_values)
 {
-	_init_array_backend<T, 0>(all_values_arr,
-		all_the_values...);
+	_init_array_backend<T, 0>(all_values_arr, all_the_values...);
 }
 
 
@@ -102,44 +100,6 @@ bool anything_matches(const FirstArgT& first_val,
 	else
 	{
 		return anything_matches(first_val, rem_args...);
-	}
-}
-//--------
-// `std::tuple` stuff
-template<size_t index, typename FirstArgT, typename... RemArgTs>
-inline auto _tuple_rm_last_backend
-	(const std::tuple<FirstArgT, RemArgTs...>& tup)
-{
-	constexpr auto
-		tup_cnt = std::tuple_size<std::remove_cvref_t<decltype(tup)>>{};
-
-	if constexpr (index < tup_cnt)
-	{
-		return std::tuple_cat(std::make_tuple(std::get<index>(tup)),
-			_tuple_rm_last_backend<index + size_t(1)>(tup));
-	}
-	else // if constexpr (index >= tup_cnt)
-	{
-		return std::make_tuple();
-	}
-}
-template<typename FirstArgT, typename... RemArgTs>
-inline auto tuple_rm_last(const std::tuple<FirstArgT, RemArgTs...>& tup)
-{
-	return _tuple_rm_last_backend<0>(tup);
-}
-
-inline auto make_tuple_rm_last(const auto& first_arg,
-	const auto&... rem_args)
-{
-	if constexpr (sizeof...(rem_args) > 0)
-	{
-		return std::tuple_cat(std::make_tuple(first_arg),
-			make_tuple_rm_last(rem_args...));
-	}
-	else // if constexpr (sizeof...(rem_args) == 0)
-	{
-		return std::make_tuple();
 	}
 }
 //--------

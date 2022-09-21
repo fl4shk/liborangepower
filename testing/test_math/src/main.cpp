@@ -29,8 +29,12 @@ void test_intersect(const std::vector<TestPair<UnconShapeT, T>>& test_vec)
 		const auto& item = test_vec.at(i);
 		printout(i, ": ");
 
-		const auto& hit = item.rect.intersect(item.arg, item.exclusive, 
-			item.arg_padding);
+		const auto& hit = item.rect.intersect
+		(
+			item.arg,
+			item.exclusive, 
+			item.arg_padding
+		);
 
 		if (!hit)
 		{
@@ -39,11 +43,18 @@ void test_intersect(const std::vector<TestPair<UnconShapeT, T>>& test_vec)
 		else // if (hit)
 		{
 			//printout("hit: ", *hit);
-			printout("hit:\n",
-				"\tpos: ", hit->pos, "\n",
-				"\tnormal: ", hit->normal, "\n",
-				"\tdelta: ", hit->delta, "\n",
-				"\ttm: ", hit->tm, "\n");
+			//printout("hit:\n",
+			//	"\tpos: ", hit->pos, "\n",
+			//	"\tnormal: ", hit->normal, "\n",
+			//	"\tdelta: ", hit->delta, "\n",
+			//	"\ttm: ", hit->tm, "\n");
+			//printout(hit->pos);
+
+			//#define X(memb, dummy_arg) \
+			//	"\t" #memb ": ", hit-> memb , "\n"
+			//printout("hit:\n",
+			//	MEMB_LIST_SHAPE_HIT2(X));
+			//#undef X
 		}
 
 		//if (i + 1 < test_vec.size())
@@ -90,31 +101,32 @@ int main(int argc, char** argv)
 
 	const double
 		test_dim = 3;
-	const Rect2<double>
+	const Rect2
 		test_rect2_for_lseg
-		{
-			.pos{0, 0},
-			.size_2d{test_dim, test_dim},
-		};
-	const Vec2<double>
-		test_arg_padding_for_lseg(0.1, 0.1);
+		(
+			Vec2{0.0, 0.0},
+			Vec2{test_dim, test_dim}
+		);
+	const Vec2
+		test_arg_padding_for_lseg
+			//{0.1, 0.1};
+			{0.0, 0.0};
 	const std::vector<TestPair<LineSeg2, double>> test_vec_lseg
 	({
 		//--------
 		{
 			.rect=test_rect2_for_lseg,
-			.arg{{0, 0}, {0, test_dim}},
+			.arg{.p0{0, 0}, .p1{0, test_dim}},
 			.exclusive=true,
 		},
 		//--------
-		////--------
-		//{
-		//	.rect=test_rect2_for_lseg,
-		//	//.arg{{1, 1}, {1, 0}},
-		//	//.arg{{0, 0.1}, {3, 0.1}},
-		//	.arg{{0, 0}, {test_dim, 0}},
-		//	.arg_padding=test_arg_padding_for_lseg,
-		//},
+		{
+			.rect=test_rect2_for_lseg,
+			//.arg{{1, 1}, {1, 0}},
+			//.arg{{0, 0.1}, {3, 0.1}},
+			.arg{.p0{0, 0}, .p1{test_dim, 0}},
+			.arg_padding=test_arg_padding_for_lseg,
+		},
 		//{
 		//	.rect=test_rect2_for_lseg,
 		//	.arg{{0, 0}, {0, test_dim}},
