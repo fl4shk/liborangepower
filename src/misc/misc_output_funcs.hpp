@@ -1,5 +1,5 @@
-#ifndef liborangepower_misc_misc_output_classes_hpp
-#define liborangepower_misc_misc_output_classes_hpp
+#ifndef liborangepower_misc_misc_output_funcs_hpp
+#define liborangepower_misc_misc_output_funcs_hpp
 
 #include "misc_includes.hpp"
 #include "misc_types.hpp"
@@ -16,31 +16,23 @@ namespace misc_output
 {
 
 //template<typename CharT, typename Traits, typename... ArgTs>
-//BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
-//	ArgTs&&...  args);
-template<concepts::HasStdOstmOpLshift... ArgTs>
+//inline BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
+//	ArgTs&&... args)
 constexpr inline std::ostream& osprintout(std::ostream& os,
-	ArgTs&&... args);
-
-class AnyPrintoutBackend
+	concepts::HasStdOstmOpLshift auto&&... args)
 {
-private:		// functions
-	template
-	<
-		//typename CharT,
-		//typename Traits,
-		concepts::HasStdOstmOpLshift FirstArgT,
-		concepts::HasStdOstmOpLshift... RemArgTs
-	>
-	//static void func(BasOstm<CharT, Traits>& os, FirstArgT&& first_val,
-	//	RemArgTs&&... rem_args)
-	static constexpr inline void func(std::ostream& os,
-		FirstArgT&& first_val, RemArgTs&&... rem_args)
+	//if constexpr (sizeof...(args) > 0)
+	//{
+	//	//AnyPrintoutBackend::func(os, args...);
+
+	//}
+
+	auto func = [](std::ostream& os, auto&& first_arg) -> void
 	{
-		//typedef typename std::remove_reference<decltype(first_val)>::type
+		//typedef typename std::remove_reference_t<decltype(first_arg)>
 		//	Temp0;
-		//typedef typename std::remove_const<Temp0>::type Temp1;
-		using Temp1 = std::remove_cvref_t<FirstArgT>;
+		//typedef typename std::remove_const_t<Temp0>::type Temp1;
+		using Temp1 = std::remove_cvref_t<decltype(first_arg)>;
 		//static_assert(!(std::is_same<const std::string*, Temp1>()
 		//	|| std::is_same<std::string*, Temp1>()),
 		//	"Please dereference the std::string.");
@@ -70,9 +62,9 @@ private:		// functions
 		// Decided not to use this special behavior for `std::optional`
 		//if constexpr (containers::is_std_optional<Temp1>())
 		//{
-		//	if (first_val)
+		//	if (first_arg)
 		//	{
-		//		os << *first_val;
+		//		os << *first_arg;
 		//	}
 		//	else
 		//	{
@@ -81,42 +73,23 @@ private:		// functions
 		//}
 		//else
 		{
-			os << first_val;
+			os << first_arg;
 		}
+	};
 
-		if constexpr (sizeof...(rem_args) > 0)
-		{
-			func(os, rem_args...);
-		}
-	}
+	( func(os, std::move(args)), ... );
 
-	template<concepts::HasStdOstmOpLshift... ArgTs>
-	friend constexpr inline std::ostream& osprintout(std::ostream& os,
-		ArgTs&&... args);
-};
-
-//template<typename CharT, typename Traits, typename... ArgTs>
-//inline BasOstm<CharT, Traits>& osprintout(BasOstm<CharT, Traits>& os,
-//	ArgTs&&... args)
-template<concepts::HasStdOstmOpLshift... ArgTs>
-constexpr inline std::ostream& osprintout(std::ostream& os,
-	ArgTs&&... args)
-{
-	if constexpr (sizeof...(args) > 0)
-	{
-		AnyPrintoutBackend::func(os, args...);
-	}
 	return os;
 }
 
-template<concepts::HasStdOstmOpLshift... ArgTs>
-constexpr inline auto& printout(ArgTs&&... args)
+constexpr inline auto& printout
+	(concepts::HasStdOstmOpLshift auto&&... args)
 {
 	return osprintout(cout, args...);
 }
 
-template<concepts::HasStdOstmOpLshift... ArgTs>
-constexpr inline auto& printerr(ArgTs&&... args)
+constexpr inline auto& printerr
+	(concepts::HasStdOstmOpLshift auto&&...  args)
 {
 	return osprintout(cerr, args...);
 }
@@ -125,9 +98,8 @@ constexpr inline auto& printerr(ArgTs&&... args)
 //template<typename CharT, typename Traits, typename... ArgTs>
 //inline BasOstm<CharT, Traits>& fprintout(BasOstm<CharT, Traits>& out_file,
 //	ArgTs&&... args)
-template<concepts::HasStdOstmOpLshift... ArgTs>
 constexpr inline  std::ostream& fprintout(std::ostream&& out_file,
-	ArgTs&&... args)
+	concepts::HasStdOstmOpLshift auto&&... args)
 {
 	return osprintout(out_file, args...);
 }
@@ -241,4 +213,4 @@ constexpr inline std::ostream& osprint_arr(std::ostream& os,
 } // namespace liborangepower
 
 
-#endif		// liborangepower_misc_misc_output_classes_hpp
+#endif		// liborangepower_misc_misc_output_funcs_hpp

@@ -308,8 +308,8 @@ constexpr inline Vec3<T> operator / (const OtherElemT& inv_scale,
 	//ret.z = inv_scale / self.z;
 	//return ret;
 }
-template<typename T, typename CharT, typename Traits>
-inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
+template<typename T>
+constexpr inline std::ostream& operator << (std::ostream& os,
 	const Vec3<T>& arg)
 {
 	return misc_output::osprintout

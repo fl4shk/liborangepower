@@ -2,7 +2,7 @@
 #define liborangepower_math_vec2_classes_hpp
 
 #include "../misc/misc_includes.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 #include "../strings/sconcat_etc.hpp"
 
 #include "../gen_class_innards_defines.hpp"
@@ -249,7 +249,8 @@ constexpr inline Vec2<T> operator / (const OtherElemT& inv_scale,
 }
 
 template<typename T>
-inline std::ostream& operator << (std::ostream& os, const Vec2<T>& arg)
+constexpr inline std::ostream& operator << (std::ostream& os,
+	const Vec2<T>& arg)
 {
 	return misc_output::osprintout
 	(
@@ -263,7 +264,8 @@ inline std::ostream& operator << (std::ostream& os, const Vec2<T>& arg)
 
 			strings::strjoin2
 			(
-				std::string(", "),
+				//std::string(", "),
+				", ",
 				std::vector<std::string>
 				({
 					//strings::sconcat<CharT, Traits>(arg.x),

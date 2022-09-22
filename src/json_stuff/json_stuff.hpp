@@ -2,7 +2,7 @@
 #define liborangepower_json_stuff_json_stuff_hpp
 
 #include "../misc/misc_includes.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 #include "../math/vec2_classes.hpp"
 #include "../math/vec3_classes.hpp"
 #include "../containers/prev_curr_pair_classes.hpp"

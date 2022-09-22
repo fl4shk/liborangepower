@@ -48,13 +48,16 @@ void test_intersect(const std::vector<TestPair<UnconShapeT, T>>& test_vec)
 			//	"\tnormal: ", hit->normal, "\n",
 			//	"\tdelta: ", hit->delta, "\n",
 			//	"\ttm: ", hit->tm, "\n");
-			//printout(hit->pos);
 
-			//#define X(memb, dummy_arg) \
-			//	"\t" #memb ": ", hit-> memb , "\n"
-			//printout("hit:\n",
-			//	MEMB_LIST_SHAPE_HIT2(X));
-			//#undef X
+			#define X(memb, dummy_arg) \
+				"\t" #memb ": ", sconcat(hit-> memb ), "\n",
+			printout("hit:\n",
+				strjoin("",
+					std::vector<std::string>
+					({
+						MEMB_LIST_SHAPE_HIT2(X)
+					})));
+			#undef X
 		}
 
 		//if (i + 1 < test_vec.size())

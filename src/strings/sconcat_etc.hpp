@@ -4,29 +4,21 @@
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_types.hpp"
 #include "../misc/misc_utility_funcs.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 #include "../concepts/std_container_concepts.hpp"
 
 namespace liborangepower
 {
 //--------
-template
-<
-	typename CharT=char,
-	typename Traits=std::char_traits<CharT>,
-	typename Alloc=std::allocator<CharT>
->
+template<typename CharT=char, typename Traits=std::char_traits<CharT>,
+	typename Alloc=std::allocator<CharT>>
 using BasStr = std::basic_string<CharT, Traits, Alloc>;
 
 template<typename Alloc=std::allocator<char>>
 using StrWA = BasStr<char, std::char_traits<char>, Alloc>;
 
-template
-<
-	typename CharT=char,
-	typename Traits=std::char_traits<CharT>,
-	typename Alloc=std::allocator<CharT>
->
+template<typename CharT=char, typename Traits=std::char_traits<CharT>,
+	typename Alloc=std::allocator<CharT>>
 using BasSstm = std::basic_stringstream<CharT, Traits, Alloc>;
 
 template<typename Alloc=std::allocator<char>>
@@ -35,10 +27,7 @@ using SstmWA = BasSstm<char, std::char_traits<char>, Alloc>;
 namespace strings
 {
 //--------
-template
-<
-	typename Alloc=std::allocator<char>
->
+template<typename Alloc=std::allocator<char>>
 constexpr inline StrWA<Alloc> sconcat
 	(const concepts::HasStdOstmOpLshift auto&... args)
 {
@@ -208,10 +197,7 @@ constexpr inline SstmWA<Alloc> inv_sconcat(const StrWA<Alloc>& str,
 //	return ret;
 //}
 //--------
-template
-<
-	typename Alloc=std::allocator<char>
->
+template<typename Alloc=std::allocator<char>>
 constexpr inline StrWA<Alloc> strjoin(const StrWA<Alloc>& sep,
 	const concepts::HasStdOstmOpLshift auto&... args)
 {
@@ -225,20 +211,14 @@ constexpr inline StrWA<Alloc> strjoin(const StrWA<Alloc>& sep,
 	( append(args), ... );
 	return temp;
 }
-template
-<
-	typename Alloc=std::allocator<char>
->
+template<typename Alloc=std::allocator<char>>
 constexpr inline StrWA<Alloc> strjoin(const char* sep,
 	const concepts::HasStdOstmOpLshift auto&... args)
 {
 	return strjoin<Alloc>(StrWA<Alloc>(sep), args...);
 }
 
-template
-<
-	typename Alloc=std::allocator<char>
->
+template<typename Alloc=std::allocator<char>>
 constexpr inline StrWA<Alloc> _strjoin2_backend(const StrWA<Alloc>& sep,
 	const concepts::HasStdOstmOpLshift auto& first_arg,
 	const concepts::HasStdOstmOpLshift auto&... rem_args)
@@ -254,10 +234,7 @@ constexpr inline StrWA<Alloc> _strjoin2_backend(const StrWA<Alloc>& sep,
 	return ret;
 }
 
-template
-<
-	typename Alloc=std::allocator<char>
->
+template<typename Alloc=std::allocator<char>>
 constexpr inline StrWA<Alloc> strjoin2(const StrWA<Alloc>& sep,
 	const concepts::HasStdOstmOpLshift auto&... args)
 {
@@ -270,21 +247,15 @@ constexpr inline StrWA<Alloc> strjoin2(const StrWA<Alloc>& sep,
 		return StrWA<Alloc>();
 	}
 }
-template
-<
-	typename Alloc=std::allocator<char>
->
+template<typename Alloc=std::allocator<char>>
 constexpr inline StrWA<Alloc> strjoin2(const char* sep,
 	const concepts::HasStdOstmOpLshift auto&... args)
 {
 	return strjoin2<Alloc>(StrWA<Alloc>(sep), args...);
 }
 //--------
-template
-<
-	typename Alloc,
-	concepts::HasStdOstmOpLshift... ArgTs
->
+template<typename Alloc,
+	concepts::HasStdOstmOpLshift... ArgTs>
 constexpr inline StrWA<Alloc> strjoin(const StrWA<Alloc>& sep,
 	const std::tuple<ArgTs...>& args)
 {
@@ -297,21 +268,15 @@ constexpr inline StrWA<Alloc> strjoin(const StrWA<Alloc>& sep,
 		args
 	);
 }
-template
-<
-	concepts::HasStdOstmOpLshift... ArgTs
->
+template<concepts::HasStdOstmOpLshift... ArgTs>
 constexpr inline std::string strjoin(const char* sep,
 	const std::tuple<ArgTs...>& args)
 {
 	return strjoin(std::string(sep), args);
 }
 
-template
-<
-	typename Alloc,
-	concepts::HasStdOstmOpLshift... ArgTs
->
+template<typename Alloc,
+	concepts::HasStdOstmOpLshift... ArgTs>
 constexpr inline StrWA<Alloc> strjoin2(const StrWA<Alloc>& sep,
 	const std::tuple<ArgTs...>& args)
 {
@@ -324,21 +289,15 @@ constexpr inline StrWA<Alloc> strjoin2(const StrWA<Alloc>& sep,
 		args
 	);
 }
-template
-<
-	concepts::HasStdOstmOpLshift... ArgTs
->
+template<concepts::HasStdOstmOpLshift... ArgTs>
 constexpr inline std::string strjoin2(const char* sep,
 	const std::tuple<ArgTs...>& args)
 {
 	return strjoin2(std::string(sep), args);
 }
 //--------
-template
-<
-	typename CharAlloc=std::allocator<char>,
-	typename StrAlloc=std::allocator<StrWA<CharAlloc>>
->
+template<typename CharAlloc=std::allocator<char>,
+	typename StrAlloc=std::allocator<StrWA<CharAlloc>>>
 constexpr inline StrWA<CharAlloc> strjoin(const StrWA<CharAlloc>& sep,
 	const std::vector<StrWA<CharAlloc>, StrAlloc>& args)
 {
@@ -351,22 +310,16 @@ constexpr inline StrWA<CharAlloc> strjoin(const StrWA<CharAlloc>& sep,
 
 	return ret;
 }
-template
-<
-	typename CharAlloc=std::allocator<char>,
-	typename StrAlloc=std::allocator<StrWA<CharAlloc>>
->
+template<typename CharAlloc=std::allocator<char>,
+	typename StrAlloc=std::allocator<StrWA<CharAlloc>>>
 constexpr inline StrWA<CharAlloc> strjoin(const char* sep,
 	const std::vector<StrWA<CharAlloc>, StrAlloc>& args)
 {
 	return strjoin<CharAlloc, StrAlloc>(StrWA<CharAlloc>(sep), args);
 }
 
-template
-<
-	typename CharAlloc=std::allocator<char>,
-	typename StrAlloc=std::allocator<StrWA<CharAlloc>>
->
+template<typename CharAlloc=std::allocator<char>,
+	typename StrAlloc=std::allocator<StrWA<CharAlloc>>>
 constexpr inline StrWA<CharAlloc> strjoin2(const StrWA<CharAlloc>& sep,
 	const std::vector<StrWA<CharAlloc>, StrAlloc>& args)
 {
@@ -388,46 +341,37 @@ constexpr inline StrWA<CharAlloc> strjoin2(const StrWA<CharAlloc>& sep,
 
 	return ret;
 }
-template
-<
-	typename CharAlloc=std::allocator<char>,
-	typename StrAlloc=std::allocator<StrWA<CharAlloc>>
->
+template<typename CharAlloc=std::allocator<char>,
+	typename StrAlloc=std::allocator<StrWA<CharAlloc>>>
 constexpr inline StrWA<CharAlloc> strjoin2(const char* sep,
 	const std::vector<StrWA<CharAlloc>, StrAlloc>& args)
 {
 	return strjoin2<CharAlloc, StrAlloc>(StrWA<CharAlloc>(sep), args);
 }
 //--------
-constexpr inline std::string strappcom
-	(const concepts::HasStdOstmOpLshift auto&... args)
-{
-	return strjoin(", ", args...);
-}
-constexpr inline std::string strappcom2
-	(const concepts::HasStdOstmOpLshift auto&... args)
-{
-	return strjoin2(", ", args...);
-}
+//constexpr inline std::string strappcom
+//	(const concepts::HasStdOstmOpLshift auto&... args)
+//{
+//	return strjoin(", ", args...);
+//}
+//constexpr inline std::string strappcom2
+//	(const concepts::HasStdOstmOpLshift auto&... args)
+//{
+//	return strjoin2(", ", args...);
+//}
 
-//template
-//<
-//	typename Alloc
-//>
-//constexpr inline StrWA<Alloc> strappcom
-//	(const concepts::HasStdOstmOpLshift auto&... args)
-//{
-//	return strjoin<Alloc>(", ", args...);
-//}
-//template
-//<
-//	typename Alloc=std::allocator<char>
-//>
-//constexpr inline StrWA<Alloc> strappcom2
-//	(const concepts::HasStdOstmOpLshift auto&... args)
-//{
-//	return strjoin2<Alloc>(", ", args...);
-//}
+template<typename Alloc=std::allocator<char>>
+constexpr inline StrWA<Alloc> strappcom
+	(const concepts::HasStdOstmOpLshift auto&... args)
+{
+	return strjoin<Alloc>(", ", args...);
+}
+template<typename Alloc=std::allocator<char>>
+constexpr inline StrWA<Alloc> strappcom2
+	(const concepts::HasStdOstmOpLshift auto&... args)
+{
+	return strjoin2<Alloc>(", ", args...);
+}
 //--------
 } // namespace strings
 } // namespace liborangepower

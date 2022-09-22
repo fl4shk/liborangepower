@@ -2,7 +2,7 @@
 #define liborangepower_mpi_handler_class_hpp
 
 #include "misc/misc_includes.hpp"
-#include "misc/misc_output_classes.hpp"
+#include "misc/misc_output_funcs.hpp"
 #include <mpi.h>
 
 

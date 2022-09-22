@@ -4,7 +4,7 @@
 // src/file_pos_class.hpp
 
 #include "../misc/misc_includes.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 
 namespace liborangepower
 {

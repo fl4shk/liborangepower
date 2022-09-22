@@ -6,7 +6,7 @@
 
 
 #include "liborangepower_src/misc_includes.hpp"
-#include "liborangepower_src/misc_output_classes.hpp"
+#include "liborangepower_src/misc_output_funcs.hpp"
 #include "liborangepower_src/misc_utility_funcs.hpp"
 #include "liborangepower_src/gen_getter_setter_defines.hpp"
 #include "liborangepower_src/time_stuff.hpp"

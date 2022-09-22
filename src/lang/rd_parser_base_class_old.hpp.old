@@ -2,7 +2,7 @@
 #define liborangepower_rd_parser_base_class_hpp
 
 #include "../misc/misc_includes.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 #include "../misc/misc_input_classes.hpp"
 #include "../strings/sconcat_etc.hpp"
 

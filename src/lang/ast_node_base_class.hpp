@@ -6,7 +6,7 @@
 #include "../misc/misc_includes.hpp"
 #include "../metaprog_defines.hpp"
 #include "../containers/linked_list_classes.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 
 #include "ast_visitor_base_class.hpp"
 #include "file_pos_class.hpp"

@@ -4,7 +4,7 @@
 // src/misc_includes.hpp
 
 #include "liborangepower_src/misc_includes.hpp"
-#include "liborangepower_src/misc_output_classes.hpp"
+#include "liborangepower_src/misc_output_funcs.hpp"
 #include "liborangepower_src/misc_types.hpp"
 #include "liborangepower_src/misc_utility_funcs.hpp"
 #include "liborangepower_src/misc_bitwise_funcs.hpp"

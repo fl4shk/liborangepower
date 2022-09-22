@@ -10,7 +10,7 @@
 #include "liborangepower_src/misc/misc_defines.hpp"
 #include "liborangepower_src/misc/memwhatever_wrappers.hpp"
 #include "liborangepower_src/misc/misc_bitwise_funcs.hpp"
-#include "liborangepower_src/misc/misc_output_classes.hpp"
+#include "liborangepower_src/misc/misc_output_funcs.hpp"
 #include "liborangepower_src/cpp_magic.hpp"
 #include "liborangepower_src/range_funcs.hpp"
 #include "liborangepower_src/gen_class_innards_defines.hpp"

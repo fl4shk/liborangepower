@@ -2,7 +2,7 @@
 #define liborangepower_math_shape_2d_classes_hpp
 
 #include "../misc/misc_includes.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 #include "../strings/sconcat_etc.hpp"
 
 #include "../containers/std_hash_stuff.hpp"
@@ -73,9 +73,8 @@ public:		// functions
 	//--------
 };
 
-template<typename T, typename CharT,
-	typename Traits=std::char_traits<CharT>>
-inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
+template<typename T>
+constexpr inline std::ostream& operator << (std::ostream& os,
 	const Hit2<T>& arg)
 {
 	return misc_output::osprintout
@@ -136,13 +135,8 @@ public:		// functions
 	//--------
 };
 
-template
-<
-	typename T,
-	typename CharT,
-	typename Traits=std::char_traits<CharT>
->
-inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
+template<typename T>
+constexpr inline std::ostream& operator << (std::ostream& os,
 	const Sweep2<T>& arg)
 {
 	return misc_output::osprintout
@@ -169,7 +163,6 @@ inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
 		"}"
 	);
 }
-//--------
 //--------
 template<typename T>
 class LineSeg2
@@ -208,9 +201,8 @@ public:		// functions
 	//--------
 };
 
-template<typename T, typename CharT,
-	typename Traits=std::char_traits<CharT>>
-inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
+template<typename T>
+constexpr inline std::ostream& operator << (std::ostream& os,
 	const LineSeg2<T>& arg)
 {
 	return misc_output::osprintout
@@ -823,9 +815,8 @@ public:		// functions
 	//--------
 };
 
-template<typename T, typename CharT,
-	typename Traits=std::char_traits<CharT>>
-inline BasOstm<CharT, Traits>& operator << (BasOstm<CharT, Traits>& os,
+template<typename T>
+constexpr inline std::ostream& operator << (std::ostream& os,
 	const Rect2<T>& arg)
 {
 	return misc_output::osprintout

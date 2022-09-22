@@ -2,7 +2,7 @@
 #define liborangepower_binser_serialize_funcs_hpp
 
 #include "../misc/misc_includes.hpp"
-#include "../misc/misc_output_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 #include "../misc/misc_defines.hpp"
 #include "../math/vec2_classes.hpp"
 #include "../math/vec3_classes.hpp"
