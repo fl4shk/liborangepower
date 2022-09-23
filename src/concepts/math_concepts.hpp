@@ -58,43 +58,42 @@ template<typename T, typename ConvT=T>
 concept HasArithAsUnops
 	= HasArithAUnop<T, ConvT> && HasArithSUnop<T, ConvT>;
 //--------
-template<typename T, typename OtherT=T, typename ConvT=T>
+template<typename T, typename OtherT=T>
 concept HasCmpEqNeBinops = requires(T c, OtherT other)
 {
-	{ c == other } -> std::convertible_to<ConvT>;
-	{ c != other } -> std::convertible_to<ConvT>;
+	{ c == other } -> std::convertible_to<bool>;
+	{ c != other } -> std::convertible_to<bool>;
 };
 
-template<typename T, typename OtherT=T, typename ConvT=T>
+template<typename T, typename OtherT=T>
 concept HasCmpLtBinop = requires(T c, OtherT other)
 {
-	{ c < other } -> std::convertible_to<ConvT>;
+	{ c < other } -> std::convertible_to<bool>;
 };
-template<typename T, typename OtherT=T, typename ConvT=T>
+template<typename T, typename OtherT=T>
 concept HasCmpGtBinop = requires(T c, OtherT other)
 {
-	{ c > other } -> std::convertible_to<ConvT>;
+	{ c > other } -> std::convertible_to<bool>;
 };
-template<typename T, typename OtherT=T, typename ConvT=T>
+template<typename T, typename OtherT=T>
 concept HasCmpLeBinop = requires(T c, OtherT other)
 {
-	{ c <= other } -> std::convertible_to<ConvT>;
+	{ c <= other } -> std::convertible_to<bool>;
 };
-template<typename T, typename OtherT=T, typename ConvT=T>
+template<typename T, typename OtherT=T>
 concept HasCmpGeBinop = requires(T c, OtherT other)
 {
-	{ c >= other } -> std::convertible_to<ConvT>;
+	{ c >= other } -> std::convertible_to<bool>;
 };
 
-template<typename T, typename OtherT=T, typename ConvT=T>
+template<typename T, typename OtherT=T>
 concept HasCmpInequBinops
-	= HasCmpLtBinop<T, OtherT, ConvT> && HasCmpGtBinop<T, OtherT, ConvT>
-	&& HasCmpLeBinop<T, OtherT, ConvT> && HasCmpGeBinop<T, OtherT, ConvT>;
+	= HasCmpLtBinop<T, OtherT> && HasCmpGtBinop<T, OtherT>
+	&& HasCmpLeBinop<T, OtherT> && HasCmpGeBinop<T, OtherT>;
 
-template<typename T, typename OtherT=T, typename ConvT=T>
+template<typename T, typename OtherT=T>
 concept HasCmpAllBinops
-	= HasCmpEqNeBinops<T, OtherT, ConvT>
-	&& HasCmpInequBinops<T, OtherT, ConvT>;
+	= HasCmpEqNeBinops<T, OtherT> && HasCmpInequBinops<T, OtherT>;
 //--------
 template<typename T, typename OtherT=T, typename ConvT=T>
 concept HasBitwNonShiftBinops = requires(T c, OtherT other)

@@ -221,6 +221,9 @@ int main(int argc, char** argv)
 	printout("LineSeg2:\n");
 	test_intersect(test_vec_lseg);
 	//--------
+	//printout(Rect2<int>::build_w_end_pos(Vec2(1, 1), Vec2(-1, -1)), "\n");
+	//static_assert(concepts::HasCmpLtBinop<Vec2<int>>);
+
 	return 0;
 	//--------
 }

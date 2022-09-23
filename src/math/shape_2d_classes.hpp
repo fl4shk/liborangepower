@@ -246,9 +246,15 @@ public:		// variables
 		size_2d = Vec2<T>();
 public:		// functions
 	//--------
+	template<std::convertible_to<T> OtherElemT>
+	static constexpr inline Rect2 build_w_end_pos
+		(const Vec2<OtherElemT>& s_pos, const Vec2<OtherElemT>& end_pos)
+	{
+		return Rect2<T>{.pos=s_pos, .size_2d=cstm_abs(end_pos - s_pos)};
+	}
+	//--------
 	static inline Rect2 from_bv(const binser::Value& bv);
 	inline operator binser::Value () const;
-	//--------
 	//--------
 	//inline auto operator <=> (const Rect2& to_cmp) const = default;
 	template<std::convertible_to<T> OtherElemT>

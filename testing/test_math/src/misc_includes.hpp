@@ -21,6 +21,7 @@
 #include "liborangepower_src/binser/serialize_funcs.hpp"
 #include "liborangepower_src/binser_plus_json_stuff/bv_to_jv_casting_func.hpp"
 #include "liborangepower_src/metaprog_defines.hpp"
+#include "liborangepower_src/concepts/math_concepts.hpp"
 
 using namespace liborangepower::misc_output;
 using namespace liborangepower::integer_types;
@@ -31,5 +32,6 @@ namespace json = liborangepower::json;
 namespace binser = liborangepower::binser;
 using namespace liborangepower::containers;
 using namespace liborangepower::math;
+namespace concepts = liborangepower::concepts; 
 
 #endif		// src_misc_includes_hpp
