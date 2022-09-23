@@ -42,25 +42,23 @@ public:		// functions
 		}
 
 		//ret[FirstDerivedT::KIND_STR] = Func(FirstDerivedT::from_bv);
-		ret[FirstDerivedT::KIND_STR]
+		ret[FirstDerivedT::KIND_STR] 
 			= Func
-			(
-				[](const Value& bv) -> std::unique_ptr<BaseT>
-				{
-					if constexpr (std::is_constructible
-						<FirstDerivedT, Value>())
-					{
-						return std::unique_ptr<BaseT>
-							(new FirstDerivedT(bv));
-					}
-					else
-					{
-						return std::unique_ptr<BaseT>
-							(new FirstDerivedT
-								(FirstDerivedT::from_bv(bv)));
-					}
-				}
-			);
+		([](const Value& bv) -> std::unique_ptr<BaseT>
+		{
+			if constexpr (std::is_constructible
+				<FirstDerivedT, Value>())
+			{
+				return std::unique_ptr<BaseT>
+					(new FirstDerivedT(bv));
+			}
+			else
+			{
+				return std::unique_ptr<BaseT>
+					(new FirstDerivedT
+						(FirstDerivedT::from_bv(bv)));
+			}
+		});
 
 		return ret;
 	}
