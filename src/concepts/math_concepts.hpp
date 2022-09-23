@@ -129,22 +129,51 @@ concept HasArithAbsMbrFunc = requires(T c)
 {
 	{ c.abs() } -> std::convertible_to<ConvT>;
 };
+//--------
 template<typename T, typename ConvT=T>
 concept HasArithRecipMbrFunc = requires(T c)
 {
 	{ c.recip() } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithSqrtMbrFunc = requires(T c)
+concept HasArithLongDblRecipOp = requires(T c)
 {
-	{ c.sqrt() } -> std::convertible_to<ConvT>;
+	{ 1.0l / c } -> std::convertible_to<ConvT>;
 };
+template<typename T, typename ConvT=T>
+concept HasArithAnyRecipOp 
+	= HasArithRecipMbrFunc<T, ConvT>
+	|| HasArithLongDblRecipOp<T, ConvT>;
+//--------
 template<typename T, typename ConvT=T>
 concept HasArithDiv2MbrFunc = requires(T c)
 {
 	{ c.div_2() } -> std::convertible_to<ConvT>;
 };
+template<typename T, typename ConvT=T>
+concept HasArithIntDiv2Op = requires(T c)
+{
+	{ c / 2 } -> std::convertible_to<ConvT>;
+};
+template<typename T, typename ConvT=T>
+concept HasArithAnyDiv2Op
+	= HasArithDiv2MbrFunc<T, ConvT>
+	|| HasArithIntDiv2Op<T, ConvT>;
 //--------
+template<typename T, typename ConvT=T>
+concept HasArithSqrtMbrFunc = requires(T c)
+{
+	{ c.sqrt() } -> std::convertible_to<ConvT>;
+};
+template<typename T, typename ConvT=T>
+concept HasArithStdSqrtFunc = requires(T c)
+{
+	{ std::sqrt(c) } -> std::convertible_to<ConvT>;
+};
+template<typename T, typename ConvT=T>
+concept HasArithAnySqrtFunc
+	= HasArithSqrtMbrFunc<T, ConvT>
+	|| HasArithStdSqrtFunc<T, ConvT>;
 //--------
 } // namespace concepts
 } // namespace liborangepower

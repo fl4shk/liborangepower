@@ -246,11 +246,13 @@ public:		// variables
 		size_2d = Vec2<T>();
 public:		// functions
 	//--------
+	// This is intended to work with
 	template<std::convertible_to<T> OtherElemT>
-	static constexpr inline Rect2 build_w_end_pos
-		(const Vec2<OtherElemT>& s_pos, const Vec2<OtherElemT>& end_pos)
+	static constexpr inline Rect2 build_grid_r2_w_end_pos
+		(const Vec2<OtherElemT>& p0, const Vec2<OtherElemT>& p1)
 	{
-		return Rect2<T>{.pos=s_pos, .size_2d=cstm_abs(end_pos - s_pos)};
+		return Rect2<T>{.pos{.x=min_va(p0.x, p1.x), .y=min_va(p0.y, p1.y)},
+			.size_2d=cstm_abs(p1 - p0) + Vec2{1, 1}};
 	}
 	//--------
 	static inline Rect2 from_bv(const binser::Value& bv);

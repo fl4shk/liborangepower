@@ -9,48 +9,34 @@ namespace liborangepower
 namespace math
 {
 //--------
-template<typename FirstArgT, typename SecondArgT>
-constexpr inline FirstArgT max_va(const FirstArgT& arg_0,
-	const SecondArgT& arg_1)
+template<typename T>
+constexpr inline const T& max_va(const T& arg_0, const T& arg_1)
+	requires concepts::HasCmpLtBinop<T>
 {
-	if (arg_0 >= arg_1)
-	{
-		return arg_0;
-	}
-	else
-	{
-		return arg_1;
-	}
+	return (arg_0 < arg_1) ? arg_1 : arg_0;
 }
 
-template<typename FirstArgT, typename SecondArgT, typename... RemTs>
-constexpr inline FirstArgT max_va(const FirstArgT& arg_0, 
-	const SecondArgT& arg_1, RemTs... remaining_args )
+template<typename T>
+constexpr inline const T& max_va(const T& arg_0, const T& arg_1,
+	const std::same_as<T> auto&... rem_args)
+	requires concepts::HasCmpLtBinop<T>
 {
-	return max_va(max_va(arg_0, arg_1), remaining_args...);
+	return max_va<T>(max_va<T>(arg_0, arg_1), rem_args...);
 }
 
-
-template<typename FirstArgT, typename SecondArgT>
-constexpr inline FirstArgT min_va(const FirstArgT& arg_0, 
-	const SecondArgT& arg_1)
+template<typename T>
+constexpr inline const T& min_va(const T& arg_0, const T& arg_1)
+	requires concepts::HasCmpLtBinop<T>
 {
-	if (arg_0 <= arg_1)
-	{
-		return arg_0;
-	}
-	else
-	{
-		return arg_1;
-	}
+	return (arg_0 < arg_1) ? arg_0 : arg_1;
 }
 
-template<typename FirstArgT, typename SecondArgT, 
-	typename... RemTs>
-constexpr inline FirstArgT min_va(const FirstArgT& arg_0, 
-	const SecondArgT& arg_1, RemTs... remaining_args )
+template<typename T>
+constexpr inline const T& min_va(const T& arg_0, const T& arg_1,
+	const std::same_as<T> auto&... rem_args)
+	requires concepts::HasCmpLtBinop<T>
 {
-	return min_va(min_va(arg_0, arg_1), remaining_args...);
+	return min_va<T>(min_va<T>(arg_0, arg_1), rem_args...);
 }
 //--------
 //template<typename T>
@@ -73,7 +59,7 @@ constexpr inline FirstArgT min_va(const FirstArgT& arg_0,
 template<typename T>
 constexpr inline T clamp(const T& val, const T& min, const T& max)
 	requires
-		(concepts::HasCmpLtBinop<T> && concepts::HasCmpGtBinop<T>)
+	(concepts::HasCmpLtBinop<T> && concepts::HasCmpGtBinop<T>)
 {
 	//if (val < min)
 	//{
@@ -104,9 +90,9 @@ constexpr inline T clamp(const T& val, const T& min, const T& max)
 template<typename T>
 constexpr inline auto cstm_sign(const T& val)
 	requires 
-		(std::integral<T> || std::floating_point<T>
-		|| concepts::HasArithSignMbrFunc<T>
-		|| concepts::HasCmpLtBinop<T>)
+	(std::integral<T> || std::floating_point<T>
+	|| concepts::HasArithSignMbrFunc<T>
+	|| concepts::HasCmpLtBinop<T>)
 {
 	if constexpr (std::integral<T> || std::floating_point<T>)
 	{
@@ -125,9 +111,9 @@ constexpr inline auto cstm_sign(const T& val)
 template<typename T>
 constexpr inline auto cstm_abs(const T& val)
 	requires
-		(std::integral<T> || std::floating_point<T>
-		|| concepts::HasArithAbsMbrFunc<T>
-		|| (concepts::HasCmpLtBinop<T> && concepts::HasArithSUnop<T>))
+	(std::integral<T> || std::floating_point<T>
+	|| concepts::HasArithAbsMbrFunc<T>
+	|| (concepts::HasCmpLtBinop<T> && concepts::HasArithSUnop<T>))
 {
 	if constexpr (std::integral<T> || std::floating_point<T>)
 	{
@@ -143,7 +129,7 @@ constexpr inline auto cstm_abs(const T& val)
 	}
 }
 
-template<typename T>
+template<concepts::HasArithAnyRecipOp T>
 constexpr inline auto recip(const T& val)
 	requires (!std::integral<T>)
 {
@@ -164,7 +150,7 @@ constexpr inline auto recip(const T& val)
 		//return ret;
 	}
 }
-template<typename T>
+template<concepts::HasArithAnyDiv2Op T>
 constexpr inline auto div_2(const T& val)
 {
 	if constexpr (concepts::HasArithDiv2MbrFunc<T>)
@@ -176,7 +162,7 @@ constexpr inline auto div_2(const T& val)
 		return val / 2;
 	}
 }
-template<typename T>
+template<concepts::HasArithAnySqrtFunc T>
 constexpr inline auto cstm_sqrt(const T& val)
 {
 	if constexpr (concepts::HasArithSqrtMbrFunc<T>)
