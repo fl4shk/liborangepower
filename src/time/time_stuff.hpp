@@ -64,10 +64,10 @@ inline auto put_now_as_gmtime()
 	return std::put_time(now_as_gmtime(), "%Y-%m-%d %H:%M:%S %Z");
 }
 //--------
-template<typename RngT>
+template<typename RngT, typename T>
 concept CallableLikeRng = requires(RngT rng)
 {
-	{ rng() };
+	{ rng() } -> std::convertible_to<T>;
 };
 
 template<typename T, CallableLikeRng RngT>
@@ -95,10 +95,11 @@ inline auto rng_run(RngT& rng, const T& max, bool saturate=false)
 	return ret;
 }
 template<typename T, CallableLikeRng RngT>
-inline auto rng_run_mm(RngT& rng, const T& max, const T& min,
+inline auto rng_run_lim(RngT& rng, const T& lim_0, const T& lim_1,
 	bool saturate=false)
 {
-	return rng_run<T>(rng, math::cstm_abs(max - min), saturate) + min;
+	return rng_run<T>(rng, math::cstm_abs(lim_0 - lim_1), saturate)
+		+ math::min_va(lim_0, lim_1);
 }
 
 template<typename T, CallableLikeRng RngT>
