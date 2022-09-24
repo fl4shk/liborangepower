@@ -130,7 +130,9 @@ public:		// functions
 	//operator binser::Value () const;
 
 	void prep_init();
-	virtual void init(Engine* ecs_engine);
+protected:		// functions
+	virtual void _init(Engine* ecs_engine);
+public:		// functions
 	virtual void tick(Engine* ecs_engine);
 
 	GEN_GETTER_BY_VAL(did_init);

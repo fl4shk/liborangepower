@@ -63,7 +63,8 @@ void Sys::prep_init()
 	active.back_up_and_update(false);
 	active.back_up_and_update(true);
 }
-void Sys::init(Engine* ecs_engine)
+
+void Sys::_init(Engine* ecs_engine)
 {
 	// This should be implemented by derived classes
 
@@ -71,6 +72,7 @@ void Sys::init(Engine* ecs_engine)
 	//	_init_start(ecs_engine);
 	//	// unique logic for the derived class goes here
 }
+
 void Sys::tick(Engine* ecs_engine)
 {
 	// This should be implemented by derived classes
@@ -96,7 +98,7 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond)
 		{
 			if (!_did_init)
 			{
-				init(ecs_engine);
+				_init(ecs_engine);
 			}
 
 			return true;
