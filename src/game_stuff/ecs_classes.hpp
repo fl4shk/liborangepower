@@ -239,14 +239,21 @@ private:		// functions
 	////	EngineDerivedFromSys... RemSysTs>
 	//void _sys_deserialize(const binser::Value& bv);
 	//--------
-	void _inner_create(EntId id, FileNum file_num, bool mk_non_ser=false);
+	//void _inner_create(EntId id, FileNum file_num, bool mk_non_ser=false);
+	void _inner_create(EntId id, FileNum file_num, std::optional<CompMap>&&
+	s_comp_map);
 	//--------
 public:		// functions
 	//--------
-	EntId create(FileNum file_num, bool mk_non_ser=false);
-	inline EntId create_cfn(bool mk_non_ser=false)
+	//EntId create(FileNum file_num, bool mk_non_ser=false);
+	EntId create(FileNum file_num,
+		std::optional<CompMap>&& s_comp_map=std::nullopt);
+	//inline EntId create_cfn(bool mk_non_ser=false)
+	inline EntId create_cfn
+		(std::optional<CompMap>&& s_comp_map=std::nullopt)
 	{
-		return create(curr_file_num, mk_non_ser);
+		//return create(curr_file_num, mk_non_ser);
+		return create(curr_file_num, std::move(s_comp_map));
 	}
 
 	inline void sched_destroy(EntId id, FileNum file_num)

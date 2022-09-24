@@ -21,6 +21,7 @@ namespace ecs
 //{
 //}
 //--------
+//--------
 std::string Comp::kind_str() const
 {
 	return "";
@@ -265,19 +266,25 @@ void Engine::deserialize(const binser::Value& bv)
 //	}
 //}
 //--------
-void Engine::_inner_create(EntId id, FileNum file_num, bool mk_non_ser)
+//void Engine::_inner_create(EntId id, FileNum file_num, bool mk_non_ser)
+void Engine::_inner_create(EntId id, FileNum file_num,
+	std::optional<CompMap>&& s_comp_map)
 {
 	//engine_comp_map(file_num)[id] = CompMapSptr(new CompMap());
-	engine_comp_map(file_num)[id] = CompMap();
+	//engine_comp_map(file_num)[id] = CompMap();
+	engine_comp_map(file_num)[id]
+		= !s_comp_map ? CompMap() : std::move(*s_comp_map);
 
-	if (mk_non_ser)
-	{
-		insert_comp(id, CompSptr(new NonSerializable()), file_num);
-	}
+	//if (mk_non_ser)
+	//{
+	//	insert_comp(id, CompSptr(new NonSerializable()), file_num);
+	//}
 }
-EntId Engine::create(FileNum file_num, bool mk_non_ser)
+//EntId Engine::create(FileNum file_num, bool mk_non_ser)
+EntId Engine::create(FileNum file_num, std::optional<CompMap>&& s_comp_map)
 {
-	_inner_create(next_ent_id(file_num), file_num, mk_non_ser);
+	//_inner_create(next_ent_id(file_num), file_num, mk_non_ser);
+	_inner_create(next_ent_id(file_num), file_num, std::move(s_comp_map));
 
 	////_ent_id_to_comp_key_map[next_ent_id(file_num)]
 	////	= std::set<std::string>();
