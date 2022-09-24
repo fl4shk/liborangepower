@@ -288,7 +288,7 @@ public:		// functions
 	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
 	inline EntIdVec ent_id_vec_from_keys_any_v(FileNum file_num,
-		auto&&... args)
+		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
@@ -296,7 +296,8 @@ public:		// functions
 
 		return ent_id_vec_from_keys_any(key_set, file_num);
 	}
-	inline EntIdVec ent_id_vec_from_keys_any_cfn_v(auto&&... args)
+	inline EntIdVec ent_id_vec_from_keys_any_cfn_v
+		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_vec_from_keys_any_v(curr_file_num, args...);
 	}
@@ -304,7 +305,7 @@ public:		// functions
 	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
 	inline EntIdSet ent_id_set_from_keys_any_v(FileNum file_num,
-		auto&&... args)
+		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
@@ -312,7 +313,8 @@ public:		// functions
 
 		return ent_id_set_from_keys_any(key_set, file_num);
 	}
-	inline EntIdSet ent_id_set_from_keys_any_cfn_v(auto&&... args)
+	inline EntIdSet ent_id_set_from_keys_any_cfn_v
+		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_set_from_keys_any_v(curr_file_num, args...);
 	}
@@ -320,7 +322,7 @@ public:		// functions
 	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
 	inline EntIdVec ent_id_vec_from_keys_all_v(FileNum file_num,
-		auto&&... args)
+		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
@@ -328,7 +330,8 @@ public:		// functions
 
 		return ent_id_vec_from_keys_all(key_set, file_num);
 	}
-	inline EntIdVec ent_id_vec_from_keys_all_cfn_v(auto&&... args)
+	inline EntIdVec ent_id_vec_from_keys_all_cfn_v
+		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_vec_from_keys_all_v(curr_file_num, args...);
 	}
@@ -336,7 +339,7 @@ public:		// functions
 	EntIdSet ent_id_set_from_keys_all(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
 	inline EntIdSet ent_id_set_from_keys_all_v(FileNum file_num,
-		auto&&... args)
+		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
@@ -344,7 +347,8 @@ public:		// functions
 
 		return ent_id_set_from_keys_all(key_set, file_num);
 	}
-	inline EntIdSet ent_id_set_from_keys_all_cfn_v(auto&&... args)
+	inline EntIdSet ent_id_set_from_keys_all_cfn_v
+		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_set_from_keys_all_v(curr_file_num, args...);
 	}
