@@ -62,7 +62,7 @@ constexpr inline void append_sconcat
 	(std::vector<StrWA<CharAlloc>, StrAlloc>& ret,
 	const concepts::HasStdOstmOpLshift auto&... args)
 {
-	( ret.push_back(sconcat<CharAlloc>(args)), ...);
+	(ret.push_back(sconcat<CharAlloc>(args)), ...);
 
 	//if constexpr (sizeof...(rem_args) > 0)
 	//{
@@ -208,7 +208,7 @@ constexpr inline StrWA<Alloc> strjoin(const StrWA<Alloc>& sep,
 	{
 		temp += sconcat<Alloc>(test_arg, sep);
 	};
-	( append(args), ... );
+	(append(args), ...);
 	return temp;
 }
 template<typename Alloc=std::allocator<char>>

@@ -162,9 +162,13 @@ int main(int argc, char** argv)
 	//static_assert(concepts::HasCmpLtBinop<Vec2<int>>);
 
 	IndCircLinkList<int> test_cll;
+	//PtrCircLinkList<int> test_cll;
 	test_cll.push_front(3);
 	test_cll.push_back(5);
 	test_cll.push_front(6);
+	//const auto& test_cll
+	//	//= make_ind_cll<int>(6, 3, 5);
+	//	= make_ind_cll(6, 3, 5);
 
 	printout(test_cll, "\n");
 	//for (const auto& item: test_cll)

@@ -16,426 +16,444 @@ namespace liborangepower
 namespace containers
 {
 //--------
-template<typename T>
-class PtrCircLinkList
-{
-public:		// types
-	//--------
-	using ElemT = T;
-	//--------
-	class Node final
-	{
-		friend class PtrCircLinkList;
-	public:		// types
-		//template<typename OtherT>
-		//using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
-		//	<OtherT>::value, Node>;
-
-		//template<typename OtherT>
-		//using MoveConstructEnIf = std::enable_if<std::is_move_assignable
-		//	<OtherT>::value, Node>;
-	private:		// variables
-		Node * _next = nullptr, * _prev = nullptr;
-	public:		// variables
-		T data;
-	public:		// functions
-		Node() = default;
-
-		static inline Node construct(const T& s_data)
-		{
-			Node ret;
-			ret.data = s_data;
-			return ret;
-		}
-
-		//template<typename OtherT=T>
-		//static inline Node construct(T&& s_data)
-		//{
-		//	Node ret;
-		//	ret.data = std::move(s_data);
-		//	return ret;
-		//}
-
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
-
-		~Node() = default;
-
-		GEN_GETTER_BY_VAL(next)
-		GEN_GETTER_BY_VAL(prev)
-	};
-	//--------
-	template<bool _reverse> 
-	class Iterator final
-	{
-		friend class PtrCircLinkList;
-	public:		// constants
-		static constexpr bool
-			REVERSE = _reverse;
-	private:		// variables
-		Node* _node = nullptr;
-	public:		// functions
-		Iterator() = default;
-		inline Iterator(Node* s_node)
-			: _node(s_node)
-		{
-		}
-
-		//GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Iterator);
-		//GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Iterator);
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Iterator);
-
-		~Iterator() = default;
-
-		inline Iterator& operator ++ ()
-		{
-			_node = !REVERSE ? _node->next() : _node->prev();
-			return *this;
-		}
-		inline Iterator& operator -- ()
-		{
-			_node = !REVERSE ? _node->prev() : _node->next();
-			return *this;
-		}
-		//inline operator Node* () const
-		//{
-		//	return _node;
-		//}
-
-		//inline T& operator * () const
-		//inline Node& operator * ()
-		//{
-		//	return *_node;
-		//}
-		inline T& operator * () const
-		{
-			return _node->data;
-		}
-		inline T* operator -> () const
-		{
-			return &_node->data;
-		}
-
-		inline bool operator == (const Iterator& other) const
-		{
-			return (_node == other._node);
-		}
-		inline bool operator != (const Iterator& other) const
-		{
-			//return (!((*this) == other));
-			return (_node != other._node);
-		}
-	};
-	//--------
-	//template<bool _reverse, typename OtherT>
-	//using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
-	//	<OtherT>::value, Iterator<_reverse>>;
-	//template<bool _reverse, typename OtherT>
-	//using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
-	//	<OtherT>::value, Iterator<_reverse>>;
-	//--------
-private:		// variables
-	//--------
-	Node _head;
-	//--------
-public:		// functions
-	//--------
-	inline PtrCircLinkList()
-	{
-		_head._next = &_head;
-		_head._prev = &_head;
-	}
-	//GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList);
-	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList)
-	virtual inline ~PtrCircLinkList()
-	{
-		//for (auto iter=_head.next(); iter!=&_head; )
-		//{
-		//	auto to_delete = iter;
-		//	iter = iter->next;
-		//	delete to_delete;
-		//}
-
-		//while (_head._prev != &_head)
-		//{
-		//	remove_after(&_head);
-		//}
-		while (!empty())
-		{
-			//remove(begin());
-			pop_front();
-		}
-	}
-	//--------
-	inline Node* head()
-	{
-		return &_head;
-	}
-	inline bool empty() const
-	{
-		return (_head._next == &_head);
-	}
-	//--------
-	inline Iterator<false> begin()
-	{
-		return Iterator<false>(head()->next());
-	}
-	inline const Iterator<false> begin() const
-	{
-		return Iterator<false>(head()->next());
-	}
-	inline Iterator<false> end()
-	{
-		return Iterator<false>(head());
-	}
-	inline const Iterator<false> end() const
-	{
-		return Iterator<false>(head());
-	}
-
-	inline Iterator<true> rbegin()
-	{
-		return Iterator<true>(_head._prev);
-	}
-	inline const Iterator<true> rbegin() const
-	{
-		return Iterator<true>(_head._prev);
-	}
-	inline Iterator<true> rend()
-	{
-		return Iterator<true>(_head._prev->_next);
-	}
-	inline const Iterator<true> rend() const
-	{
-		return Iterator<true>(_head._prev->_next);
-	}
-
-	inline const Iterator<false> cbegin() const
-	{
-		return Iterator<false>(_head._next);
-	}
-	inline const Iterator<false> cend() const
-	{
-		return Iterator<false>(_head._next->_prev);
-	}
-	inline const Iterator<true> crbegin() const
-	{
-		return Iterator<true>(_head._prev);
-	}
-	inline const Iterator<true> crend() const
-	{
-		return Iterator<true>(_head._prev->_next);
-	}
-	//--------
-	bool contains(Node* where) const
-	{
-		//for (auto iter : *this)
-		for (auto iter=cbegin(); iter!=cend(); ++iter)
-		{
-			if (where == iter)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-	size_t size() const
-	{
-		size_t ret = 0;
-
-		//for (const auto& item: *this)
-		for (auto iter=cbegin(); iter!=cend(); ++iter)
-		{
-			++ret;
-		}
-
-		return ret;
-	}
-	//--------
-	template<bool reverse=false>
-	inline Iterator<reverse> front()
-	{
-		return Iterator<reverse>(_head._next);
-	}
-	template<bool reverse=false>
-	inline Iterator<reverse> back()
-	{
-		return Iterator<reverse>(_head._prev);
-	}
-	//--------
-	//template<bool reverse=false>
-	//inline UpdateByCopyEnIf<reverse>::type push_front
-	//	(const T& to_push)
-	template<bool reverse=false>
-	inline Iterator<reverse> push_front(const T& to_push)
-	{
-		return insert_after<reverse>(head(), to_push);
-	}
-	//template<bool reverse=false>
-	//inline UpdateByMoveEnIf<reverse>::type push_front
-	//	(T&& to_push)
-	template<bool reverse=false>
-	inline Iterator<reverse> push_front(T&& to_push)
-	{
-		return insert_after<reverse>(head(), std::move(to_push));
-	}
-	template<bool reverse=false>
-	inline Iterator<reverse> push_back(const T& to_push)
-	{
-		return insert_before<reverse>(head(), to_push);
-	}
-	template<bool reverse=false>
-	inline Iterator<reverse> push_back(T&& to_push)
-	{
-		return insert_before<reverse, T>(head(), std::move(to_push));
-	}
-	inline void pop_front()
-	{
-		remove_after(head());
-	}
-	inline void pop_back()
-	{
-		remove_before(head());
-	}
-	//--------
-	template<bool reverse=false>
-	inline Iterator<reverse> insert_before(Node* where,
-		const T& to_insert)
-	{
-		Node* node = new Node();
-		node->data = to_insert;
-		return _inner_insert_before<reverse>(where, node);
-	}
-	template<bool reverse=false>
-	inline Iterator<reverse> insert_before(Node* where, T&& to_insert)
-	{
-		Node* node = new Node();
-		node->data = std::move(to_insert);
-		return _inner_insert_before<reverse>(where, node);
-	}
-
-	template<bool reverse=false>
-	inline Iterator<reverse> insert_after(Node* where,
-		const T& to_insert)
-	{
-		Node* node = new Node();
-		node->data = to_insert;
-		return _inner_insert_after<reverse>(where, node);
-	}
-	template<bool reverse=false>
-	inline Iterator<reverse> insert_after(Node* where, T&& to_insert)
-	{
-		Node* node = new Node();
-		node->data = std::move(to_insert);
-		return _inner_insert_after<reverse>(where, node);
-	}
-	//--------
-	inline void remove_before(Node* where)
-	{
-		auto old_prev = where->_prev;
-
-		auto old_prev_prev = old_prev->_prev;
-
-		old_prev_prev->_next = where;
-		where->_prev = old_prev_prev;
-
-		delete old_prev;
-	}
-	inline void remove_after(Node* where)
-	{
-		auto old_next = where->_next;
-		auto old_next_next = old_next->_next;
-
-		old_next_next->_prev = where;
-		where->_next = old_next_next;
-
-		delete old_next;
-	}
-	inline void remove(Node* where)
-	{
-		auto old_next = where->_next;
-		auto old_prev = where->_prev;
-
-		old_next->_prev = old_prev;
-		old_prev->_next = old_next;
-
-		delete where;
-	}
-	//--------
-private:		// functions
-	//--------
-	template<bool reverse=false>
-	inline Iterator<reverse> _inner_insert_before(Node* where,
-		Node* what)
-	{
-		auto old_prev = where->_prev;
-
-		old_prev->_next = what;
-		what->_prev = old_prev;
-
-		where->_prev = what;
-		what->_next = where;
-
-		return Iterator<reverse>(what);
-	}
-	template<bool reverse=false>
-	inline Iterator<reverse> _inner_insert_after(Node* where,
-		Node* what)
-	{
-		auto old_next = where->_next;
-
-		old_next->_prev = what;
-		what->_next = old_next;
-
-		where->_next = what;
-		what->_prev = where;
-
-		return Iterator<reverse>(what);
-	}
-	//--------
-};
-
-template<typename T>
-constexpr inline bool is_ptr_circ_link_list()
-{
-	return concepts::is_specialization<T, PtrCircLinkList>();
-}
-
-template<typename T>
-constexpr inline std::ostream& operator << (std::ostream& os,
-	const PtrCircLinkList<T>& to_print)
-{
-	os << "{";
-
-	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
-	{
-		os << iter->data;
-
-		auto temp_iter = iter;
-		++temp_iter;
-
-		if (temp_iter != to_print.end())
-		{
-			os << ",";
-		}
-		//os << "\n";
-	}
-
-	os << "}";
-	return os;
-}
+//template<typename T>
+//class PtrCircLinkList
+//{
+//public:		// types
+//	//--------
+//	using ElemT = T;
+//	//--------
+//	class Node final
+//	{
+//		friend class PtrCircLinkList;
+//	public:		// types
+//		//template<typename OtherT>
+//		//using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
+//		//	<OtherT>::value, Node>;
+//
+//		//template<typename OtherT>
+//		//using MoveConstructEnIf = std::enable_if<std::is_move_assignable
+//		//	<OtherT>::value, Node>;
+//	private:		// variables
+//		Node * _next = nullptr, * _prev = nullptr;
+//	public:		// variables
+//		T data;
+//	public:		// functions
+//		Node() = default;
+//
+//		static inline Node construct(const T& s_data)
+//		{
+//			Node ret;
+//			ret.data = s_data;
+//			return ret;
+//		}
+//
+//		//template<typename OtherT=T>
+//		//static inline Node construct(T&& s_data)
+//		//{
+//		//	Node ret;
+//		//	ret.data = std::move(s_data);
+//		//	return ret;
+//		//}
+//
+//		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
+//
+//		~Node() = default;
+//
+//		GEN_GETTER_BY_VAL(next)
+//		GEN_GETTER_BY_VAL(prev)
+//	};
+//	//--------
+//	template<bool _reverse> 
+//	class Iterator final
+//	{
+//		friend class PtrCircLinkList;
+//	public:		// constants
+//		static constexpr bool
+//			REVERSE = _reverse;
+//	private:		// variables
+//		Node* _node = nullptr;
+//	public:		// functions
+//		Iterator() = default;
+//		inline Iterator(Node* s_node)
+//			: _node(s_node)
+//		{
+//		}
+//
+//		//GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Iterator);
+//		//GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(Iterator);
+//		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Iterator);
+//
+//		~Iterator() = default;
+//
+//		inline Iterator& operator ++ ()
+//		{
+//			_node = !REVERSE ? _node->next() : _node->prev();
+//			return *this;
+//		}
+//		inline Iterator& operator -- ()
+//		{
+//			_node = !REVERSE ? _node->prev() : _node->next();
+//			return *this;
+//		}
+//		//inline operator Node* () const
+//		//{
+//		//	return _node;
+//		//}
+//
+//		//inline T& operator * () const
+//		//inline Node& operator * ()
+//		//{
+//		//	return *_node;
+//		//}
+//		inline T& operator * () const
+//		{
+//			return _node->data;
+//		}
+//		inline T* operator -> () const
+//		{
+//			return &_node->data;
+//		}
+//
+//		inline bool operator == (const Iterator& other) const
+//		{
+//			return (_node == other._node);
+//		}
+//		inline bool operator != (const Iterator& other) const
+//		{
+//			//return (!((*this) == other));
+//			return (_node != other._node);
+//		}
+//	};
+//	//--------
+//	//template<bool _reverse, typename OtherT>
+//	//using UpdateByCopyEnIf = std::enable_if<std::is_copy_assignable
+//	//	<OtherT>::value, Iterator<_reverse>>;
+//	//template<bool _reverse, typename OtherT>
+//	//using UpdateByMoveEnIf = std::enable_if<std::is_move_assignable
+//	//	<OtherT>::value, Iterator<_reverse>>;
+//	//--------
+//private:		// variables
+//	//--------
+//	Node _head;
+//	//--------
+//public:		// functions
+//	//--------
+//	inline PtrCircLinkList()
+//	{
+//		_head._next = &_head;
+//		_head._prev = &_head;
+//	}
+//	//GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList);
+//	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList)
+//	virtual inline ~PtrCircLinkList()
+//	{
+//		//for (auto iter=_head.next(); iter!=&_head; )
+//		//{
+//		//	auto to_delete = iter;
+//		//	iter = iter->next;
+//		//	delete to_delete;
+//		//}
+//
+//		//while (_head._prev != &_head)
+//		//{
+//		//	remove_after(&_head);
+//		//}
+//		while (!empty())
+//		{
+//			//remove(begin());
+//			pop_front();
+//		}
+//	}
+//	//--------
+//	inline Node* head()
+//	{
+//		return &_head;
+//	}
+//	inline const Node* head() const
+//	{
+//		return &_head;
+//	}
+//	inline bool empty() const
+//	{
+//		return (_head._next == &_head);
+//	}
+//	//--------
+//	inline Iterator<false> begin()
+//	{
+//		return Iterator<false>(head()->next());
+//	}
+//	inline const Iterator<false> begin() const
+//	{
+//		return Iterator<false>(head()->next());
+//	}
+//	inline Iterator<false> end()
+//	{
+//		return Iterator<false>(head());
+//	}
+//	inline const Iterator<false> end() const
+//	{
+//		return Iterator<false>(head());
+//	}
+//
+//	inline Iterator<true> rbegin()
+//	{
+//		return Iterator<true>(_head._prev);
+//	}
+//	inline const Iterator<true> rbegin() const
+//	{
+//		return Iterator<true>(_head._prev);
+//	}
+//	inline Iterator<true> rend()
+//	{
+//		return Iterator<true>(_head._prev->_next);
+//	}
+//	inline const Iterator<true> rend() const
+//	{
+//		return Iterator<true>(_head._prev->_next);
+//	}
+//
+//	inline const Iterator<false> cbegin() const
+//	{
+//		return Iterator<false>(_head._next);
+//	}
+//	inline const Iterator<false> cend() const
+//	{
+//		return Iterator<false>(_head._next->_prev);
+//	}
+//	inline const Iterator<true> crbegin() const
+//	{
+//		return Iterator<true>(_head._prev);
+//	}
+//	inline const Iterator<true> crend() const
+//	{
+//		return Iterator<true>(_head._prev->_next);
+//	}
+//	//--------
+//	bool contains(Node* where) const
+//	{
+//		//for (auto iter : *this)
+//		for (auto iter=cbegin(); iter!=cend(); ++iter)
+//		{
+//			if (where == iter)
+//			{
+//				return true;
+//			}
+//		}
+//
+//		return false;
+//	}
+//	size_t size() const
+//	{
+//		size_t ret = 0;
+//
+//		//for (const auto& item: *this)
+//		for (auto iter=cbegin(); iter!=cend(); ++iter)
+//		{
+//			++ret;
+//		}
+//
+//		return ret;
+//	}
+//	//--------
+//	template<bool reverse=false>
+//	inline Iterator<reverse> front()
+//	{
+//		return Iterator<reverse>(_head._next);
+//	}
+//	template<bool reverse=false>
+//	inline Iterator<reverse> back()
+//	{
+//		return Iterator<reverse>(_head._prev);
+//	}
+//	//--------
+//	//template<bool reverse=false>
+//	//inline UpdateByCopyEnIf<reverse>::type push_front
+//	//	(const T& to_push)
+//	template<bool reverse=false>
+//	inline Iterator<reverse> push_front(const T& to_push)
+//	{
+//		return insert_after<reverse>(head(), to_push);
+//	}
+//	//template<bool reverse=false>
+//	//inline UpdateByMoveEnIf<reverse>::type push_front
+//	//	(T&& to_push)
+//	template<bool reverse=false>
+//	inline Iterator<reverse> push_front(T&& to_push)
+//	{
+//		return insert_after<reverse>(head(), std::move(to_push));
+//	}
+//	template<bool reverse=false>
+//	inline Iterator<reverse> push_back(const T& to_push)
+//	{
+//		return insert_before<reverse>(head(), to_push);
+//	}
+//	template<bool reverse=false>
+//	inline Iterator<reverse> push_back(T&& to_push)
+//	{
+//		return insert_before<reverse, T>(head(), std::move(to_push));
+//	}
+//	inline void pop_front()
+//	{
+//		remove_after(head());
+//	}
+//	inline void pop_back()
+//	{
+//		remove_before(head());
+//	}
+//	//--------
+//	template<bool reverse=false>
+//	inline Iterator<reverse> insert_before(Node* where,
+//		const T& to_insert)
+//	{
+//		Node* node = new Node();
+//		node->data = to_insert;
+//		return _inner_insert_before<reverse>(where, node);
+//	}
+//	template<bool reverse=false>
+//	inline Iterator<reverse> insert_before(Node* where, T&& to_insert)
+//	{
+//		Node* node = new Node();
+//		node->data = std::move(to_insert);
+//		return _inner_insert_before<reverse>(where, node);
+//	}
+//
+//	template<bool reverse=false>
+//	inline Iterator<reverse> insert_after(Node* where,
+//		const T& to_insert)
+//	{
+//		Node* node = new Node();
+//		node->data = to_insert;
+//		return _inner_insert_after<reverse>(where, node);
+//	}
+//	template<bool reverse=false>
+//	inline Iterator<reverse> insert_after(Node* where, T&& to_insert)
+//	{
+//		Node* node = new Node();
+//		node->data = std::move(to_insert);
+//		return _inner_insert_after<reverse>(where, node);
+//	}
+//	//--------
+//	inline void remove_before(Node* where)
+//	{
+//		auto old_prev = where->_prev;
+//
+//		auto old_prev_prev = old_prev->_prev;
+//
+//		old_prev_prev->_next = where;
+//		where->_prev = old_prev_prev;
+//
+//		delete old_prev;
+//	}
+//	inline void remove_after(Node* where)
+//	{
+//		auto old_next = where->_next;
+//		auto old_next_next = old_next->_next;
+//
+//		old_next_next->_prev = where;
+//		where->_next = old_next_next;
+//
+//		delete old_next;
+//	}
+//	inline void remove(Node* where)
+//	{
+//		auto old_next = where->_next;
+//		auto old_prev = where->_prev;
+//
+//		old_next->_prev = old_prev;
+//		old_prev->_next = old_next;
+//
+//		delete where;
+//	}
+//	//--------
+//private:		// functions
+//	//--------
+//	template<bool reverse=false>
+//	inline Iterator<reverse> _inner_insert_before(Node* where,
+//		Node* what)
+//	{
+//		auto old_prev = where->_prev;
+//
+//		old_prev->_next = what;
+//		what->_prev = old_prev;
+//
+//		where->_prev = what;
+//		what->_next = where;
+//
+//		return Iterator<reverse>(what);
+//	}
+//	template<bool reverse=false>
+//	inline Iterator<reverse> _inner_insert_after(Node* where,
+//		Node* what)
+//	{
+//		auto old_next = where->_next;
+//
+//		old_next->_prev = what;
+//		what->_next = old_next;
+//
+//		where->_next = what;
+//		what->_prev = where;
+//
+//		return Iterator<reverse>(what);
+//	}
+//	//--------
+//};
+//
+//template<typename T>
+//constexpr inline bool is_ptr_circ_link_list()
+//{
+//	return concepts::is_specialization<T, PtrCircLinkList>();
+//}
+//
+//template<typename T>
+//constexpr inline std::ostream& operator << (std::ostream& os,
+//	const PtrCircLinkList<T>& to_print)
+//{
+//	os << "{";
+//
+//	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
+//	{
+//		//os << iter->data;
+//		os << *iter;
+//
+//		auto temp_iter = iter;
+//		++temp_iter;
+//
+//		if (temp_iter != to_print.end())
+//		{
+//			os << ",";
+//		}
+//		//os << "\n";
+//	}
+//
+//	os << "}";
+//	return os;
+//}
+//
+//template<typename T>
+//PtrCircLinkList<T> make_ptr_cll(T&& first_arg,
+//	std::same_as<T> auto&&... rem_args)
+//{
+//	PtrCircLinkList<T> ret;
+//
+//	ret.push_back(std::move(first_arg));
+//
+//	(ret.push_back(std::move(rem_args)), ...);
+//
+//	return ret;
+//}
 //--------
-template<typename ArgIndexT>
+template<std::integral ArgIndexT>
 static constexpr ArgIndexT IND_CLL_NULL_INDEX = -1;
 
-template<typename T, typename ArgIndexT, typename ArgIndexAllocT,
+template<typename T, std::integral ArgIndexT, typename ArgIndexAllocT,
 	typename ArgNodeAllocT>
 class IndCircLinkList;
 
-template<typename T, typename ArgIndexT>
+template<typename T, std::integral ArgIndexT>
 class IndCllNode final
 {
-	template<typename, typename, typename, typename>
+	template<typename, std::integral, typename, typename>
 	friend class IndCircLinkList;
 public:		// types
 	//template<typename OtherT>
@@ -477,7 +495,7 @@ public:		// functions
 	GEN_GETTER_BY_VAL(prev);
 };
 
-template<typename T, typename ArgIndexT=size_t,
+template<typename T, std::integral ArgIndexT=size_t,
 	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
 	typename ArgNodeAllocT=std::allocator<IndCllNode<T, ArgIndexT>>>
 class IndCircLinkList
@@ -846,7 +864,7 @@ constexpr inline bool is_ind_circ_link_list()
 	return concepts::is_specialization<T, IndCircLinkList>();
 }
 
-//template<typename T, typename ArgIndexT,
+//template<typename T, std::integral ArgIndexT,
 //	template<typename...> typename Alloc,
 //	typename... RemAllocTs>
 //std::ostream& operator << (std::ostream& os,
@@ -876,6 +894,21 @@ constexpr std::ostream& operator << (std::ostream& os,
 
 	os << "}";
 	return os;
+}
+
+template<typename T, std::integral ArgIndexT=size_t,
+	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
+	typename ArgNodeAllocT=std::allocator<IndCllNode<T, ArgIndexT>>>
+IndCircLinkList<T, ArgIndexT, ArgIndexAllocT, ArgNodeAllocT>
+	make_ind_cll(T&& first_arg, std::same_as<T> auto&&... rem_args)
+{
+	IndCircLinkList<T, ArgIndexT, ArgIndexAllocT, ArgNodeAllocT> ret;
+
+	ret.push_back(std::move(first_arg));
+
+	(ret.push_back(std::move(rem_args)), ...);
+
+	return ret;
 }
 //--------
 } // namespace containers

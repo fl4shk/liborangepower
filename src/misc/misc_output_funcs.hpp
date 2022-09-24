@@ -21,12 +21,6 @@ namespace misc_output
 constexpr inline std::ostream& osprintout(std::ostream& os,
 	concepts::HasStdOstmOpLshift auto&&... args)
 {
-	//if constexpr (sizeof...(args) > 0)
-	//{
-	//	//AnyPrintoutBackend::func(os, args...);
-
-	//}
-
 	auto func = [](std::ostream& os, auto&& first_arg) -> void
 	{
 		//typedef typename std::remove_reference_t<decltype(first_arg)>
@@ -77,7 +71,7 @@ constexpr inline std::ostream& osprintout(std::ostream& os,
 		}
 	};
 
-	( func(os, std::move(args)), ... );
+	(func(os, std::move(args)), ...);
 
 	return os;
 }

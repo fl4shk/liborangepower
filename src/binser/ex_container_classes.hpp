@@ -86,7 +86,7 @@ constexpr inline bool is_deque_ex()
 	return concepts::is_specialization<T, DequeEx>();
 }
 //--------
-template<typename T, typename ArgIndexT=size_t,
+template<typename T, std::integral ArgIndexT=size_t,
 	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
 	typename ArgNodeAllocT=std::allocator
 		<liborangepower::containers::IndCllNode<T, ArgIndexT>>>

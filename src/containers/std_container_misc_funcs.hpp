@@ -11,42 +11,41 @@ namespace containers
 {
 //--------
 // `std::tuple` stuff
-template<size_t index, typename FirstArgT, typename... RemArgTs>
-inline auto _tuple_rm_last_backend
-	(const std::tuple<FirstArgT, RemArgTs...>& tup)
-{
-	constexpr auto
-		tup_cnt = std::tuple_size<std::remove_cvref_t<decltype(tup)>>{};
-
-	if constexpr (index < tup_cnt)
-	{
-		return std::tuple_cat(std::make_tuple(std::get<index>(tup)),
-			_tuple_rm_last_backend<index + size_t(1)>(tup));
-	}
-	else // if constexpr (index >= tup_cnt)
-	{
-		return std::make_tuple();
-	}
-}
-template<typename FirstArgT, typename... RemArgTs>
-inline auto tuple_rm_last(const std::tuple<FirstArgT, RemArgTs...>& tup)
-{
-	return _tuple_rm_last_backend<0>(tup);
-}
-
-inline auto make_tuple_rm_last(const auto& first_arg,
-	const auto&... rem_args)
-{
-	if constexpr (sizeof...(rem_args) > 0)
-	{
-		return std::tuple_cat(std::make_tuple(first_arg),
-			make_tuple_rm_last(rem_args...));
-	}
-	else // if constexpr (sizeof...(rem_args) == 0)
-	{
-		return std::make_tuple();
-	}
-}
+//template<size_t index, typename FirstArgT, typename... RemArgTs>
+//inline auto _tuple_rm_last_backend
+//	(const std::tuple<FirstArgT, RemArgTs...>& tup)
+//{
+//	constexpr auto
+//		tup_cnt = std::tuple_size<std::remove_cvref_t<decltype(tup)>>{};
+//
+//	if constexpr (index < tup_cnt)
+//	{
+//		return std::tuple_cat(std::make_tuple(std::get<index>(tup)),
+//			_tuple_rm_last_backend<index + size_t(1)>(tup));
+//	}
+//	else // if constexpr (index >= tup_cnt)
+//	{
+//		return std::make_tuple();
+//	}
+//}
+//template<typename FirstArgT, typename... RemArgTs>
+//inline auto tuple_rm_last(const std::tuple<FirstArgT, RemArgTs...>& tup)
+//{
+//	return _tuple_rm_last_backend<0>(tup);
+//}
+//
+//inline auto make_tuple_rm_last(auto&& first_arg, auto&&... rem_args)
+//{
+//	if constexpr (sizeof...(rem_args) > 0)
+//	{
+//		return std::tuple_cat(std::make_tuple(std::move(first_arg)),
+//			make_tuple_rm_last(std::move(rem_args)...));
+//	}
+//	else // if constexpr (sizeof...(rem_args) == 0)
+//	{
+//		return std::make_tuple();
+//	}
+//}
 
 template
 <
