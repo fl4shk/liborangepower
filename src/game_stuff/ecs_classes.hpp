@@ -50,6 +50,11 @@ using SysSptr = std::shared_ptr<Sys>;
 using SysMap = std::unordered_map<std::string, SysSptr>;
 
 using StrKeySet = std::unordered_set<std::string>;
+
+using EngineInsertSearchMultiRet
+	= std::pair<bool, std::unordered_map<std::string, bool>>;
+using EngineEraseMultiRet
+	= std::unordered_map<std::string, size_t>;
 //--------
 class Ent final
 {
@@ -62,12 +67,12 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Ent);
 	~Ent() = default;
 
-	inline CompMap& comp_map() const;
+	inline CompMap& comp_map_fn() const;
 
-	inline bool insert_comp(const std::string& key, CompSptr&& comp) const;
-	inline bool insert_or_replace_comp(const std::string& key,
+	inline bool insert_comp_fn(const std::string& key, CompSptr&& comp) const;
+	inline bool insert_or_replace_comp_fn(const std::string& key,
 		CompSptr&& comp) const;
-	inline size_t erase_comp(const std::string& key) const;
+	inline size_t erase_comp_fn(const std::string& key) const;
 
 	GEN_GETTER_AND_SETTER_BY_VAL(id);
 	GEN_GETTER_AND_SETTER_BY_VAL(engine);
@@ -104,6 +109,15 @@ public:		// functions
 
 	virtual std::string kind_str() const;
 };
+
+inline CompMap make_comp_map_ks(std::same_as<CompSptr> auto&&... args)
+{
+	CompMap ret;
+
+	((ret[args->kind_str()] = std::move(args)), ...);
+
+	return ret;
+}
 //--------
 class Sys
 {
@@ -239,237 +253,276 @@ private:		// functions
 	////	EngineDerivedFromSys... RemSysTs>
 	//void _sys_deserialize(const binser::Value& bv);
 	//--------
-	//void _inner_create(EntId id, FileNum file_num, bool mk_non_ser=false);
-	void _inner_create(EntId id, FileNum file_num, std::optional<CompMap>&&
-	s_comp_map);
+	//void _inner_create_fn(EntId id, FileNum file_num,
+	//	bool mk_non_ser=false);
+	void _inner_create_fn(EntId id, FileNum file_num,
+		std::optional<CompMap>&& s_comp_map);
 	//--------
 public:		// functions
 	//--------
 	//EntId create(FileNum file_num, bool mk_non_ser=false);
-	EntId create(FileNum file_num,
+	EntId create_fn(FileNum file_num,
 		std::optional<CompMap>&& s_comp_map=std::nullopt);
-	//inline EntId create_cfn(bool mk_non_ser=false)
-	inline EntId create_cfn
-		(std::optional<CompMap>&& s_comp_map=std::nullopt)
+	//inline EntId create(bool mk_non_ser=false)
+	inline EntId create(std::optional<CompMap>&& s_comp_map=std::nullopt)
 	{
 		//return create(curr_file_num, mk_non_ser);
-		return create(curr_file_num, std::move(s_comp_map));
+		return create_fn(curr_file_num, std::move(s_comp_map));
 	}
 
-	inline void sched_destroy(EntId id, FileNum file_num)
+	inline void sched_destroy_fn(EntId id, FileNum file_num)
 	{
-		to_destroy_set(file_num).insert(id);
+		to_destroy_set_fn(file_num).insert(id);
 	}
-	inline void sched_destroy_cfn(EntId id)
+	inline void sched_destroy(EntId id)
 	{
-		sched_destroy(id, curr_file_num);
+		sched_destroy_fn(id, curr_file_num);
 	}
 
 	// Destroy now
-	void destroy(EntId id, FileNum file_num);
-	void destroy(FileNum file_num);
+	void destroy_fn(EntId id, FileNum file_num);
+	void destroy_fn(FileNum file_num);
 
-	inline void destroy_cfn(EntId id)
+	inline void destroy(EntId id)
 	{
-		destroy(id, curr_file_num);
+		destroy_fn(id, curr_file_num);
 	}
-	inline void destroy_cfn()
+	inline void destroy()
 	{
-		destroy(curr_file_num);
+		destroy_fn(curr_file_num);
 	}
 
-	void destroy_all(FileNum file_num);
-	inline void destroy_all_cfn()
+	void destroy_all_fn(FileNum file_num);
+	inline void destroy_all()
 	{
-		destroy_all(USE_CURR_FILE_NUM);
+		destroy_all_fn(USE_CURR_FILE_NUM);
 	}
-	void destroy_all();
+	void destroy_all_every_fn();
 	//--------
-	EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set,
+	EntIdVec ent_id_vec_from_keys_any_fn(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
-	inline EntIdVec ent_id_vec_from_keys_any_v(FileNum file_num,
+	inline EntIdVec ent_id_vec_from_keys_any_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_vec_from_keys_any(key_set, file_num);
+		return ent_id_vec_from_keys_any_fn(key_set, file_num);
 	}
-	inline EntIdVec ent_id_vec_from_keys_any_cfn_v
+	inline EntIdVec ent_id_vec_from_keys_any_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
-		return ent_id_vec_from_keys_any_v(curr_file_num, args...);
+		return ent_id_vec_from_keys_any_fn_v(curr_file_num, args...);
 	}
 	//--------
-	EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set,
+	EntIdSet ent_id_set_from_keys_any_fn(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
-	inline EntIdSet ent_id_set_from_keys_any_v(FileNum file_num,
+	inline EntIdSet ent_id_set_from_keys_any_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_set_from_keys_any(key_set, file_num);
+		return ent_id_set_from_keys_any_fn(key_set, file_num);
 	}
-	inline EntIdSet ent_id_set_from_keys_any_cfn_v
+	inline EntIdSet ent_id_set_from_keys_any_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
-		return ent_id_set_from_keys_any_v(curr_file_num, args...);
+		return ent_id_set_from_keys_any_fn_v(curr_file_num, args...);
 	}
 	//--------
-	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set,
+	EntIdVec ent_id_vec_from_keys_all_fn(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
-	inline EntIdVec ent_id_vec_from_keys_all_v(FileNum file_num,
+	inline EntIdVec ent_id_vec_from_keys_all_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_vec_from_keys_all(key_set, file_num);
+		return ent_id_vec_from_keys_all_fn(key_set, file_num);
 	}
-	inline EntIdVec ent_id_vec_from_keys_all_cfn_v
+	inline EntIdVec ent_id_vec_from_keys_all_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
-		return ent_id_vec_from_keys_all_v(curr_file_num, args...);
+		return ent_id_vec_from_keys_all_fn_v(curr_file_num, args...);
 	}
 	//--------
-	EntIdSet ent_id_set_from_keys_all(const StrKeySet& key_set,
+	EntIdSet ent_id_set_from_keys_all_fn(const StrKeySet& key_set,
 		FileNum file_num=USE_CURR_FILE_NUM);
-	inline EntIdSet ent_id_set_from_keys_all_v(FileNum file_num,
+	inline EntIdSet ent_id_set_from_keys_all_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		StrKeySet key_set;
 
 		(key_set.insert(strings::sconcat(args)), ...);
 
-		return ent_id_set_from_keys_all(key_set, file_num);
+		return ent_id_set_from_keys_all_fn(key_set, file_num);
 	}
-	inline EntIdSet ent_id_set_from_keys_all_cfn_v
+	inline EntIdSet ent_id_set_from_keys_all_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
-		return ent_id_set_from_keys_all_v(curr_file_num, args...);
+		return ent_id_set_from_keys_all_fn_v(curr_file_num, args...);
 	}
 	//--------
-	inline Ent ent_at(EntId id, FileNum file_num)
+	inline Ent ent_at_fn(EntId id, FileNum file_num)
 	{
 		return Ent(this, id, sel_file_num(file_num));
 	}
-	inline Ent ent_at_cfn(EntId id)
+	inline Ent ent_at(EntId id)
 	{
-		return ent_at(id, curr_file_num);
+		return ent_at_fn(id, curr_file_num);
 	}
 	//--------
-	inline CompMap& comp_map(EntId id, FileNum file_num)
+	inline CompMap& comp_map_fn(EntId id, FileNum file_num)
 	{
-		return engine_comp_map(file_num).at(id);
+		return engine_comp_map_fn(file_num).at(id);
 	}
 
-	inline CompMap& comp_map_cfn(EntId id)
+	inline CompMap& comp_map(EntId id)
 	{
-		return comp_map(id, curr_file_num);
+		return comp_map_fn(id, curr_file_num);
 	}
 	//--------
-	inline CompSptr& comp_at(EntId id, const std::string& key,
+	inline CompSptr& comp_at_fn(EntId id, const std::string& key,
 		FileNum file_num)
 	{
-		return comp_map(id, file_num).at(key);
+		return comp_map_fn(id, file_num).at(key);
 	}
 	template<EngineDerivedFromComp T>
-	inline CompSptr& comp_at(EntId id, FileNum file_num)
+	inline CompSptr& comp_at_fn(EntId id, FileNum file_num)
 	{
-		return comp_map(id, file_num).at(T::KIND_STR);
+		return comp_map_fn(id, file_num).at(T::KIND_STR);
 	}
 
-	inline CompSptr& comp_at_cfn(EntId id, const std::string& key)
+	inline CompSptr& comp_at(EntId id, const std::string& key)
 	{
-		return comp_at(id, key, curr_file_num);
+		return comp_at_fn(id, key, curr_file_num);
 	}
 	template<EngineDerivedFromComp T>
-	inline CompSptr& comp_at_cfn(EntId id)
+	inline CompSptr& comp_at(EntId id)
 	{
-		return comp_at<T>(id, curr_file_num);
+		return comp_at_fn<T>(id, curr_file_num);
 	}
 	//--------
 	template<EngineDerivedFromComp T>
-	inline T* casted_comp_at(EntId id, const std::string& key,
+	inline T* casted_comp_at_fn(EntId id, const std::string& key,
 		FileNum file_num)
 	{
-		return static_cast<T*>(comp_at(id, key, file_num).get());
+		return static_cast<T*>(comp_at_fn(id, key, file_num).get());
 	}
 	template<EngineDerivedFromComp T>
-	inline T* casted_comp_at(EntId id, FileNum file_num)
+	inline T* casted_comp_at_fn(EntId id, FileNum file_num)
 	{
-		return casted_comp_at<T>(id, T::KIND_STR, file_num);
-	}
-
-	template<EngineDerivedFromComp T>
-	inline T* casted_comp_at_cfn(EntId id, const std::string& key)
-	{
-		return casted_comp_at<T>(id, key, curr_file_num);
-	}
-	template<EngineDerivedFromComp T>
-	inline T* casted_comp_at_cfn(EntId id)
-	{
-		return casted_comp_at<T>(id, curr_file_num);
+		return casted_comp_at_fn<T>(id, T::KIND_STR, file_num);
 	}
 	//--------
-	bool insert_comp(EntId id, const std::string& key, CompSptr&& comp,
+	template<EngineDerivedFromComp T>
+	inline T* casted_comp_at(EntId id, const std::string& key)
+	{
+		return casted_comp_at_fn<T>(id, key, curr_file_num);
+	}
+	template<EngineDerivedFromComp T>
+	inline T* casted_comp_at(EntId id)
+	{
+		return casted_comp_at_fn<T>(id, curr_file_num);
+	}
+	//--------
+	bool insert_comp_fn(EntId id, const std::string& key, CompSptr&& comp,
 		FileNum file_num);
-	inline bool insert_comp(EntId id, CompSptr&& comp, FileNum file_num)
+	inline bool insert_comp_fn(EntId id, CompSptr&& comp, FileNum file_num)
 	{
 		const std::string& KIND_STR = comp->kind_str();
-		return insert_comp(id, KIND_STR, std::move(comp), file_num);
+		return insert_comp_fn(id, KIND_STR, std::move(comp), file_num);
 	}
-
-	inline bool insert_comp_cfn(EntId id, const std::string& key,
+	EngineInsertSearchMultiRet insert_multi_comp_fn(EntId id,
+		CompMap&& some_comp_map, FileNum file_num);
+	//--------
+	inline bool insert_comp(EntId id, const std::string& key,
 		CompSptr&& comp)
 	{
-		return insert_comp(id, key, std::move(comp), curr_file_num);
+		return insert_comp_fn(id, key, std::move(comp), curr_file_num);
 	}
-	inline bool insert_comp_cfn(EntId id, CompSptr&& comp)
+	inline bool insert_comp(EntId id, CompSptr&& comp)
 	{
-		return insert_comp(id, std::move(comp), curr_file_num);
+		return insert_comp_fn(id, std::move(comp), curr_file_num);
+	}
+	inline EngineInsertSearchMultiRet insert_multi_comp(EntId id,
+		CompMap&& some_comp_map)
+	{
+		return insert_multi_comp_fn(id, std::move(some_comp_map),
+			curr_file_num);
 	}
 	//--------
-	bool insert_or_replace_comp(EntId id, const std::string& key,
+	bool insert_or_replace_comp_fn(EntId id, const std::string& key,
 		CompSptr&& comp, FileNum file_num);
-	inline bool insert_or_replace_comp(EntId id, CompSptr&& comp,
+	inline bool insert_or_replace_comp_fn(EntId id, CompSptr&& comp,
 		FileNum file_num)
 	{
 		const std::string& KIND_STR = comp->kind_str();
-		return insert_or_replace_comp(id, KIND_STR, std::move(comp),
+		return insert_or_replace_comp_fn(id, KIND_STR, std::move(comp),
 			file_num);
 	}
-
-	inline bool insert_or_replace_comp_cfn(EntId id,
+	EngineInsertSearchMultiRet insert_or_replace_multi_comp_fn(EntId id,
+		CompMap&& some_comp_map, FileNum file_num);
+	//--------
+	inline bool insert_or_replace_comp_fn(EntId id,
 		const std::string& key, CompSptr&& comp)
 	{
-		return insert_or_replace_comp(id, key, std::move(comp),
+		return insert_or_replace_comp_fn(id, key, std::move(comp),
 			curr_file_num);
 	}
-	inline bool insert_or_replace_comp_cfn(EntId id, CompSptr&& comp)
+	inline bool insert_or_replace_comp_fn(EntId id, CompSptr&& comp)
 	{
-		return insert_or_replace_comp(id, std::move(comp), curr_file_num);
+		return insert_or_replace_comp_fn(id, std::move(comp),
+			curr_file_num);
+	}
+	inline EngineInsertSearchMultiRet insert_or_replace_multi_comp
+		(EntId id, CompMap&& some_comp_map)
+	{
+		return insert_or_replace_multi_comp_fn(id,
+			std::move(some_comp_map), curr_file_num);
 	}
 	//--------
-	size_t erase_comp(EntId id, const std::string& key, FileNum file_num);
+	size_t erase_comp_fn(EntId id, const std::string& key, FileNum file_num);
 	template<EngineDerivedFromComp T>
-	inline size_t erase_comp(EntId id, FileNum file_num)
+	inline size_t erase_comp_fn(EntId id, FileNum file_num)
 	{
-		return erase_comp(id, T::KIND_STR, file_num);
+		return erase_comp_fn(id, T::KIND_STR, file_num);
+	}
+	EngineEraseMultiRet erase_multi_comp_fn(EntId id,
+		const StrKeySet& key_set, FileNum file_num);
+
+	template<EngineDerivedFromComp... Ts>
+	inline EngineEraseMultiRet erase_multi_comp_fn(EntId id,
+		FileNum file_num)
+	{
+		StrKeySet key_set;
+		(key_set.insert(Ts::KIND_STR), ...);
+		return erase_multi_comp_fn(id, key_set, file_num);
+	}
+	//--------
+	inline size_t erase_comp(EntId id, const std::string& key)
+	{
+		return erase_comp_fn(id, key, curr_file_num);
+	}
+	template<EngineDerivedFromComp T>
+	inline size_t erase_comp(EntId id)
+	{
+		return erase_comp_fn<T>(id, curr_file_num);
 	}
 
-	inline size_t erase_comp_cfn(EntId id, const std::string& key)
+	inline EngineEraseMultiRet erase_multi_comp(EntId id,
+		const StrKeySet& key_set)
 	{
-		return erase_comp(id, key, curr_file_num);
+		return erase_multi_comp_fn(id, key_set, curr_file_num);
 	}
-	template<EngineDerivedFromComp T>
-	inline size_t erase_comp_cfn(EntId id)
+	template<EngineDerivedFromComp... Ts>
+	inline EngineEraseMultiRet erase_multi_comp(EntId id)
 	{
-		return erase_comp<T>(id, curr_file_num);
+		return erase_multi_comp_fn<Ts...>(id, curr_file_num);
 	}
 	//--------
 	bool insert_sys(const std::string& key, SysSptr&& sys);
@@ -478,12 +531,16 @@ public:		// functions
 		const std::string& KIND_STR = sys->kind_str();
 		return insert_sys(KIND_STR, std::move(sys));
 	}
+	EngineInsertSearchMultiRet insert_multi_sys(SysMap&& some_sys_map);
+
 	bool insert_or_replace_sys(const std::string& key, SysSptr&& sys);
 	inline bool insert_or_replace_sys(SysSptr&& sys)
 	{
 		const std::string& KIND_STR = sys->kind_str();
 		return insert_or_replace_sys(KIND_STR, std::move(sys));
 	}
+	EngineInsertSearchMultiRet insert_or_replace_multi_sys
+		(SysMap&& some_sys_map);
 
 	size_t erase_sys(const std::string& key);
 	template<EngineDerivedFromSys T>
@@ -491,83 +548,114 @@ public:		// functions
 	{
 		return erase_sys(T::KIND_STR);
 	}
+	EngineEraseMultiRet erase_multi_sys(const StrKeySet& key_set);
+
+	template<EngineDerivedFromSys... Ts>
+	inline EngineEraseMultiRet erase_multi_sys()
+	{
+		StrKeySet key_set;
+		(key_set.insert(Ts::KIND_STR), ...);
+		return erase_multi_sys(key_set);
+	}
 	//--------
-	inline bool has_ent_with_comp(EntId id, const std::string& key,
+	inline bool has_ent_w_comp_fn(EntId id, const std::string& key,
 		FileNum file_num)
 	{
-		return (engine_comp_map(file_num).contains(id)
-			&& comp_map(id, file_num).contains(key));
+		return (engine_comp_map_fn(file_num).contains(id)
+			&& comp_map_fn(id, file_num).contains(key));
 	}
 	template<EngineDerivedFromComp T>
-	inline bool has_ent_with_comp(EntId id, FileNum file_num)
+	inline bool has_ent_w_comp_fn(EntId id, FileNum file_num)
 	{
-		return has_ent_with_comp(id, T::KIND_STR, file_num);
+		return has_ent_w_comp_fn(id, T::KIND_STR, file_num);
 	}
 
-	inline bool has_ent_with_comp_cfn(EntId id, const std::string& key)
+	EngineInsertSearchMultiRet has_ent_w_multi_comp_fn(EntId id,
+		const StrKeySet& key_set, FileNum file_num);
+	template<EngineDerivedFromComp... Ts>
+	inline EngineInsertSearchMultiRet has_ent_w_multi_comp_fn(EntId id,
+		FileNum file_num)
 	{
-		return has_ent_with_comp(id, key, curr_file_num);
+		StrKeySet key_set;
+		(key_set.insert(Ts::KIND_STR), ...);
+		return has_ent_w_multi_comp_fn(id, key_set, file_num);
+	}
+	//--------
+	inline bool has_ent_w_comp(EntId id, const std::string& key)
+	{
+		return has_ent_w_comp_fn(id, key, curr_file_num);
 	}
 	template<EngineDerivedFromComp T>
-	inline bool has_ent_with_comp_cfn(EntId id)
+	inline bool has_ent_w_comp(EntId id)
 	{
-		return has_ent_with_comp<T>(id, curr_file_num);
+		return has_ent_w_comp_fn<T>(id, curr_file_num);
+	}
+
+	inline EngineInsertSearchMultiRet has_ent_w_multi_comp(EntId id,
+		const StrKeySet& key_set)
+	{
+		return has_ent_w_multi_comp_fn(id, key_set, curr_file_num);
+	}
+	template<EngineDerivedFromComp... Ts>
+	inline EngineInsertSearchMultiRet has_ent_w_multi_comp(EntId id)
+	{
+		return has_ent_w_multi_comp_fn<Ts...>(id, curr_file_num);
 	}
 	//--------
 	void tick();
 	//--------
-	inline EntId& next_ent_id(FileNum file_num)
+	inline EntId& next_ent_id_fn(FileNum file_num)
 	{
 		return _next_ent_id_vec.data.at(sel_file_num(file_num));
 	}
-	inline const EntId& next_ent_id(FileNum file_num) const
+	inline const EntId& next_ent_id_fn(FileNum file_num) const
 	{
 		return _next_ent_id_vec.data.at(sel_file_num(file_num));
 	}
 
-	inline EntId& next_ent_id_cfn()
+	inline EntId& next_ent_id()
 	{
-		return next_ent_id(curr_file_num);
+		return next_ent_id_fn(curr_file_num);
 	}
-	inline const EntId& next_ent_id_cfn() const
+	inline const EntId& next_ent_id() const
 	{
-		return next_ent_id(curr_file_num);
+		return next_ent_id_fn(curr_file_num);
 	}
 	//--------
-	inline EntIdSet& to_destroy_set(FileNum file_num)
+	inline EntIdSet& to_destroy_set_fn(FileNum file_num)
 	{
 		return _to_destroy_set_vec.data.at(sel_file_num(file_num));
 	}
-	inline const EntIdSet& to_destroy_set(FileNum file_num) const
+	inline const EntIdSet& to_destroy_set_fn(FileNum file_num) const
 	{
 		return _to_destroy_set_vec.data.at(sel_file_num(file_num));
 	}
 
-	inline EntIdSet& to_destroy_set_cfn()
+	inline EntIdSet& to_destroy_set()
 	{
-		return to_destroy_set(curr_file_num);
+		return to_destroy_set_fn(curr_file_num);
 	}
-	inline const EntIdSet& to_destroy_set_cfn() const
+	inline const EntIdSet& to_destroy_set() const
 	{
-		return to_destroy_set(curr_file_num);
+		return to_destroy_set_fn(curr_file_num);
 	}
 	//--------
-	inline EngineCompMap& engine_comp_map(FileNum file_num)
+	inline EngineCompMap& engine_comp_map_fn(FileNum file_num)
 	{
 		return _engine_comp_map_vec.data.at(sel_file_num(file_num));
 	}
-	inline const EngineCompMap& engine_comp_map(FileNum file_num) const
+	inline const EngineCompMap& engine_comp_map_fn(FileNum file_num) const
 	{
 		return _engine_comp_map_vec.data.at(sel_file_num(file_num));
 	}
 
-	inline EngineCompMap& engine_comp_map_cfn()
+	inline EngineCompMap& engine_comp_map()
 	{
-		return engine_comp_map(curr_file_num);
+		return engine_comp_map_fn(curr_file_num);
 	}
-	inline const EngineCompMap& engine_comp_map_cfn() const
+	inline const EngineCompMap& engine_comp_map() const
 	{
-		return engine_comp_map(curr_file_num);
+		return engine_comp_map_fn(curr_file_num);
 	}
 	//--------
 	inline FileNum sel_file_num(FileNum some_file_num) const
@@ -613,23 +701,24 @@ inline Ent::Ent(Engine* s_engine=nullptr, EntId s_id=ENT_NULL_ID,
 	: _engine(s_engine), _id(s_id), _file_num(s_file_num)
 {
 }
-inline CompMap& Ent::comp_map() const
+inline CompMap& Ent::comp_map_fn() const
 {
-	return _engine->comp_map(id(), file_num());
+	return _engine->comp_map_fn(id(), file_num());
 }
-inline bool Ent::insert_comp(const std::string& key, CompSptr&& comp) const
+inline bool Ent::insert_comp_fn(const std::string& key, CompSptr&& comp)
+	const
 {
-	return _engine->insert_comp(id(), key, std::move(comp), file_num());
+	return _engine->insert_comp_fn(id(), key, std::move(comp), file_num());
 }
-inline bool Ent::insert_or_replace_comp(const std::string& key,
+inline bool Ent::insert_or_replace_comp_fn(const std::string& key,
 	CompSptr&& comp) const
 {
-	return _engine->insert_or_replace_comp(id(), key, std::move(comp),
+	return _engine->insert_or_replace_comp_fn(id(), key, std::move(comp),
 		file_num());
 }
-inline size_t Ent::erase_comp(const std::string& key) const
+inline size_t Ent::erase_comp_fn(const std::string& key) const
 {
-	return _engine->erase_comp(id(), key, file_num());
+	return _engine->erase_comp_fn(id(), key, file_num());
 }
 //--------
 } // namespace ecs
