@@ -138,7 +138,7 @@ public:		// functions
 	GEN_GETTER_BY_VAL(did_init);
 protected:		// functions
 	// The derived class should call this function at the beginning of its
-	// `init()` implementation.
+	// `_init()` implementation.
 	inline void _init_start()
 	{
 		_did_init = true;
