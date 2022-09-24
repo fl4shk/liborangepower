@@ -70,12 +70,12 @@ concept CallableLikeRng = requires(RngT rng)
 	{ rng() } -> std::convertible_to<T>;
 };
 
-template<typename T, CallableLikeRng RngT>
+template<typename T, CallableLikeRng<T> RngT>
 inline auto rng_run(RngT& rng)
 {
 	return T(rng());
 }
-template<typename T, CallableLikeRng RngT>
+template<typename T, CallableLikeRng<T> RngT>
 inline auto rng_run(RngT& rng, const T& max, bool saturate=false)
 {
 	T ret = rng_run<T>(rng);
@@ -94,7 +94,7 @@ inline auto rng_run(RngT& rng, const T& max, bool saturate=false)
 
 	return ret;
 }
-template<typename T, CallableLikeRng RngT>
+template<typename T, CallableLikeRng<T> RngT>
 inline auto rng_run_lim(RngT& rng, const T& lim_0, const T& lim_1,
 	bool saturate=false)
 {
@@ -102,22 +102,22 @@ inline auto rng_run_lim(RngT& rng, const T& lim_0, const T& lim_1,
 		+ math::min_va(lim_0, lim_1);
 }
 
-template<typename T, CallableLikeRng RngT>
+template<typename T, CallableLikeRng<T> RngT>
 inline auto rng_run_scaled(RngT& rng, const T& scale)
 {
 	return rng_run<T>(rng) * scale;
 }
-template<typename T, CallableLikeRng RngT>
+template<typename T, CallableLikeRng<T> RngT>
 inline auto rng_run_scaled(RngT& rng, const T& scale, const T& max,
 	bool saturate=false)
 {
 	return rng_run<T>(rng, max, saturate) * scale;
 }
-template<typename T, CallableLikeRng RngT>
-inline auto rng_run_scaled_mm(RngT& rng, const T& scale, const T& max,
-	const T& min, bool saturate=false)
+template<typename T, CallableLikeRng<T> RngT>
+inline auto rng_run_scaled_lim(RngT& rng, const T& scale, const T& lim_0,
+	const T& lim_1, bool saturate=false)
 {
-	return rng_run_mm<T>(rng, max, min, saturate) * scale;
+	return rng_run_lim<T>(rng, lim_0, lim_1, saturate) * scale;
 }
 
 template<typename _InstanceT=std::mt19937_64>
