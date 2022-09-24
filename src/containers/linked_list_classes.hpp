@@ -400,57 +400,99 @@ constexpr inline bool is_ptr_circ_link_list()
 {
 	return concepts::is_specialization<T, PtrCircLinkList>();
 }
+
+template<typename T>
+constexpr inline std::ostream& operator << (std::ostream& os,
+	const PtrCircLinkList<T>& to_print)
+{
+	os << "{";
+
+	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
+	{
+		os << iter->data;
+
+		auto temp_iter = iter;
+		++temp_iter;
+
+		if (temp_iter != to_print.end())
+		{
+			os << ",";
+		}
+		//os << "\n";
+	}
+
+	os << "}";
+	return os;
+}
 //--------
-template<typename T, typename ArgIndexT=uint64_t>
+template<typename ArgIndexT>
+static constexpr ArgIndexT IND_CLL_NULL_INDEX = -1;
+
+template<typename T, typename ArgIndexT, typename ArgIndexAllocT,
+	typename ArgNodeAllocT>
+class IndCircLinkList;
+
+template<typename T, typename ArgIndexT>
+class IndCllNode final
+{
+	template<typename, typename, typename, typename>
+	friend class IndCircLinkList;
+public:		// types
+	//template<typename OtherT>
+	//using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
+	//	<OtherT>::value, IndCllNode>;
+
+	//template<typename OtherT>
+	//using MoveConstructEnIf = std::enable_if<std::is_move_assignable
+	//	<OtherT>::value, IndCllNode>;
+public:		// constants
+	static constexpr ArgIndexT
+		NULL_INDEX = IND_CLL_NULL_INDEX<ArgIndexT>;
+private:		// variables
+	ArgIndexT _next = NULL_INDEX, _prev = NULL_INDEX;
+public:		// variables
+	T data;
+public:		// functions
+	IndCllNode() = default;
+
+	static inline IndCllNode construct(const T& s_data)
+	{
+		IndCllNode ret;
+		ret.data = s_data;
+		return ret;
+	}
+
+	static inline IndCllNode construct(T&& s_data)
+	{
+		IndCllNode ret;
+		ret.data = std::move(s_data);
+		return ret;
+	}
+
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(IndCllNode);
+
+	~IndCllNode() = default;
+
+	GEN_GETTER_BY_VAL(next);
+	GEN_GETTER_BY_VAL(prev);
+};
+
+template<typename T, typename ArgIndexT=size_t,
+	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
+	typename ArgNodeAllocT=std::allocator<IndCllNode<T, ArgIndexT>>>
 class IndCircLinkList
 {
 public:		// types
-	using IndexT = ArgIndexT;
 	using ElemT = T;
+	using IndexT = ArgIndexT;
+	using IndexAllocT = ArgIndexAllocT;
+	using NodeAllocT = ArgNodeAllocT;
+	using Node = IndCllNode<T, IndexT>;
 public:		// constants
 	static constexpr IndexT
-		NULL_INDEX = -1;
+		//NULL_INDEX = -1;
+		NULL_INDEX = IND_CLL_NULL_INDEX<IndexT>;
 public:		// types
-	class Node final
-	{
-		friend class IndCircLinkList;
-	public:		// types
-		//template<typename OtherT>
-		//using CopyConstructEnIf = std::enable_if<std::is_copy_assignable
-		//	<OtherT>::value, Node>;
-
-		//template<typename OtherT>
-		//using MoveConstructEnIf = std::enable_if<std::is_move_assignable
-		//	<OtherT>::value, Node>;
-	private:		// variables
-		ArgIndexT _next = NULL_INDEX, _prev = NULL_INDEX;
-	public:		// variables
-		T data;
-	public:		// functions
-		Node() = default;
-
-		static inline Node construct(const T& s_data)
-		{
-			Node ret;
-			ret.data = s_data;
-			return ret;
-		}
-
-		static inline Node construct(T&& s_data)
-		{
-			Node ret;
-			ret.data = std::move(s_data);
-			return ret;
-		}
-
-		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Node);
-
-		~Node() = default;
-
-		GEN_GETTER_BY_VAL(next);
-		GEN_GETTER_BY_VAL(prev);
-	};
-
 	template<bool _reverse> 
 	class Iterator final
 	{
@@ -531,8 +573,8 @@ public:		// constants
 	static constexpr IndexT
 		HEAD_INDEX = 0;
 private:		// variables
-	std::vector<IndexT> _avail_index_stack;
-	std::vector<Node> _node_vec;
+	std::vector<IndexT, IndexAllocT> _avail_index_stack;
+	std::vector<Node, NodeAllocT> _node_vec;
 public:		// functions
 	inline IndCircLinkList()
 	{
@@ -803,48 +845,40 @@ constexpr inline bool is_ind_circ_link_list()
 {
 	return concepts::is_specialization<T, IndCircLinkList>();
 }
+
+//template<typename T, typename ArgIndexT,
+//	template<typename...> typename Alloc,
+//	typename... RemAllocTs>
+//std::ostream& operator << (std::ostream& os,
+//	const IndCircLinkList<T, ArgIndexT, Alloc, RemAllocTs...>& to_print)
+//std::ostream& operator << (std::ostream& os,
+//	const concepts::IsSpecialization<IndCircLinkList> auto& to_print)
+template<concepts::IsSpecialization<IndCircLinkList> ToPrintT>
+constexpr std::ostream& operator << (std::ostream& os,
+	const ToPrintT& to_print)
+{
+	os << "{";
+
+	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
+	{
+		//os << iter->data;
+		os << *iter;
+
+		auto temp_iter = iter;
+		++temp_iter;
+
+		if (temp_iter != to_print.end())
+		{
+			os << ", ";
+		}
+		//os << "\n";
+	}
+
+	os << "}";
+	return os;
+}
 //--------
 } // namespace containers
 } // namespace liborangepower
-
-template<typename T>
-std::ostream& operator << (std::ostream& os,
-	const liborangepower::containers::PtrCircLinkList<T>& to_print)
-{
-	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
-	{
-		os << iter->data;
-
-		auto temp_iter = iter;
-		++temp_iter;
-
-		if (temp_iter != to_print.end())
-		{
-			os << ",";
-		}
-		os << "\n";
-	}
-	return os;
-}
-template<typename T>
-std::ostream& operator << (std::ostream& os,
-	const liborangepower::containers::IndCircLinkList<T>& to_print)
-{
-	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
-	{
-		os << iter->data;
-
-		auto temp_iter = iter;
-		++temp_iter;
-
-		if (temp_iter != to_print.end())
-		{
-			os << ",";
-		}
-		os << "\n";
-	}
-	return os;
-}
-
 
 #endif		// liborangepower_containers_linked_list_classes_hpp

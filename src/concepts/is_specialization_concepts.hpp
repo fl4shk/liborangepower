@@ -52,6 +52,9 @@ constexpr inline bool is_specialization()
 		(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
 }
+
+template<typename T, template<typename...> typename ContnrEtcT>
+concept IsSpecialization = is_specialization<T, ContnrEtcT>();
 //--------
 template<template<typename, auto, auto...> typename ContnrEtcT,
 	typename T>
@@ -70,9 +73,6 @@ constexpr inline bool is_specialization()
 		(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
 }
-//--------
-template<typename T, template<typename...> typename ContnrEtcT>
-concept IsSpecialization = is_specialization<T, ContnrEtcT>();
 
 template<typename T,
 	template<typename, auto, auto...> typename ContnrEtcT>
