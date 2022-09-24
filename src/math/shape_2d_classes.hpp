@@ -248,7 +248,7 @@ public:		// functions
 	//--------
 	// This is intended to work with
 	template<std::convertible_to<T> OtherElemT>
-	static constexpr inline Rect2 build_grid_r2_w_end_pos
+	static constexpr inline Rect2 build_in_grid_r2_w_end_pos
 		(const Vec2<OtherElemT>& p0, const Vec2<OtherElemT>& p1)
 	{
 		return Rect2<T>{.pos{.x=min_va(p0.x, p1.x), .y=min_va(p0.y, p1.y)},

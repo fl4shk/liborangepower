@@ -151,7 +151,8 @@ int main(int argc, char** argv)
 	//printout("LineSeg2:\n");
 	//test_intersect(test_vec_lseg);
 	//--------
-	//printout(Rect2<int>::build_grid_r2_w_end_pos(Vec2{1, 1}, Vec2{-1, -1}),
+	//printout(Rect2<int>::build_in_grid_r2_w_end_pos
+	//	(Vec2{1, 1}, Vec2{-1, -1}),
 	//	"\n");
 	//printout(Rect2<int>{.pos{1, 1},
 	//	.size_2d{cstm_abs(Vec2<int>(-1, -1) - Vec2<int>(1, 1))}}, "\n");
