@@ -53,11 +53,8 @@ constexpr inline StrWA<Alloc> sconcat
 	return sstm.str();
 }
 
-template
-<
-	typename CharAlloc=std::allocator<char>,
-	typename StrAlloc=std::allocator<StrWA<CharAlloc>>
->
+template<typename CharAlloc=std::allocator<char>,
+	typename StrAlloc=std::allocator<StrWA<CharAlloc>>>
 constexpr inline void append_sconcat
 	(std::vector<StrWA<CharAlloc>, StrAlloc>& ret,
 	const concepts::HasStdOstmOpLshift auto&... args)
@@ -114,10 +111,7 @@ constexpr inline void append_sconcat
 //		auto& first_arg, auto&... rem_args);
 //};
 //--------
-template
-<
-	typename Alloc=std::allocator<char>
->
+template<typename Alloc=std::allocator<char>>
 constexpr inline SstmWA<Alloc> inv_sconcat(const StrWA<Alloc>& str,
 	concepts::HasStdIstmOpRshift auto&... args)
 {
@@ -129,18 +123,12 @@ constexpr inline SstmWA<Alloc> inv_sconcat(const StrWA<Alloc>& str,
 	return sstm;
 }
 //--------
-//template
-//<
-//	typename Alloc=std::allocator<CharT>
-//>
+//template<typename Alloc=std::allocator<CharT>>
 //constexpr inline StrWA<Alloc> strjoin(const StrWA<Alloc>& sep)
 //{
 //	return StrWA<Alloc>();
 //}
-//template
-//<
-//	typename Alloc=std::allocator<CharT>
-//>
+//template<typename Alloc=std::allocator<CharT>>
 //constexpr inline StrWA<Alloc> strjoin(const StrWA<Alloc>& sep,
 //	const concepts::HasStdOstmOpLshift auto& first_arg)
 //{
@@ -166,11 +154,7 @@ constexpr inline SstmWA<Alloc> inv_sconcat(const StrWA<Alloc>& str,
 //	}
 //}
 //--------
-//template
-//<
-//	size_t index,
-//	typename Alloc=std::allocator<char>
-//>
+//template<size_t index, typename Alloc=std::allocator<char>>
 //constexpr inline StrWA<Alloc> _strjoin2_backend_tup
 //	(const StrWA<Alloc>& sep,
 //	const std::tuple<concepts::HasStdOstmOpLshift auto...>& args)
