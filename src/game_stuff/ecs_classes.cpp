@@ -435,7 +435,7 @@ bool Engine::insert_comp_fn(EntId id, const std::string& key,
 	}
 	return true;
 }
-EngineInsertSearchMultiRet Engine::insert_multi_comp_fn(EntId id,
+EngineInsertSearchMultiRet Engine::insert_comp_fn(EntId id,
 	CompMap&& some_comp_map, FileNum file_num)
 {
 	EngineInsertSearchMultiRet ret;
@@ -467,7 +467,7 @@ bool Engine::insert_or_replace_comp_fn(EntId id, const std::string& key,
 	the_comp_map[key] = std::move(comp);
 	return ret;
 }
-EngineInsertSearchMultiRet Engine::insert_or_replace_multi_comp_fn(EntId id,
+EngineInsertSearchMultiRet Engine::insert_or_replace_comp_fn(EntId id,
 	CompMap&& some_comp_map, FileNum file_num)
 {
 	EngineInsertSearchMultiRet ret;
@@ -498,7 +498,7 @@ size_t Engine::erase_comp_fn(EntId id, const std::string& key,
 	//_ent_id_to_comp_key_map.at(id).erase(key);
 	return ret;
 }
-EngineEraseMultiRet Engine::erase_multi_comp_fn(EntId id,
+EngineEraseMultiRet Engine::erase_comp_fn(EntId id,
 	const StrKeySet& key_set, FileNum file_num)
 {
 	EngineEraseMultiRet ret;
@@ -520,7 +520,7 @@ bool Engine::insert_sys(const std::string& key, SysSptr&& sys)
 	}
 	return true;
 }
-EngineInsertSearchMultiRet Engine::insert_multi_sys(SysMap&& some_sys_map)
+EngineInsertSearchMultiRet Engine::insert_sys(SysMap&& some_sys_map)
 {
 	EngineInsertSearchMultiRet ret;
 
@@ -546,7 +546,7 @@ bool Engine::insert_or_replace_sys(const std::string& key, SysSptr&& sys)
 	_sys_map[key] = std::move(sys);
 	return ret;
 }
-EngineInsertSearchMultiRet Engine::insert_or_replace_multi_sys
+EngineInsertSearchMultiRet Engine::insert_or_replace_sys
 	(SysMap&& some_sys_map)
 {
 	EngineInsertSearchMultiRet ret;
@@ -572,7 +572,7 @@ size_t Engine::erase_sys(const std::string& key)
 {
 	return _sys_map.erase(key);
 }
-EngineEraseMultiRet Engine::erase_multi_sys(const StrKeySet& key_set)
+EngineEraseMultiRet Engine::erase_sys(const StrKeySet& key_set)
 {
 	EngineEraseMultiRet ret;
 
@@ -584,7 +584,7 @@ EngineEraseMultiRet Engine::erase_multi_sys(const StrKeySet& key_set)
 	return ret;
 }
 
-EngineInsertSearchMultiRet Engine::has_ent_w_multi_comp_fn(EntId id,
+EngineInsertSearchMultiRet Engine::has_ent_w_comp_fn(EntId id,
 	const StrKeySet& key_set, FileNum file_num)
 {
 	EngineInsertSearchMultiRet ret;
