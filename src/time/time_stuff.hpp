@@ -95,10 +95,9 @@ inline auto rng_run(RngT& rng, const T& max, bool saturate=false)
 	return ret;
 }
 template<typename T, CallableLikeRng<T> RngT>
-inline auto rng_run_lim(RngT& rng, const T& lim_0, const T& lim_1,
-	bool saturate=false)
+inline auto rng_run_lim(RngT& rng, const T& lim_0, const T& lim_1)
 {
-	return rng_run<T>(rng, math::cstm_abs(lim_0 - lim_1), saturate)
+	return rng_run<T>(rng, math::cstm_abs(lim_0 - lim_1), false)
 		+ math::min_va(lim_0, lim_1);
 }
 
@@ -115,9 +114,9 @@ inline auto rng_run_scaled(RngT& rng, const T& scale, const T& max,
 }
 template<typename T, CallableLikeRng<T> RngT>
 inline auto rng_run_scaled_lim(RngT& rng, const T& scale, const T& lim_0,
-	const T& lim_1, bool saturate=false)
+	const T& lim_1)
 {
-	return rng_run_lim<T>(rng, lim_0, lim_1, saturate) * scale;
+	return rng_run_lim<T>(rng, lim_0, lim_1) * scale;
 }
 
 template<typename _InstanceT=std::mt19937_64>
