@@ -161,6 +161,15 @@ protected:		// functions
 	// functionality
 	bool _tick_helper(Engine* ecs_engine, bool cond);
 };
+
+inline SysMap make_sys_map_ks(std::same_as<SysSptr> auto&&... args)
+{
+	SysMap ret;
+
+	((ret[args->kind_str()] = std::move(args)), ...);
+
+	return ret;
+}
 //--------
 template<typename T>
 concept EngineDerivedFromComp 
