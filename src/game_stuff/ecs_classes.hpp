@@ -69,7 +69,8 @@ public:		// functions
 
 	inline CompMap& comp_map_fn() const;
 
-	inline bool insert_comp_fn(const std::string& key, CompSptr&& comp) const;
+	inline bool insert_comp_fn(const std::string& key, CompSptr&& comp)
+		const;
 	inline bool insert_or_replace_comp_fn(const std::string& key,
 		CompSptr&& comp) const;
 	inline size_t erase_comp_fn(const std::string& key) const;
