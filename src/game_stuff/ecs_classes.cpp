@@ -1,4 +1,5 @@
 #include "ecs_classes.hpp"
+#include "../misc/misc_output_funcs.hpp"
 #include "../binser/serialize_defines.hpp"
 #include "../metaprog_defines.hpp"
 
@@ -25,8 +26,9 @@ namespace ecs
 std::string Comp::kind_str() const
 {
 	throw std::runtime_error(sconcat
-		("game::ecs::Comp::kind_str(): this function is not supposed to ",
-		"be called. Did a derived class not implement this function?"));
+		("liborangepower::game::ecs::Comp::kind_str(): Error: ",
+		"this function is not supposed to be called. Did a derived class ",
+		"not implement this function?"));
 
 	return "";
 }
@@ -52,8 +54,9 @@ std::string NonSerializable::kind_str() const
 std::string Sys::kind_str() const
 {
 	throw std::runtime_error(sconcat
-		("game::ecs::Sys::kind_str(): this function is not supposed to ",
-		"be called. Did a derived class not implement this function?"));
+		("liborangepower::game::ecs::Sys::kind_str(): Error: ",
+		"this function is not supposed to be called. Did a derived class ",
+		"not implement this function?"));
 	return "";
 }
 //Sys::operator binser::Value () const
@@ -191,15 +194,15 @@ void Engine::copy_file()
 {
 	if ((src_file_num < 0) || (src_file_num >= _num_files))
 	{
-		throw std::invalid_argument(sconcat
-			("liborangepower::game::ecs::Engine::copy_file(): "
+		throw std::out_of_range(sconcat
+			("liborangepower::game::ecs::Engine::copy_file(): Error: "
 			"Invalid `src_file_num`: ",
 			src_file_num, " ", _num_files));
 	}
 	if ((copy_dst_file_num < 0) || (copy_dst_file_num >= _num_files))
 	{
-		throw std::invalid_argument(sconcat
-			("liborangepower::game::ecs::Engine::copy_file(): "
+		throw std::out_of_range(sconcat
+			("liborangepower::game::ecs::Engine::copy_file(): Error: "
 			"Invalid `copy_dst_file_num`: ",
 			copy_dst_file_num, " ", _num_files));
 	}
@@ -214,8 +217,8 @@ void Engine::erase_file()
 {
 	if ((src_file_num < 0) || (src_file_num >= _num_files))
 	{
-		throw std::invalid_argument(sconcat
-			("liborangepower::game::ecs::Engine::copy_file(): "
+		throw std::out_of_range(sconcat
+			("liborangepower::game::ecs::Engine::copy_file(): Error: "
 			"Invalid `src_file_num`: ",
 			src_file_num, " ", _num_files));
 	}
@@ -311,6 +314,87 @@ EntId Engine::create_fn(FileNum file_num,
 
 	return (next_ent_id_fn(file_num)++);
 }
+EntId Engine::create_singleton_any_fn(FileNum file_num,
+	CompMap&& s_comp_map, const std::string& func_name)
+{
+	StrKeySet key_set;
+
+	for (const auto& pair: s_comp_map)
+	{
+		key_set.insert(pair.first);
+	}
+
+	force_singleton_any_fn(key_set, func_name, file_num);
+
+	return create_fn(file_num, std::move(s_comp_map));
+}
+EntId Engine::create_singleton_all_fn(FileNum file_num,
+	CompMap&& s_comp_map, const std::string& func_name)
+{
+	StrKeySet key_set;
+
+	for (const auto& pair: s_comp_map)
+	{
+		key_set.insert(pair.first);
+	}
+
+	force_singleton_all_fn(key_set, func_name, file_num);
+
+	return create_fn(file_num, std::move(s_comp_map));
+}
+void Engine::force_singleton_any_fn(const StrKeySet& key_set,
+	const std::string& func_name, FileNum file_num)
+{
+	const auto& ent_id_vec = ent_id_vec_from_keys_any_fn(key_set,
+		file_num);
+
+	if (ent_id_vec.size() > 0)
+	{
+		std::string err_msg(sconcat
+			("liborangepower::game::ecs::Engine"
+				"::force_singleton_any_fn(): ",
+			func_name, "(): ",
+			"Error: ",
+			"Found existing entities: {"));
+
+		if (std::stringstream sstm; true)
+		{
+			misc_output::osprint_arr(sstm, ent_id_vec.data(),
+				ent_id_vec.size());
+			err_msg += sstm.str();
+		}
+		err_msg += "}";
+
+		throw std::runtime_error(err_msg);
+	}
+}
+
+void Engine::force_singleton_all_fn(const StrKeySet& key_set,
+	const std::string& func_name, FileNum file_num)
+{
+	const auto& ent_id_vec = ent_id_vec_from_keys_all_fn(key_set,
+		file_num);
+
+	if (ent_id_vec.size() > 0)
+	{
+		std::string err_msg(sconcat
+			("liborangepower::game::ecs::Engine"
+				"::force_singleton_all_fn(): ",
+			func_name, "(): ",
+			"Error: ",
+			"Found existing entities: {"));
+
+		if (std::stringstream sstm; true)
+		{
+			misc_output::osprint_arr(sstm, ent_id_vec.data(),
+				ent_id_vec.size());
+			err_msg += sstm.str();
+		}
+		err_msg += "}";
+
+		throw std::runtime_error(err_msg);
+	}
+}
 void Engine::destroy_fn(EntId id, FileNum file_num)
 {
 	comp_map_fn(id, file_num).clear();
@@ -348,7 +432,8 @@ EntIdVec Engine::ent_id_vec_from_keys_any_fn(const StrKeySet& key_set,
 {
 	EntIdVec ret;
 
-	for (auto&& pair: engine_comp_map_fn(file_num))
+	auto& ecm = engine_comp_map_fn(file_num);
+	for (auto&& pair: ecm)
 	{
 		auto& the_comp_map = comp_map_fn(pair.first, file_num);
 
@@ -368,13 +453,32 @@ EntIdVec Engine::ent_id_vec_from_keys_any_fn(const StrKeySet& key_set,
 EntIdSet Engine::ent_id_set_from_keys_any_fn(const StrKeySet& key_set,
 	FileNum file_num)
 {
-	const EntIdVec vec(ent_id_vec_from_keys_any_fn(key_set, file_num));
+	//const EntIdVec vec(ent_id_vec_from_keys_any_fn(key_set, file_num));
 
+	//EntIdSet ret;
+
+	//for (const auto& ent_id: vec)
+	//{
+	//	ret.insert(ent_id);
+	//}
+
+	//return ret;
 	EntIdSet ret;
 
-	for (const auto& ent_id: vec)
+	auto& ecm = engine_comp_map_fn(file_num);
+	for (auto&& pair: ecm)
 	{
-		ret.insert(ent_id);
+		auto& the_comp_map = comp_map_fn(pair.first, file_num);
+
+		for (const auto& key: key_set)
+		{
+			if (the_comp_map.contains(key))
+			{
+				ret.insert(pair.first);
+
+				break;
+			}
+		}
 	}
 
 	return ret;
@@ -385,7 +489,8 @@ EntIdVec Engine::ent_id_vec_from_keys_all_fn(const StrKeySet& key_set,
 {
 	EntIdVec ret;
 
-	for (auto&& pair: engine_comp_map_fn(file_num))
+	auto& ecm = engine_comp_map_fn(file_num);
+	for (auto&& pair: ecm)
 	{
 		auto& the_comp_map = comp_map_fn(pair.first, file_num);
 
@@ -410,13 +515,37 @@ EntIdVec Engine::ent_id_vec_from_keys_all_fn(const StrKeySet& key_set,
 EntIdSet Engine::ent_id_set_from_keys_all_fn(const StrKeySet& key_set,
 	FileNum file_num)
 {
-	const EntIdVec vec(ent_id_vec_from_keys_all_fn(key_set, file_num));
+	//const EntIdVec vec(ent_id_vec_from_keys_all_fn(key_set, file_num));
 
+	//EntIdSet ret;
+
+	//for (const auto& ent_id: vec)
+	//{
+	//	ret.insert(ent_id);
+	//}
+
+	//return ret;
 	EntIdSet ret;
 
-	for (const auto& ent_id: vec)
+	auto& ecm = engine_comp_map_fn(file_num);
+	for (auto&& pair: ecm)
 	{
-		ret.insert(ent_id);
+		auto& the_comp_map = comp_map_fn(pair.first, file_num);
+
+		bool all = true;
+
+		for (const auto& key: key_set)
+		{
+			if (!the_comp_map.contains(key))
+			{
+				all = false;
+				break;
+			}
+		}
+		if (all)
+		{
+			ret.insert(pair.first);
+		}
 	}
 
 	return ret;

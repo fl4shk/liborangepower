@@ -22,7 +22,7 @@ namespace game
 namespace ecs
 {
 //--------
-class Ent;
+class EntRef;
 class Comp;
 class Sys;
 class Engine;
@@ -56,16 +56,16 @@ using EngineInsertSearchMultiRet
 using EngineEraseMultiRet
 	= std::unordered_map<std::string, size_t>;
 //--------
-class Ent final
+class EntRef final
 {
 private:		// variables
 	Engine* _engine = nullptr;
 	EntId _id = ENT_NULL_ID;
 	FileNum _file_num = 0;
 public:		// functions
-	inline Ent(Engine* s_engine, EntId s_id, FileNum s_file_num);
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Ent);
-	~Ent() = default;
+	inline EntRef(Engine* s_engine, EntId s_id, FileNum s_file_num);
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EntRef);
+	~EntRef() = default;
 
 	inline CompMap& comp_map_fn() const;
 
@@ -90,7 +90,7 @@ public:		// functions
 	virtual ~Comp() = default;
 
 	// This is used as the key for individual `CompMap` elements of an
-	// `Ent`.
+	// `EntRef`.
 	virtual std::string kind_str() const;
 
 	virtual operator binser::Value () const;
@@ -180,9 +180,28 @@ template<typename T>
 concept EngineDerivedFromSys
 	= binser::IsValidFromBvFactoryT<T, Sys>;
 
+template<EngineDerivedFromComp... Ts>
+inline StrKeySet make_key_set()
+{
+	StrKeySet ret;
+
+	(ret.insert(Ts::KIND_STR), ...);
+
+	return ret;
+}
+template<EngineDerivedFromSys... Ts>
+inline StrKeySet make_key_set()
+{
+	StrKeySet ret;
+
+	(ret.insert(Ts::KIND_STR), ...);
+
+	return ret;
+}
+
 class Engine
 {
-	friend class Ent;
+	friend class EntRef;
 public:		// constants
 	static constexpr FileNum
 		DEFAULT_NUM_FILES = 9,
@@ -279,7 +298,43 @@ public:		// functions
 		//return create(curr_file_num, mk_non_ser);
 		return create_fn(curr_file_num, std::move(s_comp_map));
 	}
+	//--------
+	// These `throw` an `exception` if there is already an entity that has
+	// been created with a particular collection of `Comp`s
+	EntId create_singleton_any_fn(FileNum file_num, CompMap&& s_comp_map,
+		const std::string& func_name);
+	inline EntId create_singleton_any(CompMap&& s_comp_map,
+		const std::string& func_name)
+	{
+		return create_singleton_any_fn(curr_file_num,
+			std::move(s_comp_map), func_name);
+	}
+	EntId create_singleton_all_fn(FileNum file_num, CompMap&& s_comp_map,
+		const std::string& func_name);
+	inline EntId create_singleton_all(CompMap&& s_comp_map,
+		const std::string& func_name)
+	{
+		return create_singleton_all_fn(curr_file_num,
+			std::move(s_comp_map), func_name);
+	}
 
+	// These `throw` an `exception` if there is already an entity that has
+	// been created with a particular collection of `Comp`s
+	void force_singleton_any_fn(const StrKeySet& key_set,
+		const std::string& func_name, FileNum file_num);
+	inline void force_singleton_any(const StrKeySet& key_set,
+		const std::string& func_name)
+	{
+		force_singleton_any_fn(key_set, func_name, curr_file_num);
+	}
+	void force_singleton_all_fn(const StrKeySet& key_set,
+		const std::string& func_name, FileNum file_num);
+	inline void force_singleton_all(const StrKeySet& key_set,
+		const std::string& func_name)
+	{
+		force_singleton_all_fn(key_set, func_name, curr_file_num);
+	}
+	//--------
 	inline void sched_destroy_fn(EntId id, FileNum file_num)
 	{
 		to_destroy_set_fn(file_num).insert(id);
@@ -309,8 +364,9 @@ public:		// functions
 	}
 	void destroy_all_every_fn();
 	//--------
+	// Search for entities with *any* of the keys in `key_set`
 	EntIdVec ent_id_vec_from_keys_any_fn(const StrKeySet& key_set,
-		FileNum file_num=USE_CURR_FILE_NUM);
+		FileNum file_num);
 	inline EntIdVec ent_id_vec_from_keys_any_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
@@ -320,14 +376,19 @@ public:		// functions
 
 		return ent_id_vec_from_keys_any_fn(key_set, file_num);
 	}
+	inline EntIdVec ent_id_vec_from_keys_any(const StrKeySet& key_set)
+	{
+		return ent_id_vec_from_keys_any_fn(key_set, curr_file_num);
+	}
 	inline EntIdVec ent_id_vec_from_keys_any_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_vec_from_keys_any_fn_v(curr_file_num, args...);
 	}
 	//--------
+	// Search for entities with *any* of the keys in `key_set`
 	EntIdSet ent_id_set_from_keys_any_fn(const StrKeySet& key_set,
-		FileNum file_num=USE_CURR_FILE_NUM);
+		FileNum file_num);
 	inline EntIdSet ent_id_set_from_keys_any_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
@@ -337,14 +398,19 @@ public:		// functions
 
 		return ent_id_set_from_keys_any_fn(key_set, file_num);
 	}
+	inline EntIdSet ent_id_set_from_keys_any(const StrKeySet& key_set)
+	{
+		return ent_id_set_from_keys_any_fn(key_set, curr_file_num);
+	}
 	inline EntIdSet ent_id_set_from_keys_any_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_set_from_keys_any_fn_v(curr_file_num, args...);
 	}
 	//--------
+	// Search for entities with *all* of the keys in `key_set`
 	EntIdVec ent_id_vec_from_keys_all_fn(const StrKeySet& key_set,
-		FileNum file_num=USE_CURR_FILE_NUM);
+		FileNum file_num);
 	inline EntIdVec ent_id_vec_from_keys_all_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
@@ -354,14 +420,19 @@ public:		// functions
 
 		return ent_id_vec_from_keys_all_fn(key_set, file_num);
 	}
+	EntIdVec ent_id_vec_from_keys_all(const StrKeySet& key_set)
+	{
+		return ent_id_vec_from_keys_all_fn(key_set, curr_file_num);
+	}
 	inline EntIdVec ent_id_vec_from_keys_all_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_vec_from_keys_all_fn_v(curr_file_num, args...);
 	}
 	//--------
+	// Search for entities with *all* of the keys in `key_set`
 	EntIdSet ent_id_set_from_keys_all_fn(const StrKeySet& key_set,
-		FileNum file_num=USE_CURR_FILE_NUM);
+		FileNum file_num);
 	inline EntIdSet ent_id_set_from_keys_all_fn_v(FileNum file_num,
 		const concepts::HasStdOstmOpLshift auto&... args)
 	{
@@ -371,19 +442,23 @@ public:		// functions
 
 		return ent_id_set_from_keys_all_fn(key_set, file_num);
 	}
+	EntIdSet ent_id_set_from_keys_all(const StrKeySet& key_set)
+	{
+		return ent_id_set_from_keys_all_fn(key_set, curr_file_num);
+	}
 	inline EntIdSet ent_id_set_from_keys_all_v
 		(const concepts::HasStdOstmOpLshift auto&... args)
 	{
 		return ent_id_set_from_keys_all_fn_v(curr_file_num, args...);
 	}
 	//--------
-	inline Ent ent_at_fn(EntId id, FileNum file_num)
+	inline EntRef ent_ref_at_fn(EntId id, FileNum file_num)
 	{
-		return Ent(this, id, sel_file_num(file_num));
+		return EntRef(this, id, sel_file_num(file_num));
 	}
-	inline Ent ent_at(EntId id)
+	inline EntRef ent_ref_at(EntId id)
 	{
-		return ent_at_fn(id, curr_file_num);
+		return ent_ref_at_fn(id, curr_file_num);
 	}
 	//--------
 	inline CompMap& comp_map_fn(EntId id, FileNum file_num)
@@ -505,13 +580,13 @@ public:		// functions
 	EngineEraseMultiRet erase_comp_fn(EntId id,
 		const StrKeySet& key_set, FileNum file_num);
 
-	template<EngineDerivedFromComp... Ts>
-	inline EngineEraseMultiRet erase_comp_fn(EntId id, FileNum file_num)
-	{
-		StrKeySet key_set;
-		(key_set.insert(Ts::KIND_STR), ...);
-		return erase_comp_fn(id, key_set, file_num);
-	}
+	//template<EngineDerivedFromComp... Ts>
+	//inline EngineEraseMultiRet erase_comp_fn(EntId id, FileNum file_num)
+	//{
+	//	StrKeySet key_set;
+	//	(key_set.insert(Ts::KIND_STR), ...);
+	//	return erase_comp_fn(id, key_set, file_num);
+	//}
 	//--------
 	inline size_t erase_comp(EntId id, const std::string& key)
 	{
@@ -528,11 +603,11 @@ public:		// functions
 	{
 		return erase_comp_fn(id, key_set, curr_file_num);
 	}
-	template<EngineDerivedFromComp... Ts>
-	inline EngineEraseMultiRet erase_comp(EntId id)
-	{
-		return erase_comp_fn<Ts...>(id, curr_file_num);
-	}
+	//template<EngineDerivedFromComp... Ts>
+	//inline EngineEraseMultiRet erase_comp(EntId id)
+	//{
+	//	return erase_comp_fn<Ts...>(id, curr_file_num);
+	//}
 	//--------
 	bool insert_sys(const std::string& key, SysSptr&& sys);
 	inline bool insert_sys(SysSptr&& sys)
@@ -559,13 +634,13 @@ public:		// functions
 	//}
 	EngineEraseMultiRet erase_sys(const StrKeySet& key_set);
 
-	template<EngineDerivedFromSys... Ts>
-	inline EngineEraseMultiRet erase_sys()
-	{
-		StrKeySet key_set;
-		(key_set.insert(Ts::KIND_STR), ...);
-		return erase_sys(key_set);
-	}
+	//template<EngineDerivedFromSys... Ts>
+	//inline EngineEraseMultiRet erase_sys()
+	//{
+	//	StrKeySet key_set;
+	//	(key_set.insert(Ts::KIND_STR), ...);
+	//	return erase_sys(key_set);
+	//}
 	//--------
 	inline bool has_ent_w_comp_fn(EntId id, const std::string& key,
 		FileNum file_num)
@@ -581,14 +656,14 @@ public:		// functions
 
 	EngineInsertSearchMultiRet has_ent_w_comp_fn(EntId id,
 		const StrKeySet& key_set, FileNum file_num);
-	template<EngineDerivedFromComp... Ts>
-	inline EngineInsertSearchMultiRet has_ent_w_comp_fn(EntId id,
-		FileNum file_num)
-	{
-		StrKeySet key_set;
-		(key_set.insert(Ts::KIND_STR), ...);
-		return has_ent_w_comp_fn(id, key_set, file_num);
-	}
+	//template<EngineDerivedFromComp... Ts>
+	//inline EngineInsertSearchMultiRet has_ent_w_comp_fn(EntId id,
+	//	FileNum file_num)
+	//{
+	//	StrKeySet key_set;
+	//	(key_set.insert(Ts::KIND_STR), ...);
+	//	return has_ent_w_comp_fn(id, key_set, file_num);
+	//}
 	//--------
 	inline bool has_ent_w_comp(EntId id, const std::string& key)
 	{
@@ -605,11 +680,11 @@ public:		// functions
 	{
 		return has_ent_w_comp_fn(id, key_set, curr_file_num);
 	}
-	template<EngineDerivedFromComp... Ts>
-	inline EngineInsertSearchMultiRet has_ent_w_comp(EntId id)
-	{
-		return has_ent_w_comp_fn<Ts...>(id, curr_file_num);
-	}
+	//template<EngineDerivedFromComp... Ts>
+	//inline EngineInsertSearchMultiRet has_ent_w_comp(EntId id)
+	//{
+	//	return has_ent_w_comp_fn<Ts...>(id, curr_file_num);
+	//}
 	//--------
 	void tick();
 	//--------
@@ -705,27 +780,27 @@ public:		// functions
 //	}
 };
 //--------
-inline Ent::Ent(Engine* s_engine=nullptr, EntId s_id=ENT_NULL_ID,
+inline EntRef::EntRef(Engine* s_engine=nullptr, EntId s_id=ENT_NULL_ID,
 	FileNum s_file_num=Engine::USE_CURR_FILE_NUM)
 	: _engine(s_engine), _id(s_id), _file_num(s_file_num)
 {
 }
-inline CompMap& Ent::comp_map_fn() const
+inline CompMap& EntRef::comp_map_fn() const
 {
 	return _engine->comp_map_fn(id(), file_num());
 }
-inline bool Ent::insert_comp_fn(const std::string& key, CompSptr&& comp)
+inline bool EntRef::insert_comp_fn(const std::string& key, CompSptr&& comp)
 	const
 {
 	return _engine->insert_comp_fn(id(), key, std::move(comp), file_num());
 }
-inline bool Ent::insert_or_replace_comp_fn(const std::string& key,
+inline bool EntRef::insert_or_replace_comp_fn(const std::string& key,
 	CompSptr&& comp) const
 {
 	return _engine->insert_or_replace_comp_fn(id(), key, std::move(comp),
 		file_num());
 }
-inline size_t Ent::erase_comp_fn(const std::string& key) const
+inline size_t EntRef::erase_comp_fn(const std::string& key) const
 {
 	return _engine->erase_comp_fn(id(), key, file_num());
 }
