@@ -246,13 +246,31 @@ public:		// variables
 		size_2d = Vec2<T>();
 public:		// functions
 	//--------
-	// This is intended to work with
 	template<std::convertible_to<T> OtherElemT>
 	static constexpr inline Rect2 build_in_grid_r2_w_end_pos
 		(const Vec2<OtherElemT>& p0, const Vec2<OtherElemT>& p1)
 	{
 		return Rect2<T>{.pos{.x=min_va(p0.x, p1.x), .y=min_va(p0.y, p1.y)},
 			.size_2d=cstm_abs(p1 - p0) + Vec2{1, 1}};
+	}
+	constexpr inline Rect2 build_in_grid_r2_inflated
+		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount)
+	{
+		return build_in_grid_r2_w_end_pos
+			(Vec2<T>{.x=l_side_x() - tl_amount.x,
+				.y=t_side_y() - tl_amount.y},
+			Vec2<T>{.x=r_side_x() + br_amount.x
+				.y=b_side_y() + br_amount.y});
+	}
+	constexpr inline Rect2 build_in_grid_r2_inflated_lim
+		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount,
+		const Vec2<T>& tl_lim, const Vec2<T>& br_lim)
+	{
+		return build_in_grid_r2_w_end_pos
+			(Vec2<T>{.x=max_va(l_side_x() - tl_amount.x, tl_lim.x),
+				.y=min_va(t_side_y() - tl_amount.y, tl_lim.y)},
+			Vec2<T>{.x=min_va(r_side_x() + br_amount.x, br_lim.x),
+				.y=min_va(b_side_y() + br_amount.y, br_lim.y)});
 	}
 	//--------
 	static inline Rect2 from_bv(const binser::Value& bv);
