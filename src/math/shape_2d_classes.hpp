@@ -344,8 +344,10 @@ public:		// functions
 	//--------
 	// `ret.pos` and `ret.delta` will be set to the nearest edge of the
 	// `Rect2`
+	//constexpr inline std::optional<Hit2<T>> intersect(const Vec2<T>& arg,
+	//	bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	constexpr inline std::optional<Hit2<T>> intersect(const Vec2<T>& arg,
-		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		if (arg_padding != Vec2<T>())
 		{
@@ -358,7 +360,8 @@ public:		// functions
 					.size_2d=arg_padding
 				};
 
-			return intersect(rect, exclusive, Vec2<T>());
+			//return intersect(rect, exclusive, Vec2<T>());
+			return intersect(rect, Vec2<T>());
 		}
 		//--------
 		const Vec2<T>
@@ -370,9 +373,9 @@ public:		// functions
 		const T
 			dx = arg.x - temp_cpos.x,
 			px = temp_hsize.x - cstm_abs(dx);
-		if ((exclusive && px <= T(0)) || (!exclusive && px < T(0)))
+		//if ((exclusive && px <= T(0)) || (!exclusive && px < T(0)))
 		//if (px <= T(0))
-		//if (px < T(0))
+		if (px < T(0))
 		{
 			return std::nullopt;
 		}
@@ -380,9 +383,9 @@ public:		// functions
 		const ElemT
 			dy = arg.y - temp_cpos.y,
 			py = temp_hsize.y - cstm_abs(dy);
-		if ((exclusive && py <= T(0)) || (!exclusive && py < T(0)))
+		//if ((exclusive && py <= T(0)) || (!exclusive && py < T(0)))
 		//if (py <= T(0))
-		//if (py < T(0))
+		if (py < T(0))
 		{
 			return std::nullopt;
 		}
@@ -411,9 +414,12 @@ public:		// functions
 		return ret;
 		//--------
 	}
+	//constexpr inline std::optional<Hit2<T>> intersect
+	//	(const LineSeg2<T>& arg, bool exclusive=false,
+	//	const Vec2<T>& arg_padding=Vec2<T>()) const
 	constexpr inline std::optional<Hit2<T>> intersect
-		(const LineSeg2<T>& arg, bool exclusive=false,
-		const Vec2<T>& arg_padding=Vec2<T>()) const
+		(const LineSeg2<T>& arg, const Vec2<T>& arg_padding=Vec2<T>())
+		const
 	{
 		//--------
 		//using misc_output::printout;
@@ -505,7 +511,8 @@ public:		// functions
 				rect.size_2d.y = arg_padding.y;
 			}
 
-			return intersect(rect, exclusive, Vec2<T>());
+			//return intersect(rect, exclusive, Vec2<T>());
+			return intersect(rect, Vec2<T>());
 		}
 		//--------
 		auto calc_scale = [](const Vec2<T>& some_delta) -> Vec2<T>
@@ -584,9 +591,9 @@ public:		// functions
 		//printout("nt ft: ", near_time, " ", far_time, "\n");
 
 		//if (near_time >= T(1) || far_time <= T(0))
-		//if (near_time > T(1) || far_time < T(0))
-		if ((exclusive && (near_time >= T(1) || far_time <= T(0)))
-			|| (!exclusive && (near_time > T(1) || far_time < T(0))))
+		//if ((exclusive && (near_time >= T(1) || far_time <= T(0)))
+		//	|| (!exclusive && (near_time > T(1) || far_time < T(0))))
+		if (near_time > T(1) || far_time < T(0))
 		{
 			//printout("!hit\n");
 			return std::nullopt;
@@ -624,8 +631,10 @@ public:		// functions
 		return ret;
 		//--------
 	}
+	//constexpr inline std::optional<Hit2<T>> intersect(const Rect2& arg,
+	//	bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	constexpr inline std::optional<Hit2<T>> intersect(const Rect2& arg,
-		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
 		//--------
 		const Rect2<T>
@@ -677,8 +686,8 @@ public:		// functions
 			dx = temp_arg_cpos.x - temp_cpos.x,
 			px = (temp_arg_hsize.x + temp_hsize.x) - cstm_abs(dx);
 		//if (px <= T(0))
-		//if (px < T(0))
-		if ((exclusive && px <= T(0)) || (!exclusive && px < T(0)))
+		if (px < T(0))
+		//if ((exclusive && px <= T(0)) || (!exclusive && px < T(0)))
 		{
 			return std::nullopt;
 		}
@@ -686,9 +695,9 @@ public:		// functions
 		const T
 			dy = temp_arg_cpos.y - temp_cpos.y,
 			py = (temp_arg_hsize.y + temp_hsize.y) - cstm_abs(dy);
-		//if (py <= T(0))
+		if (py <= T(0))
 		//if (py < T(0))
-		if ((exclusive && py <= T(0)) || (!exclusive && py < T(0)))
+		//if ((exclusive && py <= T(0)) || (!exclusive && py < T(0)))
 		{
 			return std::nullopt;
 		}
@@ -717,8 +726,10 @@ public:		// functions
 	}
 	// For this function, `arg` is the moving `Rect2`, and `this` `Rect2`
 	// is not moving.
+	//constexpr inline Sweep2<T> sweep(const Rect2<T>& arg,
+	//	const Vec2<T>& arg_delta, bool exclusive=false) const
 	constexpr inline Sweep2<T> sweep(const Rect2<T>& arg,
-		const Vec2<T>& arg_delta, bool exclusive=false) const
+		const Vec2<T>& arg_delta) const
 	{
 		//--------
 		static const T
@@ -737,7 +748,8 @@ public:		// functions
 		{
 			ret.pos.x = temp_arg_cpos.x;
 			ret.pos.y = temp_arg_cpos.y;
-			ret.hit = intersect(arg, exclusive);
+			//ret.hit = intersect(arg, exclusive);
+			ret.hit = intersect(arg);
 			ret.tm
 				= ret.hit
 				? (ret.hit->tm == T(0))
@@ -746,12 +758,10 @@ public:		// functions
 			return ret;
 		}
 		//--------
-		ret.hit = intersect
-		(
-			LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
-			exclusive,
-			temp_arg_hsize
-		);
+		//ret.hit = intersect(LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
+		//	exclusive, temp_arg_hsize);
+		ret.hit = intersect(LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
+			temp_arg_hsize);
 
 		if (ret.hit)
 		{
@@ -792,9 +802,12 @@ public:		// functions
 	}
 	template<template<typename, typename...> typename ContnrEtcT,
 		typename... RemTs>
+	//constexpr inline Sweep2<T> sweep_into
+	//	(const ContnrEtcT<Rect2<T>, RemTs...>& coll_contnr,
+	//	const Vec2<T>& self_delta, bool exclusive=false) const
 	constexpr inline Sweep2<T> sweep_into
 		(const ContnrEtcT<Rect2<T>, RemTs...>& coll_contnr,
-		const Vec2<T>& self_delta, bool exclusive=false) const
+		const Vec2<T>& self_delta) const
 	{
 		//--------
 		//const Vec2<T>
@@ -810,8 +823,10 @@ public:		// functions
 		//for (size_t i=0; i<coll_contnr.size(); ++i)
 		for (const auto& item: coll_contnr)
 		{
+			//const Sweep2<T>
+			//	temp_sweep(item.sweep(*this, self_delta, exclusive));
 			const Sweep2<T>
-				temp_sweep(item.sweep(*this, self_delta, exclusive));
+				temp_sweep(item.sweep(*this, self_delta));
 			if (temp_sweep.tm < nearest.tm)
 			{
 				nearest = temp_sweep;
@@ -824,19 +839,29 @@ public:		// functions
 
 	// These functions return whether or not the *argument* is inside this
 	// `Rect2`.
+	//constexpr inline bool arg_inside(const LineSeg2<T>& arg,
+	//	bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	constexpr inline bool arg_inside(const LineSeg2<T>& arg,
-		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
-		return intersect(arg.p0, exclusive, arg_padding)
-			&& intersect(arg.p1, exclusive, arg_padding);
+		//return intersect(arg.p0, exclusive, arg_padding)
+		//	&& intersect(arg.p1, exclusive, arg_padding);
+		return intersect(arg.p0, arg_padding)
+			&& intersect(arg.p1, arg_padding);
 	}
+	//constexpr inline bool arg_inside(const Rect2& arg,
+	//	bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
 	constexpr inline bool arg_inside(const Rect2& arg,
-		bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+		const Vec2<T>& arg_padding=Vec2<T>()) const
 	{
-		return intersect(arg.tl_corner(), exclusive, arg_padding)
-			&& intersect(arg.tr_corner(), exclusive, arg_padding)
-			&& intersect(arg.bl_corner(), exclusive, arg_padding)
-			&& intersect(arg.br_corner(), exclusive, arg_padding);
+		//return intersect(arg.tl_corner(), exclusive, arg_padding)
+		//	&& intersect(arg.tr_corner(), exclusive, arg_padding)
+		//	&& intersect(arg.bl_corner(), exclusive, arg_padding)
+		//	&& intersect(arg.br_corner(), exclusive, arg_padding);
+		return intersect(arg.tl_corner(), arg_padding)
+			&& intersect(arg.tr_corner(), arg_padding)
+			&& intersect(arg.bl_corner(), arg_padding)
+			&& intersect(arg.br_corner(), arg_padding);
 	}
 	//--------
 };
