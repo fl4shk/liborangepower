@@ -39,27 +39,84 @@ std::ostream& operator << (std::ostream& os, const IcllTest& icll_test)
 		"str: ", icll_test.str);
 }
 
-int main(int argc, char** argv)
+inline void test_write_binser_file(const std::string& bv_file_name,
+	const binser::Value& bv)
 {
-	//--------
-	IndCircLinkList<IcllTest> cll;
-	cll.push_back({.x=42, .str="The answer to everything"});
-	cll.push_back({.x=9001, .str="It's over nine thousand!"});
-	cll.push_back({.x=420, .str="smoave"});
-
-	for (const auto& item: cll)
+	if (auto bv_file=std::fstream(bv_file_name,
+		std::ios_base::out | std::ios_base::binary); true)
 	{
-		printout(item, "\n");
+		binser::write_binser(bv_file, bv);
 	}
-
-	binser::Value bv;
-	binser::set_bv(bv, cll);
-
-	if (auto jv_file=std::fstream("cll.json.ignore",
-		std::ios_base::out); true)
+}
+inline void test_write_json_file(const std::string& jv_file_name,
+	const binser::Value& bv)
+{
+	if (auto jv_file=std::fstream(jv_file_name, std::ios_base::out); true)
 	{
 		Json::Value jv_root = binser::bv_to_jv(bv);
 		json::write_json(jv_file, &jv_root);
+	}
+}
+int main(int argc, char** argv)
+{
+	//--------
+	//IndCircLinkList<IcllTest> cll;
+	//cll.push_back({.x=42, .str="The answer to everything"});
+	//cll.push_back({.x=9001, .str="It's over nine thousand!"});
+	//cll.push_back({.x=420, .str="smoave"});
+
+	//for (const auto& item: cll)
+	//{
+	//	printout(item, "\n");
+	//}
+
+	//binser::Value bv;
+	//binser::set_bv(bv, cll);
+
+	//if (auto jv_file=std::fstream("cll.json.ignore",
+	//	std::ios_base::out); true)
+	//{
+	//	Json::Value jv_root = binser::bv_to_jv(bv);
+	//	json::write_json(jv_file, &jv_root);
+	//}
+	//--------
+	binser::VectorEx<IcllTest> oracle_vec;
+	oracle_vec.data.push_back({.x=42, .str="The answer to everything"});
+	oracle_vec.data.push_back({.x=9001, .str="It's over nine thousand!"});
+	oracle_vec.data.push_back({.x=420, .str="smoave"});
+
+	binser::VectorEx<IcllTest> test_vec;
+	test_vec.checked_size = 3;
+	test_vec.cs_is_max = false;
+	test_vec.min_size = 3;
+
+	//for (size_t i=0; i<vec.data.size(); ++i)
+	//{
+	//	printout(item, ", ");
+	//}
+	//for (const auto& item: vec)
+	//if (std::vector<std::string> temp_str_vec; true)
+	//{
+	//	for (const auto& item: vec.data)
+	//	{
+	//		temp_str_vec.push_back(sconcat(item));
+	//	}
+
+	//	printout("{\n\t", strjoin2("\n\t", temp_str_vec), "\n}\n");
+	//}
+
+	//binser::Value bv;
+	//binser::set_bv(bv, vec);
+
+	//test_write_binser_file("test_vec.binser.ignore", bv);
+	//test_write_json_file("test_vec.json.ignore", bv);
+
+	if (auto bv_file=std::fstream("test_vec.binser.ignore",
+		std::ios_base::in | std::ios_base::binary); true)
+	{
+		binser::Value bv;
+		binser::parse_binser(bv_file, bv);
+		binser::val_from_bv(test_vec, bv, std::nullopt);
 	}
 	//--------
 	//std::vector<std::string> test_vec;

@@ -33,7 +33,7 @@ using ExBoolT
 	= bool;
 
 template<typename ExContnrEtcT>
-concept LikeExCs = requires(ExContnrEtcT c)
+concept LikeExContnrCs = requires(ExContnrEtcT c)
 {
 	{ c.data } -> std::same_as<typename ExContnrEtcT::DataT>;
 	{ c.checked_size } -> std::same_as<ExSizeT>;
@@ -41,12 +41,33 @@ concept LikeExCs = requires(ExContnrEtcT c)
 	{ c.min_size } -> std::same_as<ExSizeT>;
 };
 template<typename ExContnrEtcT>
-concept LikeExMm = requires(ExContnrEtcT c)
+concept LikeExContnrMm = requires(ExContnrEtcT c)
 {
 	{ c.data } -> std::same_as<typename ExContnrEtcT::DataT>;
 	{ c.max } -> std::same_as<typename ExContnrEtcT::DataT>;
 	{ c.min } -> std::same_as<typename ExContnrEtcT::DataT>;
 };
+template<typename ExContnrEtcT>
+concept LikeExContnrAny
+	= (LikeExContnrCs<ExContnrEtcT> && LikeExContnrMm<ExContnrEtcT>);
+
+template<typename DstT, typename SrcT>
+inline void copy_ex_contnr_extras(DstT& dst, const SrcT& src)
+	requires ((LikeExContnrCs<DstT> && LikeExContnrCs<SrcT>)
+		|| (LikeExContnrMm<DstT> && LikeExContnrMm<SrcT>))
+{
+	if constexpr (LikeExContnrCs<DstT> && LikeExContnrCs<SrcT>)
+	{
+		dst.checked_size = src.checked_size;
+		dst.cs_is_max = src.cs_is_max;
+		dst.min_size = src.min_size;
+	}
+	else
+	{
+		dst.max = src.max;
+		dst.min = src.min;
+	}
+}
 //--------
 template<typename T, typename Allocator=std::allocator<T>>
 class VectorEx final

@@ -34,9 +34,9 @@ using containers::is_prev_curr_pair;
 
 using containers::is_ind_circ_link_list;
 
-using containers::is_non_arr_std_unique_ptr;
-using containers::is_non_arr_std_shared_ptr;
-using containers::is_non_arr_std_weak_ptr;
+using containers::is_std_unique_ptr_to_non_arr;
+using containers::is_std_shared_ptr_to_non_arr;
+using containers::is_std_weak_ptr_to_non_arr;
 using containers::is_std_array;
 using containers::is_std_vector;
 using containers::is_std_deque;
@@ -186,10 +186,79 @@ inline void val_from_bv_test_ex_mm
 	}
 }
 
+//template<typename ValueEtcT, typename T, typename BaseT,
+//	typename IteratorT>
+//inline void _val_from_bv_handle_ex_contnr(T& ret, const Value& bv,
+//	FromBvFactoryFuncMap<BaseT>* func_map)
+//{
+//}
+
+//template<typename ValueEtcT>
+//concept IsValFromBvFieDoCopy
+//	= (!is_std_unique_ptr_to_non_arr<ValueEtcT>()
+//	|| (std::is_move_constructible<ValueEtcT>()
+//		&& std::is_move_assignable<ValueEtcT>()));
+//
+//template<typename ValueEtcT>
+//concept IsValFromBvFieDoMove
+//	= (!IsValFromBvFieDoCopy<ValueEtcT>);
+//
+//template<IsValFromBvFieDoCopy ValueEtcT>
+//inline void _val_from_bv_final_insert_etc
+//	(const std::function<void(const ValueEtcT&)>& copy_func,
+//	const std::function<void(ValueEtcT&&)>& move_func,
+//	const ValueEtcT& temp)
+//{
+//	copy_func(temp);
+//}
+//template<IsValFromBvFieDoMove ValueEtcT>
+//inline void _val_from_bv_final_insert_etc
+//	(const std::function<void(const ValueEtcT&)>& copy_func,
+//	const std::function<void(ValueEtcT&&)>& move_func,
+//	ValueEtcT&& temp)
+//{
+//	move_func(std::move(temp));
+//}
+
+template<typename IterT>
+inline void _val_from_bv_inc_iter(IterT& some_iter, const IterT& some_end)
+{
+	if (some_iter != some_end)
+	{
+		++some_iter;
+	}
+}
+
 template<typename T, typename BaseT>
 inline void val_from_bv(T& ret, const Value& bv,
 	FromBvFactoryFuncMap<BaseT>* func_map)
 {
+	#define BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(ValueEtcT, \
+		temp, to_copy_ex_stuff_from, some_bv) \
+		do \
+		{ \
+			if constexpr (LikeExContnrAny<ValueEtcT>) \
+			{ \
+				copy_ex_contnr_extras(temp, to_copy_ex_stuff_from); \
+			} \
+			val_from_bv(temp, some_bv, func_map); \
+		} while (0)
+
+	#define BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(ValueEtcT, temp, \
+		copy_func, move_func) \
+		do \
+		{ \
+			if constexpr (!(is_std_unique_ptr_to_non_arr<ValueEtcT>() \
+				|| (std::is_move_constructible<ValueEtcT>() \
+					&& std::is_move_assignable<ValueEtcT>()))) \
+			{ \
+				copy_func (temp); \
+			} \
+			else \
+			{ \
+				move_func (std::move(temp)); \
+			} \
+		} while (0)
 	//--------
 	using NonCvrefT = std::remove_cvref_t<T>;
 	//--------
@@ -249,22 +318,31 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_scalar_ex: ",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data,
-				ret.min,
-				ret.max)));
+			ARG_DUP_AS_STR(ret.data),
+			ARG_DUP_AS_STR(ret.min),
+			ARG_DUP_AS_STR(ret.max));
 	}
 	//--------
 	else if constexpr (is_vec2<NonCvrefT>())
 	{
-		val_from_bv(ret.x, bv.at("x"), func_map);
-		val_from_bv(ret.y, bv.at("y"), func_map);
+		//val_from_bv(ret.x, bv.at("x"), func_map);
+		//val_from_bv(ret.y, bv.at("y"), func_map);
+
+		#define X(name, dummy_arg) \
+			val_from_bv(ret. name , bv.at( #name ), func_map);
+		MEMB_LIST_VEC2(X)
+		#undef X
 	}
 	else if constexpr (is_vec3<NonCvrefT>())
 	{
-		val_from_bv(ret.x, bv.at("x"), func_map);
-		val_from_bv(ret.y, bv.at("y"), func_map);
-		val_from_bv(ret.z, bv.at("z"), func_map);
+		//val_from_bv(ret.x, bv.at("x"), func_map);
+		//val_from_bv(ret.y, bv.at("y"), func_map);
+		//val_from_bv(ret.z, bv.at("z"), func_map);
+
+		#define X(name, dummy_arg) \
+			val_from_bv(ret. name , bv.at( #name ), func_map);
+		MEMB_LIST_VEC3(X)
+		#undef X
 	}
 	else if constexpr (is_vec2_ex<NonCvrefT>())
 	{
@@ -273,13 +351,15 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_vec2_ex: ",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.x, ret.min.x, ret.max.x)));
+			ARG_DUP_AS_STR(ret.data.x),
+			ARG_DUP_AS_STR(ret.min.x),
+			ARG_DUP_AS_STR(ret.max.x));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_vec2_ex: ",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.y, ret.min.y, ret.max.y)));
+			ARG_DUP_AS_STR(ret.data.y),
+			ARG_DUP_AS_STR(ret.min.y),
+			ARG_DUP_AS_STR(ret.max.y));
 	}
 	else if constexpr (is_vec3_ex<NonCvrefT>())
 	{
@@ -288,18 +368,21 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_vec3_ex: ",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.x, ret.min.x, ret.max.x)));
+			ARG_DUP_AS_STR(ret.data.x),
+			ARG_DUP_AS_STR(ret.min.x),
+			ARG_DUP_AS_STR(ret.max.x));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_vec3_ex: ",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.y, ret.min.y, ret.max.y)));
+			ARG_DUP_AS_STR(ret.data.y),
+			ARG_DUP_AS_STR(ret.min.y),
+			ARG_DUP_AS_STR(ret.max.y));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_vec3_ex: ",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.z, ret.min.z, ret.max.z)));
+			ARG_DUP_AS_STR(ret.data.z),
+			ARG_DUP_AS_STR(ret.min.z),
+			ARG_DUP_AS_STR(ret.max.z));
 	}
 	else if constexpr (is_line_seg2_ex<NonCvrefT>())
 	{
@@ -308,23 +391,27 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_line_seg2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.p0.x, ret.min.p0.x, ret.max.p0.x)));
+			ARG_DUP_AS_STR(ret.data.p0.x),
+			ARG_DUP_AS_STR(ret.min.p0.x),
+			ARG_DUP_AS_STR(ret.max.p0.x));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_line_seg2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.p0.y, ret.min.p0.y, ret.max.p0.y)));
+			ARG_DUP_AS_STR(ret.data.p0.y),
+			ARG_DUP_AS_STR(ret.min.p0.y),
+			ARG_DUP_AS_STR(ret.max.p0.y));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_line_seg2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.p1.x, ret.min.p1.x, ret.max.p1.x)));
+			ARG_DUP_AS_STR(ret.data.p1.x),
+			ARG_DUP_AS_STR(ret.min.p1.x),
+			ARG_DUP_AS_STR(ret.max.p1.x));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_line_seg2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.p1.y, ret.min.p1.y, ret.max.p1.y)));
+			ARG_DUP_AS_STR(ret.data.p1.y),
+			ARG_DUP_AS_STR(ret.min.p1.y),
+			ARG_DUP_AS_STR(ret.max.p1.y));
 	}
 	else if constexpr (is_rect2_ex<NonCvrefT>())
 	{
@@ -333,60 +420,84 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_rect2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.pos.x, ret.min.pos.x, ret.max.pos.x)));
+			ARG_DUP_AS_STR(ret.data.pos.x),
+			ARG_DUP_AS_STR(ret.min.pos.x),
+			ARG_DUP_AS_STR(ret.max.pos.x));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_rect2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.pos.y, ret.min.pos.y, ret.max.pos.y)));
+			ARG_DUP_AS_STR(ret.data.pos.y),
+			ARG_DUP_AS_STR(ret.min.pos.y),
+			ARG_DUP_AS_STR(ret.max.pos.y));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_rect2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.size_2d.x, ret.min.size_2d.x,
-				ret.max.size_2d.x)));
+			ARG_DUP_AS_STR(ret.data.size_2d.x),
+			ARG_DUP_AS_STR(ret.min.size_2d.x),
+			ARG_DUP_AS_STR(ret.max.size_2d.x));
 		val_from_bv_test_ex_mm
 			("liborangepower::binser::val_from_bv",
 			"is_rect2_ex",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.size_2d.y, ret.min.size_2d.y,
-				ret.max.size_2d.y)));
+			ARG_DUP_AS_STR(ret.data.size_2d.y),
+			ARG_DUP_AS_STR(ret.min.size_2d.y),
+			ARG_DUP_AS_STR(ret.max.size_2d.y));
 	}
 	else if constexpr (is_prev_curr_pair<NonCvrefT>()
 		//|| is_move_only_prev_curr_pair<NonCvrefT>()
 	)
 	{
-		val_from_bv(ret(), bv.at("_prev"), func_map);
-		ret.back_up();
-		val_from_bv(ret(), bv.at("_curr"), func_map);
+		NonCvrefT to_move;
+
+		using ElemT
+			= std::remove_cvref_t<typename NonCvrefT::ElemT>;
+
+		//val_from_bv(to_move(), bv.at("_prev"), func_map);
+		//to_move.back_up();
+
+		//val_from_bv(to_move(), bv.at("_curr"), func_map);
+
+		BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(ElemT, to_move(),
+			ret.prev(), bv.at("_prev"));
+		to_move.back_up();
+
+		BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(ElemT, to_move(),
+			ret(), bv.at("_curr"));
+
+		//ret = std::move(to_move);
+
+		BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(ElemT, to_move, ret =, ret =);
 	}
 	//--------
 	else if constexpr (is_ind_circ_link_list<NonCvrefT>())
 	{
-		ret = NonCvrefT();
+		//ret = NonCvrefT();
+		NonCvrefT to_move;
+
+		auto iter = ret.begin();
 
 		for (size_t i=0; i<bv.size(); ++i)
 		{
 			using ElemT = typename NonCvrefT::ElemT;
 			ElemT temp;
 
-			val_from_bv(temp, bv.at(i), func_map);
+			//val_from_bv(temp, bv.at(i), func_map);
+			BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(ElemT, temp,
+				*iter, bv.at(i));
 
-			if constexpr (is_non_arr_std_unique_ptr<ElemT>())
-			{
-				ret.push_back(std::move(temp));
-			}
-			else
-			{
-				ret.push_back(temp);
-			}
+			BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(ElemT, temp, ret.push_back,
+				ret.push_back);
+
+			//if (iter != ret.end())
+			//{
+			//	++iter;
+			//}
+			_val_from_bv_inc_iter(iter, ret.end());
 		}
 	}
 	//--------
-	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
-		|| is_non_arr_std_shared_ptr<NonCvrefT>()
-		|| is_non_arr_std_weak_ptr<NonCvrefT>())
+	else if constexpr (is_std_unique_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_shared_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_weak_ptr_to_non_arr<NonCvrefT>())
 	{
 		using ElemT = typename NonCvrefT::element_type;
 
@@ -399,8 +510,16 @@ inline void val_from_bv(T& ret, const Value& bv,
 		{
 			//return NonCvrefT(new ElemT(val_from_bv<ElemT>(obj)));
 			ElemT temp;
-			val_from_bv(temp, obj, func_map);
-			ret.reset(new ElemT(temp));
+			//val_from_bv(temp, obj, func_map);
+			BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(ElemT, temp,
+				*ret, obj);
+
+			//ret.reset(new ElemT(temp));
+			BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(ElemT, temp,
+				[&](const ElemT& some_temp) -> void
+					{ ret.reset(new ElemT(some_temp)); },
+				[&](ElemT&& some_temp) -> void
+					{ ret.reset(std::move(some_temp)); });
 		}
 		//else // if (bv.isMember("kind_str"))
 		else // if (std::is_same<ElemT, BaseT>())
@@ -416,12 +535,13 @@ inline void val_from_bv(T& ret, const Value& bv,
 			val_from_bv(kind_str, bv.at("kind_str"), func_map);
 
 			//ret.reset(func_map->at(kind_str)(obj));
-			ret = func_map->at(kind_str)(obj);
+			//ret = func_map->at(kind_str)(obj);
 		}
 	}
 	else if constexpr (is_std_array<NonCvrefT>())
 	{
-		ret = NonCvrefT();
+		//ret = NonCvrefT();
+		//NonCvrefT to_move;
 
 		if (ret.size() != bv.size())
 		{
@@ -432,9 +552,24 @@ inline void val_from_bv(T& ret, const Value& bv,
 				ret.size(), " ", bv.size()));
 		}
 
+		auto iter = ret.begin();
+
 		for (size_t i=0; i<bv.size(); ++i)
 		{
-			val_from_bv(ret[i], bv.at(i), func_map);
+			using ValueT = typename NonCvrefT::value_type;
+			ValueT temp;
+			////val_from_bv(ret[i], bv.at(i), func_map);
+			//val_from_bv(temp, bv.at(i), func_map);
+			BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(ValueT, temp,
+				*iter, bv.at(i));
+
+			BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(ValueT, temp,
+				[&](const ValueT& some_temp) -> void
+					{ ret.at(i) = some_temp; },
+				[&](ValueT&& some_temp) -> void
+					{ ret.at(i) = std::move(some_temp); });
+			//++iter;
+			_val_from_bv_inc_iter(iter, ret.end());
 		}
 	}
 	else if constexpr (is_vector_ex<NonCvrefT>()
@@ -444,6 +579,9 @@ inline void val_from_bv(T& ret, const Value& bv,
 		//ret = NonCvrefT();
 
 		//val_from_bv(ret.data, bv.at("data"), func_map);
+
+		//using ElemT = typename NonCvrefT::ElemT;
+		//ElemT temp;
 		val_from_bv(ret.data, bv, func_map);
 
 		// Prevent multiple O(n) computations of `ret.data.size()` when
@@ -477,9 +615,11 @@ inline void val_from_bv(T& ret, const Value& bv,
 		val_from_bv_test_ex_cs
 			("liborangepower::binser::val_from_bv",
 			"is vector/deque with extras",
-			EVAL(MAP(ARG_DUP_AS_STR, COMMA,
-				ret.data.size(), ret.data, ret.checked_size, ret.cs_is_max,
-				ret.min_size)));
+			ARG_DUP_AS_STR(ret.data.size()),
+			ARG_DUP_AS_STR(ret.data),
+			ARG_DUP_AS_STR(ret.checked_size),
+			ARG_DUP_AS_STR(ret.cs_is_max),
+			ARG_DUP_AS_STR(ret.min_size));
 		//#define TEST_MAP_MACRO(x) printout(x, "\n")
 		//EVAL(MAP(TEST_MAP_MACRO, SEMICOLON,
 		//	ret.data,
@@ -490,9 +630,12 @@ inline void val_from_bv(T& ret, const Value& bv,
 	}
 	else if constexpr (is_pseudo_vec_like_std_container<NonCvrefT>())
 	{
-		ret = NonCvrefT();
+		//ret = NonCvrefT();
+		NonCvrefT to_move;
 
 		//for (size_t i=1; i<bv.size(); ++i)
+		auto iter = ret.begin();
+
 		for (size_t i=0; i<bv.size(); ++i)
 		{
 			if constexpr (is_vec_like_std_container<NonCvrefT>())
@@ -500,59 +643,63 @@ inline void val_from_bv(T& ret, const Value& bv,
 				using ValueT = typename NonCvrefT::value_type;
 				ValueT temp;
 
-				val_from_bv(temp, bv.at(i), func_map);
+				//val_from_bv(temp, bv.at(i), func_map);
+				BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(ValueT,
+					temp, *iter, bv.at(i));
 
-				if constexpr (is_non_arr_std_unique_ptr<ValueT>())
-				{
-					ret.push_back(std::move(temp));
-				}
-				else
-				{
-					ret.push_back(temp);
-				}
+				BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(ValueT, temp, 
+					to_move.push_back, to_move.push_back);
 			}
 			else // if constexpr (is_set_like_std_container<NonCvrefT>())
 			{
 				using KeyT = typename NonCvrefT::key_type;
 				KeyT temp;
 
-				val_from_bv(temp, bv.at(i), func_map);
+				//val_from_bv(temp, bv.at(i), func_map);
+				BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(KeyT, temp,
+					*iter, bv.at(i));
 
-				if constexpr (is_non_arr_std_unique_ptr<KeyT>())
-				{
-					ret.insert(std::move(temp));
-				}
-				else
-				{
-					ret.insert(temp);
-				}
+				BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(KeyT, temp,
+					to_move.insert, to_move.insert);
 			}
+			//++iter;
+			_val_from_bv_inc_iter(iter, ret.end());
 		}
+		ret = std::move(to_move);
 	}
 	else if constexpr (is_map_like_std_container<NonCvrefT>())
 	{
-		ret = NonCvrefT();
+		//ret = NonCvrefT();
+		NonCvrefT to_move;
 		using KeyT = typename NonCvrefT::key_type;
 		using MappedT = typename NonCvrefT::mapped_type;
+
+		auto iter = ret.begin();
 
 		//for (size_t i=1; i<bv.size(); ++i)
 		for (size_t i=0; i<bv.size(); i+=2)
 		{
 			KeyT key;
-			val_from_bv(key, bv.at(i), func_map);
+			//val_from_bv(key, bv.at(i), func_map);
+			BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(KeyT, key,
+				iter->first, bv.at(i));
 
 			MappedT value;
-			val_from_bv(value, bv.at(i + 1), func_map);
+			//val_from_bv(value, bv.at(i + 1), func_map);
+			BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV(MappedT, value,
+				iter->second, bv.at(i + 1));
 
-			if constexpr (is_non_arr_std_unique_ptr<MappedT>())
-			{
-				ret[key] = std::move(value);
-			}
-			else
-			{
-				ret[key] = value;
-			}
+			BINSER_VAL_FROM_BV_FINAL_INSERT_ETC(MappedT, value,
+				[&](const MappedT& some_value) -> void
+					{ to_move[key] = some_value; },
+				[&](MappedT&& some_value) -> void
+					{ to_move[key] = std::move(some_value); });
+
+			//++iter;
+			_val_from_bv_inc_iter(iter, ret.end());
 		}
+
+		ret = std::move(to_move);
 	}
 	//--------
 	else if constexpr (HasBvDeserializeFunc<NonCvrefT>)
@@ -569,7 +716,12 @@ inline void val_from_bv(T& ret, const Value& bv,
 		ret = NonCvrefT::from_bv(bv);
 	}
 	//--------
+	#undef BINSER_VAL_FROM_BV_COPY_EX_STUFF_AND_CALL_VFBV
+	#undef BINSER_VAL_FROM_BV_FINAL_INSERT_ETC
+	//--------
 }
+
+
 template<typename T>
 inline void val_from_bv(T& ret, const Value& bv,
 	const std::nullopt_t& some_nullopt)
@@ -712,9 +864,9 @@ inline void set_bv(Value& bv, const T& val)
 		bv = std::move(map);
 	}
 	//--------
-	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
-		|| is_non_arr_std_shared_ptr<NonCvrefT>()
-		|| is_non_arr_std_weak_ptr<NonCvrefT>())
+	else if constexpr (is_std_unique_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_shared_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_weak_ptr_to_non_arr<NonCvrefT>())
 	{
 		//bv = ValueMap();
 		ValueMap map;

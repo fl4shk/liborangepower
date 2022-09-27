@@ -33,9 +33,9 @@ using math::is_vec3;
 using containers::is_prev_curr_pair;
 using containers::is_move_only_prev_curr_pair;
 
-using containers::is_non_arr_std_unique_ptr;
-using containers::is_non_arr_std_shared_ptr;
-using containers::is_non_arr_std_weak_ptr;
+using containers::is_std_unique_ptr_to_non_arr;
+using containers::is_std_shared_ptr_to_non_arr;
+using containers::is_std_weak_ptr_to_non_arr;
 using containers::is_std_array;
 using containers::is_std_vector;
 using containers::is_std_deque;
@@ -175,9 +175,9 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 		val_from_jv(ret(), jv["_curr"], func_map);
 	}
 	//--------
-	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
-		|| is_non_arr_std_shared_ptr<NonCvrefT>()
-		|| is_non_arr_std_weak_ptr<NonCvrefT>())
+	else if constexpr (is_std_unique_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_shared_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_weak_ptr_to_non_arr<NonCvrefT>())
 	{
 		using ElemT = typename NonCvrefT::element_type;
 
@@ -238,7 +238,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 
 				val_from_jv(temp, jv[i], func_map);
 
-				if constexpr (is_non_arr_std_unique_ptr<ValueT>())
+				if constexpr (is_std_unique_ptr_to_non_arr<ValueT>())
 				{
 					ret.push_back(std::move(temp));
 				}
@@ -254,7 +254,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 
 				val_from_jv(temp, jv[i], func_map);
 
-				if constexpr (is_non_arr_std_unique_ptr<KeyT>())
+				if constexpr (is_std_unique_ptr_to_non_arr<KeyT>())
 				{
 					ret.insert(std::move(temp));
 				}
@@ -280,7 +280,7 @@ inline void val_from_jv(T& ret, const Json::Value& jv,
 			MappedT value;
 			val_from_jv(value, jv[i]["value"], func_map);
 
-			if constexpr (is_non_arr_std_unique_ptr<MappedT>())
+			if constexpr (is_std_unique_ptr_to_non_arr<MappedT>())
 			{
 				ret[key] = std::move(value);
 			}
@@ -419,9 +419,9 @@ inline void set_jv(Json::Value& jv, const T& val)
 		set_jv(jv["_curr"], val.curr());
 	}
 	//--------
-	else if constexpr (is_non_arr_std_unique_ptr<NonCvrefT>()
-		|| is_non_arr_std_shared_ptr<NonCvrefT>()
-		|| is_non_arr_std_weak_ptr<NonCvrefT>())
+	else if constexpr (is_std_unique_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_shared_ptr_to_non_arr<NonCvrefT>()
+		|| is_std_weak_ptr_to_non_arr<NonCvrefT>())
 	{
 		//jv["obj"] = *val;
 		set_jv(jv["obj"], *val);

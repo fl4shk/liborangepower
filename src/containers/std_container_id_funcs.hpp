@@ -37,13 +37,13 @@ extern uint32_t _is_std_unique_ptr_check
 
 
 template<typename ToCheckT>
-constexpr inline bool is_non_arr_std_unique_ptr()
+constexpr inline bool is_std_unique_ptr_to_non_arr()
 {
 	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint16_t));
 }
 template<typename ToCheckT>
-constexpr inline bool is_arr_std_unique_ptr()
+constexpr inline bool is_std_unique_ptr_to_arr()
 {
 	return (sizeof(_is_std_unique_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
@@ -51,8 +51,8 @@ constexpr inline bool is_arr_std_unique_ptr()
 template<typename ToCheckT>
 constexpr inline bool is_any_std_unique_ptr()
 {
-	return (is_non_arr_std_unique_ptr<ToCheckT>()
-		|| is_arr_std_unique_ptr<ToCheckT>());
+	return (is_std_unique_ptr_to_non_arr<ToCheckT>()
+		|| is_std_unique_ptr_to_arr<ToCheckT>());
 }
 //--------
 template<typename FirstT, typename... RemTs>
@@ -68,13 +68,13 @@ extern uint32_t _is_std_shared_ptr_check
 
 
 template<typename ToCheckT>
-constexpr inline bool is_non_arr_std_shared_ptr()
+constexpr inline bool is_std_shared_ptr_to_non_arr()
 {
 	return (sizeof(_is_std_shared_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint16_t));
 }
 template<typename ToCheckT>
-constexpr inline bool is_arr_std_shared_ptr()
+constexpr inline bool is_std_shared_ptr_to_arr()
 {
 	return (sizeof(_is_std_shared_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
@@ -82,8 +82,8 @@ constexpr inline bool is_arr_std_shared_ptr()
 template<typename ToCheckT>
 constexpr inline bool is_any_std_shared_ptr()
 {
-	return (is_non_arr_std_shared_ptr<ToCheckT>()
-		|| is_arr_std_shared_ptr<ToCheckT>());
+	return (is_std_shared_ptr_to_non_arr<ToCheckT>()
+		|| is_std_shared_ptr_to_arr<ToCheckT>());
 }
 
 template<typename FirstT, typename... RemTs>
@@ -99,13 +99,13 @@ extern uint32_t _is_std_weak_ptr_check
 
 
 template<typename ToCheckT>
-constexpr inline bool is_non_arr_std_weak_ptr()
+constexpr inline bool is_std_weak_ptr_to_non_arr()
 {
 	return (sizeof(_is_std_weak_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint16_t));
 }
 template<typename ToCheckT>
-constexpr inline bool is_arr_std_weak_ptr()
+constexpr inline bool is_std_weak_ptr_to_arr()
 {
 	return (sizeof(_is_std_weak_ptr_check(std::declval<ToCheckT>()))
 		== sizeof(uint32_t));
@@ -113,8 +113,8 @@ constexpr inline bool is_arr_std_weak_ptr()
 template<typename ToCheckT>
 constexpr inline bool is_any_std_weak_ptr()
 {
-	return (is_non_arr_std_weak_ptr<ToCheckT>()
-		|| is_arr_std_weak_ptr<ToCheckT>());
+	return (is_std_weak_ptr_to_non_arr<ToCheckT>()
+		|| is_std_weak_ptr_to_arr<ToCheckT>());
 }
 //--------
 //GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(is_std_array, std::array);
