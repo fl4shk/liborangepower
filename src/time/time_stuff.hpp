@@ -100,7 +100,7 @@ inline auto rng_run(RngT& rng)
 //	return ret;
 //}
 template<typename T, CallableLikeRngBounded<T> RngT>
-inline auto rng_run(RngT& rng, const T& bound)
+inline auto rng_run_lt_bound(RngT& rng, const T& bound)
 {
 	return bound == T(0) ? T(0) : T(rng(bound));
 	//if (bound == T(0))
@@ -118,7 +118,8 @@ inline auto rng_run(RngT& rng, const T& lim_0, const T& lim_1)
 {
 	//return rng_run<T>(rng, math::cstm_abs(lim_1 - lim_0), false)
 	//	+ math::min_va(lim_0, lim_1);
-	return rng_run<T>(rng, math::cstm_abs(lim_1 - lim_0))
+	const auto& bound = math::cstm_abs(lim_0 - lim_1) + T(1);
+	return rng_run_lt_bound<T>(rng, bound)
 		+ math::min_va(lim_0, lim_1);
 }
 

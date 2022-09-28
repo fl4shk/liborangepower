@@ -13,7 +13,7 @@ public:		// variables
 	Rect2<T> rect={.pos=Vec2<T>(), .size_2d=Vec2<T>()};
 	ShapeT arg;
 	//bool exclusive=false;
-	Vec2<T> arg_padding={T(0), T(0)};
+	Vec2<T> arg_padding=Vec2<T>(T(0), T(0));
 };
 
 template<template<typename> typename UnconShapeT, typename T>
@@ -25,6 +25,30 @@ void test_intersect(const std::vector<TestTuple<UnconShapeT, T>>& test_vec)
 		printout(i, ": ");
 
 		const auto& hit = item.rect.intersect
+			(item.arg
+			//item.exclusive, 
+			);
+
+		if (!hit)
+		{
+			printout("!hit\n");
+		}
+		else // if (hit)
+		{
+			printout("hit\n");
+		}
+	}
+}
+template<template<typename> typename UnconShapeT, typename T>
+void test_intersect_fancy
+	(const std::vector<TestTuple<UnconShapeT, T>>& test_vec)
+{
+	for (size_t i=0; i<test_vec.size(); ++i)
+	{
+		const auto& item = test_vec.at(i);
+		printout(i, ": ");
+
+		const auto& hit = item.rect.intersect_fancy
 			(item.arg,
 			//item.exclusive, 
 			item.arg_padding);

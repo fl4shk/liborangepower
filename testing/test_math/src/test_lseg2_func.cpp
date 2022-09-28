@@ -66,5 +66,5 @@ void test_lseg2()
 	//		.rect{.pos{-2, -2}, .size_2d{4, 4}}
 	//	},
 	//});
-	test_intersect(test_vec_lseg2);
+	test_intersect_fancy(test_vec_lseg2);
 }
