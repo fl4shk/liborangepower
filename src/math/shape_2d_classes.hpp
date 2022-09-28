@@ -257,20 +257,20 @@ public:		// functions
 		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount)
 	{
 		return build_in_grid_r2_w_end_pos
-			(Vec2<T>{.x=l_side_x() - tl_amount.x,
-				.y=t_side_y() - tl_amount.y},
-			Vec2<T>{.x=r_side_x() + br_amount.x
-				.y=b_side_y() + br_amount.y});
+			(Vec2<T>{.x=left_x() - tl_amount.x,
+				.y=top_y() - tl_amount.y},
+			Vec2<T>{.x=right_x() + br_amount.x
+				.y=bottom_y() + br_amount.y});
 	}
 	constexpr inline Rect2 build_in_grid_r2_inflated_lim
 		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount,
 		const Vec2<T>& tl_lim, const Vec2<T>& br_lim)
 	{
 		return build_in_grid_r2_w_end_pos
-			(Vec2<T>{.x=max_va(l_side_x() - tl_amount.x, tl_lim.x),
-				.y=min_va(t_side_y() - tl_amount.y, tl_lim.y)},
-			Vec2<T>{.x=min_va(r_side_x() + br_amount.x, br_lim.x),
-				.y=min_va(b_side_y() + br_amount.y, br_lim.y)});
+			(Vec2<T>{.x=max_va(left_x() - tl_amount.x, tl_lim.x),
+				.y=min_va(top_y() - tl_amount.y, tl_lim.y)},
+			Vec2<T>{.x=min_va(right_x() + br_amount.x, br_lim.x),
+				.y=min_va(bottom_y() + br_amount.y, br_lim.y)});
 	}
 	//--------
 	static inline Rect2 from_bv(const binser::Value& bv);
@@ -308,43 +308,55 @@ public:		// functions
 		return div_2(size_2d);
 	}
 
-	constexpr inline T l_side_x() const
+	constexpr inline T left_x() const
 	{
 		return pos.x;
 	}
-	constexpr inline T t_side_y() const
+	constexpr inline T top_y() const
 	{
 		return pos.y;
 	}
-	constexpr inline T r_side_x() const
+	constexpr inline T right_x() const
 	{
 		return pos.x + size_2d.x - T(1);
 	}
-	constexpr inline T b_side_y() const
+	constexpr inline T bottom_y() const
 	{
 		return pos.y + size_2d.y - T(1);
 	}
 
 	constexpr inline Vec2<T> tl_corner() const
 	{
-		return Vec2<T>(l_side_x(), t_side_y());
+		return Vec2<T>(left_x(), top_y());
 	}
 	constexpr inline Vec2<T> tr_corner() const
 	{
-		return Vec2<T>(r_side_x(), t_side_y());
+		return Vec2<T>(right_x(), top_y());
 	}
 	constexpr inline Vec2<T> bl_corner() const
 	{
-		return Vec2<T>(l_side_x(), b_side_y());
+		return Vec2<T>(left_x(), bottom_y());
 	}
 	constexpr inline Vec2<T> br_corner() const
 	{
-		return Vec2<T>(r_side_x(), b_side_y());
+		return Vec2<T>(right_x(), bottom_y());
 	}
 	//--------
+	template<bool exclusive=false>
 	constexpr inline bool intersect(const Vec2<T>& arg) const
 	{
-		return intersect(Rect2<T>{.pos=arg, .size_2d=Vec2<T>()});
+		//return intersect(Rect2<T>{.pos=arg, .size_2d=Vec2<T>()});
+
+		if constexpr (exclusive)
+		{
+			return (arg.x > left_x() && arg.x < right_x()
+				&& arg.y > top_y() && arg.y < bottom_y());
+		}
+		else
+		{
+			return (arg.x >= left_x() && arg.x <= right_x()
+				&& arg.y >= top_y() && arg.y <= bottom_y());
+		}
 	}
 	// `ret.pos` and `ret.delta` will be set to the nearest edge of the
 	// `Rect2`
@@ -635,10 +647,16 @@ public:		// functions
 
 	constexpr inline bool intersect(const Rect2& arg) const
 	{
-		return (cstm_abs(pos.x - arg.pos.x) * 2
-				< (size_2d.x + arg.size_2d.x))
-			&& (cstm_abs(pos.y - arg.pos.y) * 2 
-				< (size_2d.y + arg.size_2d.y));
+		// This won't work for `int`s
+		//return (cstm_abs(cntr_pos().x - arg.cntr_pos().x) * 2
+		//		< (size_2d.x + arg.size_2d.x))
+		//	&& (cstm_abs(cntr_pos().y - arg.cntr_pos().y) * 2 
+		//		< (size_2d.y + arg.size_2d.y));
+
+		return !(arg.left_x() > right_x()
+			|| arg.right_x() < left_x()
+			|| arg.top_y() > bottom_y()
+			|| arg.bottom_y() < top_y());
 	}
 	//constexpr inline std::optional<Hit2<T>> intersect_fancy
 	//	(const Rect2& arg, bool exclusive=false,
@@ -769,9 +787,11 @@ public:		// functions
 			return ret;
 		}
 		//--------
-		//ret.hit = intersect_fancy(LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
+		//ret.hit = intersect_fancy
+		//	(LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
 		//	exclusive, temp_arg_hsize);
-		ret.hit = intersect_fancy(LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
+		ret.hit = intersect_fancy
+			(LineSeg2<T>{.p0=temp_arg_cpos, .p1=arg_delta},
 			temp_arg_hsize);
 
 		if (ret.hit)
@@ -860,10 +880,13 @@ public:		// functions
 		return intersect_fancy(arg.p0, arg_padding)
 			&& intersect_fancy(arg.p1, arg_padding);
 	}
+	template<bool exclusive=false>
 	constexpr inline bool arg_inside(const Rect2& arg) const
 	{
-		return intersect(arg.tl_corner()) && intersect(arg.tr_corner())
-			&& intersect(arg.bl_corner()) && intersect(arg.br_corner());
+		return intersect<exclusive>(arg.tl_corner())
+			&& intersect<exclusive>(arg.tr_corner())
+			&& intersect<exclusive>(arg.bl_corner())
+			&& intersect<exclusive>(arg.br_corner());
 	}
 	//constexpr inline bool arg_inside(const Rect2& arg,
 	//	bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
