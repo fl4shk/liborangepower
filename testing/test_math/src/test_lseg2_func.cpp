@@ -10,7 +10,7 @@ void test_lseg2()
 		ARG_PADDING_LSEG2
 			//{0.1, 0.1};
 			{0.0, 0.0};
-	const std::vector<TestPair<LineSeg2, double>> test_vec_lseg2
+	const std::vector<TestTuple<LineSeg2, double>> test_vec_lseg2
 	({
 		//--------
 		{.rect=RECT2_FOR_LSEG2, .arg{.p0{0, 0}, .p1{0, DIM}}},
@@ -59,7 +59,7 @@ void test_lseg2()
 		////--------
 	});
 
-	//const std::vector<TestPair<LineSeg2, int>> test_vec_lseg2
+	//const std::vector<TestTuple<LineSeg2, int>> test_vec_lseg2
 	//({
 	//	{
 	//		.arg{.p0{0, 0}, .p1{1, 1}},

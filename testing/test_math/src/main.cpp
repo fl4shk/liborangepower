@@ -7,12 +7,14 @@
 int main(int argc, char** argv)
 {
 	//--------
-	printout("Vec2:\n");
-	test_vec2();
-	printout("\n\n");
+	//printout("Vec2:\n");
+	//test_vec2();
+	//printout("\n\n");
+	//--------
 	//printout("LineSeg2:\n");
 	//test_lseg2();
 	//printout("\n\n");
+	//--------
 	printout("Rect2:\n");
 	test_rect2();
 	//--------

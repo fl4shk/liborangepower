@@ -3,7 +3,7 @@
 void test_vec2()
 {
 	//--------
-	const std::vector<TestPair<Vec2, double>> test_vec_pt
+	const std::vector<TestTuple<Vec2, double>> test_vec_pt
 	({
 		{
 			.rect{.pos{0, 0}, .size_2d{2, 2}},

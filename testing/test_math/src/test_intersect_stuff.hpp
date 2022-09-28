@@ -4,7 +4,7 @@
 #include "misc_includes.hpp"
 
 template<template<typename> typename UnconShapeT, typename T>
-class TestPair
+class TestTuple
 {
 public:		// types
 	using ElemT = T;
@@ -17,7 +17,7 @@ public:		// variables
 };
 
 template<template<typename> typename UnconShapeT, typename T>
-void test_intersect(const std::vector<TestPair<UnconShapeT, T>>& test_vec)
+void test_intersect(const std::vector<TestTuple<UnconShapeT, T>>& test_vec)
 {
 	for (size_t i=0; i<test_vec.size(); ++i)
 	{

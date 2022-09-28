@@ -102,7 +102,15 @@ inline auto rng_run(RngT& rng)
 template<typename T, CallableLikeRngBounded<T> RngT>
 inline auto rng_run(RngT& rng, const T& bound)
 {
-	return T(rng(bound));
+	return bound == T(0) ? T(rng()) : T(rng(bound));
+	//if (bound == T(0))
+	//{
+	//	return T(rng())
+	//}
+	//else
+	//{
+	//	return T(rng(bound));
+	//}
 }
 
 template<typename T, CallableLikeRngBounded<T> RngT>
