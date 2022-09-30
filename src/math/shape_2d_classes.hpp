@@ -9,6 +9,8 @@
 
 //#include "../binser/serialize_funcs.hpp"
 #include "../binser/serialize_defines.hpp"
+#include "../binser/from_bv_factory_stuff.hpp"
+#include "../binser/serialize_func_decls.hpp"
 #include "../concepts/is_specialization_concepts.hpp"
 #include "../concepts/math_concepts.hpp"
 
@@ -21,19 +23,11 @@
 
 namespace liborangepower
 {
-//--------
-namespace binser
-{
-//--------
-class Value;
-//--------
-};
-//--------
 namespace math
 {
 //--------
 template<typename T>
-class Hit2 final
+class Hit2
 {
 public:		// types
 	using ElemT = T;
@@ -68,8 +62,22 @@ public:		// variables
 	//--------
 public:		// functions
 	//--------
-	static inline Hit2 from_bv(const binser::Value& bv);
-	inline operator binser::Value () const;
+	static inline Hit2 from_bv(const binser::Value& bv)
+	{
+		Hit2<T> ret;
+
+		MEMB_LIST_SHAPE_HIT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+	inline operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_HIT2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
 	//--------
 };
 
@@ -104,7 +112,7 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 }
 
 template<typename T>
-class Sweep2 final
+class Sweep2
 {
 public:		// types
 	using ElemT = T;
@@ -125,8 +133,22 @@ public:		// variables
 	T tm = T(DIDNT_HIT_TM);
 public:		// functions
 	//--------
-	static inline Sweep2 from_bv(const binser::Value& bv);
-	inline operator binser::Value () const;
+	static inline Sweep2 from_bv(const binser::Value& bv)
+	{
+		Sweep2<T> ret;
+
+		MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+	inline operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
 	//--------
 	constexpr inline T didnt_hit() const
 	{
@@ -179,8 +201,22 @@ public:		// variables
 		p1;
 public:		// functions
 	//--------
-	static inline LineSeg2 from_bv(const binser::Value& bv);
-	inline operator binser::Value () const;
+	static inline LineSeg2 from_bv(const binser::Value& bv)
+	{
+		LineSeg2<T> ret;
+
+		MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+	inline operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
 	//--------
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline auto operator <=> (const LineSeg2<OtherElemT>& to_cmp)
@@ -247,34 +283,111 @@ public:		// variables
 public:		// functions
 	//--------
 	template<std::convertible_to<T> OtherElemT>
-	static constexpr inline Rect2 build_in_grid_r2_w_end_pos
+	constexpr inline Rect2 fit_into_lim(const Rect2<OtherElemT>& lim) const
+	{
+		//const Vec2<T>
+		//	temp_size_2d
+		//		(min_va(size_2d.x, T(lim.size_2d.x)),
+		//		min_va(size_2d.y, T(lim.size_2d.y)));
+		//return Rect2<T>
+		//	{.pos=Vec2<T>(max_va(left_x(), T(lim.left_x())
+		return build_in_grid_w_end_pos
+			(Vec2<T>(max_va(left_x(), T(lim.left_x())),
+				max_va(top_y(), T(lim.top_y()))),
+			Vec2<T>(min_va(right_x(), T(lim.right_x())),
+				min_va(bottom_y(), T(lim.bottom_y()))));
+	}
+
+	template<std::convertible_to<T> OtherElemT>
+	static constexpr inline Rect2 build_in_grid_w_end_pos
 		(const Vec2<OtherElemT>& p0, const Vec2<OtherElemT>& p1)
 	{
-		return Rect2<T>{.pos{.x=min_va(p0.x, p1.x), .y=min_va(p0.y, p1.y)},
-			.size_2d=cstm_abs(p1 - p0) + Vec2{1, 1}};
+		//return Rect2<T>{.pos(.x=min_va(p0.x, p1.x), .y=min_va(p0.y, p1.y)},
+		//	.size_2d=cstm_abs(p1 - p0) + Vec2{1, 1}};
+		//return Rect2<T>
+		//	{.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
+		//	.size_2d=Vec2<T>
+		//		// Why is it "- T(1)" instead of "+ T(1)"?
+		//		(T(cstm_abs(p1.x - p0.x)) - T(1),
+		//		T(cstm_abs(p1.y - p0.y)) - T(1))};
+		return Rect2<T>
+			{.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
+			.size_2d=Vec2<T>
+				(T(cstm_abs(p1.x - p0.x)) + T(1),
+				T(cstm_abs(p1.y - p0.y)) + T(1))};
 	}
-	constexpr inline Rect2 build_in_grid_r2_inflated
-		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount)
+	template<std::convertible_to<T> PtElemT,
+		std::convertible_to<T> LimElemT>
+	static constexpr inline Rect2 build_in_grid_w_end_pos_lim
+		(const Vec2<PtElemT>& p0, const Vec2<PtElemT>& p1,
+		const Rect2<LimElemT>& lim)
 	{
-		return build_in_grid_r2_w_end_pos
+		//const Vec2<T>
+		//	temp_size_2d
+		//		(T(cstm_abs<T>(p1.x - p0.x) + T(1))
+		//		T(cstm_abs<T>(p1.y - p0.y) + T(1)));
+		//return Rect2<T>
+		//	{.pos=Vec2<T>
+		//		(max_va(T(min_va(p0.x, p1.x)), T(lim.pos.x)),
+		//		max_va(T(min_va(p0.y, p1.y)), T(lim.pos.y))),
+		//	.size_2d=Vec2<T>
+		//		(min_va(temp_size_2d.x, T(lim.size_2d.x)),
+		//		min_va(temp_size_2d.y, T(lim.size_2d.y)))};
+		//return build_in_grid_w_end_pos(p0, p1).fit_into_lim(lim);
+		const Rect2<PtElemT>
+			temp_rect = Rect2<PtElemT>::build_in_grid_w_end_pos(p0, p1)
+				.fit_into_lim(lim);
+	}
+
+	constexpr inline Rect2 build_in_grid_inflated
+		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount) const
+	{
+		return build_in_grid_w_end_pos
 			(Vec2<T>{.x=left_x() - tl_amount.x,
 				.y=top_y() - tl_amount.y},
 			Vec2<T>{.x=right_x() + br_amount.x
 				.y=bottom_y() + br_amount.y});
 	}
-	constexpr inline Rect2 build_in_grid_r2_inflated_lim
+	//// This function intend for forcing the created `Rect2` to fit within
+	//// some other `Rect2`, which is what `tl_lim` and `br_lim` are for.
+	//constexpr inline Rect2 build_in_grid_inflated_lim
+	//	(const Vec2<T>& tl_amount, const Vec2<T>& br_amount,
+	//	const Vec2<T>& tl_lim, const Vec2<T>& br_lim)
+	// This function intend for forcing the created `Rect2` to fit within
+	// some other `Rect2`, `lim`.
+	constexpr inline Rect2 build_in_grid_inflated_lim
 		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount,
-		const Vec2<T>& tl_lim, const Vec2<T>& br_lim)
+		const Rect2<T>& lim) const
 	{
-		return build_in_grid_r2_w_end_pos
-			(Vec2<T>{.x=max_va(left_x() - tl_amount.x, tl_lim.x),
-				.y=min_va(top_y() - tl_amount.y, tl_lim.y)},
-			Vec2<T>{.x=min_va(right_x() + br_amount.x, br_lim.x),
-				.y=min_va(bottom_y() + br_amount.y, br_lim.y)});
+		//return build_in_grid_w_end_pos
+		//	(Vec2<T>{.x=max_va(left_x() - tl_amount.x, tl_lim.x),
+		//		.y=min_va(top_y() - tl_amount.y, tl_lim.y)},
+		//	Vec2<T>{.x=min_va(right_x() + br_amount.x, br_lim.x),
+		//		.y=min_va(bottom_y() + br_amount.y, br_lim.y)});
+		return build_in_grid_w_end_pos
+			(Vec2<T>{.x=left_x() - tl_amount.x,
+				.y=top_y() - tl_amount.y},
+			Vec2<T>{.x=right_x() + br_amount.x
+				.y=bottom_y() + br_amount.y})
+			.fit_into_lim(lim);
 	}
 	//--------
-	static inline Rect2 from_bv(const binser::Value& bv);
-	inline operator binser::Value () const;
+	static inline Rect2 from_bv(const binser::Value& bv)
+	{
+		Rect2<T> ret;
+
+		MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
+
+		return ret;
+	}
+	inline operator binser::Value () const
+	{
+		binser::Value ret;
+
+		MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_SERIALIZE);
+
+		return ret;
+	}
 	//--------
 	//inline auto operator <=> (const Rect2& to_cmp) const = default;
 	template<std::convertible_to<T> OtherElemT>
@@ -932,6 +1045,19 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 		"}"
 	);
 }
+
+template<typename ShapeT, typename T=typename ShapeT::ElemT>
+concept CanRect2Intersect = requires(ShapeT arg, Rect2<T> r2)
+{
+	{ r2.intersect(arg) } -> std::convertible_to<bool>;
+};
+template<typename ShapeT, typename T=typename ShapeT::ElemT>
+concept CanRect2IntersectFancy
+	= requires(ShapeT arg, Rect2<T> r2, Vec2<T> arg_padding)
+{
+	{ r2.intersect_fancy(arg, arg_padding) }
+		-> std::convertible_to<Hit2<T>>;
+};
 //--------
 //template<typename T>
 //using MultiSweepElem
@@ -944,99 +1070,10 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 //constexpr inline Sweep2<T> multi_sweep_rect
 //	(const auto& world_coll, const Rect2<T>& self,
 //	const Vec2<T> self_delta);
-
 //--------
 } // namespace math
 } // namespace liborangepower
 //--------
-#include "../binser/serialize_funcs.hpp"
+//#include "../binser/serialize_funcs.hpp"
 //--------
-namespace liborangepower
-{
-namespace math
-{
-//--------
-template<typename T>
-inline auto Hit2<T>::from_bv(const binser::Value& bv) -> Hit2
-{
-	Hit2<T> ret;
-
-	MEMB_LIST_SHAPE_HIT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
-
-	return ret;
-}
-
-template<typename T>
-inline Hit2<T>::operator binser::Value () const
-{
-	binser::Value ret;
-
-	MEMB_LIST_SHAPE_HIT2(BINSER_MEMB_SERIALIZE);
-
-	return ret;
-}
-//--------
-template<typename T>
-inline auto Sweep2<T>::from_bv(const binser::Value& bv) -> Sweep2
-{
-	Sweep2<T> ret;
-
-	MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_FROM_BV_DESERIALIZE);
-
-	return ret;
-}
-
-template<typename T>
-inline Sweep2<T>::operator binser::Value () const
-{
-	binser::Value ret;
-
-	MEMB_LIST_SHAPE_SWEEP2(BINSER_MEMB_SERIALIZE);
-
-	return ret;
-}
-//--------
-template<typename T>
-inline auto LineSeg2<T>::from_bv(const binser::Value& bv) -> LineSeg2
-{
-	LineSeg2<T> ret;
-
-	MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_FROM_BV_DESERIALIZE);
-
-	return ret;
-}
-
-template<typename T>
-inline LineSeg2<T>::operator binser::Value () const
-{
-	binser::Value ret;
-
-	MEMB_LIST_SHAPE_LINE_SEG2(BINSER_MEMB_SERIALIZE);
-
-	return ret;
-}
-//--------
-template<typename T>
-inline auto Rect2<T>::from_bv(const binser::Value& bv) -> Rect2
-{
-	Rect2<T> ret;
-
-	MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_FROM_BV_DESERIALIZE);
-
-	return ret;
-}
-
-template<typename T>
-inline Rect2<T>::operator binser::Value () const
-{
-	binser::Value ret;
-
-	MEMB_LIST_SHAPE_RECT2(BINSER_MEMB_SERIALIZE);
-
-	return ret;
-}
-//--------
-} // namespace math
-} // namespace liborangepower
-
 #endif		// liborangepower_math_shape_2d_classes_hpp
