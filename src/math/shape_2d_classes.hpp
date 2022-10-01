@@ -447,7 +447,7 @@ public:		// functions
 				.y=top_y() - tl_amount.y},
 			Vec2<T>{.x=right_x() + br_amount.x
 				.y=bottom_y() + br_amount.y})
-			.fit_into_lim(lim);
+			.fit_into_grid_lim(lim);
 	}
 	//--------
 	static inline Rect2 from_bv(const binser::Value& bv)
