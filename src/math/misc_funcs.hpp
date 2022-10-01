@@ -57,7 +57,7 @@ constexpr inline const T& min_va(const T& arg_0, const T& arg_1,
 //};
 
 template<typename T>
-constexpr inline T clamp(const T& val, const T& min, const T& max)
+constexpr inline T clamp(const T& val, const T& lim_0, const T& lim_1)
 	requires
 	(concepts::HasCmpLtBinop<T> && concepts::HasCmpGtBinop<T>)
 {
@@ -73,6 +73,10 @@ constexpr inline T clamp(const T& val, const T& min, const T& max)
 	//{
 	//	return max;
 	//}
+	const T
+		min = min_va(lim_0, lim_1),
+		max = max_va(lim_0, lim_1);
+
 	if (val < min)
 	{
 		return min;

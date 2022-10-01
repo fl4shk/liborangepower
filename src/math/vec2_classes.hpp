@@ -50,6 +50,27 @@ public:		// variables
 		y = T();
 public:		// functions
 	//--------
+	//template<std::convertible_to<T> OtherElemT>
+	//constexpr inline operator Vec2<OtherElemT> () const
+	//{
+	//	return Vec2<OtherElemT>(T(x), T(y));
+	//}
+
+	template<typename OtherElemT>
+	constexpr inline operator Vec2<OtherElemT> () const
+		requires std::convertible_to<T, OtherElemT>
+	{
+		//return Vec2<OtherElemT>(OtherElemT(x), OtherElemT(y));
+		Vec2<OtherElemT> ret;
+
+		#define X(name, dummy_arg) \
+			ret.name = std::remove_cvref_t<decltype(ret.name)>(name);
+		MEMB_LIST_VEC2(X);
+		#undef X
+
+		return ret;
+	}
+	//--------
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2 operator + (const Vec2<OtherElemT>& other) const
 	{

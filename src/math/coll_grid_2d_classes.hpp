@@ -72,6 +72,7 @@ public:		// functions
 
 	static constexpr inline GridIndPt2 grid_ind_pt2(const Vec2<T>& arg)
 	{
+		// For power-of-two grid element sizes, this should 
 		return GridIndPt2(arg.x / GRID_ELEM_SIZE_2D.x,
 			arg.y / GRID_ELEM_SIZE_2D.y);
 	}
@@ -79,18 +80,14 @@ public:		// functions
 	static constexpr inline GridIndRect2 grid_ind_rect2
 		(const Rect2<T>& arg)
 	{
-		GridIndRect2 ret;
+		//GridIndRect2 ret;
 
-		//if (ENCLOSING_PHYS_RECT2.intersect(arg))
-		//{
-		//	//for (GridInd i=0;)
-		//}
-		ret = GridIndRect2::build_in_grid_w_end_pos_lim
+		//ret = GridIndRect2::build_in_grid_lim
+		//	(arg.tl_corner(), arg.br_corner(), ENCLOSING_PHYS_RECT2);
+
+		//return ret;
+		return GridIndRect2::build_in_grid_lim
 			(arg.tl_corner(), arg.br_corner(), ENCLOSING_PHYS_RECT2);
-
-		return ret;
-		//return GridIndRect2::build_in_grid_w_end_pos_lim
-		//	();
 	}
 
 	//template<CanRect2IntersectFancy<T> ShapeT>

@@ -41,6 +41,29 @@ public:		// variables
 		z = T();
 public:		// functions
 	//--------
+	//template<typename OtherElemT>
+	//constexpr inline operator Vec3<OtherElemT> () const
+	//	requires std::convertible_to<T, OtherElemT>
+	//{
+	//	return Vec3<OtherElemT>
+	//		(OtherElemT(x), OtherElemT(y), OtherElemT(z));
+	//}
+
+	template<typename OtherElemT>
+	constexpr inline operator Vec3<OtherElemT> () const
+		requires std::convertible_to<T, OtherElemT>
+	{
+		//return Vec3<OtherElemT>(OtherElemT(x), OtherElemT(y));
+		Vec3<OtherElemT> ret;
+
+		#define X(name, dummy_arg) \
+			ret.name = std::remove_cvref_t<decltype(ret.name)>(name);
+		MEMB_LIST_VEC3(X);
+		#undef X
+
+		return ret;
+	}
+	//--------
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec3 operator + (const Vec3<OtherElemT>& other) const
 	{

@@ -79,6 +79,20 @@ public:		// functions
 		return ret;
 	}
 	//--------
+	template<typename OtherElemT>
+	constexpr inline operator Hit2<OtherElemT> () const
+		requires std::convertible_to<T, OtherElemT>
+	{
+		Hit2<OtherElemT> ret;
+
+		#define X(name, dummy_arg) \
+			ret.name = std::remove_cvref_t<decltype(ret.name)>(name);
+		MEMB_LIST_SHAPE_HIT2(X);
+		#undef X
+
+		return ret;
+	}
+	//--------
 };
 
 template<typename T>
@@ -94,8 +108,9 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 			//arg.delta, " ",
 			//arg.tm,
 
+			//#define X(memb, dummy_arg) strings::sconcat( #memb , "{", arg . memb , "}" ),
 			#define X(memb, dummy_arg) \
-				strings::sconcat( arg . memb ),
+				strings::sconcat( #memb , arg . memb ),
 
 			strings::strjoin2
 			(
@@ -169,8 +184,9 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 			//arg.pos, " ",
 			//arg.tm,
 
+			//#define X(memb, dummy_arg) strings::sconcat( #memb , "{", arg . memb , "}" ),
 			#define X(memb, dummy_arg) \
-				strings::sconcat( arg . memb ),
+				strings::sconcat( #memb , arg . memb ),
 
 			strings::strjoin2
 			(
@@ -218,6 +234,19 @@ public:		// functions
 		return ret;
 	}
 	//--------
+	template<typename OtherElemT>
+	constexpr inline operator LineSeg2<OtherElemT> () const
+		requires std::convertible_to<T, OtherElemT>
+	{
+		LineSeg2<OtherElemT> ret;
+
+		#define X(name, dummy_arg) \
+			ret.name = std::remove_cvref_t<decltype(ret.name)>(name);
+		MEMB_LIST_SHAPE_LINE_SEG2(X);
+		#undef X
+
+		return ret;
+	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline auto operator <=> (const LineSeg2<OtherElemT>& to_cmp)
 		const
@@ -248,8 +277,9 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 			//arg.p0, " ",
 			//arg.p1,
 
+			//#define X(memb, dummy_arg) strings::sconcat( #memb , "{", arg . memb , "}" ),
 			#define X(memb, dummy_arg) \
-				strings::sconcat( arg . memb ),
+				strings::sconcat( #memb , arg . memb ),
 
 			strings::strjoin2
 			(
@@ -283,49 +313,82 @@ public:		// variables
 public:		// functions
 	//--------
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Rect2 fit_into_lim(const Rect2<OtherElemT>& lim) const
+	constexpr inline Rect2 fit_into_grid_lim
+		(const Rect2<OtherElemT>& lim) const
 	{
 		//const Vec2<T>
 		//	temp_size_2d
 		//		(min_va(size_2d.x, T(lim.size_2d.x)),
 		//		min_va(size_2d.y, T(lim.size_2d.y)));
 		//return Rect2<T>
-		//	{.pos=Vec2<T>(max_va(left_x(), T(lim.left_x())
-		return build_in_grid_w_end_pos
-			(Vec2<T>(max_va(left_x(), T(lim.left_x())),
-				max_va(top_y(), T(lim.top_y()))),
-			Vec2<T>(min_va(right_x(), T(lim.right_x())),
-				min_va(bottom_y(), T(lim.bottom_y()))));
+		//	{.pos=Vec2<T>(max_va(left_x(), T(lim.left_x()))};
+		//if (lim.arg_inside(*this))
+		//{
+		//	return *this;
+		//}
+		//else
+		//{
+		//	return build_in_grid<T, true>
+		//		(Vec2<T>(max_va(left_x(), T(lim.left_x())),
+		//			max_va(top_y(), T(lim.top_y()))),
+		//		Vec2<T>(min_va(right_x(), T(lim.right_x())),
+		//			min_va(bottom_y(), T(lim.bottom_y()))));
+		//}
+
+		const Vec2<T>
+			temp_tl_corner
+				{.x=clamp(left_x(), T(lim.left_x()), T(lim.right_x())),
+				.y=clamp(top_y(), T(lim.top_y()), T(lim.bottom_y()))},
+			temp_br_corner
+				{.x=clamp(right_x(), T(lim.left_x()), T(lim.right_x())),
+				.y=clamp(bottom_y(), T(lim.top_y()), T(lim.bottom_y()))},
+			temp_pos
+				{.x=min_va(temp_tl_corner.x, temp_br_corner.x),
+				.y=min_va(temp_tl_corner.y, temp_br_corner.y)},
+			temp_size_2d
+				{.x=cstm_abs(temp_br_corner.x - temp_tl_corner.x) + T(1),
+				.y=cstm_abs(temp_br_corner.y - temp_tl_corner.y) + T(1)};
+		return Rect2<T>{.pos=temp_pos, .size_2d=temp_size_2d};
+
+		//return build_in_grid
+		//	(Vec2<T>,
+		//	Vec2<T>);
+
+		//return build_in_grid_lim(Vec2<OtherElemT>(tl_corner()),
+		//	Vec2<OtherElemT>(br_corner()), Rect2<OtherElemT>(lim));
 	}
 
+	//template<std::convertible_to<T> OtherElemT, bool inc_size_2d=true>
 	template<std::convertible_to<T> OtherElemT>
-	static constexpr inline Rect2 build_in_grid_w_end_pos
+	static constexpr inline Rect2 build_in_grid
 		(const Vec2<OtherElemT>& p0, const Vec2<OtherElemT>& p1)
 	{
-		//return Rect2<T>{.pos(.x=min_va(p0.x, p1.x), .y=min_va(p0.y, p1.y)},
-		//	.size_2d=cstm_abs(p1 - p0) + Vec2{1, 1}};
-		//return Rect2<T>
-		//	{.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
-		//	.size_2d=Vec2<T>
-		//		// Why is it "- T(1)" instead of "+ T(1)"?
-		//		(T(cstm_abs(p1.x - p0.x)) - T(1),
-		//		T(cstm_abs(p1.y - p0.y)) - T(1))};
 		return Rect2<T>
+			//{.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
+			//.size_2d=Vec2<T>
+			//	(T(cstm_abs(p1.x - p0.x)) + T(inc_size_2d),
+			//	T(cstm_abs(p1.y - p0.y)) + T(inc_size_2d))};
 			{.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
 			.size_2d=Vec2<T>
 				(T(cstm_abs(p1.x - p0.x)) + T(1),
 				T(cstm_abs(p1.y - p0.y)) + T(1))};
+			//{.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
+			//.size_2d=Vec2<T>
+			//	(T(cstm_abs(p1.x - p0.x)),
+			//	T(cstm_abs(p1.y - p0.y)))};
 	}
 	template<std::convertible_to<T> PtElemT,
 		std::convertible_to<T> LimElemT>
-	static constexpr inline Rect2 build_in_grid_w_end_pos_lim
+	static constexpr inline Rect2 build_in_grid_lim
 		(const Vec2<PtElemT>& p0, const Vec2<PtElemT>& p1,
 		const Rect2<LimElemT>& lim)
 	{
 		//const Vec2<T>
 		//	temp_size_2d
-		//		(T(cstm_abs<T>(p1.x - p0.x) + T(1))
+		//		(T(cstm_abs<T>(p1.x - p0.x) + T(1)),
 		//		T(cstm_abs<T>(p1.y - p0.y) + T(1)));
+		//		//(T(cstm_abs<T>(p1.x - p0.x)),
+		//		//T(cstm_abs<T>(p1.y - p0.y)));
 		//return Rect2<T>
 		//	{.pos=Vec2<T>
 		//		(max_va(T(min_va(p0.x, p1.x)), T(lim.pos.x)),
@@ -333,16 +396,31 @@ public:		// functions
 		//	.size_2d=Vec2<T>
 		//		(min_va(temp_size_2d.x, T(lim.size_2d.x)),
 		//		min_va(temp_size_2d.y, T(lim.size_2d.y)))};
-		//return build_in_grid_w_end_pos(p0, p1).fit_into_lim(lim);
-		const Rect2<PtElemT>
-			temp_rect = Rect2<PtElemT>::build_in_grid_w_end_pos(p0, p1)
-				.fit_into_lim(lim);
+
+		return build_in_grid(Vec2<T>(p0), Vec2<T>(p1))
+			.fit_into_grid_lim(Rect2<T>(lim));
+
+		//const Rect2<LimElemT>
+		//	temp_rect = Rect2<PtElemT>::build_in_grid(p0, p1)
+		//		.fit_into_lim(lim);
+		//return Rect2<T>
+		//	{.pos=Vec2<T>(T(temp_rect.pos.x), T(temp_rect.pos.y)),
+		//	.size_2d=Vec2<T>(T(temp_rect.size_2d.x),
+		//		T(temp_rect.size_2d.y))};
+
+		//return Rect2<T>::build_in_grid(Vec2<T>(T(p0.x), T(p0.y)),
+		//	Vec2<T>(T(p1.x), T(p1.y))).fit_into_lim
+		//	(Rect2<T>
+		//		{.pos=Vec2<T>(T(lim.pos.x), T(lim.pos.y)),
+		//		.size_2d=Vec2<T>(T(lim.size_2d.x), T(lim.size_2d.y))});
+		//return Rect2<T>::build_in_grid(Vec2<T>(p0), Vec2<T>(p1))
+		//	.fit_into_lim(Rect2<T>(lim));
 	}
 
 	constexpr inline Rect2 build_in_grid_inflated
 		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount) const
 	{
-		return build_in_grid_w_end_pos
+		return build_in_grid
 			(Vec2<T>{.x=left_x() - tl_amount.x,
 				.y=top_y() - tl_amount.y},
 			Vec2<T>{.x=right_x() + br_amount.x
@@ -359,12 +437,12 @@ public:		// functions
 		(const Vec2<T>& tl_amount, const Vec2<T>& br_amount,
 		const Rect2<T>& lim) const
 	{
-		//return build_in_grid_w_end_pos
+		//return build_in_grid
 		//	(Vec2<T>{.x=max_va(left_x() - tl_amount.x, tl_lim.x),
 		//		.y=min_va(top_y() - tl_amount.y, tl_lim.y)},
 		//	Vec2<T>{.x=min_va(right_x() + br_amount.x, br_lim.x),
 		//		.y=min_va(bottom_y() + br_amount.y, br_lim.y)});
-		return build_in_grid_w_end_pos
+		return build_in_grid
 			(Vec2<T>{.x=left_x() - tl_amount.x,
 				.y=top_y() - tl_amount.y},
 			Vec2<T>{.x=right_x() + br_amount.x
@@ -389,6 +467,22 @@ public:		// functions
 		return ret;
 	}
 	//--------
+	template<typename OtherElemT>
+	constexpr inline operator Rect2<OtherElemT> () const
+		requires std::convertible_to<T, OtherElemT>
+	{
+		//return Rect2<OtherElemT>
+		//	(Vec2<OtherElemT>(pos), Vec2<OtherElemT>(size_2d));
+		Rect2<OtherElemT> ret;
+
+		#define X(name, dummy_arg) \
+			ret.name = std::remove_cvref_t<decltype(ret.name)>(name);
+		MEMB_LIST_SHAPE_RECT2(X);
+		#undef X
+
+		return ret;
+	}
+
 	//inline auto operator <=> (const Rect2& to_cmp) const = default;
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline auto operator <=> (const Rect2<OtherElemT>& to_cmp)
@@ -1029,8 +1123,9 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 			//arg.pos, " ",
 			//arg.size_2d,
 
+			//#define X(memb, dummy_arg) strings::sconcat( #memb , "{", arg . memb , "}" ),
 			#define X(memb, dummy_arg) \
-				strings::sconcat( arg . memb ),
+				strings::sconcat( #memb , arg . memb ),
 
 			strings::strjoin2
 			(
