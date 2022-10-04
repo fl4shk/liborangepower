@@ -1,12 +1,12 @@
-//#include "test_rect2_build_etc.hpp"
-#include "misc_includes.hpp"
-//--------
+#include "test_funcs.hpp"
+
 int main(int argc, char** argv)
 {
-	//test_r2_fit_into_grid_lim();
-	//test_r2_build_in_grid();
-	//test_r2_build_in_grid_lim();
-
+	//--------
+	//test_to_grid_ind();
+	//test_to_phys_elem();
+	test_to_grid_ind_rect2();
+	//--------
 	return 0;
+	//--------
 }
-//--------

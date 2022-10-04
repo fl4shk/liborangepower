@@ -40,10 +40,20 @@ class Vec2
 {
 public:		// types
 	using ElemT = T;
+
+	//template<std::convertible_to<T> OtherElemT>
+	//using CexprMapFunc
+	//	= std::function<constexpr Vec2
+	//		(const Vec2&, const Vec2<OtherElemT>&)>;
+	//template<std::convertible_to<T> OtherElemT>
+	//using MapFunc
+	//	= std::function<Vec2(const Vec2&, const Vec2<OtherElemT>&)>;
 public:		// variables
-	#define MEMB_LIST_VEC2(X) \
+	#define MEMB_MAIN_LIST_VEC2(X) \
 		X(x, std::nullopt) \
-		X(y, std::nullopt) \
+		X(y, std::nullopt)
+	#define MEMB_LIST_VEC2(X) \
+		MEMB_MAIN_LIST_VEC2(X)
 
 	T
 		x = T(),
@@ -55,9 +65,15 @@ public:		// functions
 	//{
 	//	return Vec2<OtherElemT>(T(x), T(y));
 	//}
+	//template<std::convertible_to<T> OtherElemT>
+	//constexpr inline Vec2<T> map
+	//	(const CexprMapFunc<OtherElemT>& map_func,
+	//	const Vec2<OtherElemT>& other) const
+	//{
+	//}
 
 	template<typename OtherElemT>
-	constexpr inline operator Vec2<OtherElemT> () const
+	explicit constexpr inline operator Vec2<OtherElemT> () const
 		requires std::convertible_to<T, OtherElemT>
 	{
 		//return Vec2<OtherElemT>(OtherElemT(x), OtherElemT(y));
@@ -75,11 +91,17 @@ public:		// functions
 	constexpr inline Vec2 operator + (const Vec2<OtherElemT>& other) const
 	{
 		//return Vec2<T>({.x=x + other.x, .y=y + other.y});
-		return Vec2<T>(x + other.x, y + other.y);
+		//return Vec2<T>(x + other.x, y + other.y);
 		//Vec2<T> ret;
 		//ret.x = x + other.x;
 		//ret.y = y + other.y;
-		//return ret;
+
+		Vec2<T> ret;
+		#define X(name, dummy_arg) \
+			ret.name = name + other.name;
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2& operator += (const Vec2<OtherElemT>& other)
@@ -93,11 +115,17 @@ public:		// functions
 	constexpr inline Vec2 operator - (const Vec2<OtherElemT>& other) const
 	{
 		//return Vec2<T>({.x=x - other.x, .y=y - other.y});
-		return Vec2<T>(x - other.x, y - other.y);
+		//return Vec2<T>(x - other.x, y - other.y);
 		//Vec2<T> ret;
 		//ret.x = x - other.x;
 		//ret.y = y - other.y;
 		//return ret;
+		Vec2<T> ret;
+		#define X(name, dummy_arg) \
+			ret.name = name - other.name;
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline Vec2& operator -= (const Vec2<OtherElemT>& other)
@@ -110,42 +138,63 @@ public:		// functions
 	constexpr inline Vec2 operator - () const
 	{
 		//return Vec2<T>({.x=-x, .y=-y});
-		return Vec2<T>(-x, -y);
+		//return Vec2<T>(-x, -y);
 		//Vec2<T> ret;
 		//ret.x = -x;
 		//ret.y = -y;
 		//return ret;
+
+		Vec2<T> ret;
+		#define X(name, dummy_arg) \
+			ret.name = -name;
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+		return ret;
 	}
 
-	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2 operator * (const OtherElemT& scale) const
+	template<std::convertible_to<T> ScaleT>
+	constexpr inline Vec2 operator * (const ScaleT& scale) const
 	{
 		//return Vec2<T>({.x=x * scale, .y=y * scale});
-		return Vec2<T>(x * scale, y * scale);
+		//return Vec2<T>(x * scale, y * scale);
 		//Vec2<T> ret;
 		//ret.x = x * scale;
 		//ret.y = y * scale;
 		//return ret;
+
+		Vec2<T> ret;
+		#define X(name, dummy_arg) \
+			ret.name = name * scale;
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+		return ret;
 	}
-	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2& operator *= (const OtherElemT& other) const
+	template<std::convertible_to<T> ScaleT>
+	constexpr inline Vec2& operator *= (const ScaleT& other) const
 	{
 		*this = *this * other;
 		return *this;
 	}
 
-	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2 operator / (const OtherElemT& scale) const
+	template<std::convertible_to<T> ScaleT>
+	constexpr inline Vec2 operator / (const ScaleT& scale) const
 	{
 		//return Vec2<T>({.x=x / scale, .y=y / scale});
-		return Vec2<T>(x / scale, y / scale);
+		//return Vec2<T>(x / scale, y / scale);
 		//Vec2<T> ret;
 		//ret.x = x / scale;
 		//ret.y = y / scale;
 		//return ret;
+
+		Vec2<T> ret;
+		#define X(name, dummy_arg) \
+			ret.name = name / scale;
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+		return ret;
 	}
-	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2& operator /= (const OtherElemT& scale) const
+	template<std::convertible_to<T> ScaleT>
+	constexpr inline Vec2& operator /= (const ScaleT& scale) const
 	{
 		*this = *this / scale;
 		return *this;
@@ -154,20 +203,31 @@ public:		// functions
 	constexpr inline Vec2 div_2() const
 	{
 		//return Vec2({.x=math::div_2(x), .y=math::div_2(y)});
-		return Vec2<T>(math::div_2(x), math::div_2(y));
+		//return Vec2<T>(math::div_2(x), math::div_2(y));
 		//Vec2 ret;
 		//ret.x = math::div_2(x);
 		//ret.y = math::div_2(y);
 		//return ret;
+		Vec2<T> ret;
+		#define X(name, dummy_arg) \
+			ret.name = div_2(name);
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+		return ret;
 	}
 	constexpr inline Vec2 recip() const
 	{
 		//return Vec2({.x=math::recip(x), .y=math::recip(y)});
-		return Vec2(math::recip(x), math::recip(y));
+		//return Vec2(math::recip(x), math::recip(y));
 		//Vec2 ret;
 		//ret.x = math::recip(x);
 		//ret.y = math::recip(y);
 		//return ret;
+		Vec2<T> ret;
+		#define X(name, dummy_arg) \
+			ret.name = recip(name);
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
 	}
 	//--------
 	// Dot product
@@ -175,7 +235,14 @@ public:		// functions
 	constexpr inline T dot(const Vec2<OtherElemT>& other) const
 	{
 		//return T((x * other.x) + (y * other.y));
-		const T ret = (x * other.x) + (y * other.y);
+		//const T ret = (x * other.x) + (y * other.y);
+		const T ret = T();
+
+		#define X(name, dummy_arg) \
+			ret += name * other.name;
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+
 		return ret;
 	}
 
@@ -206,7 +273,13 @@ public:		// functions
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator == (const Vec2<OtherElemT>& other) const
 	{
-		return x == other.x && y == other.y;
+		//return x == other.x && y == other.y;
+		bool ret = true;
+		#define X(name, dummy_arg) \
+			ret = ret && (name == other.name);
+		MEMB_MAIN_LIST_VEC2(X);
+		#undef X
+		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
 	constexpr inline bool operator != (const Vec2<OtherElemT>& other) const
@@ -237,36 +310,52 @@ public:		// functions
 	//--------
 };
 
-template<typename T, std::convertible_to<T> OtherElemT>
-constexpr inline Vec2<T> operator * (const OtherElemT& scale,
+template<typename T, std::convertible_to<T> ScaleT>
+constexpr inline Vec2<T> operator * (const ScaleT& scale,
 	const Vec2<T>& self)
 {
 	//return Vec2<T>({.x=scale * self.x, .y=scale * self.y});
-	return Vec2<T>
-	(
-		scale * self.x,
-		scale * self.y
-	);
+
+	//return Vec2<T>
+	//(
+	//	scale * self.x,
+	//	scale * self.y
+	//);
+
 	//Vec2<T> ret;
 	//ret.x = scale * self.x;
 	//ret.y = scale * self.y;
 	//return ret;
 	//return self * scale;
+
+	Vec2<T> ret;
+	#define X(name, dummy_arg) \
+		ret.name = scale * self.name;
+	MEMB_MAIN_LIST_VEC2(X);
+	#undef X
+	return ret;
 }
-template<typename T, std::convertible_to<T> OtherElemT>
-constexpr inline Vec2<T> operator / (const OtherElemT& inv_scale,
+template<typename T, std::convertible_to<T> ScaleT>
+constexpr inline Vec2<T> operator / (const ScaleT& inv_scale,
 	const Vec2<T>& self)
 {
 	//return Vec2<T>({.x=inv_scale / self.x, .y=inv_scale / self.y});
-	return Vec2<T>
-	(
-		inv_scale / self.x,
-		inv_scale / self.y
-	);
+	//return Vec2<T>
+	//(
+	//	inv_scale / self.x,
+	//	inv_scale / self.y
+	//);
 	//Vec2<T> ret;
 	//ret.x = inv_scale / self.x;
 	//ret.y = inv_scale / self.y;
 	//return ret;
+
+	Vec2<T> ret;
+	#define X(name, dummy_arg) \
+		ret.name = inv_scale / self.name;
+	MEMB_MAIN_LIST_VEC2(X);
+	#undef X
+	return ret;
 }
 
 template<typename T>
