@@ -2,27 +2,57 @@
 #define liborangepower_containers_std_hash_stuff_hpp
 
 #include "../misc/misc_includes.hpp"
+#include "../strings/sconcat_etc.hpp"
 
-namespace liborangepower
-{
-namespace containers
-{
+namespace liborangepower {
+namespace containers {
+
+template<typename T>
+constexpr inline std::size_t hash_remove_cvref(const T& to_hash) {
+	return std::hash<std::remove_cvref_t<T>>(to_hash);
+}
+template<typename T>
+constexpr inline std::size_t hash_merge(size_t h, size_t next) {
+	return h ^ (next << std::size_t(1));
+}
+
+template<typename _Alloc=std::allocator<size_t>>
+constexpr inline std::size_t hash_merge
+	(const std::vector<size_t, _Alloc>& to_merge_vec) {
+
+	if (to_merge_vec.size() == 0) {
+		throw std::invalid_argument(strings::sconcat(
+			"liborangepower::containers::hash_merge(",
+				"const std::vector<size_t, _Alloc>&",
+			"): Error: ",
+			"to_merge_vec.size() == 0"
+			)
+		);
+	}
+
+	size_t i = 0;
+	size_t h = to_merge_vec.at(i++);
+
+	for (; i<to_merge_vec.size(); ++i) {
+		h = hash_merge(h, to_merge_vec.at(i));
+	}
+
+	return h;
+}
 
 template<typename FirstT, typename... RemTs>
-inline std::size_t hash_va(const FirstT& first_arg,
-	const RemTs&...  rem_args)
-{
-	const std::size_t& h = std::hash<std::remove_cvref_t<FirstT>>{}
-		(first_arg);
+constexpr inline std::size_t hash_va(const FirstT& first_arg,
+	const RemTs&...  rem_args) {
+	//std::size_t h = std::hash<std::remove_cvref_t<FirstT>>{}(first_arg);
+	std::size_t h = hash_remove_cvref<FirstT>(first_arg);
 
-	if constexpr (sizeof...(rem_args) > 0)
-	{
-		return h ^ (hash_va<RemTs...>(rem_args...) << std::size_t(1));
-	}
-	else
-	{
-		return h;
-	}
+	//if constexpr (sizeof...(rem_args) > 0) {
+	//	//return h ^ (hash_va<RemTs...>(rem_args...) << std::size_t(1));
+	//	//(h ^= std::hash<std::remove_cvref_t<RemTs>(rem_args)
+	//	//	<< std::size_t(1), ...);
+	//}
+	((h = hash_merge(h, hash_remove_cvref<RemTs>(rem_args))), ...);
+	return h;
 }
 
 } // namespace containers

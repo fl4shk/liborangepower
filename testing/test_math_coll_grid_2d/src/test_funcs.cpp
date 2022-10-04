@@ -5,8 +5,7 @@ using GridIndT = size_t;
 using GridIndPt2 = Vec2<GridIndT>;
 using GridIndRect2 = Rect2<GridIndT>;
 //--------
-void test_to_grid_ind()
-{
+void test_to_grid_ind() {
 	//--------
 	printout("test_to_grid_ind()\n");
 	//--------
@@ -31,8 +30,7 @@ void test_to_grid_ind()
 	printout("j: ");
 	for (PhysElemT j=CollGridT::ENCLOSING_PHYS_RECT2.top_y();
 		j<=CollGridT::ENCLOSING_PHYS_RECT2.bottom_y();
-		j+=INC_AMOUNT.y)
-	{
+		j+=INC_AMOUNT.y) {
 		printout("{",
 			j, " ", CollGridT::to_grid_ind<true>(j),
 			"}");
@@ -46,8 +44,7 @@ void test_to_grid_ind()
 		"i: ");
 	for (PhysElemT i=CollGridT::ENCLOSING_PHYS_RECT2.left_x();
 		i<=CollGridT::ENCLOSING_PHYS_RECT2.right_x();
-		i+=INC_AMOUNT.x)
-	{
+		i+=INC_AMOUNT.x) {
 		//const GridIndPt2 CollGridT::to_grid_ind_pt2({i, j}, " ");
 		printout("{",
 			i, " ", CollGridT::to_grid_ind<false>(i),
@@ -60,8 +57,7 @@ void test_to_grid_ind()
 	printout("\n");
 }
 //--------
-void test_to_phys_elem()
-{
+void test_to_phys_elem() {
 	//--------
 	printout("test_to_phys_elem():\n");
 	//--------
@@ -86,8 +82,7 @@ void test_to_phys_elem()
 	//--------
 }
 //--------
-void test_to_grid_ind_rect2()
-{
+void test_to_grid_ind_rect2() {
 	//--------
 	printout("test_to_grid_ind_rect2():\n");
 	//--------

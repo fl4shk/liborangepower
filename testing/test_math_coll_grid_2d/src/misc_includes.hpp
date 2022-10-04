@@ -12,6 +12,7 @@
 #include "liborangepower_src/gen_class_innards_defines.hpp"
 #include "liborangepower_src/strings/string_conversion_stuff.hpp"
 #include "liborangepower_src/math/coll_grid_2d_classes.hpp"
+#include "liborangepower_src/math/vec3_classes.hpp"
 #include "liborangepower_src/metaprog_defines.hpp"
 
 using namespace liborangepower::misc_output;

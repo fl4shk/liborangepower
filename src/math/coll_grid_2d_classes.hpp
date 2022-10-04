@@ -3,20 +3,16 @@
 
 #include "shape_2d_classes.hpp"
 
-namespace liborangepower
-{
-namespace math
-{
+namespace liborangepower {
+namespace math {
 //--------
 // A grid for doing cheaper collision checking in 2D, with constant sizes
-
 template<typename _PhysElemT, Vec2<_PhysElemT> _GRID_ELEM_SIZE_2D,
 	Vec2<size_t> _NUM_GRID_ELEMS_2D,
 	Vec2<_PhysElemT> _ENCLOSING_PHYS_RECT2_POS
 		= Vec2<_PhysElemT>(_PhysElemT(0), _PhysElemT(0)),
 	template<typename> typename _Alloc=std::allocator>
-class CollGridCsz2d
-{
+class CollGridCsz2d {
 public:		// types
 	// named after physics
 	using PhysElemT = _PhysElemT;
@@ -31,8 +27,7 @@ public:		// types
 	template<typename OtherT>
 	using Alloc = _Alloc<OtherT>;
 
-	enum Dim
-	{
+	enum Dim {
 		HORIZ = false,
 		VERT = true,
 	};
@@ -102,8 +97,7 @@ public:		// functions
 		return GridIndT(to_conv / GRID_ELEM_SIZE_1DIM<_VERT>);
 	}
 	static constexpr inline GridIndPt2 to_grid_ind_pt2
-		(const PhysPt2& to_conv)
-	{
+		(const PhysPt2& to_conv) {
 		return GridIndPt2
 			(to_grid_ind<HORIZ>(to_conv.x),
 			to_grid_ind<VERT>(to_conv.y));
@@ -135,15 +129,13 @@ public:		// functions
 	//}
 
 	static constexpr inline GridIndRect2 to_grid_ind_rect2
-		(const PhysRect2& phys_rect2)
-	{
+		(const PhysRect2& phys_rect2) {
 		return GridIndRect2::build_in_grid
 			(to_grid_ind_pt2(phys_rect2.tl_corner()),
 			to_grid_ind_pt2(phys_rect2.br_corner()));
 	}
 	static constexpr inline GridIndRect2 to_grid_ind_rect2_lim
-		(const PhysRect2& phys_rect2)
-	{
+		(const PhysRect2& phys_rect2) {
 		//GridIndRect2 ret;
 
 		//ret = GridIndRect2::build_in_grid_lim
@@ -173,8 +165,7 @@ public:		// functions
 	//{
 	//	GridIndVec ret;
 
-	//	if (ENCLOSING_PHYS_RECT2.intersect_fancy(arg, arg_padding))
-	//	{
+	//	if (ENCLOSING_PHYS_RECT2.intersect_fancy(arg, arg_padding)) {
 	//	}
 
 	//	return ret;
