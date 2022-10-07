@@ -25,8 +25,8 @@ concept HasElemT = requires {
 
 //template<typename Vec2T, typename OtherVec2T>
 //concept LikeVec2
-//	= HasElemT<Vec2T>
-//	&& requires(OtherVec2T other) {
+//= HasElemT<Vec2T>
+//&& requires(OtherVec2T other) {
 //	{ other.x } -> std::convertible_to<typename Vec2T::ElemT>;
 //	{ other.y } -> std::convertible_to<typename Vec2T::ElemT>;
 //};
@@ -35,6 +35,12 @@ template<typename T>
 class Vec2 {
 public:		// types
 	using ElemT = T;
+
+	//enum class Ind {
+	//	IndX = 0,
+	//	IndY = 1,
+	//	Lim
+	//};
 
 	//template<std::convertible_to<T> OtherElemT>
 	//using CexprMapFunc
@@ -46,6 +52,8 @@ public:		// types
 	//	= std::function<Vec2(const Vec2&, const Vec2<OtherElemT>&)>;
 public:		// constants
 	static constexpr size_t
+		IND_X = 0,
+		IND_Y = 1,
 		SIZE = 2;
 public:		// variables
 	#define MEMB_MAIN_LIST_VEC2(X) \
@@ -71,7 +79,7 @@ public:		// functions
 
 	template<typename OtherElemT>
 	explicit constexpr inline operator Vec2<OtherElemT> () const
-		requires std::convertible_to<T, OtherElemT> {
+	requires std::convertible_to<T, OtherElemT> {
 		//return Vec2<OtherElemT>(OtherElemT(x), OtherElemT(y));
 		Vec2<OtherElemT> ret;
 
@@ -82,15 +90,15 @@ public:		// functions
 		return ret;
 	}
 	//--------
-	constexpr inline size_t size() {
+	static constexpr inline size_t size() {
 		return SIZE;
 	}
 	constexpr inline T& at(size_t where) {
 		switch (where) {
 		//--------
-		case 0:
+		case IND_X:
 			return x;
-		case 1:
+		case IND_Y:
 			return y;
 		default:
 			throw std::invalid_argument(strings::sconcat(
@@ -104,9 +112,9 @@ public:		// functions
 	constexpr inline const T& at(size_t where) const {
 		switch (where) {
 		//--------
-		case 0:
+		case IND_X:
 			return x;
-		case 1:
+		case IND_Y:
 			return y;
 		default:
 			throw std::invalid_argument(strings::sconcat(
@@ -119,8 +127,9 @@ public:		// functions
 	}
 	//--------
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2 operator + (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline Vec2 operator + (
+		const Vec2<OtherElemT>& other
+	) const {
 		//return Vec2<T>({.x=x + other.x, .y=y + other.y});
 		//return Vec2<T>(x + other.x, y + other.y);
 		//Vec2<T> ret;
@@ -138,15 +147,17 @@ public:		// functions
 		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2& operator += (const Vec2<OtherElemT>& other)
-		const {
+	constexpr inline Vec2& operator += (
+		const Vec2<OtherElemT>& other
+	) const {
 		*this = *this + other;
 		return *this;
 	}
 
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2 operator - (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline Vec2 operator - (
+		const Vec2<OtherElemT>& other
+	) const {
 		//return Vec2<T>({.x=x - other.x, .y=y - other.y});
 		//return Vec2<T>(x - other.x, y - other.y);
 		//Vec2<T> ret;
@@ -163,8 +174,9 @@ public:		// functions
 		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec2& operator -= (const Vec2<OtherElemT>& other)
-		const {
+	constexpr inline Vec2& operator -= (
+		const Vec2<OtherElemT>& other
+	) const {
 		*this = *this - other;
 		return *this;
 	}
@@ -235,6 +247,13 @@ public:		// functions
 		return *this;
 	}
 
+	constexpr inline Vec2 sign() const {
+		Vec2<T> ret;
+		for (size_t i=0; i<size(); ++i) {
+			ret.at(i) = cstm_sign(at(i));
+		}
+		return ret;
+	}
 	constexpr inline Vec2 div_2() const {
 		//return Vec2({.x=math::div_2(x), .y=math::div_2(y)});
 		//return Vec2<T>(math::div_2(x), math::div_2(y));
@@ -306,8 +325,9 @@ public:		// functions
 	//inline auto operator <=> (const Vec2<OtherElemT>& other) const
 	//	= default;
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator == (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline bool operator == (
+		const Vec2<OtherElemT>& other
+	) const {
 		//return x == other.x && y == other.y;
 		bool ret = true;
 		for (size_t i=0; i<size(); ++i) {
@@ -316,29 +336,34 @@ public:		// functions
 		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator != (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline bool operator != (
+		const Vec2<OtherElemT>& other
+	) const {
 		return !(*this == other);
 	}
 
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator < (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline bool operator < (
+		const Vec2<OtherElemT>& other
+	) const {
 		return y < other.y || (y == other.y && x < other.x);
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator > (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline bool operator > (
+		const Vec2<OtherElemT>& other
+	) const {
 		return y > other.y || (y == other.y && x > other.x);
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator <= (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline bool operator <= (
+		const Vec2<OtherElemT>& other
+	) const {
 		return !(*this > other);
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator >= (const Vec2<OtherElemT>& other) const
-	{
+	constexpr inline bool operator >= (
+		const Vec2<OtherElemT>& other
+	) const {
 		return !(*this < other);
 	}
 	//--------

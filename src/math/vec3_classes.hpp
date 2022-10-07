@@ -9,15 +9,13 @@
 #include <cstdint>
 #include <concepts>
 
-namespace liborangepower
-{
-namespace math
-{
+namespace liborangepower {
+namespace math {
 
 //template<typename Vec3T, typename OtherVec3T>
 //concept LikeVec3
-//	= HasElemT<Vec3T>
-//	&& requires(OtherVec3T other) {
+//= HasElemT<Vec3T>
+//&& requires(OtherVec3T other) {
 //	{ other.x } -> std::convertible_to<typename Vec3T::ElemT>;
 //	{ other.y } -> std::convertible_to<typename Vec3T::ElemT>;
 //	{ other.z } -> std::convertible_to<typename Vec3T::ElemT>;
@@ -29,6 +27,9 @@ public:		// types
 	using ElemT = T;
 public:		// constants
 	static constexpr size_t
+		IND_X = 0,
+		IND_Y = 1,
+		IND_Z = 2,
 		SIZE = 3;
 public:		// variables
 	#define MEMB_MAIN_LIST_VEC3(X) \
@@ -47,13 +48,14 @@ public:		// functions
 	//template<typename OtherElemT>
 	//constexpr inline operator Vec3<OtherElemT> () const
 	//	requires std::convertible_to<T, OtherElemT> {
-	//	return Vec3<OtherElemT>
-	//		(OtherElemT(x), OtherElemT(y), OtherElemT(z));
+	//	return Vec3<OtherElemT>(
+	//		OtherElemT(x), OtherElemT(y), OtherElemT(z)
+	//	);
 	//}
 
 	template<typename OtherElemT>
 	explicit constexpr inline operator Vec3<OtherElemT> () const
-		requires std::convertible_to<T, OtherElemT> {
+	requires std::convertible_to<T, OtherElemT> {
 		//return Vec3<OtherElemT>(OtherElemT(x), OtherElemT(y));
 		Vec3<OtherElemT> ret;
 
@@ -67,17 +69,17 @@ public:		// functions
 		return ret;
 	}
 	//--------
-	constexpr inline size_t size() {
+	static constexpr inline size_t size() {
 		return SIZE;
 	}
 	constexpr inline T& at(size_t where) {
 		switch (where) {
 		//--------
-		case 0:
+		case IND_X:
 			return x;
-		case 1:
+		case IND_Y:
 			return y;
-		case 2:
+		case IND_Z:
 			return z;
 		default:
 			throw std::invalid_argument(strings::sconcat(
@@ -91,11 +93,11 @@ public:		// functions
 	constexpr inline const T& at(size_t where) const {
 		switch (where) {
 		//--------
-		case 0:
+		case IND_X:
 			return x;
-		case 1:
+		case IND_Y:
 			return y;
-		case 2:
+		case IND_Z:
 			return z;
 		default:
 			throw std::invalid_argument(strings::sconcat(
@@ -108,8 +110,9 @@ public:		// functions
 	}
 	//--------
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec3 operator + (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline Vec3 operator + (
+		const Vec3<OtherElemT>& other
+	) const {
 		//return Vec3<T>(x + other.x, y + other.y, z + other.z);
 		//return Vec3(
 		//	x + other.x,
@@ -132,15 +135,17 @@ public:		// functions
 		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec3& operator += (const Vec3<OtherElemT>& other)
-		const {
+	constexpr inline Vec3& operator += (
+		const Vec3<OtherElemT>& other
+	) const {
 		*this = *this + other;
 		return *this;
 	}
 
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec3 operator - (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline Vec3 operator - (
+		const Vec3<OtherElemT>& other
+	) const {
 		//return Vec3<T>(x - other.x, y - other.y, z - other.z);
 		//return Vec3(
 		//	x - other.x,
@@ -162,8 +167,9 @@ public:		// functions
 		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline Vec3& operator -= (const Vec3<OtherElemT>& other)
-		const {
+	constexpr inline Vec3& operator -= (
+		const Vec3<OtherElemT>& other
+	) const {
 		*this = *this - other;
 		return *this;
 	}
@@ -243,6 +249,14 @@ public:		// functions
 	constexpr inline Vec3& operator /= (const ScaleT& scale) const {
 		*this = *this / scale;
 		return *this;
+	}
+
+	constexpr inline Vec3 sign() const {
+		Vec3<T> ret;
+		for (size_t i=0; i<size(); ++i) {
+			ret.at(i) = cstm_sign(at(i));
+		}
+		return ret;
 	}
 
 	constexpr inline Vec3 div_2() const {
@@ -336,8 +350,9 @@ public:		// functions
 	//inline auto operator <=> (const Vec3<OtherElemT>& other) const
 	//	= default;
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator == (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline bool operator == (
+		const Vec3<OtherElemT>& other
+	) const {
 		//return (x == other.x && y == other.y && z == other.z);
 		bool ret = true;
 		//#define X(name, dummy_arg) ret = ret && (name == other.name);
@@ -349,31 +364,36 @@ public:		// functions
 		return ret;
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator != (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline bool operator != (
+		const Vec3<OtherElemT>& other
+	) const {
 		return !(*this == other);
 	}
 
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator < (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline bool operator < (
+		const Vec3<OtherElemT>& other
+	) const {
 		return z < other.z
 			|| (z == other.z && Vec2(x, y) < Vec2(other.x, other.y));
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator > (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline bool operator > (
+		const Vec3<OtherElemT>& other
+	) const {
 		return z > other.z
 			|| (z == other.z && Vec2(x, y) > Vec2(other.x, other.y));
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator <= (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline bool operator <= (
+		const Vec3<OtherElemT>& other
+	) const {
 		return !(*this > other);
 	}
 	template<std::convertible_to<T> OtherElemT>
-	constexpr inline bool operator >= (const Vec3<OtherElemT>& other) const
-	{
+	constexpr inline bool operator >= (
+		const Vec3<OtherElemT>& other
+	) const {
 		return !(*this < other);
 	}
 	//--------
@@ -472,6 +492,7 @@ template<typename T>
 constexpr inline bool is_vec3() {
 	return concepts::is_specialization<T, Vec3>();
 }
+//--------
 } // namespace math
 } // namespace liborangepower
 
@@ -479,8 +500,9 @@ namespace std {
 //--------
 template<typename T>
 struct hash<liborangepower::math::Vec3<T>> {
-	std::size_t operator ()
-		(const liborangepower::math::Vec3<T>& vec3) const noexcept {
+	std::size_t operator ()(
+		const liborangepower::math::Vec3<T>& vec3
+	) const noexcept {
 		//const std::size_t& hx = std::hash<T>{}(vec3.x);
 		//const std::size_t& hy = std::hash<T>{}(vec3.y);
 		//const std::size_t& hz = std::hash<T>{}(vec3.z);

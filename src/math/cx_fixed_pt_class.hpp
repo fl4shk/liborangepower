@@ -8,8 +8,7 @@
 #include "misc_funcs.hpp"
 #include "misc_types.hpp"
 
-namespace liborangepower
-{
+namespace liborangepower {
 
 using bitwise::width_of_type;
 using integer_types::u8;
@@ -21,19 +20,16 @@ using integer_types::i32;
 using integer_types::u64;
 using integer_types::i64;
 
-namespace math
-{
+namespace math {
 //--------
 // A class implementing fixed-point arithmetic with `constexpr` functions.
 // Of course, this can be used in runtime code.
 template<std::integral _IntT, size_t _FRAC_WIDTH>
-class CxFixedPt
-{
+class CxFixedPt {
 public:		// types
 	using IntT = _IntT;
 
-	class CtorArgs final
-	{
+	class CtorArgs final {
 	public:		// variables
 		IntT data;
 	};
@@ -68,52 +64,40 @@ public:		// variables
 	IntT data = 0;
 public:		// functions
 	//--------
-	constexpr inline CxFixedPt()
-	{
+	constexpr inline CxFixedPt() {
 	}
 	constexpr inline CxFixedPt(const CtorArgs& ctor_args)
-		: data(ctor_args.data)
-	{
+		: data(ctor_args.data) {
 	}
 	//--------
 	explicit constexpr inline CxFixedPt(std::integral auto to_conv)
-		: data(to_conv << FRAC_WIDTH)
-	{
+		: data(to_conv << FRAC_WIDTH) {
 	}
 	explicit constexpr inline CxFixedPt(std::floating_point auto to_conv)
-		: data((long double)(to_conv) * (MaxIntT(1) << FRAC_WIDTH))
-	{
+		: data((long double)(to_conv) * (MaxIntT(1) << FRAC_WIDTH)) {
 	}
 
 	template<std::integral OtherIntT, size_t OTHER_FRAC_WIDTH>
-	explicit constexpr inline CxFixedPt
-		(const CxFixedPt<OtherIntT, OTHER_FRAC_WIDTH>& to_conv)
-	{
+	explicit constexpr inline CxFixedPt(
+		const CxFixedPt<OtherIntT, OTHER_FRAC_WIDTH>& to_conv
+	) {
 		constexpr size_t
 			OTHER_INT_T_WIDTH = width_of_type<OtherIntT>();
 			//OTHER_WHOLE_BITS = OTHER_INT_T_WIDTH - OTHER_FRAC_WIDTH;
 		constexpr int
 			MY_SHIFT_AMOUNT = OTHER_FRAC_WIDTH - FRAC_WIDTH;
 
-		if constexpr (MY_SHIFT_AMOUNT < 0)
-		{
+		if constexpr (MY_SHIFT_AMOUNT < 0) {
 			// Do the conversion with the larger type 
-			if constexpr (OTHER_INT_T_WIDTH > INT_T_WIDTH)
-			{
+			if constexpr (OTHER_INT_T_WIDTH > INT_T_WIDTH) {
 				data = to_conv.data << (-MY_SHIFT_AMOUNT);
-			}
-			else // if constexpr (OTHER_INT_T_WIDTH <= INT_T_WIDTH)
-			{
+			} else { // if constexpr (OTHER_INT_T_WIDTH <= INT_T_WIDTH)
 				data = to_conv.data;
 				data <<= -MY_SHIFT_AMOUNT;
 			}
-		}
-		else if constexpr (MY_SHIFT_AMOUNT > 0)
-		{
+		} else if constexpr (MY_SHIFT_AMOUNT > 0) {
 			data = to_conv.data >> MY_SHIFT_AMOUNT;
-		}
-		else
-		{
+		} else {
 			data = to_conv.data;
 		}
 	}
@@ -123,89 +107,81 @@ public:		// functions
 	constexpr inline ~CxFixedPt() = default;
 	//--------
 	template<std::integral CastIntT>
-	explicit constexpr inline operator CastIntT () const
-	{
+	explicit constexpr inline operator CastIntT () const {
 		return MaxIntT(data) >> FRAC_WIDTH;
 		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
 	}
 	template<std::floating_point CastFloatT>
-	explicit constexpr inline operator CastFloatT () const
-	{
+	explicit constexpr inline operator CastFloatT () const {
 		return (long double)(whole_part<MaxIntT>())
 			/ (MaxIntT(1) << FRAC_WIDTH);
 	}
 	//--------
 	template<std::integral CastIntT=IntT>
-	constexpr inline CastIntT whole_part() const
-	{
+	constexpr inline CastIntT whole_part() const {
 		return CastIntT(*this);
 	}
-	constexpr inline IntT frac_part() const
-	{
+	constexpr inline IntT frac_part() const {
 		//return data & ((MaxIntT(1) << FRAC_WIDTH) - MaxIntT(1));
-		return bitwise::get_bits_with_range
-		(
+		return bitwise::get_bits_with_range(
 			data,
 			FRAC_WIDTH - MaxIntT(1),
 			0
 		);
 	}
 	//--------
-	constexpr inline CxFixedPt operator + (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt operator + (const CxFixedPt& other) const {
 		return CxFixedPt(data + other.data);
 	}
-	constexpr inline CxFixedPt& operator += (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt& operator += (
+		const CxFixedPt& other
+	) const {
 		*this = *this + other;
 		return *this;
 	}
 
-	constexpr inline CxFixedPt operator - (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt operator - (const CxFixedPt& other) const {
 		return CxFixedPt(data - other.data);
 	}
-	constexpr inline CxFixedPt& operator -= (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt& operator -= (
+		const CxFixedPt& other
+	) const {
 		*this = *this - other;
 		return *this;
 	}
 
-	constexpr inline CxFixedPt operator * (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt operator * (const CxFixedPt& other) const {
 		return CxFixedPt((MaxIntT(data) * MaxIntT(other.data))
 			>> FRAC_WIDTH);
 	}
-	constexpr inline CxFixedPt& operator *= (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt& operator *= (
+		const CxFixedPt& other
+	) const {
 		*this = *this * other;
 		return *this;
 	}
 
-	constexpr inline CxFixedPt operator / (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt operator / (const CxFixedPt& other) const {
 		return CxFixedPt((MaxIntT(data) << FRAC_WIDTH)
 			/ MaxIntT(other.data));
 	}
-	constexpr inline CxFixedPt& operator /= (const CxFixedPt& other) const
-	{
+	constexpr inline CxFixedPt& operator /= (
+		const CxFixedPt& other
+	) const {
 		*this = *this / other;
 		return *this;
 	}
 	//--------
-	constexpr inline long double recip_ldbl() const
-	{
+	constexpr inline long double recip_ldbl() const {
 		const long double
 			DATA_DBL = data;
 		return 1.0d 
 			/ (DATA_DBL / (MaxIntT(1) << FRAC_WIDTH));
 	}
-	constexpr inline long double sqrt_ldbl() const
-	{
+	constexpr inline long double sqrt_ldbl() const {
 		return std::sqrt((long double)(*this));
 	}
-	constexpr inline CxFixedPt div_2() const
-	{
+	constexpr inline CxFixedPt div_2() const {
 		return CxFixedPt(data >> IntT(1));
 	}
 	//--------

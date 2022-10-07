@@ -32,7 +32,7 @@ void test_to_grid_ind() {
 		j<=CollGridT::ENCLOSING_PHYS_RECT2.bottom_y();
 		j+=INC_AMOUNT.y) {
 		printout("{",
-			j, " ", CollGridT::to_grid_ind<true>(j),
+			j, " ", CollGridT::to_grid_ind(j, 1),
 			"}");
 		if (j + INC_AMOUNT.y <= CollGridT::ENCLOSING_PHYS_RECT2.bottom_y())
 		{
@@ -47,7 +47,7 @@ void test_to_grid_ind() {
 		i+=INC_AMOUNT.x) {
 		//const GridIndPt2 CollGridT::to_grid_ind_pt2({i, j}, " ");
 		printout("{",
-			i, " ", CollGridT::to_grid_ind<false>(i),
+			i, " ", CollGridT::to_grid_ind(i, 0),
 			"}");
 		if (i + INC_AMOUNT.x <= CollGridT::ENCLOSING_PHYS_RECT2.right_x())
 		{

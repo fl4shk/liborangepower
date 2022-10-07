@@ -4,31 +4,26 @@
 #include <cstdint>
 #include <concepts>
 
-namespace liborangepower
-{
-namespace concepts
-{
+namespace liborangepower {
+namespace concepts {
 //--------
 template<typename T, typename OtherT=T, typename ConvT=T>
-concept HasArithAsBinops = requires(T c, OtherT other)
-{
+concept HasArithAsBinops = requires(T c, OtherT other) {
 	{ c + other } -> std::convertible_to<ConvT>;
 	{ c - other } -> std::convertible_to<ConvT>;
 };
 
 template<typename T, typename OtherT=T, typename ConvT=T>
 concept HasArithMasBinops
-	= HasArithAsBinops<T, OtherT, ConvT>
-	&& requires(T c, OtherT other)
-{
+= HasArithAsBinops<T, OtherT, ConvT>
+&& requires(T c, OtherT other) {
 	{ c * other } -> std::convertible_to<ConvT>;
 };
 
 template<typename T, typename OtherT=T, typename ConvT=T>
 concept HasArithMdasBinops 
-	= HasArithAsBinops<T, OtherT, ConvT>
-	&& requires(T c, OtherT other)
-{
+= HasArithAsBinops<T, OtherT, ConvT>
+&& requires(T c, OtherT other) {
 	{ c * other } -> std::convertible_to<ConvT>;
 	{ c / other } -> std::convertible_to<ConvT>;
 };
@@ -36,21 +31,18 @@ concept HasArithMdasBinops
 // The basic four arithmetic operators
 template<typename T, typename OtherT=T, typename ConvT=T>
 concept HasArithAllBinops
-	= HasArithAsBinops<T, OtherT, ConvT>
-	&& HasArithMdasBinops<T, OtherT, ConvT>
-	&& requires(T c, OtherT other)
-{
+= HasArithAsBinops<T, OtherT, ConvT>
+&& HasArithMdasBinops<T, OtherT, ConvT>
+&& requires(T c, OtherT other) {
 	{ c % other } -> std::convertible_to<ConvT>;
 };
 
 template<typename T, typename ConvT=T>
-concept HasArithAUnop = requires(T c)
-{
+concept HasArithAUnop = requires(T c) {
 	{ +c } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithSUnop = requires(T c)
-{
+concept HasArithSUnop = requires(T c) {
 	{ -c } -> std::convertible_to<ConvT>;
 };
 
@@ -59,30 +51,25 @@ concept HasArithAsUnops
 	= HasArithAUnop<T, ConvT> && HasArithSUnop<T, ConvT>;
 //--------
 template<typename T, typename OtherT=T>
-concept HasCmpEqNeBinops = requires(T c, OtherT other)
-{
+concept HasCmpEqNeBinops = requires(T c, OtherT other) {
 	{ c == other } -> std::convertible_to<bool>;
 	{ c != other } -> std::convertible_to<bool>;
 };
 
 template<typename T, typename OtherT=T>
-concept HasCmpLtBinop = requires(T c, OtherT other)
-{
+concept HasCmpLtBinop = requires(T c, OtherT other) {
 	{ c < other } -> std::convertible_to<bool>;
 };
 template<typename T, typename OtherT=T>
-concept HasCmpGtBinop = requires(T c, OtherT other)
-{
+concept HasCmpGtBinop = requires(T c, OtherT other) {
 	{ c > other } -> std::convertible_to<bool>;
 };
 template<typename T, typename OtherT=T>
-concept HasCmpLeBinop = requires(T c, OtherT other)
-{
+concept HasCmpLeBinop = requires(T c, OtherT other) {
 	{ c <= other } -> std::convertible_to<bool>;
 };
 template<typename T, typename OtherT=T>
-concept HasCmpGeBinop = requires(T c, OtherT other)
-{
+concept HasCmpGeBinop = requires(T c, OtherT other) {
 	{ c >= other } -> std::convertible_to<bool>;
 };
 
@@ -96,15 +83,13 @@ concept HasCmpAllBinops
 	= HasCmpEqNeBinops<T, OtherT> && HasCmpInequBinops<T, OtherT>;
 //--------
 template<typename T, typename OtherT=T, typename ConvT=T>
-concept HasBitwNonShiftBinops = requires(T c, OtherT other)
-{
+concept HasBitwNonShiftBinops = requires(T c, OtherT other) {
 	{ c & other } -> std::convertible_to<ConvT>;
 	{ c | other } -> std::convertible_to<ConvT>;
 	{ c ^ other } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename OtherT=T, typename ConvT=T>
-concept HasBitwShiftBinops = requires(T c, OtherT other)
-{
+concept HasBitwShiftBinops = requires(T c, OtherT other) {
 	{ c << other } -> std::convertible_to<ConvT>;
 	{ c >> other } -> std::convertible_to<ConvT>;
 };
@@ -114,30 +99,25 @@ concept HasBitwAllBinops
 	&& HasBitwShiftBinops<T, OtherT, ConvT>;
 
 template<typename T, typename ConvT=T>
-concept HasBitwUnops = requires(T c)
-{
+concept HasBitwUnops = requires(T c) {
 	{ ~c } -> std::convertible_to<ConvT>;
 };
 //--------
 template<typename T, typename ConvT=T>
-concept HasArithSignMbrFunc = requires(T c)
-{
+concept HasArithSignMbrFunc = requires(T c) {
 	{ c.sign() } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithAbsMbrFunc = requires(T c)
-{
+concept HasArithAbsMbrFunc = requires(T c) {
 	{ c.abs() } -> std::convertible_to<ConvT>;
 };
 //--------
 template<typename T, typename ConvT=T>
-concept HasArithRecipMbrFunc = requires(T c)
-{
+concept HasArithRecipMbrFunc = requires(T c) {
 	{ c.recip() } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithLongDblRecipOp = requires(T c)
-{
+concept HasArithLongDblRecipOp = requires(T c) {
 	{ 1.0l / c } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
@@ -146,13 +126,11 @@ concept HasArithAnyRecipOp
 	|| HasArithLongDblRecipOp<T, ConvT>;
 //--------
 template<typename T, typename ConvT=T>
-concept HasArithDiv2MbrFunc = requires(T c)
-{
+concept HasArithDiv2MbrFunc = requires(T c) {
 	{ c.div_2() } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithIntDiv2Op = requires(T c)
-{
+concept HasArithIntDiv2Op = requires(T c) {
 	{ c / 2 } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
@@ -161,13 +139,11 @@ concept HasArithAnyDiv2Op
 	|| HasArithIntDiv2Op<T, ConvT>;
 //--------
 template<typename T, typename ConvT=T>
-concept HasArithSqrtMbrFunc = requires(T c)
-{
+concept HasArithSqrtMbrFunc = requires(T c) {
 	{ c.sqrt() } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithStdSqrtFunc = requires(T c)
-{
+concept HasArithStdSqrtFunc = requires(T c) {
 	{ std::sqrt(c) } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
