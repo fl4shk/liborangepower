@@ -14,8 +14,8 @@
 #define ARG_DUP_AS_STR(x) \
 	(x) , (#x)
 
-#define _ALIGN4 aligned(4)
-#define _ALIGN2 aligned(2)
+//#define ALIGN4 aligned(4)
+//#define ALIGN2 aligned(2)
 
 #define ALIGNAS_REGULAR alignas(4)
 

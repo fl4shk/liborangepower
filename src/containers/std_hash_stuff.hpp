@@ -16,14 +16,14 @@ constexpr inline std::size_t hash_merge(size_t h, size_t next) {
 	return h ^ (next << std::size_t(1));
 }
 
-template<typename _Alloc=std::allocator<size_t>>
+template<typename Alloc=std::allocator<size_t>>
 constexpr inline std::size_t hash_merge
-	(const std::vector<size_t, _Alloc>& to_merge_vec) {
+	(const std::vector<size_t, Alloc>& to_merge_vec) {
 
 	if (to_merge_vec.size() == 0) {
 		throw std::invalid_argument(strings::sconcat(
 			"liborangepower::containers::hash_merge(",
-				"const std::vector<size_t, _Alloc>&",
+				"const std::vector<size_t, Alloc>&",
 			"): Error: ",
 			"to_merge_vec.size() == 0"
 			)

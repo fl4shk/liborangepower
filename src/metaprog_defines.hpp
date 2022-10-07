@@ -76,8 +76,8 @@
 
 #define FIRST(a, ...) a
 
-#define HAS_ARGS(...) BOOL(FIRST(_END_OF_ARGUMENTS_ __VA_ARGS__)())
-#define _END_OF_ARGUMENTS_() 0
+#define HAS_ARGS(...) BOOL(FIRST(LIBOP_INTERNAL_END_OF_ARGUMENTS __VA_ARGS__)())
+#define LIBOP_INTERNAL_END_OF_ARGUMENTS () 0
 
 
 // `EVAL` causes `DEFER`red or `OBSTRUCT`ed macro calls with `__VA_ARGS__`
@@ -107,8 +107,7 @@
 #define MAP(m, sep, first, ...) \
 	m(first) \
 	\
-	__VA_OPT__ \
-	( \
+	__VA_OPT__( \
 		DEFER(sep)() \
 		DEFER(MAP_INDIRECT)()(m, sep, __VA_ARGS__) \
 	)
@@ -128,8 +127,7 @@
 #define MAP_2(m, sep, first, second, ...) \
 	m(first, second) \
 	\
-	__VA_OPT__ \
-	( \
+	__VA_OPT__( \
 		DEFER(sep)() \
 		DEFER(MAP_2_INDIRECT)()(m, sep, __VA_ARGS__) \
 	)
@@ -138,8 +136,7 @@
 #define MAP_3(m, sep, first, second, third, ...) \
 	m(first, second, third) \
 	\
-	__VA_OPT__ \
-	( \
+	__VA_OPT__( \
 		DEFER(sep)() \
 		DEFER(MAP_3_INDIRECT)()(m, sep, __VA_ARGS__) \
 	)
@@ -148,8 +145,7 @@
 #define MAP_4(m, sep, first, second, third, fourth, ...) \
 	m(first, second, third, fourth) \
 	\
-	__VA_OPT__ \
-	( \
+	__VA_OPT__( \
 		DEFER(sep)() \
 		DEFER(MAP_4_INDIRECT)()(m, sep, __VA_ARGS__) \
 	)

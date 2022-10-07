@@ -141,7 +141,7 @@ inline auto rng_run(RngT& rng, const T& lim_0, const T& lim_1)
 //	return rng_run_lim<T>(rng, lim_0, lim_1) * scale;
 //}
 
-//template<typename _InstanceT=std::mt19937_64>
+//template<typename TargInstanceT=std::mt19937_64>
 //class Prng final
 //{
 //public:		// types
@@ -150,7 +150,7 @@ inline auto rng_run(RngT& rng, const T& lim_0, const T& lim_1)
 //	//using InstanceT = std::minstd_rand;
 //	//using InstanceT = std::mt19937;
 //	//using InstanceT = std::mt19937_64;
-//	using InstanceT = _InstanceT;
+//	using InstanceT = TargInstanceT;
 //private:		// variables
 //	//i64 _param_0, _param_1;
 //

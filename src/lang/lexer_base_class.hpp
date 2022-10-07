@@ -12,12 +12,12 @@ namespace liborangepower
 namespace lang
 {
 
-template<typename _TokT, typename _NumT=bignum::BigNum>
+template<typename Tok, typename Num=bignum::BigNum>
 class LexerBase
 {
 public:		// types
-	using TokT = _TokT;
-	using NumT = _NumT;
+	using TokT = Tok;
+	using NumT = Num;
 
 	class State final
 	{

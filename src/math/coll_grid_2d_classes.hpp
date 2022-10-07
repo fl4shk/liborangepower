@@ -11,15 +11,15 @@ namespace math {
 //};
 //--------
 // A grid for doing cheaper collision checking in 2D, with constant sizes
-template<typename _PhysElemT, Vec2<_PhysElemT> _GRID_ELEM_SIZE_2D,
-	Vec2<size_t> _NUM_GRID_ELEMS_2D,
-	Vec2<_PhysElemT> _ENCLOSING_PHYS_RECT2_POS
-		= Vec2<_PhysElemT>(_PhysElemT(0), _PhysElemT(0)),
-	template<typename> typename _Alloc=std::allocator>
+template<typename TargPhysElemT, Vec2<TargPhysElemT> TARG_GRID_ELEM_SIZE_2D,
+	Vec2<size_t> TARG_NUM_GRID_ELEMS_2D,
+	Vec2<TargPhysElemT> TARG_ENCLOSING_PHYS_RECT2_POS
+		= Vec2<TargPhysElemT>(TargPhysElemT(0), TargPhysElemT(0)),
+	template<typename> typename TargAlloc=std::allocator>
 class CollGridCsz2d {
 public:		// types
 	// named after physics
-	using PhysElemT = _PhysElemT;
+	using PhysElemT = TargPhysElemT;
 	using PhysPt2 = Vec2<PhysElemT>;
 	using PhysRect2 = Rect2<PhysElemT>;
 
@@ -29,7 +29,7 @@ public:		// types
 	using GridIndRect2 = Rect2<GridIndT>;
 
 	template<typename OtherT>
-	using Alloc = _Alloc<OtherT>;
+	using Alloc = TargAlloc<OtherT>;
 
 
 	//using GridIndVec = std::vector<GridIndPt2, Alloc<GridIndPt2>>;
@@ -45,11 +45,11 @@ public:		// types
 
 public:		// constants
 	static constexpr PhysPt2
-		GRID_ELEM_SIZE_2D = _GRID_ELEM_SIZE_2D;
+		GRID_ELEM_SIZE_2D = TARG_GRID_ELEM_SIZE_2D;
 	static constexpr GridIndPt2
-		NUM_GRID_ELEMS_2D = _NUM_GRID_ELEMS_2D;
+		NUM_GRID_ELEMS_2D = TARG_NUM_GRID_ELEMS_2D;
 	static constexpr PhysPt2
-		ENCLOSING_PHYS_RECT2_POS = _ENCLOSING_PHYS_RECT2_POS;
+		ENCLOSING_PHYS_RECT2_POS = TARG_ENCLOSING_PHYS_RECT2_POS;
 	static constexpr size_t
 		TOTAL_NUM_ELEMS = NUM_GRID_ELEMS_2D.x * NUM_GRID_ELEMS_2D.y;
 
@@ -72,7 +72,7 @@ public:		// constants
 
 public:		// functions
 	//--------
-	//template<Dim2d _DIM>
+	//template<Dim2d DIM>
 	static constexpr inline PhysElemT to_phys_elem(
 		const GridIndT& to_conv, bool index
 	) {
@@ -95,14 +95,14 @@ public:		// functions
 		return ret;
 	}
 	//--------
-	//template<Dim2d _DIM>
+	//template<Dim2d DIM>
 	static constexpr inline GridIndT to_grid_ind(
 		const PhysElemT& to_conv, bool index
 	) {
 		// For power-of-two grid element sizes, this divide should be
 		// converted into a right shift (at least when optimization is
 		// enabled).
-		//return GridIndT(to_conv / GRID_ELEM_SIZE_1DIM<_DIM>);
+		//return GridIndT(to_conv / GRID_ELEM_SIZE_1DIM<DIM>);
 		return GridIndT(to_conv / GRID_ELEM_SIZE_2D.at(index));
 	}
 	static constexpr inline GridIndPt2 to_grid_ind_pt2(

@@ -11,7 +11,7 @@ namespace liborangepower
 namespace concepts
 {
 //--------
-#define _INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
+#define LIBOP_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
 	ContnrEtcT, rem_cond) \
 	template<typename T> \
 	extern uint8_t _ ## func_name ## _check (const T&); \
@@ -24,11 +24,11 @@ namespace concepts
 
 #define GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTYPES(func_name, \
 	ContnrEtcT) \
-	_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
+	LIBOP_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
 		ContnrEtcT, 1)
 #define GEN_IS_SPECIALIZATION_CHECK_FUNCS_RTARGS(func_name, \
 	ContnrEtcT) \
-	_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
+	LIBOP_INTERNAL_GEN_IS_SPECIALIZATION_CHECK_FUNCS(func_name, \
 		ContnrEtcT, 0)
 
 #define IS_SPECIALIZATION_MACRO(func_name) \
