@@ -29,6 +29,7 @@
 #include <tuple>
 
 #include <concepts>
+#include <coroutine>
 
 #include <exception>
 #include <stdexcept>
