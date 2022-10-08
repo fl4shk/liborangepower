@@ -17,8 +17,9 @@ constexpr inline std::size_t hash_merge(size_t h, size_t next) {
 }
 
 template<typename Alloc=std::allocator<size_t>>
-constexpr inline std::size_t hash_merge
-	(const std::vector<size_t, Alloc>& to_merge_vec) {
+constexpr inline std::size_t hash_merge(
+	const std::vector<size_t, Alloc>& to_merge_vec
+) {
 
 	if (to_merge_vec.size() == 0) {
 		throw std::invalid_argument(strings::sconcat(

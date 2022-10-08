@@ -6,123 +6,82 @@
 #include "../misc/misc_types.hpp"
 #include "../misc/misc_defines.hpp"
 
-namespace liborangepower
-{
-
-namespace containers
-{
-
+namespace liborangepower {
+namespace containers {
+//--------
 template<typename T, size_t _size>
-class ArrayCszHelper
-{
+class ArrayCszHelper {
 public:			// variables
 	T* _arr = nullptr;
-
 public:		// constants
 	static constexpr size_t SIZE = _size;
-
 public:			// functions
-	ArrayCszHelper()
-	{
+	ArrayCszHelper() {
 	}
-
-	ArrayCszHelper(T* s_the_array) : _arr(s_the_array)
-	{
+	ArrayCszHelper(T* s_the_array) : _arr(s_the_array) {
 	}
-
 	ArrayCszHelper(const ArrayCszHelper& to_copy) = default;
-
-	void init(T* s_the_array)
-	{
+	void init(T* s_the_array) {
 		_arr = s_the_array;
 	}
-
-
 	ArrayCszHelper& operator = (const ArrayCszHelper& to_copy) = default;
 
-
-	const T* arr() const
-	{
+	const T* arr() const {
 		return _arr;
 	}
-
-	size_t size() const
-	{
+	size_t size() const {
 		return SIZE;
 	}
 
-	T& at(size_t offset)
-	{
+	T& at(size_t offset) {
 		return _arr[offset];
 	}
-	const T& at(size_t offset) const
-	{
+	const T& at(size_t offset) const {
 		return _arr[offset];
 	}
-
-
 };
-
-
-
+//--------
 // This is a VERY thin wrapper class for working with 1D arrays of
 // arbitrary sizes
 template<typename T>
-class ArrayHelper
-{
+class ArrayHelper {
 //public:			// variables
 protected:		// variables
 	T* _arr = nullptr;
-
 protected:		// variables
 	size_t _size = 0;
-
 public:			// functions
-	inline ArrayHelper()
-	{
+	inline ArrayHelper() {
 	}
-
 	inline ArrayHelper(T* s_the_array, size_t s_size)
-		: _arr(s_the_array), _size(s_size)
-	{
+		: _arr(s_the_array), _size(s_size) {
 	}
-
 	inline ArrayHelper(const ArrayHelper& to_copy) = default;
 
-	void init(T* s_the_array, size_t s_size)
-	{
+	void init(T* s_the_array, size_t s_size) {
 		_arr = s_the_array;
 		_size = s_size;
 	}
-
-
 	inline ArrayHelper& operator = (const ArrayHelper& to_copy) = default;
 
-
-	const T* arr() const
-	{
+	const T* arr() const {
 		return _arr;
 	}
 
-	size_t size() const
-	{
+	size_t size() const {
 		return _size;
 	}
 
-	T& at(size_t offset)
-	{
+	T& at(size_t offset) {
 		return _arr[offset];
 	}
-	const T& at(size_t offset) const
-	{
+	const T& at(size_t offset) const {
 		return _arr[offset];
 	}
-
 
 };
-
+//--------
 } // namespace containers
-
 } // namespace liborangepower
 
 #endif		// liborangepower_containers_array_helper_classes_hpp

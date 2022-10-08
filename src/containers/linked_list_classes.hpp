@@ -11,20 +11,16 @@
 
 #include "../concepts/is_specialization_concepts.hpp"
 
-namespace liborangepower
-{
-namespace containers
-{
+namespace liborangepower {
+namespace containers {
 //--------
 //template<typename T>
-//class PtrCircLinkList
-//{
+//class PtrCircLinkList {
 //public:		// types
 //	//--------
 //	using ElemT = T;
 //	//--------
-//	class Node final
-//	{
+//	class Node final {
 //		friend class PtrCircLinkList;
 //	public:		// types
 //		//template<typename OtherT>
@@ -41,16 +37,14 @@ namespace containers
 //	public:		// functions
 //		Node() = default;
 //
-//		static inline Node construct(const T& s_data)
-//		{
+//		static inline Node construct(const T& s_data) {
 //			Node ret;
 //			ret.data = s_data;
 //			return ret;
 //		}
 //
 //		//template<typename OtherT=T>
-//		//static inline Node construct(T&& s_data)
-//		//{
+//		//static inline Node construct(T&& s_data) {
 //		//	Node ret;
 //		//	ret.data = std::move(s_data);
 //		//	return ret;
@@ -65,8 +59,7 @@ namespace containers
 //	};
 //	//--------
 //	template<bool _reverse> 
-//	class Iterator final
-//	{
+//	class Iterator final {
 //		friend class PtrCircLinkList;
 //	public:		// constants
 //		static constexpr bool
@@ -76,8 +69,7 @@ namespace containers
 //	public:		// functions
 //		Iterator() = default;
 //		inline Iterator(Node* s_node)
-//			: _node(s_node)
-//		{
+//			: _node(s_node) {
 //		}
 //
 //		//GEN_COPY_ONLY_CONSTRUCTORS_AND_ASSIGN(Iterator);
@@ -86,41 +78,33 @@ namespace containers
 //
 //		~Iterator() = default;
 //
-//		inline Iterator& operator ++ ()
-//		{
+//		inline Iterator& operator ++ () {
 //			_node = !REVERSE ? _node->next() : _node->prev();
 //			return *this;
 //		}
-//		inline Iterator& operator -- ()
-//		{
+//		inline Iterator& operator -- () {
 //			_node = !REVERSE ? _node->prev() : _node->next();
 //			return *this;
 //		}
-//		//inline operator Node* () const
-//		//{
+//		//inline operator Node* () const {
 //		//	return _node;
 //		//}
 //
 //		//inline T& operator * () const
-//		//inline Node& operator * ()
-//		//{
+//		//inline Node& operator * () {
 //		//	return *_node;
 //		//}
-//		inline T& operator * () const
-//		{
+//		inline T& operator * () const {
 //			return _node->data;
 //		}
-//		inline T* operator -> () const
-//		{
+//		inline T* operator -> () const {
 //			return &_node->data;
 //		}
 //
-//		inline bool operator == (const Iterator& other) const
-//		{
+//		inline bool operator == (const Iterator& other) const {
 //			return (_node == other._node);
 //		}
-//		inline bool operator != (const Iterator& other) const
-//		{
+//		inline bool operator != (const Iterator& other) const {
 //			//return (!((*this) == other));
 //			return (_node != other._node);
 //		}
@@ -139,117 +123,92 @@ namespace containers
 //	//--------
 //public:		// functions
 //	//--------
-//	inline PtrCircLinkList()
-//	{
+//	inline PtrCircLinkList() {
 //		_head._next = &_head;
 //		_head._prev = &_head;
 //	}
 //	//GEN_NO_CM_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList);
 //	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(PtrCircLinkList)
-//	virtual inline ~PtrCircLinkList()
-//	{
-//		//for (auto iter=_head.next(); iter!=&_head; )
-//		//{
+//	virtual inline ~PtrCircLinkList() {
+//		//for (auto iter=_head.next(); iter!=&_head; ) {
 //		//	auto to_delete = iter;
 //		//	iter = iter->next;
 //		//	delete to_delete;
 //		//}
 //
-//		//while (_head._prev != &_head)
-//		//{
+//		//while (_head._prev != &_head) {
 //		//	remove_after(&_head);
 //		//}
-//		while (!empty())
-//		{
+//		while (!empty()) {
 //			//remove(begin());
 //			pop_front();
 //		}
 //	}
 //	//--------
-//	inline Node* head()
-//	{
+//	inline Node* head() {
 //		return &_head;
 //	}
-//	inline const Node* head() const
-//	{
+//	inline const Node* head() const {
 //		return &_head;
 //	}
-//	inline bool empty() const
-//	{
+//	inline bool empty() const {
 //		return (_head._next == &_head);
 //	}
 //	//--------
-//	inline Iterator<false> begin()
-//	{
+//	inline Iterator<false> begin() {
 //		return Iterator<false>(head()->next());
 //	}
-//	inline const Iterator<false> begin() const
-//	{
+//	inline const Iterator<false> begin() const {
 //		return Iterator<false>(head()->next());
 //	}
-//	inline Iterator<false> end()
-//	{
+//	inline Iterator<false> end() {
 //		return Iterator<false>(head());
 //	}
-//	inline const Iterator<false> end() const
-//	{
+//	inline const Iterator<false> end() const {
 //		return Iterator<false>(head());
 //	}
 //
-//	inline Iterator<true> rbegin()
-//	{
+//	inline Iterator<true> rbegin() {
 //		return Iterator<true>(_head._prev);
 //	}
-//	inline const Iterator<true> rbegin() const
-//	{
+//	inline const Iterator<true> rbegin() const {
 //		return Iterator<true>(_head._prev);
 //	}
-//	inline Iterator<true> rend()
-//	{
+//	inline Iterator<true> rend() {
 //		return Iterator<true>(_head._prev->_next);
 //	}
-//	inline const Iterator<true> rend() const
-//	{
+//	inline const Iterator<true> rend() const {
 //		return Iterator<true>(_head._prev->_next);
 //	}
 //
-//	inline const Iterator<false> cbegin() const
-//	{
+//	inline const Iterator<false> cbegin() const {
 //		return Iterator<false>(_head._next);
 //	}
-//	inline const Iterator<false> cend() const
-//	{
+//	inline const Iterator<false> cend() const {
 //		return Iterator<false>(_head._next->_prev);
 //	}
-//	inline const Iterator<true> crbegin() const
-//	{
+//	inline const Iterator<true> crbegin() const {
 //		return Iterator<true>(_head._prev);
 //	}
-//	inline const Iterator<true> crend() const
-//	{
+//	inline const Iterator<true> crend() const {
 //		return Iterator<true>(_head._prev->_next);
 //	}
 //	//--------
-//	bool contains(Node* where) const
-//	{
+//	bool contains(Node* where) const {
 //		//for (auto iter : *this)
-//		for (auto iter=cbegin(); iter!=cend(); ++iter)
-//		{
-//			if (where == iter)
-//			{
+//		for (auto iter=cbegin(); iter!=cend(); ++iter) {
+//			if (where == iter) {
 //				return true;
 //			}
 //		}
 //
 //		return false;
 //	}
-//	size_t size() const
-//	{
+//	size_t size() const {
 //		size_t ret = 0;
 //
 //		//for (const auto& item: *this)
-//		for (auto iter=cbegin(); iter!=cend(); ++iter)
-//		{
+//		for (auto iter=cbegin(); iter!=cend(); ++iter) {
 //			++ret;
 //		}
 //
@@ -257,85 +216,71 @@ namespace containers
 //	}
 //	//--------
 //	template<bool reverse=false>
-//	inline Iterator<reverse> front()
-//	{
+//	inline Iterator<reverse> front() {
 //		return Iterator<reverse>(_head._next);
 //	}
 //	template<bool reverse=false>
-//	inline Iterator<reverse> back()
-//	{
+//	inline Iterator<reverse> back() {
 //		return Iterator<reverse>(_head._prev);
 //	}
 //	//--------
 //	//template<bool reverse=false>
-//	//inline UpdateByCopyEnIf<reverse>::type push_front
-//	//	(const T& to_push)
+//	//inline UpdateByCopyEnIf<reverse>::type push_front(const T& to_push)
 //	template<bool reverse=false>
-//	inline Iterator<reverse> push_front(const T& to_push)
-//	{
+//	inline Iterator<reverse> push_front(const T& to_push) {
 //		return insert_after<reverse>(head(), to_push);
 //	}
 //	//template<bool reverse=false>
-//	//inline UpdateByMoveEnIf<reverse>::type push_front
-//	//	(T&& to_push)
+//	//inline UpdateByMoveEnIf<reverse>::type push_front(T&& to_push)
 //	template<bool reverse=false>
-//	inline Iterator<reverse> push_front(T&& to_push)
-//	{
+//	inline Iterator<reverse> push_front(T&& to_push) {
 //		return insert_after<reverse>(head(), std::move(to_push));
 //	}
 //	template<bool reverse=false>
-//	inline Iterator<reverse> push_back(const T& to_push)
-//	{
+//	inline Iterator<reverse> push_back(const T& to_push) {
 //		return insert_before<reverse>(head(), to_push);
 //	}
 //	template<bool reverse=false>
-//	inline Iterator<reverse> push_back(T&& to_push)
-//	{
+//	inline Iterator<reverse> push_back(T&& to_push) {
 //		return insert_before<reverse, T>(head(), std::move(to_push));
 //	}
-//	inline void pop_front()
-//	{
+//	inline void pop_front() {
 //		remove_after(head());
 //	}
-//	inline void pop_back()
-//	{
+//	inline void pop_back() {
 //		remove_before(head());
 //	}
 //	//--------
 //	template<bool reverse=false>
 //	inline Iterator<reverse> insert_before(Node* where,
-//		const T& to_insert)
-//	{
+//		const T& to_insert) {
 //		Node* node = new Node();
 //		node->data = to_insert;
 //		return _inner_insert_before<reverse>(where, node);
 //	}
 //	template<bool reverse=false>
-//	inline Iterator<reverse> insert_before(Node* where, T&& to_insert)
-//	{
+//	inline Iterator<reverse> insert_before(Node* where, T&& to_insert) {
 //		Node* node = new Node();
 //		node->data = std::move(to_insert);
 //		return _inner_insert_before<reverse>(where, node);
 //	}
 //
 //	template<bool reverse=false>
-//	inline Iterator<reverse> insert_after(Node* where,
-//		const T& to_insert)
-//	{
+//	inline Iterator<reverse> insert_after(
+//		Node* where, const T& to_insert
+//	) {
 //		Node* node = new Node();
 //		node->data = to_insert;
 //		return _inner_insert_after<reverse>(where, node);
 //	}
 //	template<bool reverse=false>
-//	inline Iterator<reverse> insert_after(Node* where, T&& to_insert)
-//	{
+//	inline Iterator<reverse> insert_after(Node* where, T&& to_insert) {
 //		Node* node = new Node();
 //		node->data = std::move(to_insert);
 //		return _inner_insert_after<reverse>(where, node);
 //	}
 //	//--------
-//	inline void remove_before(Node* where)
-//	{
+//	inline void remove_before(Node* where) {
 //		auto old_prev = where->_prev;
 //
 //		auto old_prev_prev = old_prev->_prev;
@@ -345,8 +290,7 @@ namespace containers
 //
 //		delete old_prev;
 //	}
-//	inline void remove_after(Node* where)
-//	{
+//	inline void remove_after(Node* where) {
 //		auto old_next = where->_next;
 //		auto old_next_next = old_next->_next;
 //
@@ -355,8 +299,7 @@ namespace containers
 //
 //		delete old_next;
 //	}
-//	inline void remove(Node* where)
-//	{
+//	inline void remove(Node* where) {
 //		auto old_next = where->_next;
 //		auto old_prev = where->_prev;
 //
@@ -369,9 +312,9 @@ namespace containers
 //private:		// functions
 //	//--------
 //	template<bool reverse=false>
-//	inline Iterator<reverse> _inner_insert_before(Node* where,
-//		Node* what)
-//	{
+//	inline Iterator<reverse> _inner_insert_before(
+//		Node* where, Node* what
+//	) {
 //		auto old_prev = where->_prev;
 //
 //		old_prev->_next = what;
@@ -383,9 +326,9 @@ namespace containers
 //		return Iterator<reverse>(what);
 //	}
 //	template<bool reverse=false>
-//	inline Iterator<reverse> _inner_insert_after(Node* where,
-//		Node* what)
-//	{
+//	inline Iterator<reverse> _inner_insert_after(
+//		Node* where, Node* what
+//	) {
 //		auto old_next = where->_next;
 //
 //		old_next->_prev = what;
@@ -400,27 +343,23 @@ namespace containers
 //};
 //
 //template<typename T>
-//constexpr inline bool is_ptr_circ_link_list()
-//{
+//constexpr inline bool is_ptr_circ_link_list() {
 //	return concepts::is_specialization<T, PtrCircLinkList>();
 //}
 //
 //template<typename T>
 //constexpr inline std::ostream& operator << (std::ostream& os,
-//	const PtrCircLinkList<T>& to_print)
-//{
+//	const PtrCircLinkList<T>& to_print) {
 //	os << "{";
 //
-//	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
-//	{
+//	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter) {
 //		//os << iter->data;
 //		os << *iter;
 //
 //		auto temp_iter = iter;
 //		++temp_iter;
 //
-//		if (temp_iter != to_print.end())
-//		{
+//		if (temp_iter != to_print.end()) {
 //			os << ",";
 //		}
 //		//os << "\n";
@@ -432,8 +371,7 @@ namespace containers
 //
 //template<typename T>
 //PtrCircLinkList<T> make_ptr_cll(T&& first_arg,
-//	std::same_as<T> auto&&... rem_args)
-//{
+//	std::same_as<T> auto&&... rem_args) {
 //	PtrCircLinkList<T> ret;
 //
 //	ret.push_back(std::move(first_arg));
@@ -451,8 +389,7 @@ template<typename T, std::integral ArgIndexT, typename ArgIndexAllocT,
 class IndCircLinkList;
 
 template<typename T, std::integral ArgIndexT>
-class IndCllNode final
-{
+class IndCllNode final {
 	template<typename, std::integral, typename, typename>
 	friend class IndCircLinkList;
 public:		// types
@@ -473,15 +410,13 @@ public:		// variables
 public:		// functions
 	IndCllNode() = default;
 
-	static inline IndCllNode construct(const T& s_data)
-	{
+	static inline IndCllNode construct(const T& s_data) {
 		IndCllNode ret;
 		ret.data = s_data;
 		return ret;
 	}
 
-	static inline IndCllNode construct(T&& s_data)
-	{
+	static inline IndCllNode construct(T&& s_data) {
 		IndCllNode ret;
 		ret.data = std::move(s_data);
 		return ret;
@@ -498,8 +433,7 @@ public:		// functions
 template<typename T, std::integral ArgIndexT=size_t,
 	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
 	typename ArgNodeAllocT=std::allocator<IndCllNode<T, ArgIndexT>>>
-class IndCircLinkList
-{
+class IndCircLinkList {
 public:		// types
 	using ElemT = T;
 	using IndexT = ArgIndexT;
@@ -512,8 +446,7 @@ public:		// constants
 		NULL_INDEX = IND_CLL_NULL_INDEX<IndexT>;
 public:		// types
 	template<bool _reverse> 
-	class Iterator final
-	{
+	class Iterator final {
 		friend class IndCircLinkList;
 	public:		// constants
 		static constexpr bool REVERSE = _reverse;
@@ -523,58 +456,47 @@ public:		// types
 	public:		// functions
 		Iterator() = default;
 		inline Iterator(IndCircLinkList* s_list, IndexT s_node_index)
-			: _list(s_list), _node_index(s_node_index)
-		{
+			: _list(s_list), _node_index(s_node_index) {
 		}
 		inline Iterator(const IndCircLinkList* s_list,
 			IndexT s_node_index)
 			: _list(const_cast<IndCircLinkList*>(s_list)),
-			_node_index(s_node_index)
-		{
+			_node_index(s_node_index) {
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Iterator);
 		~Iterator() = default;
 
-		inline Node& node()
-		{
+		inline Node& node() {
 			return _list->at(_node_index);
 		}
-		inline const Node& node() const
-		{
+		inline const Node& node() const {
 			return _list->at(_node_index);
 		}
 
-		//inline operator Node* () const
-		//{
+		//inline operator Node* () const {
 		//	return &node();
 		//}
-		inline T& operator * () const
-		{
+		inline T& operator * () const {
 			return _list->at(_node_index).data;
 		}
-		inline T* operator -> () const
-		{
+		inline T* operator -> () const {
 			return &(_list->at(_node_index).data);
 		}
 
-		inline Iterator& operator ++ ()
-		{
+		inline Iterator& operator ++ () {
 			_node_index = !_reverse ? node().next() : node().prev();
 			return *this;
 		}
-		inline Iterator& operator -- ()
-		{
+		inline Iterator& operator -- () {
 			_node_index = !_reverse ? node().prev() : node().next();
 			return *this;
 		}
 
-		inline bool operator == (const Iterator& other) const
-		{
+		inline bool operator == (const Iterator& other) const {
 			return ((_list == other._list)
 				&& (_node_index == other._node_index));
 		}
-		inline bool operator != (const Iterator& other) const
-		{
+		inline bool operator != (const Iterator& other) const {
 			return ((_list != other._list)
 				|| (_node_index != other._node_index));
 		}
@@ -594,8 +516,7 @@ private:		// variables
 	std::vector<IndexT, IndexAllocT> _avail_index_stack;
 	std::vector<Node, NodeAllocT> _node_vec;
 public:		// functions
-	inline IndCircLinkList()
-	{
+	inline IndCircLinkList() {
 		_node_vec.push_back(Node());
 		head()._next = HEAD_INDEX;
 		head()._prev = HEAD_INDEX;
@@ -605,87 +526,68 @@ public:		// functions
 
 	virtual inline ~IndCircLinkList() = default;
 
-	inline Node& head()
-	{
+	inline Node& head() {
 		return at(HEAD_INDEX);
 	}
-	inline const Node& head() const
-	{
+	inline const Node& head() const {
 		return at(HEAD_INDEX);
 	}
 
-	inline Node& at(ArgIndexT index)
-	{
+	inline Node& at(ArgIndexT index) {
 		return _node_vec.at(index);
 	}
-	inline const Node& at(ArgIndexT index) const
-	{
+	inline const Node& at(ArgIndexT index) const {
 		return _node_vec.at(index);
 	}
 
-	inline bool empty() const
-	{
+	inline bool empty() const {
 		return (head()._next == HEAD_INDEX);
 	}
 
-	inline Iterator<false> begin()
-	{
+	inline Iterator<false> begin() {
 		return Iterator<false>(this, head().next());
 	}
-	inline const Iterator<false> begin() const
-	{
+	inline const Iterator<false> begin() const {
 		return Iterator<false>(this, head().next());
 	}
-	inline Iterator<false> end()
-	{
+	inline Iterator<false> end() {
 		return Iterator<false>(this, HEAD_INDEX);
 	}
-	inline const Iterator<false> end() const
-	{
+	inline const Iterator<false> end() const {
 		return Iterator<false>(this, HEAD_INDEX);
 	}
 
-	inline Iterator<true> rbegin()
-	{
+	inline Iterator<true> rbegin() {
 		return Iterator<true>(this, head().prev());
 	}
-	inline const Iterator<true> rbegin() const
-	{
+	inline const Iterator<true> rbegin() const {
 		return Iterator<true>(this, head().prev());
 	}
-	inline Iterator<true> rend()
-	{
+	inline Iterator<true> rend() {
 		return Iterator<true>(this, HEAD_INDEX);
 	}
-	inline const Iterator<true> rend() const
-	{
+	inline const Iterator<true> rend() const {
 		return Iterator<true>(this, HEAD_INDEX);
 	}
 
-	inline const Iterator<false> cbegin() const
-	{
+	inline const Iterator<false> cbegin() const {
 		return Iterator<false>(this, head().next());
 	}
-	inline const Iterator<false> cend() const
-	{
+	inline const Iterator<false> cend() const {
 		return Iterator<false>(this, HEAD_INDEX);
 	}
-	inline const Iterator<true> crbegin() const
-	{
+	inline const Iterator<true> crbegin() const {
 		return Iterator<true>(this, head().prev());
 	}
-	inline const Iterator<true> crend() const
-	{
+	inline const Iterator<true> crend() const {
 		return Iterator<true>(this, HEAD_INDEX);
 	}
 
-	size_t size() const
-	{
+	size_t size() const {
 		size_t ret = 0;
 
 		//for (const auto& item: *this)
-		for (auto iter=cbegin(); iter!=cend(); ++iter)
-		{
+		for (auto iter=cbegin(); iter!=cend(); ++iter) {
 			++ret;
 		}
 
@@ -693,80 +595,68 @@ public:		// functions
 	}
 
 	template<bool reverse=false>
-	inline Iterator<reverse> front()
-	{
+	inline Iterator<reverse> front() {
 		return Iterator<reverse>(this, head().next());
 	}
 	template<bool reverse=false>
-	inline Iterator<reverse> back()
-	{
+	inline Iterator<reverse> back() {
 		return Iterator<reverse>(this, head().prev());
 	}
 
 	//template<bool reverse=false>
-	//inline UpdateByCopyEnIf<reverse>::type push_front
-	//	(const T& to_push)
+	//inline UpdateByCopyEnIf<reverse>::type push_front(const T& to_push)
 	template<bool reverse=false>
-	inline Iterator<reverse> push_front(const T& to_push)
-	{
+	inline Iterator<reverse> push_front(const T& to_push) {
 		return insert_after<reverse>(HEAD_INDEX, to_push);
 	}
 	//template<bool reverse=false>
-	//inline UpdateByMoveEnIf<reverse>::type push_front
-	//	(T&& to_push)
+	//inline UpdateByMoveEnIf<reverse>::type push_front(T&& to_push)
 	template<bool reverse=false>
-	inline Iterator<reverse> push_front(T&& to_push)
-	{
+	inline Iterator<reverse> push_front(T&& to_push) {
 		return insert_after<reverse>(HEAD_INDEX, std::move(to_push));
 	}
 	template<bool reverse=false>
-	inline Iterator<reverse> push_back(const T& to_push)
-	{
+	inline Iterator<reverse> push_back(const T& to_push) {
 		return insert_before<reverse>(HEAD_INDEX, to_push);
 	}
 	template<bool reverse=false>
-	inline Iterator<reverse> push_back(T&& to_push)
-	{
+	inline Iterator<reverse> push_back(T&& to_push) {
 		return insert_before<reverse>(HEAD_INDEX, std::move(to_push));
 	}
-	inline void pop_front()
-	{
+	inline void pop_front() {
 		remove_after(HEAD_INDEX);
 	}
-	inline void pop_back()
-	{
+	inline void pop_back() {
 		remove_before(HEAD_INDEX);
 	}
 
 	template<bool reverse=false>
-	inline Iterator<reverse> insert_before(IndexT where,
-		const T& to_insert)
-	{
+	inline Iterator<reverse> insert_before(
+		IndexT where, const T& to_insert
+	) {
 		return _inner_insert_before<reverse>(where,
 			Node::construct(to_insert));
 	}
 	template<bool reverse=false>
-	inline Iterator<reverse> insert_before(IndexT where, T&& to_insert)
-	{
+	inline Iterator<reverse> insert_before(IndexT where, T&& to_insert) {
 		return _inner_insert_before<reverse>(where,
 			Node::construct(std::move(to_insert)));
 	}
 
 	template<bool reverse=false>
-	inline Iterator<reverse> insert_after(IndexT where, const T& to_insert)
-	{
+	inline Iterator<reverse> insert_after(
+		IndexT where, const T& to_insert
+	) {
 		return _inner_insert_after<reverse>(where,
 			Node::construct(to_insert));
 	}
 	template<bool reverse=false>
-	inline Iterator<reverse> insert_after(IndexT where, T&& to_insert)
-	{
+	inline Iterator<reverse> insert_after(IndexT where, T&& to_insert) {
 		return _inner_insert_after<reverse>(where,
 			Node::construct(std::move(to_insert)));
 	}
 
-	inline void remove_before(IndexT where)
-	{
+	inline void remove_before(IndexT where) {
 		const auto old_prev = at(where)._prev;
 		const auto old_prev_prev = at(old_prev)._prev;
 
@@ -778,8 +668,7 @@ public:		// functions
 		at(old_prev).data = T();
 		_avail_index_stack.push_back(old_prev);
 	}
-	inline void remove_after(IndexT where)
-	{
+	inline void remove_after(IndexT where) {
 		const auto old_next = at(where)._next;
 		const auto old_next_next = at(old_next)._next;
 
@@ -791,8 +680,7 @@ public:		// functions
 		at(old_next).data = T();
 		_avail_index_stack.push_back(old_next);
 	}
-	inline void remove(IndexT where)
-	{
+	inline void remove(IndexT where) {
 		const auto old_next = at(where)._next;
 		const auto old_prev = at(where)._prev;
 
@@ -807,9 +695,9 @@ public:		// functions
 
 private:		// functions
 	template<bool reverse=false>
-	inline Iterator<reverse> _inner_insert_before(IndexT where,
-		Node&& what)
-	{
+	inline Iterator<reverse> _inner_insert_before(
+		IndexT where, Node&& what
+	) {
 		const auto what_index = _alloc_what_index(std::move(what));
 
 		const auto old_prev = at(where)._prev;
@@ -824,9 +712,9 @@ private:		// functions
 	}
 
 	template<bool reverse=false>
-	inline Iterator<reverse> _inner_insert_after(IndexT where,
-		Node&& what)
-	{
+	inline Iterator<reverse> _inner_insert_after(
+		IndexT where, Node&& what
+	) {
 		const auto what_index = _alloc_what_index(std::move(what));
 
 		const auto old_next = at(where)._next;
@@ -840,16 +728,12 @@ private:		// functions
 		return Iterator<reverse>(this, what_index);
 	}
 
-	inline IndexT _alloc_what_index(Node&& what)
-	{
-		if (_avail_index_stack.empty())
-		{
+	inline IndexT _alloc_what_index(Node&& what) {
+		if (_avail_index_stack.empty()) {
 			const auto ret = _node_vec.size();
 			_node_vec.push_back(std::move(what));
 			return ret;
-		}
-		else // if (!_avail_index_stack.empty())
-		{
+		} else { // if (!_avail_index_stack.empty())
 			const auto ret = _avail_index_stack.back();
 			_avail_index_stack.pop_back();
 			_node_vec.at(ret) = std::move(what);
@@ -859,8 +743,7 @@ private:		// functions
 };
 
 template<typename T>
-constexpr inline bool is_ind_circ_link_list()
-{
+constexpr inline bool is_ind_circ_link_list() {
 	return concepts::is_specialization<T, IndCircLinkList>();
 }
 
@@ -873,20 +756,17 @@ constexpr inline bool is_ind_circ_link_list()
 //	const concepts::IsSpecialization<IndCircLinkList> auto& to_print)
 template<concepts::IsSpecialization<IndCircLinkList> ToPrintT>
 constexpr std::ostream& operator << (std::ostream& os,
-	const ToPrintT& to_print)
-{
+	const ToPrintT& to_print) {
 	os << "{";
 
-	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter)
-	{
+	for (auto iter=to_print.begin(); iter!=to_print.end(); ++iter) {
 		//os << iter->data;
 		os << *iter;
 
 		auto temp_iter = iter;
 		++temp_iter;
 
-		if (temp_iter != to_print.end())
-		{
+		if (temp_iter != to_print.end()) {
 			os << ", ";
 		}
 		//os << "\n";
@@ -900,8 +780,7 @@ template<typename T, std::integral ArgIndexT=size_t,
 	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
 	typename ArgNodeAllocT=std::allocator<IndCllNode<T, ArgIndexT>>>
 IndCircLinkList<T, ArgIndexT, ArgIndexAllocT, ArgNodeAllocT>
-	make_ind_cll(T&& first_arg, std::same_as<T> auto&&... rem_args)
-{
+	make_ind_cll(T&& first_arg, std::same_as<T> auto&&... rem_args) {
 	IndCircLinkList<T, ArgIndexT, ArgIndexAllocT, ArgNodeAllocT> ret;
 
 	ret.push_back(std::move(first_arg));
