@@ -35,7 +35,7 @@ template<typename T>
 class DeferDtorCall final {
 public:		// types
 	using DtorFunc = std::function<void(T*)>;
-prviate:		// variables
+private:		// variables
 	T* _obj = nullptr;
 	DeferCall _dc;
 public:		// functions
