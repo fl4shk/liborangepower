@@ -1,5 +1,5 @@
-#ifndef liborangepower_containers_defer_stuff_hpp
-#define liborangepower_containers_defer_stuff_hpp
+#ifndef liborangepower_containers_defer_call_stuff_hpp
+#define liborangepower_containers_defer_call_stuff_hpp
 
 #include "../misc/misc_includes.hpp"
 
@@ -15,15 +15,15 @@ namespace containers {
 //	inline GenMvDstry(const T& s_self) {
 //	}
 //};
-class Defer final {
+class DeferCall final {
 private:		// variables
 	std::function<void()> _func;
 public:		// functions
-	inline Defer(const std::function<void()>& s_func)
+	inline DeferCall(const std::function<void()>& s_func)
 		: _func(s_func) {
 	}
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Defer);
-	inline ~Defer() {
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(DeferCall);
+	inline ~DeferCall() {
 		_func();
 	}
 };
@@ -44,4 +44,4 @@ public:		// functions
 } // namespace containers
 } // namespace liborangepower
 
-#endif		// liborangepower_containers_defer_stuff_hpp
+#endif		// liborangepower_containers_defer_call_stuff_hpp
