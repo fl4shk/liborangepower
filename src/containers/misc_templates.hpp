@@ -6,20 +6,21 @@
 namespace liborangepower {
 namespace containers {
 //--------
-template<bool cond, typename FirstT, typename SecondT>
-class Pick final {
-public:		// types
-	using Type = FirstT;
-};
-
-template<typename FirstT, typename SecondT>
-class Pick<false, FirstT, SecondT> {
-public:		// types
-	using Type = SecondT;
-};
-
-template<bool cond, typename FirstT, typename SecondT>
-using PickT = typename Pick<cond, FirstT, SecondT>::Type;
+// This is essentially the same by `std::conditional`
+//template<bool cond, typename FirstT, typename SecondT>
+//class Pick final {
+//public:		// types
+//	using Type = FirstT;
+//};
+//
+//template<typename FirstT, typename SecondT>
+//class Pick<false, FirstT, SecondT> {
+//public:		// types
+//	using Type = SecondT;
+//};
+//
+//template<bool cond, typename FirstT, typename SecondT>
+//using PickT = typename Pick<cond, FirstT, SecondT>::Type;
 
 // I considered this, but deemed it too much
 //template<

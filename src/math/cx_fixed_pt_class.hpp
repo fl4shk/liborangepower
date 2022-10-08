@@ -51,13 +51,9 @@ public:		// constants
 	static_assert(FRAC_WIDTH < INT_T_WIDTH,
 		"`FRAC_WIDTH >= INT_T_WIDTH`");
 public:		// types
-	using MaxIntT
-		= PickT
-		<
-			std::unsigned_integral<IntT>,
-			uintmax_t,
-			intmax_t
-		>;
+	using MaxIntT = std::conditional_t<
+		std::unsigned_integral<IntT>, uintmax_t, intmax_t
+	>;
 	//using RecipCxFixedPt = CxFixedPt<MaxIntT, FRAC_WIDTH * 2>::CtorArgs;
 	//using RecipCxFixedPt = CxFixedPt<MaxIntT, FRAC_WIDTH * 2>;
 public:		// variables
