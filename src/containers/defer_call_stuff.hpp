@@ -21,6 +21,8 @@ public:		// types
 private:		// variables
 	std::optional<Func> _func;
 public:		// functions
+	inline DeferCall() {
+	}
 	inline DeferCall(const Func& s_func)
 		: _func(s_func) {
 	}
@@ -40,8 +42,8 @@ private:		// variables
 	DeferCall _dc;
 public:		// functions
 	inline DeferDtorCall(T* s_obj, const DtorFunc& s_func)
-		: _obj(s_obj),
-		_dc([&_obj, s_func]() -> void { s_func(_obj); }) {
+		: _obj(s_obj) {
+		_dc = DeferCall([this, &s_func]() -> void { s_func(_obj); });
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(DeferDtorCall);
 	inline ~DeferDtorCall() {
