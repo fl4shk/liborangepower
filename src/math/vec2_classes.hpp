@@ -17,7 +17,7 @@
 
 namespace liborangepower {
 namespace math {
-
+//--------
 template<typename T>
 concept HasElemT = requires {
 	{ std::declval<typename T::ElemT>() };
@@ -412,8 +412,9 @@ constexpr inline Vec2<T> operator / (const ScaleT& inv_scale,
 }
 
 template<typename T>
-constexpr inline std::ostream& operator << (std::ostream& os,
-	const Vec2<T>& arg) {
+constexpr inline std::ostream& operator << (
+	std::ostream& os, const Vec2<T>& arg
+) {
 	return misc_output::osprintout(
 		os, "{",
 			//arg.x, ", ",
@@ -443,7 +444,7 @@ constexpr inline std::ostream& operator << (std::ostream& os,
 	//MEMB_LIST_VEC2(X)
 	//#undef X
 
-	//misc_output::osprintout(os, "});
+	//misc_output::osprintout(os, "}");
 }
 
 //template<typename T>
@@ -471,7 +472,7 @@ constexpr inline bool is_vec2() {
 	return concepts::is_specialization<T, Vec2>();
 }
 
-} // namespace containers
+} // namespace math
 } // namespace liborangepower
 
 namespace std {

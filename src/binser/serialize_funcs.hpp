@@ -195,9 +195,8 @@ inline void val_from_bv_test_ex_mm
 
 //template<typename ValueEtcT>
 //concept IsValFromBvFieDoCopy
-//	= (!is_std_unique_ptr_to_non_arr<ValueEtcT>()
-//	|| (std::is_move_constructible<ValueEtcT>()
-//		&& std::is_move_assignable<ValueEtcT>()));
+//	= (!(is_std_unique_ptr_to_non_arr<ValueEtcT>()
+//	|| std::movable<ValueEtcT>));
 //
 //template<typename ValueEtcT>
 //concept IsValFromBvFieDoMove
@@ -249,8 +248,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		do \
 		{ \
 			if constexpr (!(is_std_unique_ptr_to_non_arr<ValueEtcT>() \
-				|| (std::is_move_constructible<ValueEtcT>() \
-					&& std::is_move_assignable<ValueEtcT>()))) \
+				|| std::movable<ValueEtcT>())) \
 			{ \
 				copy_func (temp); \
 			} \
