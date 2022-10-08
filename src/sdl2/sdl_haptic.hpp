@@ -8,64 +8,50 @@
 #include <SDL.h>
 #include <SDL_haptic.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class Haptic final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class Haptic final {
 private:		// variables
 	SDL_Haptic* _self = nullptr;
 
 public:		// functions
 	inline Haptic(SDL_Haptic* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Haptic(const Haptic& to_copy) = delete;
-	inline Haptic(Haptic&& to_move)
-	{
+	inline Haptic(Haptic&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Haptic()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Haptic() {
+		if (_self != nullptr) {
 			SDL_HapticClose(_self);
 		}
 	}
 	inline Haptic& operator = (const Haptic& to_copy)
 		= delete;
-	inline Haptic& operator = (Haptic&& to_move)
-	{
+	inline Haptic& operator = (Haptic&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_Haptic* ()
-	{
+	inline operator SDL_Haptic* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 

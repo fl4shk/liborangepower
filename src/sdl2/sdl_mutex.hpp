@@ -8,164 +8,129 @@
 #include <SDL.h>
 #include <SDL_mutex.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class Cond final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class Cond final {
 private:		// variables
 	SDL_cond* _self = nullptr;
 
 public:		// functions
 	inline Cond(SDL_cond* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Cond(const Cond& to_copy) = delete;
-	inline Cond(Cond&& to_move)
-	{
+	inline Cond(Cond&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Cond()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Cond() {
+		if (_self != nullptr) {
 			SDL_DestroyCond(_self);
 		}
 	}
 	inline Cond& operator = (const Cond& to_copy)
 		= delete;
-	inline Cond& operator = (Cond&& to_move)
-	{
+	inline Cond& operator = (Cond&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_cond* ()
-	{
+	inline operator SDL_cond* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
 
-class Mutex final
-{
+class Mutex final {
 private:		// variables
 	SDL_mutex* _self = nullptr;
-
 public:		// functions
 	inline Mutex(SDL_mutex* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Mutex(const Mutex& to_copy) = delete;
-	inline Mutex(Mutex&& to_move)
-	{
+	inline Mutex(Mutex&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Mutex()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Mutex() {
+		if (_self != nullptr) {
 			SDL_DestroyMutex(_self);
 		}
 	}
 	inline Mutex& operator = (const Mutex& to_copy)
 		= delete;
-	inline Mutex& operator = (Mutex&& to_move)
-	{
+	inline Mutex& operator = (Mutex&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_mutex* ()
-	{
+	inline operator SDL_mutex* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
 
-class Semaphore final
-{
+class Semaphore final {
 private:		// variables
 	SDL_sem* _self = nullptr;
 
 public:		// functions
 	inline Semaphore(SDL_sem* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Semaphore(const Semaphore& to_copy) = delete;
-	inline Semaphore(Semaphore&& to_move)
-	{
+	inline Semaphore(Semaphore&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Semaphore()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Semaphore() {
+		if (_self != nullptr) {
 			SDL_DestroySemaphore(_self);
 		}
 	}
 	inline Semaphore& operator = (const Semaphore& to_copy)
 		= delete;
-	inline Semaphore& operator = (Semaphore&& to_move)
-	{
+	inline Semaphore& operator = (Semaphore&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_sem* ()
-	{
+	inline operator SDL_sem* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 

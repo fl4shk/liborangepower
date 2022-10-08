@@ -8,110 +8,86 @@
 #include <SDL.h>
 #include <SDL_pixels.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class Palette final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class Palette final {
 private:		// variables
 	SDL_Palette* _self = nullptr;
-
 public:		// functions
 	inline Palette(SDL_Palette* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Palette(const Palette& to_copy) = delete;
-	inline Palette(Palette&& to_move)
-	{
+	inline Palette(Palette&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Palette()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Palette() {
+		if (_self != nullptr) {
 			SDL_FreePalette(_self);
 		}
 	}
 	inline Palette& operator = (const Palette& to_copy)
 		= delete;
-	inline Palette& operator = (Palette&& to_move)
-	{
+	inline Palette& operator = (Palette&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_Palette* ()
-	{
+	inline operator SDL_Palette* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
 
-class PixelFormat final
-{
+class PixelFormat final {
 private:		// variables
 	SDL_PixelFormat* _self = nullptr;
 
 public:		// functions
 	inline PixelFormat(SDL_PixelFormat* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline PixelFormat(const PixelFormat& to_copy) = delete;
-	inline PixelFormat(PixelFormat&& to_move)
-	{
+	inline PixelFormat(PixelFormat&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~PixelFormat()
-	{
-		if (_self != nullptr)
-		{
+	inline ~PixelFormat() {
+		if (_self != nullptr) {
 			SDL_FreeFormat(_self);
 		}
 	}
 	inline PixelFormat& operator = (const PixelFormat& to_copy)
 		= delete;
-	inline PixelFormat& operator = (PixelFormat&& to_move)
-	{
+	inline PixelFormat& operator = (PixelFormat&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_PixelFormat* ()
-	{
+	inline operator SDL_PixelFormat* () {
 		return _self;
 	}
-	inline SDL_PixelFormat* operator -> ()
-	{
+	inline SDL_PixelFormat* operator -> () {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 

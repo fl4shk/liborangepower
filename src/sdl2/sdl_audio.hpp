@@ -9,56 +9,42 @@
 #include <SDL.h>
 #include <SDL_audio.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class Wav final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class Wav final {
 private:		// variables
 	std::string _filename;
 	SDL_AudioSpec _spec;
 	Uint32 _length;
 	Uint8* _buffer;
-
 public:		// functions
 	inline Wav(const std::string& s_filename, bool* err=nullptr)
-		: _filename(s_filename)
-	{
-		if (_filename.size() > 0)
-		{
+		: _filename(s_filename) {
+		if (_filename.size() > 0) {
 			auto temp = SDL_LoadWAV(_filename.c_str(), &_spec, &_length,
 				&_buffer);
-			if (err != nullptr)
-			{
+			if (err != nullptr) {
 				*err = (temp == NULL);
 			}
-		}
-		else // if (_filename.size() == 0)
-		{
+		} else { // if (_filename.size() == 0)
 			misc_util::arr_memset(&_spec, 0, 1);
 			_length = 0;
 			_buffer = nullptr;
 		}
 	}
 	inline Wav(const Wav& to_copy) = delete;
-	inline Wav(Wav&& to_move)
-	{
+	inline Wav(Wav&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Wav()
-	{
-		if (is_open())
-		{
+	inline ~Wav() {
+		if (is_open()) {
 			SDL_FreeWAV(_buffer);
 		}
 	}
 	inline Wav& operator = (const Wav& to_copy)
 		= delete;
-	inline Wav& operator = (Wav&& to_move)
-	{
+	inline Wav& operator = (Wav&& to_move) {
 		std::swap(_filename, to_move._filename);
 		std::swap(_spec, to_move._spec);
 		std::swap(_length, to_move._length);
@@ -67,8 +53,7 @@ public:		// functions
 		return *this;
 	}
 
-	inline bool is_open() const
-	{
+	inline bool is_open() const {
 		return (_buffer != nullptr);
 	}
 
@@ -78,37 +63,29 @@ public:		// functions
 	GEN_GETTER_BY_VAL(buffer);
 };
 
-class AudioDevice final
-{
+class AudioDevice final {
 private:		// variables
 	bool _valid = false;
 	SDL_AudioDeviceID _dev;
-
 public:		// functions
 	inline AudioDevice()
-		: _valid(false), _dev(0)
-	{
+		: _valid(false), _dev(0) {
 	}
 	inline AudioDevice(SDL_AudioDeviceID s_dev)
-		: _valid(true), _dev(s_dev)
-	{
+		: _valid(true), _dev(s_dev) {
 	}
 	inline AudioDevice(const AudioDevice& to_copy) = delete;
-	inline AudioDevice(AudioDevice&& to_move)
-	{
+	inline AudioDevice(AudioDevice&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~AudioDevice()
-	{
-		if (_valid)
-		{
+	inline ~AudioDevice() {
+		if (_valid) {
 			SDL_CloseAudioDevice(_dev);
 		}
 	}
 
 	inline AudioDevice& operator = (const AudioDevice& to_copy) = delete;
-	inline AudioDevice& operator = (AudioDevice&& to_move)
-	{
+	inline AudioDevice& operator = (AudioDevice&& to_move) {
 		std::swap(_valid, to_move._valid);
 		std::swap(_dev, to_move._dev);
 
@@ -119,58 +96,47 @@ public:		// functions
 	GEN_GETTER_BY_REF(dev);
 };
 
-class AudioStream final
-{
+class AudioStream final {
 private:		// variables
 	SDL_AudioStream* _self = nullptr;
 
 public:		// functions
 	inline AudioStream(SDL_AudioStream* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline AudioStream(const AudioStream& to_copy) = delete;
-	inline AudioStream(AudioStream&& to_move)
-	{
+	inline AudioStream(AudioStream&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~AudioStream()
-	{
-		if (_self != nullptr)
-		{
+	inline ~AudioStream() {
+		if (_self != nullptr) {
 			SDL_FreeAudioStream(_self);
 		}
 	}
 	inline AudioStream& operator = (const AudioStream& to_copy)
 		= delete;
-	inline AudioStream& operator = (AudioStream&& to_move)
-	{
+	inline AudioStream& operator = (AudioStream&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_AudioStream* ()
-	{
+	inline operator SDL_AudioStream* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 

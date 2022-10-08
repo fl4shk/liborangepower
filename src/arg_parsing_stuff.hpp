@@ -8,88 +8,64 @@
 #include "gen_class_innards_defines.hpp"
 #include <ctype.h>
 
-namespace liborangepower
-{
-
-namespace arg_parse
-{
-
-class OptArg final
-{
+namespace liborangepower {
+namespace arg_parse {
+//--------
+class OptArg final {
 private:		// variables
 	std::string _opt, _val;
 	bool _valid = true;
 public:		// functions
-	inline OptArg()
-	{
+	inline OptArg() {
 	}
-	inline OptArg(const std::string& to_parse, size_t num_prefixes=2,
-		char prefix='-')
-	{
+	inline OptArg(
+		const std::string& to_parse, size_t num_prefixes=2,
+		char prefix='-'
+	) {
 		bool left = true;
 
-		for (const auto& c: to_parse)
-		{
-			if (left)
-			{
-				if (_opt.size() < num_prefixes)
-				{
-					if (c == prefix)
-					{
+		for (const auto& c: to_parse) {
+			if (left) {
+				if (_opt.size() < num_prefixes) {
+					if (c == prefix) {
 						_opt += c;
-					}
-					else // if (c != prefix)
-					{
+					} else { // if (c != prefix)
 						_valid = false;
 						break;
 					}
-				}
-				else // if (_opt.size() >= num_prefixes)
-				{
-					if (isalnum(c) || (c == '_'))
-					{
+				} else { // if (_opt.size() >= num_prefixes)
+					if (isalnum(c) || (c == '_')) {
 						_opt += c;
-					}
-					else
-					{
+					} else {
 						if ((_opt.size() < (num_prefixes + 1))
-							|| (c != '='))
-						{
+						|| (c != '=')) {
 							_valid = false;
 							break;
-						}
-						else
-						{
+						} else {
 							left = false;
 						}
 					}
 				}
-			}
-			else // if (!left)
-			{
+			} else { // if (!left)
 				_val += c;
 			}
 		}
 
-		if (_opt.size() < (num_prefixes + 1))
-		{
+		if (_opt.size() < (num_prefixes + 1)) {
 			_valid = false;
 		}
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OptArg);
 	inline ~OptArg() = default;
 
-	inline std::string errwarn_msg_dup() const
-	{
+	inline std::string errwarn_msg_dup() const {
 		return strings::sconcat("Duplicate \"", opt(), "\" option.");
 	}
-	inline std::string errwarn_msg_has_val() const
-	{
+	inline std::string errwarn_msg_has_val() const {
 		return strings::sconcat("Option \"", opt(),
 			"\" takes no value.");
 	}
-	inline std::string errwarn_msg_no_val() const
-	{
+	inline std::string errwarn_msg_no_val() const {
 		return strings::sconcat("Option \"", opt(),
 			"\" requires a value.");
 	}

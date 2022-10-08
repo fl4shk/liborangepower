@@ -8,64 +8,49 @@
 #include <SDL.h>
 #include <SDL_video.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class Window final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class Window final {
 private:		// variables
 	SDL_Window* _self = nullptr;
-
 public:		// functions
 	inline Window(SDL_Window* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Window(const Window& to_copy) = delete;
-	inline Window(Window&& to_move)
-	{
+	inline Window(Window&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Window()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Window() {
+		if (_self != nullptr) {
 			SDL_DestroyWindow(_self);
 		}
 	}
 	inline Window& operator = (const Window& to_copy)
 		= delete;
-	inline Window& operator = (Window&& to_move)
-	{
+	inline Window& operator = (Window&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_Window* ()
-	{
+	inline operator SDL_Window* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 

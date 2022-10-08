@@ -1,7 +1,7 @@
-#ifndef liborangepower_make_deferred_restorer_class_define_hpp
-#define liborangepower_make_deferred_restorer_class_define_hpp
+#ifndef liborangepower_containers_make_deferred_restorer_class_define_hpp
+#define liborangepower_containers_make_deferred_restorer_class_define_hpp
 
-#include "metaprog_defines.hpp"
+#include "../metaprog_defines.hpp"
 
 #define LIBOP_INNER_MAKE_DEFERRED_RESTORER_CLASS_MEMB_VAR(type, var_name) \
 	type _saved ## var_name
@@ -31,4 +31,4 @@
 		} \
 	}
 
-#endif		// liborangepower_make_deferred_restorer_class_define_hpp
+#endif		// liborangepower_containers_make_deferred_restorer_class_define_hpp

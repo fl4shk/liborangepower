@@ -8,64 +8,49 @@
 #include <SDL.h>
 #include <SDL_mouse.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class Cursor final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class Cursor final {
 private:		// variables
 	SDL_Cursor* _self = nullptr;
-
 public:		// functions
 	inline Cursor(SDL_Cursor* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Cursor(const Cursor& to_copy) = delete;
-	inline Cursor(Cursor&& to_move)
-	{
+	inline Cursor(Cursor&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Cursor()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Cursor() {
+		if (_self != nullptr) {
 			SDL_FreeCursor(_self);
 		}
 	}
 	inline Cursor& operator = (const Cursor& to_copy)
 		= delete;
-	inline Cursor& operator = (Cursor&& to_move)
-	{
+	inline Cursor& operator = (Cursor&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_Cursor* ()
-	{
+	inline operator SDL_Cursor* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 

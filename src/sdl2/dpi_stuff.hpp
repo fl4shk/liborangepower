@@ -3,12 +3,9 @@
 
 #include "sdl.hpp"
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
+namespace liborangepower {
+namespace sdl {
+//--------
 inline void prevent_dpi_scaling_issues()
 {
 	#ifdef __WIN32__
@@ -33,9 +30,8 @@ inline void prevent_dpi_scaling_issues()
 				| SWP_NOZORDER);
 	#endif // __WIN32__
 }
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 #endif		// liborangepower_sdl2_dpi_stuff_hpp

@@ -9,64 +9,50 @@
 #include <SDL_joystick.h>
 #include <SDL_gamecontroller.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class GameController final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class GameController final {
 private:		// variables
 	SDL_GameController* _self = nullptr;
 
 public:		// functions
 	inline GameController(SDL_GameController* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline GameController(const GameController& to_copy) = delete;
-	inline GameController(GameController&& to_move)
-	{
+	inline GameController(GameController&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~GameController()
-	{
-		if (_self != nullptr)
-		{
+	inline ~GameController() {
+		if (_self != nullptr) {
 			SDL_GameControllerClose(_self);
 		}
 	}
 	inline GameController& operator = (const GameController& to_copy)
 		= delete;
-	inline GameController& operator = (GameController&& to_move)
-	{
+	inline GameController& operator = (GameController&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_GameController* ()
-	{
+	inline operator SDL_GameController* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 

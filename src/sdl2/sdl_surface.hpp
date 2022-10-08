@@ -8,64 +8,49 @@
 #include <SDL.h>
 #include <SDL_surface.h>
 
-namespace liborangepower
-{
-
-namespace sdl
-{
-
-class Surface final
-{
+namespace liborangepower {
+namespace sdl {
+//--------
+class Surface final {
 private:		// variables
 	SDL_Surface* _self = nullptr;
-
 public:		// functions
 	inline Surface(SDL_Surface* s_self=nullptr)
-		: _self(s_self)
-	{
+		: _self(s_self) {
 	}
 	inline Surface(const Surface& to_copy) = delete;
-	inline Surface(Surface&& to_move)
-	{
+	inline Surface(Surface&& to_move) {
 		*this = std::move(to_move);
 	}
-	inline ~Surface()
-	{
-		if (_self != nullptr)
-		{
+	inline ~Surface() {
+		if (_self != nullptr) {
 			SDL_FreeSurface(_self);
 		}
 	}
 	inline Surface& operator = (const Surface& to_copy)
 		= delete;
-	inline Surface& operator = (Surface&& to_move)
-	{
+	inline Surface& operator = (Surface&& to_move) {
 		std::swap(_self, to_move._self);
 
 		return *this;
 	}
-	inline bool operator ! () const
-	{
+	inline bool operator ! () const {
 		return (!_self);
 	}
-	inline operator SDL_Surface* ()
-	{
+	inline operator SDL_Surface* () {
 		return _self;
 	}
-	inline auto* operator -> ()
-	{
+	inline auto* operator -> () {
 		return _self;
 	}
-	inline const auto* operator -> () const
-	{
+	inline const auto* operator -> () const {
 		return _self;
 	}
 
 	GEN_GETTER_BY_REF(self);
 };
-
+//--------
 } // namespace sdl
-
 } // namespace liborangepower
 
 
