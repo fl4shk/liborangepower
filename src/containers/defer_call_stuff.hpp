@@ -16,30 +16,37 @@ namespace containers {
 //	}
 //};
 class DeferCall final {
+public:		// types
+	using Func = std::function<void()>;
 private:		// variables
-	std::function<void()> _func;
+	std::optional<Func> _func;
 public:		// functions
-	inline DeferCall(const std::function<void()>& s_func)
+	inline DeferCall(const Func& s_func)
 		: _func(s_func) {
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(DeferCall);
 	inline ~DeferCall() {
-		_func();
+		if (_func) {
+			(*_func)();
+		}
 	}
 };
-//template<typename T>
-//class DeferDtor final {
-//prviate:		// variables
-//	T* _obj = nullptr;
-//	std::function<void(T*)> _func;
-//public:		// functions
-//	inline DeferDtor(T* s_obj, const std::function<void(T*)>& s_func)
-//		: _obj(s_obj), _func(s_func) {
-//	}
-//	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(DeferDtor);
-//	inline ~DeferDtor() {
-//	}
-//};
+template<typename T>
+class DeferDtorCall final {
+public:		// types
+	using DtorFunc = std::function<void(T*)>;
+prviate:		// variables
+	T* _obj = nullptr;
+	DeferCall _dc;
+public:		// functions
+	inline DeferDtorCall(T* s_obj, const DtorFunc& s_func)
+		: _obj(s_obj),
+		_dc([&_obj, s_func]() -> void { s_func(_obj); }) {
+	}
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(DeferDtorCall);
+	inline ~DeferDtorCall() {
+	}
+};
 //--------
 } // namespace containers
 } // namespace liborangepower
