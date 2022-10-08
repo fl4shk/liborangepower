@@ -15,6 +15,10 @@ namespace containers {
 //	inline GenMvDstry(const T& s_self) {
 //	}
 //};
+#define mk_defer_func(...) \
+	std::bind([&]() -> void { \
+		__VA_ARGS__ \
+	})
 class DeferCall final {
 public:		// types
 	using Func = std::function<void()>;
