@@ -17,7 +17,7 @@ namespace containers {
 //};
 #define mk_defer_func(...) \
 	std::bind([&]() -> void { \
-		__VA_ARGS__ \
+		__VA_ARGS__; \
 	})
 class DeferCall final {
 public:		// types
