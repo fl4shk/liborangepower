@@ -11,6 +11,8 @@
 #include "liborangepower_src/misc/misc_defines.hpp"
 #include "liborangepower_src/gen_class_innards_defines.hpp"
 #include "liborangepower_src/strings/string_conversion_stuff.hpp"
+#include "liborangepower_src/strings/sconcat_etc.hpp"
+#include "liborangepower_src/containers/defer_call_stuff.hpp"
 #include "liborangepower_src/concepts/misc_concepts.hpp"
 #include "liborangepower_src/concepts/math_concepts.hpp"
 #include "liborangepower_src/concepts/std_container_concepts.hpp"
@@ -22,6 +24,7 @@ using namespace liborangepower::integer_types;
 using namespace liborangepower::misc_util;
 using namespace liborangepower::bitwise;
 using namespace liborangepower::strings;
+using namespace liborangepower::containers;
 namespace concepts = liborangepower::concepts;
 
 
