@@ -12,13 +12,11 @@
 
 #include <utility>
 
-namespace liborangepower
-{
+namespace liborangepower {
 
 using namespace integer_types;
 
-namespace binser
-{
+namespace binser {
 //--------
 class Value;
 //--------
@@ -29,8 +27,7 @@ using ValueMapInsertRet = std::pair<typename ValueMap::iterator, bool>;
 //--------
 //// `_holds_mbrs` is short for "holds members"
 //template<bool _holds_mbrs>
-//class ValueMap final
-//{
+//class ValueMap final {
 //public:		// constants
 //	static constexpr inline bool HOLDS_MBRS = _holds_mbrs;
 //public:		// variables
@@ -38,8 +35,7 @@ using ValueMapInsertRet = std::pair<typename ValueMap::iterator, bool>;
 //};
 //--------
 using ValueData
-	= std::variant
-	<
+	= std::variant<
 		std::monostate,
 		u8, i8, u16, i16, u32, i32, u64, i64, float, double, bool,
 		std::string,
@@ -81,11 +77,9 @@ concept IsValueDataNonNum
 	|| std::same_as<T, ValueVec>
 	|| std::same_as<T, ValueMap>;
 //--------
-class Value final
-{
+class Value final {
 public:		// types
-	enum class Tag: char
-	{
+	enum class Tag: char {
 		Null,		// 0x0
 
 		UInt8,		// 0x1
@@ -112,30 +106,28 @@ public:		// functions
 	//--------
 	inline Value() = default;
 	template<IsValueData T>
-	inline Value(const T& s_data)
-	{
+	inline Value(const T& s_data) {
 		*this = s_data;
 	}
 	template<IsValueData T>
-	inline Value(T&& s_data)
-	{
+	inline Value(T&& s_data) {
 		*this = std::move(s_data);
 	}
 //--------
 private:		// functions
 	template<IsValueData T>
-	static inline T _inner_init_do_memcpy
-		(const std::vector<char>& to_cast, u64& i, const Tag& tag)
-	{
+	static inline T _inner_init_do_memcpy(
+		const std::vector<char>& to_cast, u64& i, const Tag& tag
+	) {
 		T temp_ret;
 
-		if (i - sizeof(tag) + sizeof(T) >= to_cast.size())
-		{
-			throw std::invalid_argument(strings::sconcat
-				("Value::_inner_init_do_memcpy(): ",
+		if (i - sizeof(tag) + sizeof(T) >= to_cast.size()) {
+			throw std::invalid_argument(strings::sconcat(
+				"Value::_inner_init_do_memcpy(): ",
 				"do_memcpy(): i + sizeof(T) >= to_cast.size(): ",
 				static_cast<int>(tag), " ", i, " ", sizeof(T), " ",
-				to_cast.size(), "."));
+				to_cast.size(), "."
+			));
 		}
 
 		std::memcpy(&temp_ret, to_cast.data() + i, sizeof(T));
@@ -145,8 +137,7 @@ private:		// functions
 	}
 	void _inner_init(const std::vector<char>& to_cast, u64& i);
 public:		// functions
-	inline Value(const std::vector<char>& to_cast)
-	{
+	inline Value(const std::vector<char>& to_cast) {
 		u64 i = 0;
 		_inner_init(to_cast, i);
 	}
@@ -157,67 +148,59 @@ public:		// functions
 	operator std::vector<char> () const;
 	//--------
 	template<IsValueData T> 
-	inline Value& operator = (const T& n_data) noexcept
-	{
+	inline Value& operator = (const T& n_data) noexcept {
 		_data = n_data;
 		return *this;
 	}
 	template<IsValueData T>
-	inline Value& operator = (T&& n_data) noexcept
-	{
+	inline Value& operator = (T&& n_data) noexcept {
 		_data = std::move(n_data);
 		return *this;
 	}
 	//--------
-	static inline ValueSptr to_sptr(const Value& to_copy)
-	{
+	static inline ValueSptr to_sptr(const Value& to_copy) {
 		return ValueSptr(new Value(to_copy));
 	}
-	static inline ValueSptr to_sptr(Value&& to_move)
-	{
+	static inline ValueSptr to_sptr(Value&& to_move) {
 		return ValueSptr(new Value(std::move(to_move)));
 	}
 
 	//template<IsValueData T> 
-	//static inline ValueSptr to_sptr(const T& to_copy)
-	//{
+	//static inline ValueSptr to_sptr(const T& to_copy) {
 	//	return to_sptr(Value(to_copy));
 	//}
 	//template<IsValueData T> 
-	//static inline ValueSptr to_sptr(T&& to_move)
-	//{
+	//static inline ValueSptr to_sptr(T&& to_move) {
 	//	return to_sptr(Value(std::move(to_move)));
 	//}
 	//--------
 	template<IsValueData T>
-	constexpr inline bool holds_alternative() const noexcept
-	{
+	constexpr inline bool holds_alternative() const noexcept {
 		return std::holds_alternative<T>(_data);
 	}
-	constexpr inline bool holds_num_alternative() const noexcept
-	{
-		return holds_any_int_alternative()
+	constexpr inline bool holds_num_alternative() const noexcept {
+		return (
+			holds_any_int_alternative()
 			|| holds_fp_alternative()
-			|| holds_alternative<bool>();
+			|| holds_alternative<bool>()
+		);
 	}
-	constexpr inline bool holds_any_int_alternative() const noexcept
-	{
-		return holds_alternative<u8>() || holds_alternative<i8>()
+	constexpr inline bool holds_any_int_alternative() const noexcept {
+		return (
+			holds_alternative<u8>() || holds_alternative<i8>()
 			|| holds_alternative<u16>() || holds_alternative<i16>()
 			|| holds_alternative<u32>() || holds_alternative<i32>()
-			|| holds_alternative<u64>() || holds_alternative<i64>();
+			|| holds_alternative<u64>() || holds_alternative<i64>()
+		);
 	}
-	constexpr inline bool holds_fp_alternative() const noexcept
-	{
+	constexpr inline bool holds_fp_alternative() const noexcept {
 		return holds_alternative<float>() || holds_alternative<double>();
 	}
 	//--------
 	template<IsValueData T>
-	inline bool set_type_if_not_ha()
-	{
+	inline bool set_type_if_not_ha() {
 		//std::cout << "testificate: " << typeid(T()).name() << "\n";
-		if (!holds_alternative<T>())
-		{
+		if (!holds_alternative<T>()) {
 			*this = T();
 			return true;
 		}
@@ -225,119 +208,97 @@ public:		// functions
 	}
 
 	template<IsValueData T>
-	T& get()
-	{
-		//try
-		//{
+	T& get() {
+		//try {
 			return std::get<T>(_data);
-		//}
-		//catch (const std::exception& e)
-		//{
+		//} catch (const std::exception& e) {
 		//	misc_output::printerr("T& get() error: ",
 		//		_data.index(), " ", typeid(T()).name(), "\n");
 		//	throw e;
 		//}
 	}
 	template<IsValueData T>
-	const T& get() const
-	{
-		//try
-		//{
+	const T& get() const {
+		//try {
 			return std::get<T>(_data);
-		//}
-		//catch (const std::exception& e)
-		//{
+		//} catch (const std::exception& e) {
 		//	misc_output::printerr("const T& get() const error: ",
 		//		_data.index(), " ", typeid(T()).name(), "\n");
 		//	throw e;
 		//}
 	}
 
-	inline std::string& as_str()
-	{
+	inline std::string& as_str() {
 		return get<std::string>();
 	}
-	inline const std::string& as_str() const
-	{
+	inline const std::string& as_str() const {
 		return get<std::string>();
 	}
-	inline ValueVec& as_vec()
-	{
+	inline ValueVec& as_vec() {
 		return get<ValueVec>();
 	}
-	inline const ValueVec& as_vec() const
-	{
+	inline const ValueVec& as_vec() const {
 		return get<ValueVec>();
 	}
-	inline ValueMap& as_map()
-	{
+	inline ValueMap& as_map() {
 		return get<ValueMap>();
 	}
-	inline const ValueMap& as_map() const
-	{
+	inline const ValueMap& as_map() const {
 		return get<ValueMap>();
 	}
 	//--------
 	size_t size() const;
 	//--------
-	inline Value& at(u64 where)
-	{
+	inline Value& at(u64 where) {
 		return *as_vec().at(where);
 	}
-	inline const Value& at(u64 where) const
-	{
+	inline const Value& at(u64 where) const {
 		return *as_vec().at(where);
 	}
 
-	//inline Value& operator [] (u64 where)
-	//{
+	//inline Value& operator [] (u64 where) {
 	//	return *as_vec()[where];
 	//}
-	//inline const Value& operator [] (u64 where) const
-	//{
+	//inline const Value& operator [] (u64 where) const {
 	//	return *as_vec()[where];
 	//}
-	inline void push_back(const Value& to_push)
-	{
+	inline void push_back(const Value& to_push) {
 		set_type_if_not_ha<ValueVec>();
 		as_vec().push_back(to_sptr(to_push));
 	}
-	inline void push_back(Value&& to_push)
-	{
+	inline void push_back(Value&& to_push) {
 		set_type_if_not_ha<ValueVec>();
 		as_vec().push_back(to_sptr(std::move(to_push)));
 	}
 	//--------
-	inline Value& at(const std::string& where)
-	{
+	inline Value& at(const std::string& where) {
 		return *as_map().at(where);
 	}
-	inline const Value& at(const std::string& where) const
-	{
+	inline const Value& at(const std::string& where) const {
 		return *as_map().at(where);
 	}
 
-	//inline Value& operator [] (const std::string& where)
-	//{
+	//inline Value& operator [] (const std::string& where) {
 	//	return *get<ValueMap>()[where];
 	//}
-	//inline const Value& operator [] (const std::string& where) const
-	//{
+	//inline const Value& operator [] (const std::string& where) const {
 	//	return *get<ValueMap>()[where];
 	//}
-	inline ValueMapInsertRet insert(const std::string& where,
-		const Value& to_insert)
-	{
+	inline ValueMapInsertRet insert(
+		const std::string& where, const Value& to_insert
+	) {
 		set_type_if_not_ha<ValueMap>();
-		return as_map().insert(typename ValueMap::value_type
-			(where, to_sptr(to_insert)));
+		return as_map().insert(
+			typename ValueMap::value_type(where, to_sptr(to_insert))
+		);
 	}
-	inline ValueMapInsertRet insert(const std::string& where,
-		Value&& to_insert)
-	{
+	inline ValueMapInsertRet insert(
+		const std::string& where, Value&& to_insert
+	) {
 		set_type_if_not_ha<ValueMap>();
-		return as_map().insert(typename ValueMap::value_type
-			(where, ValueSptr(new Value(std::move(to_insert)))));
+		return as_map().insert(typename ValueMap::value_type(
+			where, ValueSptr(new Value(std::move(to_insert)))
+		));
 	}
 	//--------
 };

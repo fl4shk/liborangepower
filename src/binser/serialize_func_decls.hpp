@@ -4,10 +4,8 @@
 #include "../misc/misc_includes.hpp"
 #include "value_class.hpp"
 
-namespace liborangepower
-{
-namespace binser
-{
+namespace liborangepower {
+namespace binser {
 //--------
 template<typename T>
 inline void val_from_bv(T& ret, const Value& bv,

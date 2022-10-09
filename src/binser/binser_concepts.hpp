@@ -9,24 +9,20 @@
 #include <memory>
 #include <unordered_map>
 
-namespace liborangepower
-{
-namespace binser
-{
-
+namespace liborangepower {
+namespace binser {
+//--------
 using liborangepower::concepts::IsDerivedAndHasStaticKindStr;
 
 template<typename T>
-concept HasBvDeserializeFunc = requires(T obj, const Value& bv)
-{
+concept HasBvDeserializeFunc = requires(T obj, const Value& bv) {
 	{ obj.deserialize(bv) } -> std::same_as<void>;
 };
 
 template<typename DerivedT, typename BaseT>
 concept IsValidFromBvFactoryT
-	= IsDerivedAndHasStaticKindStr<DerivedT, BaseT> 
-	&& requires(const Value& bv)
-{
+= IsDerivedAndHasStaticKindStr<DerivedT, BaseT> 
+&& requires(const Value& bv) {
 	//std::declval<DerivedT>(bv);
 	DerivedT(bv);
 };
@@ -37,8 +33,7 @@ concept IsValidFromBvFactoryT
 
 //template<typename T, typename BaseT>
 //concept IsFromBvFactoryFuncMap = std::same_as
-
-
+//--------
 } // namespace binser
 } // namespace liborangepower
 

@@ -7,11 +7,9 @@
 #include "binser_concepts.hpp"
 #include "value_class.hpp"
 
-namespace liborangepower
-{
-namespace binser
-{
-
+namespace liborangepower {
+namespace binser {
+//--------
 template<typename BaseT>
 using FromBvFactoryFunc
 	= std::function<std::unique_ptr<BaseT>(const Value&)>;
@@ -21,8 +19,7 @@ using FromBvFactoryFuncMap
 	= std::unordered_map<std::string, FromBvFactoryFunc<BaseT>>;
 
 template<typename BaseT>
-class FromBvFactory final
-{
+class FromBvFactory final {
 public:		// types
 	using Func = FromBvFactoryFunc<BaseT>;
 	using FuncMap = FromBvFactoryFuncMap<BaseT>;
@@ -32,38 +29,33 @@ public:		// functions
 	// points to a `new FirstDerivedT(bv)`.
 	template<IsValidFromBvFactoryT<BaseT> FirstDerivedT,
 		IsValidFromBvFactoryT<BaseT>... RemDerivedTs>
-	static FuncMap gen_func_map()
-	{
+	static FuncMap gen_func_map() {
 		FuncMap ret;
 
-		if constexpr (sizeof...(RemDerivedTs) > 0)
-		{
+		if constexpr (sizeof...(RemDerivedTs) > 0) {
 			ret = gen_func_map<RemDerivedTs...>();
 		}
 
 		//ret[FirstDerivedT::KIND_STR] = Func(FirstDerivedT::from_bv);
 		ret[FirstDerivedT::KIND_STR] 
 			= Func
-		([](const Value& bv) -> std::unique_ptr<BaseT>
-		{
-			if constexpr (std::is_constructible
-				<FirstDerivedT, Value>())
-			{
+		([](const Value& bv) -> std::unique_ptr<BaseT> {
+			if constexpr (
+				std::is_constructible<FirstDerivedT, Value>()
+			) {
 				return std::unique_ptr<BaseT>
 					(new FirstDerivedT(bv));
-			}
-			else
-			{
-				return std::unique_ptr<BaseT>
-					(new FirstDerivedT
-						(FirstDerivedT::from_bv(bv)));
+			} else {
+				return std::unique_ptr<BaseT>(
+					new FirstDerivedT(FirstDerivedT::from_bv(bv))
+				);
 			}
 		});
 
 		return ret;
 	}
 };
-
+//--------
 } // namespace binser
 } // namespace liborangepower
 
