@@ -91,13 +91,18 @@ inline auto rng_run_lt_bound(RngT& rng, const T& bound) {
 	//}
 }
 
+//template<typename T, CallableLikeRngBounded<T> RngT>
+//inline auto rng_run_lim(RngT& rng, const T& lim_0, const T& lim_1) {
+//	//return rng_run<T>(rng, math::cstm_abs(lim_1 - lim_0), false)
+//	//	+ math::min_va(lim_0, lim_1);
+//	const auto& bound = math::cstm_abs(lim_0 - lim_1) + T(1);
+//	return rng_run_lt_bound<T>(rng, bound)
+//		+ math::min_va(lim_0, lim_1);
+//}
 template<typename T, CallableLikeRngBounded<T> RngT>
-inline auto rng_run(RngT& rng, const T& lim_0, const T& lim_1) {
-	//return rng_run<T>(rng, math::cstm_abs(lim_1 - lim_0), false)
-	//	+ math::min_va(lim_0, lim_1);
-	const auto& bound = math::cstm_abs(lim_0 - lim_1) + T(1);
-	return rng_run_lt_bound<T>(rng, bound)
-		+ math::min_va(lim_0, lim_1);
+inline auto rng_run(RngT& rng, const T& min, const T& max) {
+	const auto& bound = max - min + T(1);
+	return std::pair(rng_run_lt_bound<T>(rng, bound) + min, bound);
 }
 
 //template<typename T, CallableLikeRngBounded<T> RngT>
