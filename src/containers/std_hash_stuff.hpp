@@ -11,7 +11,6 @@ template<typename T>
 constexpr inline std::size_t hash_remove_cvref(const T& to_hash) {
 	return std::hash<std::remove_cvref_t<T>>(to_hash);
 }
-template<typename T>
 constexpr inline std::size_t hash_merge(size_t h, size_t next) {
 	return h ^ (next << std::size_t(1));
 }

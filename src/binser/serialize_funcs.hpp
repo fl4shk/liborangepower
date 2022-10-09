@@ -248,7 +248,7 @@ inline void val_from_bv(T& ret, const Value& bv,
 		do \
 		{ \
 			if constexpr (!(is_std_unique_ptr_to_non_arr<ValueEtcT>() \
-				|| std::movable<ValueEtcT>())) \
+				|| std::movable<ValueEtcT>)) \
 			{ \
 				copy_func (temp); \
 			} \
