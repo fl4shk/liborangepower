@@ -102,7 +102,8 @@ inline auto rng_run_lt_bound(RngT& rng, const T& bound) {
 template<typename T, CallableLikeRngBounded<T> RngT>
 inline auto rng_run(RngT& rng, const T& min, const T& max) {
 	const auto& bound = max - min + T(1);
-	return std::pair(rng_run_lt_bound<T>(rng, bound) + min, bound);
+	//return std::pair(rng_run_lt_bound<T>(rng, bound) + min, bound);
+	return rng_run_lt_bound<T>(rng, bound) + min;
 }
 
 //template<typename T, CallableLikeRngBounded<T> RngT>
