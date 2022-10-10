@@ -317,18 +317,19 @@ public:		// functions
 		//}
 
 		const Vec2<PtElemT>
-			temp_tl_corner(
-				clamp(PtElemT(left_x()), lim.left_x(), lim.right_x()),
-				clamp(PtElemT(top_y()), lim.top_y(), lim.bottom_y())
-			),
-			temp_br_corner(
-				clamp(PtElemT(right_x()), lim.left_x(), lim.right_x()),
-				clamp(PtElemT(bottom_y()), lim.top_y(), lim.bottom_y())
-			),
-			temp_pos(
-				min_va(temp_tl_corner.x, temp_br_corner.x),
-				min_va(temp_tl_corner.y, temp_br_corner.y)
-			),
+			temp_tl_corner
+				(clamp(PtElemT(left_x()), lim.left_x(),
+					lim.right_x(grid_elem_size_2d)),
+				clamp(PtElemT(top_y()), lim.top_y(),
+					lim.bottom_y(grid_elem_size_2d))),
+			temp_br_corner
+				(clamp(PtElemT(right_x(grid_elem_size_2d)), lim.left_x(),
+					lim.right_x(grid_elem_size_2d)),
+				clamp(PtElemT(bottom_y(grid_elem_size_2d)), lim.top_y(),
+					lim.bottom_y(grid_elem_size_2d))),
+			temp_pos
+				(min_va(temp_tl_corner.x, temp_br_corner.x),
+				min_va(temp_tl_corner.y, temp_br_corner.y)),
 			temp_size_2d(
 				cstm_abs(temp_br_corner.x - temp_tl_corner.x
 					+ PtElemT(grid_elem_size_2d.x)),
@@ -550,36 +551,79 @@ public:		// functions
 	constexpr inline T top_y() const {
 		return pos.y;
 	}
-	constexpr inline T right_x() const {
-		return pos.x + size_2d.x - T(1);
+	template<typename GridElemSizeT=T>
+	constexpr inline T right_x(
+		const GridElemSizeT& grid_elem_size_x=1
+	) const 
+	//requires (!concepts::IsSpecialization<GridElemSizeT, Vec2>)
+	{
+		return pos.x + size_2d.x - T(grid_elem_size_x);
 	}
-	constexpr inline T bottom_y() const {
-		return pos.y + size_2d.y - T(1);
+	template<typename GridElemSizeT=T>
+	constexpr inline T right_x(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+	) const {
+		return right_x(grid_elem_size_2d.x);
 	}
+	template<typename GridElemSizeT=T>
+	constexpr inline T bottom_y(
+		const GridElemSizeT& grid_elem_size_y=1
+	) const 
+	//requires (!concepts::IsSpecialization<GridElemSizeT, Vec2>)
+	{
+		return pos.y + size_2d.y - T(grid_elem_size_y);
+	}
+	template<typename GridElemSizeT=T>
+	constexpr inline T bottom_y(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+	) const {
+		return bottom_y(grid_elem_size_2d.y);
+	}
+
 
 	constexpr inline Vec2<T> tl_corner() const {
 		return Vec2<T>(left_x(), top_y());
 	}
-	constexpr inline Vec2<T> tr_corner() const {
-		return Vec2<T>(right_x(), top_y());
+	template<typename GridElemSizeT=T>
+	constexpr inline Vec2<T> tr_corner(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+			=Vec2<GridElemSizeT>(1, 1)
+	) const {
+		return Vec2<T>(right_x(grid_elem_size_2d), top_y());
 	}
-	constexpr inline Vec2<T> bl_corner() const {
-		return Vec2<T>(left_x(), bottom_y());
+	template<typename GridElemSizeT=T>
+	constexpr inline Vec2<T> bl_corner(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+			=Vec2<GridElemSizeT>(1, 1)
+	) const {
+		return Vec2<T>(left_x(), bottom_y(grid_elem_size_2d));
 	}
-	constexpr inline Vec2<T> br_corner() const {
-		return Vec2<T>(right_x(), bottom_y());
+	template<typename GridElemSizeT=T>
+	constexpr inline Vec2<T> br_corner(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+			=Vec2<GridElemSizeT>(1, 1)
+	) const {
+		return Vec2<T>(right_x(grid_elem_size_2d),
+			bottom_y(grid_elem_size_2d));
 	}
 	//--------
-	template<bool exclusive=false>
-	constexpr inline bool intersect(const Vec2<T>& arg) const {
+	template<bool exclusive, typename PtElemT=T>
+	constexpr inline bool intersect(
+		const Vec2<PtElemT>& arg,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
 		//return intersect(Rect2<T>{.pos=arg, .size_2d=Vec2<T>()});
 
 		if constexpr (exclusive) {
-			return (arg.x > left_x() && arg.x < right_x()
-				&& arg.y > top_y() && arg.y < bottom_y());
+			return (arg.x > left_x()
+				&& arg.x < right_x(grid_elem_size_2d)
+				&& arg.y > top_y()
+				&& arg.y < bottom_y(grid_elem_size_2d));
 		} else {
-			return (arg.x >= left_x() && arg.x <= right_x()
-				&& arg.y >= top_y() && arg.y <= bottom_y());
+			return (arg.x >= left_x()
+				&& arg.x <= right_x(grid_elem_size_2d)
+				&& arg.y >= top_y()
+				&& arg.y <= bottom_y(grid_elem_size_2d));
 		}
 	}
 	// `ret.pos` and `ret.delta` will be set to the nearest edge of the
@@ -832,17 +876,22 @@ public:		// functions
 		//--------
 	}
 
-	constexpr inline bool intersect(const Rect2& arg) const {
+	template<typename GridElemSizeT=T>
+	constexpr inline bool intersect(
+		const Rect2& arg,
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+			=Vec2<GridElemSizeT>(1, 1)
+	) const {
 		// This won't work for `int`s
 		//return (cstm_abs(cntr_pos().x - arg.cntr_pos().x) * 2
 		//		< (size_2d.x + arg.size_2d.x))
 		//	&& (cstm_abs(cntr_pos().y - arg.cntr_pos().y) * 2 
 		//		< (size_2d.y + arg.size_2d.y));
 
-		return !(arg.left_x() > right_x()
-			|| arg.right_x() < left_x()
-			|| arg.top_y() > bottom_y()
-			|| arg.bottom_y() < top_y());
+		return !(arg.left_x() > right_x(grid_elem_size_2d)
+			|| arg.right_x(grid_elem_size_2d) < left_x()
+			|| arg.top_y() > bottom_y(grid_elem_size_2d)
+			|| arg.bottom_y(grid_elem_size_2d) < top_y());
 	}
 	//constexpr inline std::optional<Hit2<T>> intersect_fancy(
 	//	const Rect2& arg, bool exclusive=false,
@@ -1057,26 +1106,36 @@ public:		// functions
 		return intersect_fancy(arg.p0, arg_padding)
 			&& intersect_fancy(arg.p1, arg_padding);
 	}
-	template<bool exclusive=false>
-	constexpr inline bool arg_inside(const Rect2& arg) const {
+	template<bool exclusive, typename GridElemSizeT=T>
+	constexpr inline bool arg_inside(
+		const Rect2& arg,
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+			=Vec2<GridElemSizeT>(1, 1)
+	) const {
 		return intersect<exclusive>(arg.tl_corner())
-			&& intersect<exclusive>(arg.tr_corner())
-			&& intersect<exclusive>(arg.bl_corner())
-			&& intersect<exclusive>(arg.br_corner());
+			&& intersect<exclusive>(arg.tr_corner(grid_elem_size_2d))
+			&& intersect<exclusive>(arg.bl_corner(grid_elem_size_2d))
+			&& intersect<exclusive>(arg.br_corner(grid_elem_size_2d));
 	}
 	//constexpr inline bool arg_inside(const Rect2& arg,
 	//	bool exclusive=false, const Vec2<T>& arg_padding=Vec2<T>()) const
+	template<typename GridElemSizeT=T>
 	constexpr inline bool arg_inside_fancy(
-		const Rect2& arg, const Vec2<T>& arg_padding=Vec2<T>()
+		const Rect2& arg, const Vec2<T>& arg_padding=Vec2<T>(),
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+			=Vec2<GridElemSizeT>(1, 1)
 	) const {
 		//return intersect_fancy(arg.tl_corner(), exclusive, arg_padding)
 		//	&& intersect_fancy(arg.tr_corner(), exclusive, arg_padding)
 		//	&& intersect_fancy(arg.bl_corner(), exclusive, arg_padding)
 		//	&& intersect_fancy(arg.br_corner(), exclusive, arg_padding);
 		return intersect_fancy(arg.tl_corner(), arg_padding)
-			&& intersect_fancy(arg.tr_corner(), arg_padding)
-			&& intersect_fancy(arg.bl_corner(), arg_padding)
-			&& intersect_fancy(arg.br_corner(), arg_padding);
+			&& intersect_fancy(arg.tr_corner(grid_elem_size_2d),
+				arg_padding)
+			&& intersect_fancy(arg.bl_corner(grid_elem_size_2d),
+				arg_padding)
+			&& intersect_fancy(arg.br_corner(grid_elem_size_2d),
+				arg_padding);
 	}
 	//--------
 };
