@@ -607,7 +607,7 @@ public:		// functions
 			bottom_y(grid_elem_size_2d));
 	}
 	//--------
-	template<bool exclusive, typename PtElemT=T>
+	template<bool exclusive=false, typename PtElemT=T>
 	constexpr inline bool intersect(
 		const Vec2<PtElemT>& arg,
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
