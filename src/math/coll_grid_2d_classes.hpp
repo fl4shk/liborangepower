@@ -84,10 +84,9 @@ public:		// functions
 	static constexpr inline PhysPt2 to_phys_pt2(
 		const GridIndPt2& to_conv
 	) {
-		//return PhysPt2(
-		//	to_phys_elem(to_conv.at(0), 0),
-		//	to_phys_elem(to_conv.at(1), 1)
-		//);
+		//return PhysPt2
+		//	(to_phys_elem(to_conv.at(0), 0),
+		//	to_phys_elem(to_conv.at(1), 1));
 		PhysPt2 ret;
 		for (size_t i=0; i<to_conv.size(); ++i) {
 			ret.at(i) = to_phys_elem(to_conv.at(i), i);
@@ -97,7 +96,7 @@ public:		// functions
 	//--------
 	//template<Dim2d DIM>
 	static constexpr inline GridIndT to_grid_ind(
-		const PhysElemT& to_conv, bool index
+		const PhysElemT& to_conv, size_t index
 	) {
 		// For power-of-two grid element sizes, this divide should be
 		// converted into a right shift (at least when optimization is
@@ -108,10 +107,9 @@ public:		// functions
 	static constexpr inline GridIndPt2 to_grid_ind_pt2(
 		const PhysPt2& to_conv
 	) {
-		//return GridIndPt2(
-		//	to_grid_ind<Dim2d::HORIZ>(to_conv.x),
-		//	to_grid_ind<Dim2d::VERT>(to_conv.y)
-		//);
+		//return GridIndPt2
+		//	(to_grid_ind<Dim2d::HORIZ>(to_conv.x),
+		//	to_grid_ind<Dim2d::VERT>(to_conv.y));
 		GridIndPt2 ret;
 		for (size_t i=0; i<to_conv.size(); ++i) {
 			ret.at(i) = to_grid_ind(to_conv.at(i), i);
@@ -121,17 +119,15 @@ public:		// functions
 	//--------
 public:		// constants
 	static constexpr PhysRect2
-		ENCLOSING_PHYS_RECT2{
-			.pos=ENCLOSING_PHYS_RECT2_POS,
-			.size_2d=to_phys_pt2(NUM_GRID_ELEMS_2D)
-		};
+		ENCLOSING_PHYS_RECT2
+			{.pos=ENCLOSING_PHYS_RECT2_POS,
+			.size_2d=to_phys_pt2(NUM_GRID_ELEMS_2D)};
 	static constexpr GridIndRect2
 		ENCLOSING_GRID_IND_RECT2
-		= PhysRect2::build_in_grid(
-			to_grid_ind(ENCLOSING_PHYS_RECT2.tl_corner()),
-			to_grid_ind(ENCLOSING_PHYS_RECT2.br_corner()),
-			GRID_ELEM_SIZE_2D
-		);
+		= PhysRect2::build_in_grid
+			(to_grid_ind(ENCLOSING_PHYS_RECT2.tl_corner()),
+			to_grid_ind(ENCLOSING_PHYS_RECT2.br_corner(GRID_ELEM_SIZE_2D)),
+			GRID_ELEM_SIZE_2D);
 protected:		// variables
 	//Vec2<PhysElemT>
 	//	elem_size_2d = {PhysElemT(0), PhysElemT(0)};
@@ -149,10 +145,9 @@ public:		// functions
 	static constexpr inline GridIndRect2 to_grid_ind_rect2(
 		const PhysRect2& phys_rect2
 	) {
-		return GridIndRect2::build_in_grid(
-			to_grid_ind_pt2(phys_rect2.tl_corner()),
-			to_grid_ind_pt2(phys_rect2.br_corner())
-		);
+		return GridIndRect2::build_in_grid
+			(to_grid_ind_pt2(phys_rect2.tl_corner()),
+			to_grid_ind_pt2(phys_rect2.br_corner(GRID_ELEM_SIZE_2D)));
 	}
 	static constexpr inline GridIndRect2 to_grid_ind_rect2_lim(
 		const PhysRect2& phys_rect2
@@ -160,21 +155,23 @@ public:		// functions
 		//GridIndRect2 ret;
 
 		//ret = GridIndRect2::build_in_grid_lim
-		//	(arg.tl_corner(), arg.br_corner(), ENCLOSING_PHYS_RECT2);
+		//	(arg.tl_corner(), arg.br_corner(GRID_ELEM_SIZE_2D),
+		//	ENCLOSING_PHYS_RECT2);
 
 		//return ret;
 		//return GridIndRect2::build_in_grid_lim
-		//	(arg.tl_corner(), arg.br_corner(), ENCLOSING_PHYS_RECT2);
+		//	(arg.tl_corner(), arg.br_corner(GRID_ELEM_SIZE_2D),
+		//	ENCLOSING_PHYS_RECT2, GRID_ELEM_SIZE_2D);
 
 		//return GridIndRect2::build_in_grid_lim
 		//	(to_grid_ind_pt2(phys_rect2.tl_corner()),
-		//	to_grid_ind_pt2(phys_rect2.br_corner()),
-		//	GridIndRect2(ENCLOSING_PHYS_RECT2));
-		return GridIndRect2::build_in_grid_lim(
-			to_grid_ind_pt2(phys_rect2.tl_corner()),
-			to_grid_ind_pt2(phys_rect2.br_corner()),
-			ENCLOSING_GRID_IND_RECT2
-		);
+		//	to_grid_ind_pt2(phys_rect2.br_corner(GRID_ELEM_SIZE_2D)),
+		//	GridIndRect2(ENCLOSING_PHYS_RECT2),
+		//	GRID_ELEM_SIZE_2D);
+		return GridIndRect2::build_in_grid_lim
+			(to_grid_ind_pt2(phys_rect2.tl_corner()),
+			to_grid_ind_pt2(phys_rect2.br_corner(GRID_ELEM_SIZE_2D)),
+			ENCLOSING_GRID_IND_RECT2, GRID_ELEM_SIZE_2D);
 	}
 
 	//template<CanRect2IntersectFancy<PhysElemT> ShapeT>

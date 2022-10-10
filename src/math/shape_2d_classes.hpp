@@ -482,9 +482,9 @@ public:		// functions
 		//		PtElemT(bottom_y()) + br_amount.y),
 		//	grid_elem_size_2d
 		//).fit_into_grid_lim(lim, grid_elem_size_2d);
-		return build_in_grid_inflated(
-			tl_amount, br_amount, grid_elem_size_2d
-		).fit_into_grid_lim(lim, grid_elem_size_2d);
+		return build_in_grid_inflated
+			(tl_amount, br_amount, grid_elem_size_2d)
+			.fit_into_grid_lim(lim, grid_elem_size_2d);
 	}
 	//--------
 	template<typename OtherElemT>
@@ -637,10 +637,10 @@ public:		// functions
 	) const {
 		if (arg_padding != Vec2<T>()) {
 			//return intersect_fancy(LineSeg2<T>{arg, arg}, arg_padding);
-			const Rect2<T> rect{
+			const Rect2<T> rect
+				{
 				//.pos=arg - (arg_padding / T(2)),
-				.pos=arg - div_2(arg_padding), .size_2d=arg_padding
-			};
+				.pos=arg - div_2(arg_padding), .size_2d=arg_padding};
 
 			//return intersect_fancy(rect, exclusive, Vec2<T>());
 			return intersect_fancy(rect, Vec2<T>());
@@ -798,14 +798,12 @@ public:		// functions
 			delta(arg.pt_delta()),
 			//--------
 			scale(calc_scale(delta)),
-			sign{
-				.x=cstm_sign(scale.x),
-				.y=cstm_sign(scale.y),
-			},
-			partial_time_vec{
-				.x=sign.x * (temp_hsize.x + arg_padding.x),
-				.y=sign.y * (temp_hsize.y + arg_padding.y),
-			},
+			sign
+				{.x=cstm_sign(scale.x),
+				.y=cstm_sign(scale.y)},
+			partial_time_vec
+				{.x=sign.x * (temp_hsize.x + arg_padding.x),
+				.y=sign.y * (temp_hsize.y + arg_padding.y)},
 			near_time_vec{
 				.x=(temp_cpos.x - partial_time_vec.x - arg.p0.x)
 					* scale.x,
