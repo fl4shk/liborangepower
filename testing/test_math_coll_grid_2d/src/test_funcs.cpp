@@ -111,3 +111,6 @@ void test_to_grid_ind_rect2() {
 	//--------
 }
 //--------
+void test_main() {
+}
+//--------

@@ -24,10 +24,10 @@ namespace math {
 //--------
 // A class implementing fixed-point arithmetic with `constexpr` functions.
 // Of course, this can be used in runtime code.
-template<std::integral TargInt, size_t TARG_FRAC_WIDTH>
+template<std::integral IntTarg, size_t FRAC_WIDTH_TARG>
 class CxFixedPt {
 public:		// types
-	using IntT = TargInt;
+	using IntT = IntTarg;
 
 	class CtorArgs final {
 	public:		// variables
@@ -37,7 +37,7 @@ public:		// constants
 	static constexpr size_t
 		INT_T_WIDTH = width_of_type<IntT>();
 	static constexpr size_t
-		FRAC_WIDTH = TARG_FRAC_WIDTH,
+		FRAC_WIDTH = FRAC_WIDTH_TARG,
 		WHOLE_WIDTH = INT_T_WIDTH - FRAC_WIDTH;
 
 	//template<size_t OTHER_FRAC_WIDTH>

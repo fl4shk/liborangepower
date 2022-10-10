@@ -443,7 +443,7 @@ public:		// functions
 	template<std::convertible_to<T> PtElemT>
 	constexpr inline Rect2 build_in_grid_inflated(
 		const Vec2<PtElemT>& tl_amount, const Vec2<PtElemT>& br_amount,
-		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>()
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
 		return build_in_grid(
 			Vec2<PtElemT>(PtElemT(left_x()) - tl_amount.x,
@@ -466,7 +466,7 @@ public:		// functions
 	constexpr inline Rect2 build_in_grid_inflated_lim(
 		const Vec2<PtElemT>& tl_amount, const Vec2<PtElemT>& br_amount,
 		const Rect2<LimElemT>& lim,
-		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>()
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
 		//return build_in_grid(
 		//	Vec2<T>{.x=max_va(left_x() - tl_amount.x, tl_lim.x),

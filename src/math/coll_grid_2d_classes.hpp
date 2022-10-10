@@ -11,15 +11,15 @@ namespace math {
 //};
 //--------
 // A grid for doing cheaper collision checking in 2D, with constant sizes
-template<typename TargPhysElemT, Vec2<TargPhysElemT> TARG_GRID_ELEM_SIZE_2D,
-	Vec2<size_t> TARG_NUM_GRID_ELEMS_2D,
-	Vec2<TargPhysElemT> TARG_ENCLOSING_PHYS_RECT2_POS
-		= Vec2<TargPhysElemT>(TargPhysElemT(0), TargPhysElemT(0)),
-	template<typename> typename TargAlloc=std::allocator>
+template<typename PhysElemTarg, Vec2<PhysElemTarg> GRID_ELEM_SIZE_2D_TARG,
+	Vec2<size_t> NUM_GRID_ELEMS_2D_TARG,
+	Vec2<PhysElemTarg> ENCLOSING_PHYS_RECT2_POS_TARG
+		= Vec2<PhysElemTarg>(PhysElemTarg(0), PhysElemTarg(0)),
+	template<typename> typename AllocTarg=std::allocator>
 class CollGridCsz2d {
 public:		// types
 	// named after physics
-	using PhysElemT = TargPhysElemT;
+	using PhysElemT = PhysElemTarg;
 	using PhysPt2 = Vec2<PhysElemT>;
 	using PhysRect2 = Rect2<PhysElemT>;
 
@@ -29,7 +29,7 @@ public:		// types
 	using GridIndRect2 = Rect2<GridIndT>;
 
 	template<typename OtherT>
-	using Alloc = TargAlloc<OtherT>;
+	using Alloc = AllocTarg<OtherT>;
 
 
 	//using GridIndVec = std::vector<GridIndPt2, Alloc<GridIndPt2>>;
@@ -45,11 +45,11 @@ public:		// types
 
 public:		// constants
 	static constexpr PhysPt2
-		GRID_ELEM_SIZE_2D = TARG_GRID_ELEM_SIZE_2D;
+		GRID_ELEM_SIZE_2D = GRID_ELEM_SIZE_2D_TARG;
 	static constexpr GridIndPt2
-		NUM_GRID_ELEMS_2D = TARG_NUM_GRID_ELEMS_2D;
+		NUM_GRID_ELEMS_2D = NUM_GRID_ELEMS_2D_TARG;
 	static constexpr PhysPt2
-		ENCLOSING_PHYS_RECT2_POS = TARG_ENCLOSING_PHYS_RECT2_POS;
+		ENCLOSING_PHYS_RECT2_POS = ENCLOSING_PHYS_RECT2_POS_TARG;
 	static constexpr size_t
 		TOTAL_NUM_ELEMS = NUM_GRID_ELEMS_2D.x * NUM_GRID_ELEMS_2D.y;
 
