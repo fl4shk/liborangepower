@@ -289,204 +289,6 @@ public:		// variables
 		size_2d = Vec2<T>();
 public:		// functions
 	//--------
-	template<std::convertible_to<T> LimElemT,
-		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 fit_into_grid_lim(
-		const Rect2<LimElemT>& lim,
-		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
-	) const
-	//constexpr inline Rect2 fit_into_grid_lim(
-	//	const Rect2& lim, const Vec2<T>& grid_elem_size_2d=Vec2<T>(1, 1)
-	//) const
-	{
-		//const Vec2<T>
-		//	temp_size_2d(
-		//		min_va(size_2d.x, T(lim.size_2d.x)),
-		//		min_va(size_2d.y, T(lim.size_2d.y))
-		//	);
-		//return Rect2<T>{.pos=Vec2<T>(max_va(left_x(), T(lim.left_x()))};
-		//if (lim.arg_inside(*this)) {
-		//	return *this;
-		//} else {
-		//	return build_in_grid<T, true>(
-		//		Vec2<T>(max_va(left_x(), T(lim.left_x())),
-		//			max_va(top_y(), T(lim.top_y()))),
-		//		Vec2<T>(min_va(right_x(), T(lim.right_x())),
-		//			min_va(bottom_y(), T(lim.bottom_y())))
-		//	);
-		//}
-
-		const Vec2<PtElemT>
-			temp_tl_corner
-				(clamp(PtElemT(left_x()), lim.left_x(),
-					lim.right_x(grid_elem_size_2d)),
-				clamp(PtElemT(top_y()), lim.top_y(),
-					lim.bottom_y(grid_elem_size_2d))),
-			temp_br_corner
-				(clamp(PtElemT(right_x(grid_elem_size_2d)), lim.left_x(),
-					lim.right_x(grid_elem_size_2d)),
-				clamp(PtElemT(bottom_y(grid_elem_size_2d)), lim.top_y(),
-					lim.bottom_y(grid_elem_size_2d))),
-			temp_pos
-				(min_va(temp_tl_corner.x, temp_br_corner.x),
-				min_va(temp_tl_corner.y, temp_br_corner.y)),
-			temp_size_2d(
-				cstm_abs(temp_br_corner.x - temp_tl_corner.x
-					+ PtElemT(grid_elem_size_2d.x)),
-				cstm_abs(temp_br_corner.y - temp_tl_corner.y
-					+ PtElemT(grid_elem_size_2d.y))
-			);
-		return Rect2(Vec2<T>(temp_pos), Vec2<T>(temp_size_2d));
-
-		//return build_in_grid(
-		//	Vec2<T>,
-		//	Vec2<T>
-		//);
-
-		//return build_in_grid_lim(Vec2<OtherElemT>(tl_corner()),
-		//	Vec2<OtherElemT>(br_corner()), Rect2<OtherElemT>(lim));
-	}
-
-	//template<std::convertible_to<T> OtherElemT>
-	//static constexpr inline Rect2 build_in_grid(
-	//	const Rect2<OtherElemT>& to_conv
-	//) {
-	//	return build_in_grid(to_conv.tl_corner(), to_conv.br_corner());
-	//}
-	//template<std::convertible_to<T> OtherElemT, bool inc_size_2d=true>
-	template<std::convertible_to<T> PtElemT>
-	static constexpr inline Rect2 build_in_grid(
-		const Vec2<PtElemT>& p0, const Vec2<PtElemT>& p1,
-		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
-	) {
-		//return Rect2<T>{
-		//	.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
-		//	.size_2d=Vec2<T>(
-		//		T(cstm_abs(p1.x - p0.x)) + T(inc_size_2d),
-		//		T(cstm_abs(p1.y - p0.y)) + T(inc_size_2d)
-		//	)
-		//};
-		return Rect2<T> {
-			.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
-			.size_2d=Vec2<T>(
-				T(cstm_abs(p1.x - p0.x) + grid_elem_size_2d.x),
-				T(cstm_abs(p1.y - p0.y) + grid_elem_size_2d.y)
-			)
-		};
-		//return Rect2<T>{
-		//	.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
-		//	.size_2d=Vec2<T>(
-		//		T(cstm_abs(p1.x - p0.x)),
-		//		T(cstm_abs(p1.y - p0.y))
-		//	)
-		//};
-	}
-	//template<std::convertible_to<T> ToConvElemT,
-	//	std::convertible_to<T> LimElemT>
-	//static constexpr inline Rect2 build_in_grid_lim(
-	//	const Rect2<ToConvElemT>& to_conv, const Rect2<LimElemT>& lim
-	//) {
-	//	return build_in_grid_lim<ToConvElemT, LimElemT>(
-	//		to_conv.tl_corner(), to_conv.br_corner(), lim
-	//	);
-	//}
-	template<std::convertible_to<T> PtElemT,
-		std::convertible_to<T> LimElemT>
-	static constexpr inline Rect2 build_in_grid_lim(
-		const Vec2<PtElemT>& p0, const Vec2<PtElemT>& p1,
-		const Rect2<LimElemT>& lim,
-		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
-	) {
-		//const Vec2<T>
-		//	temp_size_2d(
-		//	T(cstm_abs<T>(p1.x - p0.x) + T(1)),
-		//	T(cstm_abs<T>(p1.y - p0.y) + T(1))
-		//	//T(cstm_abs<T>(p1.x - p0.x)),
-		//	//T(cstm_abs<T>(p1.y - p0.y))
-		//);
-		//return Rect2<T>{
-		//	.pos=Vec2<T>(
-		//		max_va(T(min_va(p0.x, p1.x)), T(lim.pos.x)),
-		//		max_va(T(min_va(p0.y, p1.y)), T(lim.pos.y))
-		//	),
-		//	.size_2d=Vec2<T>(
-		//		min_va(temp_size_2d.x, T(lim.size_2d.x)),
-		//		min_va(temp_size_2d.y, T(lim.size_2d.y))
-		//	)
-		//};
-
-		return build_in_grid(p0, p1, grid_elem_size_2d)
-			.fit_into_grid_lim(lim, grid_elem_size_2d);
-
-		//const Rect2<LimElemT>
-		//	temp_rect = Rect2<PtElemT>::build_in_grid(p0, p1)
-		//		.fit_into_lim(lim);
-		//return Rect2<T>{
-		//	.pos=Vec2<T>(T(temp_rect.pos.x), T(temp_rect.pos.y)),
-		//	.size_2d=Vec2<T>(T(temp_rect.size_2d.x),
-		//		T(temp_rect.size_2d.y))
-		//};
-
-		//return Rect2<T>::build_in_grid(
-		//	Vec2<T>(T(p0.x), T(p0.y)),
-		//	Vec2<T>(T(p1.x), T(p1.y))
-		//).fit_into_lim(
-		//	Rect2<T>{
-		//		.pos=Vec2<T>(T(lim.pos.x), T(lim.pos.y)),
-		//		.size_2d=Vec2<T>(T(lim.size_2d.x), T(lim.size_2d.y))
-		//	}
-		//);
-		//return Rect2<T>::build_in_grid(
-		//	Vec2<T>(p0), Vec2<T>(p1)
-		//).fit_into_lim(Rect2<T>(lim));
-	}
-
-	template<std::convertible_to<T> PtElemT>
-	constexpr inline Rect2 build_in_grid_inflated(
-		const Vec2<PtElemT>& tl_amount, const Vec2<PtElemT>& br_amount,
-		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
-	) const {
-		return build_in_grid(
-			Vec2<PtElemT>(PtElemT(left_x()) - tl_amount.x,
-				PtElemT(top_y()) - tl_amount.y),
-			Vec2<PtElemT>(PtElemT(right_x()) + br_amount.x,
-				PtElemT(bottom_y()) + br_amount.y),
-			grid_elem_size_2d
-		);
-	}
-	//// This function intend for forcing the created `Rect2` to fit within
-	//// some other `Rect2`, which is what `tl_lim` and `br_lim` are for.
-	//constexpr inline Rect2 build_in_grid_inflated_lim(
-	//	const Vec2<T>& tl_amount, const Vec2<T>& br_amount,
-	//	const Vec2<T>& tl_lim, const Vec2<T>& br_lim
-	//)
-	// This function intend for forcing the created `Rect2` to fit within
-	// some other `Rect2`, `lim`.
-	template<std::convertible_to<T> PtElemT,
-		std::convertible_to<T> LimElemT>
-	constexpr inline Rect2 build_in_grid_inflated_lim(
-		const Vec2<PtElemT>& tl_amount, const Vec2<PtElemT>& br_amount,
-		const Rect2<LimElemT>& lim,
-		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
-	) const {
-		//return build_in_grid(
-		//	Vec2<T>{.x=max_va(left_x() - tl_amount.x, tl_lim.x),
-		//		.y=min_va(top_y() - tl_amount.y, tl_lim.y)},
-		//	Vec2<T>{.x=min_va(right_x() + br_amount.x, br_lim.x),
-		//		.y=min_va(bottom_y() + br_amount.y, br_lim.y)}
-		//);
-		//return build_in_grid(
-		//	Vec2<PtElemT>(PtElemT(left_x()) - tl_amount.x,
-		//		PtElemT(top_y()) - tl_amount.y),
-		//	Vec2<PtElemT>(PtElemT(right_x()) + br_amount.x
-		//		PtElemT(bottom_y()) + br_amount.y),
-		//	grid_elem_size_2d
-		//).fit_into_grid_lim(lim, grid_elem_size_2d);
-		return build_in_grid_inflated
-			(tl_amount, br_amount, grid_elem_size_2d)
-			.fit_into_grid_lim(lim, grid_elem_size_2d);
-	}
-	//--------
 	template<typename OtherElemT>
 	explicit constexpr inline operator Rect2<OtherElemT> () const
 	requires std::convertible_to<T, OtherElemT> {
@@ -534,21 +336,21 @@ public:		// functions
 		return pos + half_size();
 	}
 	constexpr inline Vec2<T> half_size() const {
-		//return tl_corner() + ((size_2d - Vec2<T>(T(1), T(1))) / T(2));
-		//return tl_corner() + (br_corner() / T(2));
-		//return tl_corner() + (size_2d / T(2));
-		//if constexpr (concepts::HasArithDiv2MbrFunc<T>) {
-		//	return {div_2(size_2d.x), div_2(size_2d.y)}
-		//} else {
-		//	return size_2d / T(2);
-		//}
 		return div_2(size_2d);
 	}
 
-	constexpr inline T left_x() const {
+	template<typename GridElemSizeT=T>
+	constexpr inline T left_x(
+		const GridElemSizeT& grid_elem_size_x=1
+	) const {
+	//requires (!concepts::IsSpecialization<GridElemSizeT, Vec2>)
 		return pos.x;
 	}
-	constexpr inline T top_y() const {
+	template<typename GridElemSizeT=T>
+	constexpr inline T top_y(
+		const GridElemSizeT& grid_elem_size_y=1
+	) const {
+	//requires (!concepts::IsSpecialization<GridElemSizeT, Vec2>)
 		return pos.y;
 	}
 	template<typename GridElemSizeT=T>
@@ -560,18 +362,31 @@ public:		// functions
 		return pos.x + size_2d.x - T(grid_elem_size_x);
 	}
 	template<typename GridElemSizeT=T>
-	constexpr inline T right_x(
-		const Vec2<GridElemSizeT>& grid_elem_size_2d
-	) const {
-		return right_x(grid_elem_size_2d.x);
-	}
-	template<typename GridElemSizeT=T>
 	constexpr inline T bottom_y(
 		const GridElemSizeT& grid_elem_size_y=1
 	) const 
 	//requires (!concepts::IsSpecialization<GridElemSizeT, Vec2>)
 	{
 		return pos.y + size_2d.y - T(grid_elem_size_y);
+	}
+
+	template<typename GridElemSizeT=T>
+	constexpr inline T left_x(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+	) const {
+		return left_x(grid_elem_size_2d.x);
+	}
+	template<typename GridElemSizeT=T>
+	constexpr inline T top_y(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+	) const {
+		return top_y(grid_elem_size_2d.y);
+	}
+	template<typename GridElemSizeT=T>
+	constexpr inline T right_x(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+	) const {
+		return right_x(grid_elem_size_2d.x);
 	}
 	template<typename GridElemSizeT=T>
 	constexpr inline T bottom_y(
@@ -580,23 +395,29 @@ public:		// functions
 		return bottom_y(grid_elem_size_2d.y);
 	}
 
-
-	constexpr inline Vec2<T> tl_corner() const {
-		return Vec2<T>(left_x(), top_y());
+	template<typename GridElemSizeT=T>
+	constexpr inline Vec2<T> tl_corner(
+		const Vec2<GridElemSizeT>& grid_elem_size_2d
+			=Vec2<GridElemSizeT>(1, 1)
+	) const {
+		return Vec2<T>(left_x(grid_elem_size_2d),
+			top_y(grid_elem_size_2d));
 	}
 	template<typename GridElemSizeT=T>
 	constexpr inline Vec2<T> tr_corner(
 		const Vec2<GridElemSizeT>& grid_elem_size_2d
 			=Vec2<GridElemSizeT>(1, 1)
 	) const {
-		return Vec2<T>(right_x(grid_elem_size_2d), top_y());
+		return Vec2<T>(right_x(grid_elem_size_2d),
+			top_y(grid_elem_size_2d));
 	}
 	template<typename GridElemSizeT=T>
 	constexpr inline Vec2<T> bl_corner(
 		const Vec2<GridElemSizeT>& grid_elem_size_2d
 			=Vec2<GridElemSizeT>(1, 1)
 	) const {
-		return Vec2<T>(left_x(), bottom_y(grid_elem_size_2d));
+		return Vec2<T>(left_x(grid_elem_size_2d),
+			bottom_y(grid_elem_size_2d));
 	}
 	template<typename GridElemSizeT=T>
 	constexpr inline Vec2<T> br_corner(
@@ -607,6 +428,218 @@ public:		// functions
 			bottom_y(grid_elem_size_2d));
 	}
 	//--------
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 left_side_in_grid(
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid
+			(tl_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			bl_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			grid_elem_size_2d);
+	}
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 top_side_in_grid(
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid
+			(tl_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			tr_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			grid_elem_size_2d);
+	}
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 right_side_in_grid(
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid
+			(tr_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			br_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			grid_elem_size_2d);
+	}
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 bottom_side_in_grid(
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid
+			(bl_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			br_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			grid_elem_size_2d);
+	}
+	//--------
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 left_side_in_grid_lim(
+		const Rect2<LimElemT>& lim,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid_lim
+			(tl_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			bl_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			lim, grid_elem_size_2d);
+	}
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 top_side_in_grid_lim(
+		const Rect2<LimElemT>& lim,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid_lim
+			(tl_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			tr_corner(grid_elem_size_2d)
+				- Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			lim, grid_elem_size_2d);
+	}
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 right_side_in_grid_lim(
+		const Rect2<LimElemT>& lim,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid_lim
+			(tr_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			br_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{grid_elem_size_2d.x, 0},
+			lim, grid_elem_size_2d);
+	}
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 bottom_side_in_grid_lim(
+		const Rect2<LimElemT>& lim,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid_lim
+			(bl_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			br_corner(grid_elem_size_2d)
+				+ Vec2<PtElemT>{0, grid_elem_size_2d.y},
+			lim, grid_elem_size_2d);
+	}
+	//--------
+	template<std::convertible_to<T> LimElemT,
+		std::convertible_to<T> PtElemT=T>
+	constexpr inline Rect2 fit_into_grid_lim(
+		const Rect2<LimElemT>& lim,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const
+	//constexpr inline Rect2 fit_into_grid_lim(
+	//	const Rect2& lim, const Vec2<T>& grid_elem_size_2d=Vec2<T>(1, 1)
+	//) const
+	{
+		const Vec2<PtElemT>
+			temp_tl_corner
+				(clamp(PtElemT(left_x(grid_elem_size_2d)),
+					lim.left_x(grid_elem_size_2d),
+					lim.right_x(grid_elem_size_2d)),
+				clamp(PtElemT(top_y(grid_elem_size_2d)),
+					lim.top_y(grid_elem_size_2d),
+					lim.bottom_y(grid_elem_size_2d))),
+			temp_br_corner
+				(clamp(PtElemT(right_x(grid_elem_size_2d)),
+					lim.left_x(grid_elem_size_2d),
+					lim.right_x(grid_elem_size_2d)),
+				clamp(PtElemT(bottom_y(grid_elem_size_2d)),
+					lim.top_y(grid_elem_size_2d),
+					lim.bottom_y(grid_elem_size_2d))),
+			temp_pos
+				(min_va(temp_tl_corner.x, temp_br_corner.x),
+				min_va(temp_tl_corner.y, temp_br_corner.y)),
+			temp_size_2d(
+				cstm_abs(temp_br_corner.x - temp_tl_corner.x
+					+ PtElemT(grid_elem_size_2d.x)),
+				cstm_abs(temp_br_corner.y - temp_tl_corner.y
+					+ PtElemT(grid_elem_size_2d.y))
+			);
+		return Rect2(Vec2<T>(temp_pos), Vec2<T>(temp_size_2d));
+	}
+
+	//template<std::convertible_to<T> OtherElemT>
+	//static constexpr inline Rect2 build_in_grid(
+	//	const Rect2<OtherElemT>& to_conv
+	//) {
+	//	return build_in_grid(to_conv.tl_corner(), to_conv.br_corner());
+	//}
+	//template<std::convertible_to<T> OtherElemT, bool inc_size_2d=true>
+	template<std::convertible_to<T> PtElemT>
+	static constexpr inline Rect2 build_in_grid(
+		const Vec2<PtElemT>& p0, const Vec2<PtElemT>& p1,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) {
+		return Rect2<T>
+			{.pos=Vec2<T>(T(min_va(p0.x, p1.x)), T(min_va(p0.y, p1.y))),
+			.size_2d=Vec2<T>
+				(T(cstm_abs(p1.x - p0.x) + grid_elem_size_2d.x),
+				T(cstm_abs(p1.y - p0.y) + grid_elem_size_2d.y))};
+	}
+	//template<std::convertible_to<T> ToConvElemT,
+	//	std::convertible_to<T> LimElemT>
+	//static constexpr inline Rect2 build_in_grid_lim(
+	//	const Rect2<ToConvElemT>& to_conv, const Rect2<LimElemT>& lim
+	//) {
+	//	return build_in_grid_lim<ToConvElemT, LimElemT>(
+	//		to_conv.tl_corner(), to_conv.br_corner(), lim
+	//	);
+	//}
+	template<std::convertible_to<T> PtElemT,
+		std::convertible_to<T> LimElemT>
+	static constexpr inline Rect2 build_in_grid_lim(
+		const Vec2<PtElemT>& p0, const Vec2<PtElemT>& p1,
+		const Rect2<LimElemT>& lim,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) {
+		return build_in_grid(p0, p1, grid_elem_size_2d)
+			.fit_into_grid_lim(lim, grid_elem_size_2d);
+	}
+
+	template<std::convertible_to<T> PtElemT>
+	constexpr inline Rect2 build_in_grid_inflated(
+		const Vec2<PtElemT>& tl_amount, const Vec2<PtElemT>& br_amount,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid(
+			Vec2<PtElemT>(PtElemT(left_x(grid_elem_size_2d))
+				- tl_amount.x,
+				PtElemT(top_y(grid_elem_size_2d)) - tl_amount.y),
+			Vec2<PtElemT>(PtElemT(right_x(grid_elem_size_2d))
+				+ br_amount.x,
+				PtElemT(bottom_y(grid_elem_size_2d)) + br_amount.y),
+			grid_elem_size_2d
+		);
+	}
+	//// This function intend for forcing the created `Rect2` to fit within
+	//// some other `Rect2`, which is what `tl_lim` and `br_lim` are for.
+	//constexpr inline Rect2 build_in_grid_inflated_lim(
+	//	const Vec2<T>& tl_amount, const Vec2<T>& br_amount,
+	//	const Vec2<T>& tl_lim, const Vec2<T>& br_lim
+	//)
+	// This function intend for forcing the created `Rect2` to fit within
+	// some other `Rect2`, `lim`.
+	template<std::convertible_to<T> PtElemT,
+		std::convertible_to<T> LimElemT>
+	constexpr inline Rect2 build_in_grid_inflated_lim(
+		const Vec2<PtElemT>& tl_amount, const Vec2<PtElemT>& br_amount,
+		const Rect2<LimElemT>& lim,
+		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
+	) const {
+		return build_in_grid_inflated
+			(tl_amount, br_amount, grid_elem_size_2d)
+			.fit_into_grid_lim(lim, grid_elem_size_2d);
+	}
+	//--------
 	template<bool exclusive=false, typename PtElemT=T>
 	constexpr inline bool intersect(
 		const Vec2<PtElemT>& arg,
@@ -615,14 +648,14 @@ public:		// functions
 		//return intersect(Rect2<T>{.pos=arg, .size_2d=Vec2<T>()});
 
 		if constexpr (exclusive) {
-			return (arg.x > left_x()
+			return (arg.x > left_x(grid_elem_size_2d)
 				&& arg.x < right_x(grid_elem_size_2d)
-				&& arg.y > top_y()
+				&& arg.y > top_y(grid_elem_size_2d)
 				&& arg.y < bottom_y(grid_elem_size_2d));
 		} else {
-			return (arg.x >= left_x()
+			return (arg.x >= left_x(grid_elem_size_2d)
 				&& arg.x <= right_x(grid_elem_size_2d)
-				&& arg.y >= top_y()
+				&& arg.y >= top_y(grid_elem_size_2d)
 				&& arg.y <= bottom_y(grid_elem_size_2d));
 		}
 	}
@@ -886,10 +919,14 @@ public:		// functions
 		//	&& (cstm_abs(cntr_pos().y - arg.cntr_pos().y) * 2 
 		//		< (size_2d.y + arg.size_2d.y));
 
-		return !(arg.left_x() > right_x(grid_elem_size_2d)
-			|| arg.right_x(grid_elem_size_2d) < left_x()
-			|| arg.top_y() > bottom_y(grid_elem_size_2d)
-			|| arg.bottom_y(grid_elem_size_2d) < top_y());
+		return !(arg.left_x(grid_elem_size_2d)
+				> right_x(grid_elem_size_2d)
+			|| arg.right_x(grid_elem_size_2d)
+				< left_x(grid_elem_size_2d)
+			|| arg.top_y(grid_elem_size_2d)
+				> bottom_y(grid_elem_size_2d)
+			|| arg.bottom_y(grid_elem_size_2d)
+				< top_y(grid_elem_size_2d));
 	}
 	//constexpr inline std::optional<Hit2<T>> intersect_fancy(
 	//	const Rect2& arg, bool exclusive=false,
@@ -1110,7 +1147,7 @@ public:		// functions
 		const Vec2<GridElemSizeT>& grid_elem_size_2d
 			=Vec2<GridElemSizeT>(1, 1)
 	) const {
-		return intersect<exclusive>(arg.tl_corner())
+		return intersect<exclusive>(arg.tl_corner(grid_elem_size_2d))
 			&& intersect<exclusive>(arg.tr_corner(grid_elem_size_2d))
 			&& intersect<exclusive>(arg.bl_corner(grid_elem_size_2d))
 			&& intersect<exclusive>(arg.br_corner(grid_elem_size_2d));
@@ -1127,13 +1164,14 @@ public:		// functions
 		//	&& intersect_fancy(arg.tr_corner(), exclusive, arg_padding)
 		//	&& intersect_fancy(arg.bl_corner(), exclusive, arg_padding)
 		//	&& intersect_fancy(arg.br_corner(), exclusive, arg_padding);
-		return intersect_fancy(arg.tl_corner(), arg_padding)
-			&& intersect_fancy(arg.tr_corner(grid_elem_size_2d),
-				arg_padding)
-			&& intersect_fancy(arg.bl_corner(grid_elem_size_2d),
-				arg_padding)
-			&& intersect_fancy(arg.br_corner(grid_elem_size_2d),
-				arg_padding);
+		return intersect_fancy
+			(arg.tl_corner(grid_elem_size_2d), arg_padding)
+			&& intersect_fancy
+				(arg.tr_corner(grid_elem_size_2d), arg_padding)
+			&& intersect_fancy
+				(arg.bl_corner(grid_elem_size_2d), arg_padding)
+			&& intersect_fancy
+				(arg.br_corner(grid_elem_size_2d), arg_padding);
 	}
 	//--------
 };
