@@ -430,7 +430,7 @@ public:		// functions
 	//--------
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 left_side_in_grid(
+	constexpr inline Rect2 left_side_1ge_past_in_grid(
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
 		return build_in_grid
@@ -442,7 +442,7 @@ public:		// functions
 	}
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 top_side_in_grid(
+	constexpr inline Rect2 top_side_1ge_past_in_grid(
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
 		return build_in_grid
@@ -454,7 +454,7 @@ public:		// functions
 	}
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 right_side_in_grid(
+	constexpr inline Rect2 right_side_1ge_past_in_grid(
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
 		return build_in_grid
@@ -466,7 +466,7 @@ public:		// functions
 	}
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 bottom_side_in_grid(
+	constexpr inline Rect2 bottom_side_1ge_past_in_grid(
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
 		return build_in_grid
@@ -479,7 +479,7 @@ public:		// functions
 	//--------
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 left_side_in_grid_lim(
+	constexpr inline Rect2 left_side_1ge_past_in_grid_lim(
 		const Rect2<LimElemT>& lim,
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
@@ -492,7 +492,7 @@ public:		// functions
 	}
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 top_side_in_grid_lim(
+	constexpr inline Rect2 top_side_1ge_past_in_grid_lim(
 		const Rect2<LimElemT>& lim,
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
@@ -505,7 +505,7 @@ public:		// functions
 	}
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 right_side_in_grid_lim(
+	constexpr inline Rect2 right_side_1ge_past_in_grid_lim(
 		const Rect2<LimElemT>& lim,
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
@@ -518,7 +518,7 @@ public:		// functions
 	}
 	template<std::convertible_to<T> LimElemT,
 		std::convertible_to<T> PtElemT=T>
-	constexpr inline Rect2 bottom_side_in_grid_lim(
+	constexpr inline Rect2 bottom_side_1ge_past_in_grid_lim(
 		const Rect2<LimElemT>& lim,
 		const Vec2<PtElemT>& grid_elem_size_2d=Vec2<PtElemT>(1, 1)
 	) const {
