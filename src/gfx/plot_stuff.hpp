@@ -81,9 +81,9 @@ PlotPosVec2Dynarr<PosElemT, Alloc> bresenham_line(
 
 	return ret;
 }
-template<typename GridElemT, typename PosElemT=int32_t,
-	template<typename> typename Alloc=std::allocator>
-inline void flood_fill_tri(const std::array<PosVe
+//template<typename GridElemT, typename PosElemT=int32_t,
+//	template<typename> typename Alloc=std::allocator>
+//inline void flood_fill_tri(const math::Tri2<PosElemT>& tri);
 //--------
 } // namespace gfx
 } // namespace liborangepower
