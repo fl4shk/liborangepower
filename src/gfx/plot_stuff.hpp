@@ -17,7 +17,8 @@ namespace gfx {
 //--------
 template<typename PosElemT=int32_t,
 	template<typename> typename Alloc=std::allocator>
-using PlotPosVec2Dynarr = std::vector<Vec2<PosElemT>, Alloc>;
+using PlotPosVec2Dynarr = std::vector<Vec2<PosElemT>,
+	Alloc<Vec2<PosElemT>>>;
 
 template<typename GridElemT,
 	template<typename> typename Alloc=std::allocator>
