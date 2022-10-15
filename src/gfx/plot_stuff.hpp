@@ -16,7 +16,7 @@ using math::Vec2;
 namespace gfx {
 //--------
 template<typename PosElemT=int32_t,
-	typename Alloc=std::allocator<Vec2<PosElemT>>>
+	template<typename> typename Alloc=std::allocator>
 using PlotPosVec2Dynarr = std::vector<Vec2<PosElemT>, Alloc>;
 
 template<typename GridElemT,
