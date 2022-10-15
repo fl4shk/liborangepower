@@ -106,7 +106,7 @@ template<typename Alloc=std::allocator<char>>
 constexpr inline std::ostream& osprint_hexdump(std::ostream& os,
 	const std::vector<char, Alloc>& to_print, size_t line_break=8)
 {
-	static constexpr char BLANK_TEXT_C = '.';
+	constexpr char BLANK_TEXT_C = '.';
 
 	//for (const auto& c: ser_vec)
 	std::vector<char, Alloc> text;

@@ -6,27 +6,31 @@
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_types.hpp"
 #include "../math/vec2_classes.hpp"
+#include "../math/shape_2d_classes.hpp"
 
 #include <cstdlib>
 #include <concepts>
 
-namespace liborangepower
-{
-
+namespace liborangepower {
 using math::Vec2;
+namespace gfx {
+//--------
+template<typename PosElemT=int32_t,
+	typename Alloc=std::allocator<Vec2<PosElemT>>>
+using PlotPosVec2Dynarr = std::vector<Vec2<PosElemT>, Alloc>;
 
-namespace gfx
-{
-
-template
-<
-	typename PosElemT=int32_t,
-	typename Allocator=std::allocator<Vec2<PosElemT>>
->
-std::vector<Vec2<PosElemT>, Allocator>
-	bresenham(const Vec2<PosElemT>& p0, const Vec2<PosElemT>& p1)
-{
-	std::vector<Vec2<PosElemT>, Allocator> ret;
+template<typename GridElemT,
+	template<typename> typename Alloc=std::allocator>
+using PlotGridDynarr = std::vector<GridElemT, Alloc<GridElemT>>;
+//--------
+template<typename PosElemT=int32_t,
+	template<typename> typename Alloc=std::allocator>
+PlotPosVec2Dynarr<PosElemT, Alloc> bresenham_line(
+	const Vec2<PosElemT>& p0, const Vec2<PosElemT>& p1,
+	const std::optional<size_t>& max_num_iterations=std::nullopt
+) {
+	//std::vector<Vec2<PosElemT>, Alloc> ret;
+	PlotPosVec2Dynarr<PosElemT, Alloc> ret;
 
 	const Vec2<PosElemT> delta(std::abs(p1.x - p0.x) << 1,
 		std::abs(p1.y - p0.y) << 1);
@@ -37,14 +41,15 @@ std::vector<Vec2<PosElemT>, Allocator>
 
 	ret.push_back(p);
 
-	if (delta.x >= delta.y)
-	{
+	if (delta.x >= delta.y) {
 		PosElemT error = delta.y - (delta.x >> 1);
 
-		while (p.x != p1.x)
-		{
-			if ((error > 0) || ((!error) && (plus_amount.x > 0)))
-			{
+		while (
+			p.x != p1.x
+			&& (!max_num_iterations
+				|| ret.size() <= (*max_num_iterations) + size_t(1))
+		) {
+			if ((error > 0) || ((!error) && (plus_amount.x > 0))) {
 				error -= delta.x;
 				p.y += plus_amount.y;
 			}
@@ -54,15 +59,15 @@ std::vector<Vec2<PosElemT>, Allocator>
 
 			ret.push_back(p);
 		}
-	}
-	else // if (delta.x < delta.y)
-	{
+	} else { // if (delta.x < delta.y)
 		PosElemT error = delta.x - (delta.y >> 1);
 
-		while (p.y != p1.y)
-		{
-			if ((error > 0) || ((!error) && (plus_amount.y > 0)))
-			{
+		while (
+			p.y != p1.y
+			&& (!max_num_iterations
+				|| ret.size() <= (*max_num_iterations) + size_t(1))
+		) {
+			if ((error > 0) || ((!error) && (plus_amount.y > 0))) {
 				error -= delta.y;
 				p.x += plus_amount.x;
 			}
@@ -76,7 +81,10 @@ std::vector<Vec2<PosElemT>, Allocator>
 
 	return ret;
 }
-
+template<typename GridElemT, typename PosElemT=int32_t,
+	template<typename> typename Alloc=std::allocator>
+inline void flood_fill_tri(const std::array<PosVe
+//--------
 } // namespace gfx
 } // namespace liborangepower
 

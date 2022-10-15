@@ -274,6 +274,66 @@ constexpr inline std::ostream& operator << (
 }
 //--------
 template<typename T>
+class Tri2 {
+public:		// types
+	using ElemT = T;
+public:		// constants
+	static constexpr size_t
+		IND_P0 = 0,
+		IND_P1 = 1,
+		IND_P2 = 2,
+		SIZE = 3;
+public:		// variables
+	#define MEMB_LIST_SHAPE_TRI2(X) \
+		X(p0, std::nullopt) \
+		X(p1, std::nullopt) \
+		X(p2, std::nullopt) \
+
+	Vec2<T>
+		p0,
+		p1,
+		p2;
+public:		// functions
+	static constexpr inline size_t size() {
+		return SIZE;
+	}
+	constexpr inline Vec2<T>& at(size_t where) {
+		switch (where) {
+		//--------
+		case IND_P0:
+			return p0;
+		case IND_P1:
+			return p1;
+		case IND_P2:
+			return p2;
+		default:
+			throw std::invalid_argument(strings::sconcat
+				("liborangepower::math:Tri2:::at(): Error: ",
+				"bad `where` argument: ",
+				where));
+		//--------
+		}
+	}
+	constexpr inline const Vec2<T>& at(size_t where) const {
+		switch (where) {
+		//--------
+		case IND_P0:
+			return p0;
+		case IND_P1:
+			return p1;
+		case IND_P2:
+			return p2;
+		default:
+			throw std::invalid_argument(strings::sconcat
+				("liborangepower::math:Tri2:::at(): Error: ",
+				"bad `where` argument: ",
+				where));
+		//--------
+		}
+	}
+};
+//--------
+template<typename T>
 class Rect2 {
 public:		// types
 	using ElemT = T;
@@ -1021,7 +1081,7 @@ public:		// functions
 		const Rect2<T>& arg, const Vec2<T>& arg_delta
 	) const {
 		//--------
-		static const T
+		const T
 			EPSILON = T(1e-8);
 
 		const Vec2<T>
