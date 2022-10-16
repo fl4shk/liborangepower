@@ -13,7 +13,7 @@ public:		// variables
 	//int rect;
 };
 //void test_to_grid_ind();
-void test_enc_rect2s();
+void test_enc_rect2s_and_coord_conv();
 void test_to_grid_ind_rect2();
 void test_main();
 //--------

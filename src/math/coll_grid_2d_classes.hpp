@@ -151,15 +151,15 @@ public:		// constants
 			to_grid_ind_vec2(ENC_PHYS_EL_RECT2.br_corner()));
 public:		// types
 	using DataElemT = DataElemTarg;
+	using DataMapElemT = Uset<DataElemT*>;
 	//using DataRowT
 	//	= std::array<Uset<DataElemT*>, ENC_GRID_IND_RECT2.size_2d.x>;
 	//using DataT
 	//	= std::array<DataRowT, ENC_GRID_IND_RECT2.size_2d.y>;
 	using DataT = std::unordered_map
-		<GridIndVec2, DataElemT,
-		std::hash<GridIndVec2>,
-		std::equal_to<GridIndVec2>,
-		Alloc<std::pair<const GridIndVec2, DataElemT>>>;
+		<GridIndVec2, DataMapElemT,
+		std::hash<GridIndVec2>, std::equal_to<GridIndVec2>,
+		Alloc<std::pair<const GridIndVec2, DataMapElemT>>>;
 protected:		// variables
 	//Vec2<PhysElT>
 	//	elem_size_2d = {PhysElT(0), PhysElT(0)};
@@ -205,7 +205,7 @@ public:		// functions
 			) {
 				ret = true;
 				//_at(pos).insert(data_elem);
-				_data.insert(std::pair(pos, DataElemT()));
+				_data.insert(std::pair(pos, DataMapElemT()));
 				_data.at(pos).insert(data_elem);
 			}
 		}
@@ -256,10 +256,8 @@ public:		// functions
 		_data.clear();
 	}
 	// This finds others that are located in the same grid elements
-	Uset<DataElemT*> find_others(
-		DataElemT* data_elem
-	) {
-		Uset<DataElemT*> ret;
+	DataMapElemT find_others(DataElemT* data_elem) const {
+		DataMapElemT ret;
 
 		const GridIndRect2
 			grid_ind_rect2 = to_grid_ind_rect2_lim(data_elem->rect);
@@ -277,9 +275,10 @@ public:		// functions
 			) {
 				if (
 					_data.contains(pos)
-					&& _data.at(pos).contains(data_elem)
+					//&& _data.at(pos).contains(data_elem)
 				) {
-					ret.insert(data_elem);
+					ret.insert(_data.at(pos).cbegin(),
+						_data.at(pos).cend());
 				}
 			}
 		}

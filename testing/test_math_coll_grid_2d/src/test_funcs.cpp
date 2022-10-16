@@ -67,9 +67,9 @@ using GridIndRect2 = Rect2<GridIndT>;
 //class Testificate {
 //};
 
-void test_enc_rect2s() {
+void test_enc_rect2s_and_coord_conv() {
 	//--------
-	printout("test_enc_rect2s():\n");
+	printout("test_enc_rect2s_and_coord_conv():\n");
 	//--------
 	using PhysElT = double;
 	using PhysElVec2 = Vec2<PhysElT>;
@@ -146,33 +146,98 @@ void test_enc_rect2s() {
 //	//--------
 //}
 ////--------
-//void test_main() {
-//	//--------
-//	printout("test_main():\n");
-//	//--------
-//	using PhysElT = double;
-//	using PhysElVec2 = Vec2<PhysElT>;
-//	using PhysElRect2 = Rect2<PhysElT>;
-//
-//	static constexpr PhysElVec2
-//		GRID_ELEM_SIZE_2D{1.5, 1.0};
-//	static constexpr GridIndVec2
-//		NUM_GRID_ELEMS_2D{3, 3};
-//	using CollGridT
-//		= CollGridCsz2d<PhysElT, MyHasRect2<PhysElT>, GRID_ELEM_SIZE_2D,
-//			NUM_GRID_ELEMS_2D>;
-//	//--------
-//	//const auto
-//	//	prt0 = PhysElRect2::build_in_grid<PhysElT>
-//	//		({0.5, 0.5}, {1.0, 1.5}, {0.5, 0.5});
-//	const auto
-//		grt0 = CollGridT::ENC_GRID_IND_RECT2;
-//	printout
-//		("grt0{", grt0.tl_corner(GRID_ELEM_SIZE_2D), " ",
-//			grt0.br_corner(GRID_ELEM_SIZE_2D), "}",
-//
-//		//prt1,
-//		"\n");
-//	//--------
-//}
+void test_main() {
+	//--------
+	printout("test_main():\n");
+	//--------
+	using PhysElT = double;
+	using PhysElVec2 = Vec2<PhysElT>;
+	using PhysElRect2 = Rect2<PhysElT>;
+
+	static constexpr PhysElVec2
+		GRID_ELEM_SIZE_2D{2.0, 2.0};
+	static constexpr GridIndVec2
+		NUM_GRID_ELEMS_2D{16, 16};
+	using CollGridT
+		= CollGridCsz2d<PhysElT, MyHasRect2<PhysElT>, GRID_ELEM_SIZE_2D,
+			NUM_GRID_ELEMS_2D>;
+	//--------
+	//const auto
+	//	prt0 = PhysElRect2::build_in_grid<PhysElT>
+	//		({0.5, 0.5}, {1.0, 1.5}, {0.5, 0.5});
+	//const auto
+	//	grt0 = CollGridT::ENC_GRID_IND_RECT2;
+	//printout
+	//	("grt0{", grt0.tl_corner(GRID_ELEM_SIZE_2D), " ",
+	//		grt0.br_corner(GRID_ELEM_SIZE_2D), "}",
+
+	//	//prt1,
+	//	"\n");
+	//--------
+	CollGridT temp;
+
+	std::vector<MyHasRect2<PhysElT>> temp_vec;
+
+	auto append = [&](
+		const PhysElVec2& tl_corner, const PhysElVec2& br_corner
+	) -> auto& {
+		temp_vec.push_back({PhysElRect2::build_in_grid_lim<PhysElT>
+			(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2)});
+		return temp_vec.back();
+	};
+
+	append({0, 0}, {1, 1});
+	append({1, 2}, {3, 3});
+	append({1, 1}, {6, 6});
+	append({5, 5}, {6, 6});
+
+	//std::vector<std::set<size_t>>
+	//	grid_check_vec(temp_vec.size(), std::set<size_t>()),
+	//	raw_check_vec(temp_vec.size(), std::set<size_t>());
+
+	for (size_t i=0; i<temp_vec.size(); ++i) {
+		temp.insert(&temp_vec.at(i));
+	}
+	for (size_t i=0; i<temp_vec.size(); ++i) {
+		auto& temp_item = temp_vec.at(i);
+		const auto& uset = temp.find_others(&temp_item); 
+
+		printout(i, ": ",
+			"{", temp_item.rect.tl_corner(), " ",
+				temp_item.rect.br_corner(), "}:\n");
+		for (auto* uset_item: uset) {
+			if (&temp_item != uset_item) {
+				if (uset_item->rect.intersect(temp_item.rect)) {
+					printout("\t", size_t(uset_item - temp_vec.data()),
+						": ",
+						"{", uset_item->rect.tl_corner(), " ",
+							uset_item->rect.br_corner(), "}\n");
+					//grid_check_vec.at(i).insert
+					//	(size_t(uset_item - temp_vec.data()));
+				}
+			}
+		}
+	}
+	printout("\n");
+	for (size_t i=0; i<temp_vec.size(); ++i) {
+		auto& temp_item = temp_vec.at(i);
+		const auto& uset = temp.find_others(&temp_item); 
+
+		printout(i, ": ",
+			"{", temp_item.rect.tl_corner(), " ",
+				temp_item.rect.br_corner(), "}:\n");
+		for (size_t j=0; j<temp_vec.size(); ++j) {
+			if (i != j) {
+				auto& inner_item = temp_vec.at(j);
+				if (inner_item.rect.intersect(temp_item.rect)) {
+					printout("\t", j,
+						": ",
+						"{", inner_item.rect.tl_corner(), " ",
+							inner_item.rect.br_corner(), "}\n");
+				}
+			}
+		}
+	}
+	//--------
+}
 //--------
