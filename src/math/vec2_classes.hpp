@@ -266,7 +266,7 @@ public:		// functions
 		//MEMB_MAIN_LIST_VEC2(X);
 		//#undef X
 		for (size_t i=0; i<size(); ++i) {
-			ret.at(i) = div_2(at(i));
+			ret.at(i) = math::div_2(at(i));
 		}
 		return ret;
 	}
@@ -282,7 +282,7 @@ public:		// functions
 		//MEMB_MAIN_LIST_VEC2(X);
 		//#undef X
 		for (size_t i=0; i<size(); ++i) {
-			ret.at(i) = recip(at(i));
+			ret.at(i) = math::recip(at(i));
 		}
 		return ret;
 	}

@@ -122,12 +122,11 @@ private:		// functions
 		T temp_ret;
 
 		if (i - sizeof(tag) + sizeof(T) >= to_cast.size()) {
-			throw std::invalid_argument(strings::sconcat(
-				"Value::_inner_init_do_memcpy(): ",
+			throw std::invalid_argument(strings::sconcat
+				("Value::_inner_init_do_memcpy(): ",
 				"do_memcpy(): i + sizeof(T) >= to_cast.size(): ",
 				static_cast<int>(tag), " ", i, " ", sizeof(T), " ",
-				to_cast.size(), "."
-			));
+				to_cast.size(), "."));
 		}
 
 		std::memcpy(&temp_ret, to_cast.data() + i, sizeof(T));
@@ -179,19 +178,17 @@ public:		// functions
 		return std::holds_alternative<T>(_data);
 	}
 	constexpr inline bool holds_num_alternative() const noexcept {
-		return (
-			holds_any_int_alternative()
+		return
+			(holds_any_int_alternative()
 			|| holds_fp_alternative()
-			|| holds_alternative<bool>()
-		);
+			|| holds_alternative<bool>());
 	}
 	constexpr inline bool holds_any_int_alternative() const noexcept {
-		return (
-			holds_alternative<u8>() || holds_alternative<i8>()
+		return 
+			(holds_alternative<u8>() || holds_alternative<i8>()
 			|| holds_alternative<u16>() || holds_alternative<i16>()
 			|| holds_alternative<u32>() || holds_alternative<i32>()
-			|| holds_alternative<u64>() || holds_alternative<i64>()
-		);
+			|| holds_alternative<u64>() || holds_alternative<i64>());
 	}
 	constexpr inline bool holds_fp_alternative() const noexcept {
 		return holds_alternative<float>() || holds_alternative<double>();
@@ -288,17 +285,15 @@ public:		// functions
 		const std::string& where, const Value& to_insert
 	) {
 		set_type_if_not_ha<ValueMap>();
-		return as_map().insert(
-			typename ValueMap::value_type(where, to_sptr(to_insert))
-		);
+		return as_map().insert
+			(typename ValueMap::value_type(where, to_sptr(to_insert)));
 	}
 	inline ValueMapInsertRet insert(
 		const std::string& where, Value&& to_insert
 	) {
 		set_type_if_not_ha<ValueMap>();
-		return as_map().insert(typename ValueMap::value_type(
-			where, ValueSptr(new Value(std::move(to_insert)))
-		));
+		return as_map().insert(typename ValueMap::value_type
+			(where, ValueSptr(new Value(std::move(to_insert)))));
 	}
 	//--------
 };

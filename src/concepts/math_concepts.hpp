@@ -27,15 +27,18 @@ concept HasArithMdasBinops
 	{ c * other } -> std::convertible_to<ConvT>;
 	{ c / other } -> std::convertible_to<ConvT>;
 };
+template<typename T, typename OtherT=T, typename ConvT=T>
+concept HasArithModBinop
+= requires(T c, OtherT other) {
+	{ c % other } -> std::convertible_to<ConvT>;
+};
 
 // The basic four arithmetic operators
 template<typename T, typename OtherT=T, typename ConvT=T>
 concept HasArithAllBinops
 = HasArithAsBinops<T, OtherT, ConvT>
 && HasArithMdasBinops<T, OtherT, ConvT>
-&& requires(T c, OtherT other) {
-	{ c % other } -> std::convertible_to<ConvT>;
-};
+&& HasArithModBinop<T, OtherT, ConvT>;
 
 template<typename T, typename ConvT=T>
 concept HasArithAUnop = requires(T c) {

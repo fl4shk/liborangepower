@@ -137,10 +137,10 @@ namespace containers {
 //		//}
 //
 //		//while (_head._prev != &_head) {
-//		//	remove_after(&_head);
+//		//	erase_after(&_head);
 //		//}
 //		while (!empty()) {
-//			//remove(begin());
+//			//erase(begin());
 //			pop_front();
 //		}
 //	}
@@ -245,10 +245,10 @@ namespace containers {
 //		return insert_before<reverse, T>(head(), std::move(to_push));
 //	}
 //	inline void pop_front() {
-//		remove_after(head());
+//		erase_after(head());
 //	}
 //	inline void pop_back() {
-//		remove_before(head());
+//		erase_before(head());
 //	}
 //	//--------
 //	template<bool reverse=false>
@@ -280,7 +280,7 @@ namespace containers {
 //		return _inner_insert_after<reverse>(where, node);
 //	}
 //	//--------
-//	inline void remove_before(Node* where) {
+//	inline void erase_before(Node* where) {
 //		auto old_prev = where->_prev;
 //
 //		auto old_prev_prev = old_prev->_prev;
@@ -290,7 +290,7 @@ namespace containers {
 //
 //		delete old_prev;
 //	}
-//	inline void remove_after(Node* where) {
+//	inline void erase_after(Node* where) {
 //		auto old_next = where->_next;
 //		auto old_next_next = old_next->_next;
 //
@@ -299,7 +299,7 @@ namespace containers {
 //
 //		delete old_next;
 //	}
-//	inline void remove(Node* where) {
+//	inline void erase(Node* where) {
 //		auto old_next = where->_next;
 //		auto old_prev = where->_prev;
 //
@@ -624,10 +624,10 @@ public:		// functions
 		return insert_before<reverse>(HEAD_INDEX, std::move(to_push));
 	}
 	inline void pop_front() {
-		remove_after(HEAD_INDEX);
+		erase_after(HEAD_INDEX);
 	}
 	inline void pop_back() {
-		remove_before(HEAD_INDEX);
+		erase_before(HEAD_INDEX);
 	}
 
 	template<bool reverse=false>
@@ -656,7 +656,7 @@ public:		// functions
 			Node::construct(std::move(to_insert)));
 	}
 
-	inline void remove_before(IndexT where) {
+	inline void erase_before(IndexT where) {
 		const auto old_prev = at(where)._prev;
 		const auto old_prev_prev = at(old_prev)._prev;
 
@@ -668,7 +668,7 @@ public:		// functions
 		at(old_prev).data = T();
 		_avail_index_stack.push_back(old_prev);
 	}
-	inline void remove_after(IndexT where) {
+	inline void erase_after(IndexT where) {
 		const auto old_next = at(where)._next;
 		const auto old_next_next = at(old_next)._next;
 
@@ -680,7 +680,7 @@ public:		// functions
 		at(old_next).data = T();
 		_avail_index_stack.push_back(old_next);
 	}
-	inline void remove(IndexT where) {
+	inline void erase(IndexT where) {
 		const auto old_next = at(where)._next;
 		const auto old_prev = at(where)._prev;
 
