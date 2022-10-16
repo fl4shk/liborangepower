@@ -282,6 +282,9 @@ public:		// functions
 				}
 			}
 		}
+		if (ret.contains(data_elem)) {
+			ret.erase(data_elem);
+		}
 		return ret;
 	}
 	//Uset<std::pair<DataElemT*, DataElemT*>> intersect() const {

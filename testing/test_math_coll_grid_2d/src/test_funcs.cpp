@@ -206,7 +206,7 @@ void test_main() {
 			"{", temp_item.rect.tl_corner(), " ",
 				temp_item.rect.br_corner(), "}:\n");
 		for (auto* uset_item: uset) {
-			if (&temp_item != uset_item) {
+			//if (&temp_item != uset_item) {
 				if (uset_item->rect.intersect(temp_item.rect)) {
 					printout("\t", size_t(uset_item - temp_vec.data()),
 						": ",
@@ -215,7 +215,7 @@ void test_main() {
 					//grid_check_vec.at(i).insert
 					//	(size_t(uset_item - temp_vec.data()));
 				}
-			}
+			//}
 		}
 	}
 	printout("\n");
