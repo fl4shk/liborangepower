@@ -1293,9 +1293,9 @@ concept CanRect2IntersectFancy
 };
 
 template<typename T, typename PhysElTarg>
-concept HasRect2ConGetter
+concept HasRect2BboxConGetter
 = requires(const T& obj) {
-	{ obj.rect() } -> std::same_as<const Rect2<PhysElTarg>&>;
+	{ obj.bbox() } -> std::same_as<const Rect2<PhysElTarg>&>;
 };
 //template<typename T, typename PhysElTarg>
 //concept HasRect2Mbr

@@ -20,7 +20,8 @@ using GridIndRect2 = Rect2<GridIndT>;
 //		NUM_GRID_ELEMS_2D{3, 3};
 //
 //	using CollGridT
-//		= CollGridCsz2d<PhysElT, GRID_ELEM_SIZE_2D, NUM_GRID_ELEMS_2D>;
+//		= CollGridCsz2d<PhysElT, MyHasRect2<PhysElT>, GRID_ELEM_SIZE_2D,
+//			NUM_GRID_ELEMS_2D>;
 //	//--------
 //	static constexpr PhysElVec2
 //		//INC_AMOUNT = {1.0, 1.0};
@@ -87,10 +88,8 @@ void test_enc_rect2s_and_coord_conv() {
 		NUM_GRID_ELEMS_2D{2, 2};
 
 	using CollGridT
-		//= CollGridCsz2d<PhysElT, MyHasRect2<PhysElT>, GRID_ELEM_SIZE_2D,
-		//	NUM_GRID_ELEMS_2D, ENC_PHYS_EL_RECT2_POS>;
-		= CollGridCsz2d<PhysElT, GRID_ELEM_SIZE_2D, NUM_GRID_ELEMS_2D,
-			ENC_PHYS_EL_RECT2_POS>;
+		= CollGridCsz2d<PhysElT, MyHasRect2<PhysElT>, GRID_ELEM_SIZE_2D,
+			NUM_GRID_ELEMS_2D, ENC_PHYS_EL_RECT2_POS>;
 		//= CollGridCsz2d<MyHasRect2<double>>;
 		//= CollGridCsz2d<MyHasRect2>;
 
@@ -156,13 +155,12 @@ void test_main() {
 	using PhysElRect2 = Rect2<PhysElT>;
 
 	static constexpr PhysElVec2
-		GRID_ELEM_SIZE_2D{2.0, 2.0},
-		ENC_PHYS_EL_RECT2_POS{-1.0, -1.0};
+		GRID_ELEM_SIZE_2D{2.0, 2.0};
 	static constexpr GridIndVec2
 		NUM_GRID_ELEMS_2D{16, 16};
 	using CollGridT
-		= CollGridCsz2d<PhysElT, GRID_ELEM_SIZE_2D, NUM_GRID_ELEMS_2D,
-			ENC_PHYS_EL_RECT2_POS>;
+		= CollGridCsz2d<PhysElT, MyHasRect2<PhysElT>, GRID_ELEM_SIZE_2D,
+			NUM_GRID_ELEMS_2D>;
 	//--------
 	//const auto
 	//	prt0 = PhysElRect2::build_in_grid<PhysElT>
@@ -178,16 +176,13 @@ void test_main() {
 	//--------
 	CollGridT temp;
 
-	//std::vector<MyHasRect2<PhysElT>> temp_vec;
-	std::vector<PhysElRect2> temp_vec;
+	std::vector<MyHasRect2<PhysElT>> temp_vec;
 
 	auto append = [&](
 		const PhysElVec2& tl_corner, const PhysElVec2& br_corner
 	) -> auto& {
-		//temp_vec.push_back({PhysElRect2::build_in_grid_lim<PhysElT>
-		//	(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2)});
-		temp_vec.push_back(PhysElRect2::build_in_grid_lim<PhysElT>
-			(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2));
+		temp_vec.push_back({PhysElRect2::build_in_grid_lim<PhysElT>
+			(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2)});
 		return temp_vec.back();
 	};
 
@@ -208,15 +203,15 @@ void test_main() {
 		const auto& uset = temp.find_others(&temp_item); 
 
 		printout(i, ": ",
-			"{", temp_item.tl_corner(), " ",
-				temp_item.br_corner(), "}:\n");
+			"{", temp_item.bbox().tl_corner(), " ",
+				temp_item.bbox().br_corner(), "}:\n");
 		for (auto* uset_item: uset) {
 			//if (&temp_item != uset_item) {
-				if (uset_item->intersect(temp_item)) {
+				if (uset_item->bbox().intersect(temp_item.bbox())) {
 					printout("\t", size_t(uset_item - temp_vec.data()),
 						": ",
-						"{", uset_item->tl_corner(), " ",
-							uset_item->br_corner(), "}\n");
+						"{", uset_item->bbox().tl_corner(), " ",
+							uset_item->bbox().br_corner(), "}\n");
 					//grid_check_vec.at(i).insert
 					//	(size_t(uset_item - temp_vec.data()));
 				}
@@ -229,16 +224,16 @@ void test_main() {
 		const auto& uset = temp.find_others(&temp_item); 
 
 		printout(i, ": ",
-			"{", temp_item.tl_corner(), " ",
-				temp_item.br_corner(), "}:\n");
+			"{", temp_item.bbox().tl_corner(), " ",
+				temp_item.bbox().br_corner(), "}:\n");
 		for (size_t j=0; j<temp_vec.size(); ++j) {
 			if (i != j) {
 				auto& inner_item = temp_vec.at(j);
-				if (inner_item.intersect(temp_item)) {
+				if (inner_item.bbox().intersect(temp_item.bbox())) {
 					printout("\t", j,
 						": ",
-						"{", inner_item.tl_corner(), " ",
-							inner_item.br_corner(), "}\n");
+						"{", inner_item.bbox().tl_corner(), " ",
+							inner_item.bbox().br_corner(), "}\n");
 				}
 			}
 		}

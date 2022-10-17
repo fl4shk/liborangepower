@@ -10,9 +10,10 @@ namespace math {
 //	DimY = true,
 //};
 //--------
-// A grid for doing cheaper collision checking in 2D, with constant sizes
+// A grid for doing cheaper collision checking in 2D, with constant
+// numerical attributes of the grid
 template<typename PhysElTarg,
-	//HasRect2ConGetter<PhysElTarg> DataElemTarg,
+	HasRect2BboxConGetter<PhysElTarg> DataElemTarg,
 	Vec2<PhysElTarg> GRID_ELEM_SIZE_2D_TARG,
 	Vec2<i32> NUM_GRID_ELEMS_2D_TARG,
 	Vec2<PhysElTarg> ENC_PHYS_EL_RECT2_POS_TARG
@@ -49,6 +50,10 @@ public:		// types
 	template<typename T>
 	using Uset = std::unordered_set
 		<T, std::hash<T>, std::equal_to<T>, Alloc<T>>;
+	template<typename Key, typename T>
+	using Umap = std::unordered_map
+		<Key, T, std::hash<Key>, std::equal_to<Key>,
+		Alloc<std::pair<const Key, T>>>;
 
 	//using PhysR2Dynarr = std::vector<PhysElRect2, Alloc<PhysElRect2>>;
 	//using PhysR2Dyna2d
@@ -146,17 +151,13 @@ public:		// constants
 			(to_grid_ind_vec2(ENC_PHYS_EL_RECT2.tl_corner()),
 			to_grid_ind_vec2(ENC_PHYS_EL_RECT2.br_corner()));
 public:		// types
-	//using DataElT = DataElemTarg;
-	using DataElT = PhysElRect2;
-	using DataMapElT = Uset<DataElT*>;
+	using DataElT = DataElemTarg;
+	using DataElPtrUsetT = Uset<DataElT*>;
 	//using DataRowT
 	//	= std::array<Uset<DataElT*>, ENC_GRID_IND_RECT2.size_2d.x>;
 	//using DataT
 	//	= std::array<DataRowT, ENC_GRID_IND_RECT2.size_2d.y>;
-	using DataT = std::unordered_map
-		<GridIndVec2, DataMapElT,
-		std::hash<GridIndVec2>, std::equal_to<GridIndVec2>,
-		Alloc<std::pair<const GridIndVec2, DataMapElT>>>;
+	using DataT = Umap<GridIndVec2, DataElPtrUsetT>;
 protected:		// variables
 	//Vec2<PhysElT>
 	//	elem_size_2d = {PhysElT(0), PhysElT(0)};
@@ -185,9 +186,7 @@ public:		// functions
 public:		// functions
 	bool insert(DataElT* data_el) {
 		const GridIndRect2
-			grid_ind_rect2
-				//= to_grid_ind_rect2_lim(data_el->rect());
-				= to_grid_ind_rect2_lim(*data_el);
+			grid_ind_rect2 = to_grid_ind_rect2_lim(data_el->bbox());
 
 		bool ret = false;
 
@@ -204,7 +203,7 @@ public:		// functions
 			) {
 				ret = true;
 				//_at(pos).insert(data_el);
-				_data.insert(std::pair(pos, DataMapElT()));
+				_data.insert(std::pair(pos, DataElPtrUsetT()));
 				_data.at(pos).insert(data_el);
 			}
 		}
@@ -255,13 +254,11 @@ public:		// functions
 		_data.clear();
 	}
 	// This finds others that are located in the same grid elements
-	DataMapElT find_others(DataElT* data_el) const {
-		DataMapElT ret;
+	DataElPtrUsetT find_others(DataElT* data_el) const {
+		DataElPtrUsetT ret;
 
 		const GridIndRect2
-			grid_ind_rect2
-				//= to_grid_ind_rect2_lim(data_el->rect());
-				= to_grid_ind_rect2_lim(*data_el);
+			grid_ind_rect2 = to_grid_ind_rect2_lim(data_el->bbox());
 
 		GridIndVec2 pos;
 		for (
