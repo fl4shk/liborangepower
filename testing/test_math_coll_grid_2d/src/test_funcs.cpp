@@ -203,15 +203,15 @@ void test_main() {
 		const auto& uset = temp.find_others(&temp_item); 
 
 		printout(i, ": ",
-			"{", temp_item.rect.tl_corner(), " ",
-				temp_item.rect.br_corner(), "}:\n");
+			"{", temp_item.rect().tl_corner(), " ",
+				temp_item.rect().br_corner(), "}:\n");
 		for (auto* uset_item: uset) {
 			//if (&temp_item != uset_item) {
-				if (uset_item->rect.intersect(temp_item.rect)) {
+				if (uset_item->rect().intersect(temp_item.rect())) {
 					printout("\t", size_t(uset_item - temp_vec.data()),
 						": ",
-						"{", uset_item->rect.tl_corner(), " ",
-							uset_item->rect.br_corner(), "}\n");
+						"{", uset_item->rect().tl_corner(), " ",
+							uset_item->rect().br_corner(), "}\n");
 					//grid_check_vec.at(i).insert
 					//	(size_t(uset_item - temp_vec.data()));
 				}
@@ -224,16 +224,16 @@ void test_main() {
 		const auto& uset = temp.find_others(&temp_item); 
 
 		printout(i, ": ",
-			"{", temp_item.rect.tl_corner(), " ",
-				temp_item.rect.br_corner(), "}:\n");
+			"{", temp_item.rect().tl_corner(), " ",
+				temp_item.rect().br_corner(), "}:\n");
 		for (size_t j=0; j<temp_vec.size(); ++j) {
 			if (i != j) {
 				auto& inner_item = temp_vec.at(j);
-				if (inner_item.rect.intersect(temp_item.rect)) {
+				if (inner_item.rect().intersect(temp_item.rect())) {
 					printout("\t", j,
 						": ",
-						"{", inner_item.rect.tl_corner(), " ",
-							inner_item.rect.br_corner(), "}\n");
+						"{", inner_item.rect().tl_corner(), " ",
+							inner_item.rect().br_corner(), "}\n");
 				}
 			}
 		}

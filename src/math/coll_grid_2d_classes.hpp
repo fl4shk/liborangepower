@@ -10,13 +10,9 @@ namespace math {
 //	DimY = true,
 //};
 //--------
-template<typename T, typename PhysElTarg>
-concept HasRect2Mbr
-= requires(T& obj) {
-	{ obj.rect } -> std::same_as<Rect2<PhysElTarg>&>;
-};
 // A grid for doing cheaper collision checking in 2D, with constant sizes
-template<typename PhysElTarg, HasRect2Mbr<PhysElTarg> DataElemTarg,
+template<typename PhysElTarg,
+	HasRect2ConGetter<PhysElTarg> DataElemTarg,
 	Vec2<PhysElTarg> GRID_ELEM_SIZE_2D_TARG,
 	Vec2<i32> NUM_GRID_ELEMS_2D_TARG,
 	Vec2<PhysElTarg> ENC_PHYS_EL_RECT2_POS_TARG
@@ -150,16 +146,16 @@ public:		// constants
 			(to_grid_ind_vec2(ENC_PHYS_EL_RECT2.tl_corner()),
 			to_grid_ind_vec2(ENC_PHYS_EL_RECT2.br_corner()));
 public:		// types
-	using DataElemT = DataElemTarg;
-	using DataMapElemT = Uset<DataElemT*>;
+	using DataElT = DataElemTarg;
+	using DataMapElT = Uset<DataElT*>;
 	//using DataRowT
-	//	= std::array<Uset<DataElemT*>, ENC_GRID_IND_RECT2.size_2d.x>;
+	//	= std::array<Uset<DataElT*>, ENC_GRID_IND_RECT2.size_2d.x>;
 	//using DataT
 	//	= std::array<DataRowT, ENC_GRID_IND_RECT2.size_2d.y>;
 	using DataT = std::unordered_map
-		<GridIndVec2, DataMapElemT,
+		<GridIndVec2, DataMapElT,
 		std::hash<GridIndVec2>, std::equal_to<GridIndVec2>,
-		Alloc<std::pair<const GridIndVec2, DataMapElemT>>>;
+		Alloc<std::pair<const GridIndVec2, DataMapElT>>>;
 protected:		// variables
 	//Vec2<PhysElT>
 	//	elem_size_2d = {PhysElT(0), PhysElT(0)};
@@ -186,9 +182,9 @@ public:		// functions
 //		return _data.at(pos.y).at(pos.x);
 //	}
 public:		// functions
-	bool insert(DataElemT* data_elem) {
+	bool insert(DataElT* data_el) {
 		const GridIndRect2
-			grid_ind_rect2 = to_grid_ind_rect2_lim(data_elem->rect);
+			grid_ind_rect2 = to_grid_ind_rect2_lim(data_el->rect());
 
 		bool ret = false;
 
@@ -204,22 +200,22 @@ public:		// functions
 				++pos.x
 			) {
 				ret = true;
-				//_at(pos).insert(data_elem);
-				_data.insert(std::pair(pos, DataMapElemT()));
-				_data.at(pos).insert(data_elem);
+				//_at(pos).insert(data_el);
+				_data.insert(std::pair(pos, DataMapElT()));
+				_data.at(pos).insert(data_el);
 			}
 		}
 
 		return ret;
 	}
-	//void insert(const Uset<PhysElRect2*>& to_insert_uset) {
+	//void insert(const Uset<DataElT*>& to_insert_uset) {
 	//	for (const auto& item: to_insert_uset) {
 	//		insert(item);
 	//	}
 	//}
 
 	bool erase(
-		DataElemT* data_elem, const GridIndRect2& search_grid_ind_rect2
+		DataElT* data_el, const GridIndRect2& search_grid_ind_rect2
 	) {
 		bool ret = false;
 
@@ -236,10 +232,10 @@ public:		// functions
 			) {
 				if (
 					_data.contains(pos)
-					&& _data.at(pos).contains(data_elem)
+					&& _data.at(pos).contains(data_el)
 				) {
 					ret = true;
-					_data.at(pos).erase(data_elem);
+					_data.at(pos).erase(data_el);
 				}
 			}
 		}
@@ -256,11 +252,11 @@ public:		// functions
 		_data.clear();
 	}
 	// This finds others that are located in the same grid elements
-	DataMapElemT find_others(DataElemT* data_elem) const {
-		DataMapElemT ret;
+	DataMapElT find_others(DataElT* data_el) const {
+		DataMapElT ret;
 
 		const GridIndRect2
-			grid_ind_rect2 = to_grid_ind_rect2_lim(data_elem->rect);
+			grid_ind_rect2 = to_grid_ind_rect2_lim(data_el->rect());
 
 		GridIndVec2 pos;
 		for (
@@ -275,20 +271,20 @@ public:		// functions
 			) {
 				if (
 					_data.contains(pos)
-					//&& _data.at(pos).contains(data_elem)
+					//&& _data.at(pos).contains(data_el)
 				) {
 					ret.insert(_data.at(pos).cbegin(),
 						_data.at(pos).cend());
 				}
 			}
 		}
-		if (ret.contains(data_elem)) {
-			ret.erase(data_elem);
+		if (ret.contains(data_el)) {
+			ret.erase(data_el);
 		}
 		return ret;
 	}
-	//Uset<std::pair<DataElemT*, DataElemT*>> intersect() const {
-	//	Uset<std::pair<DataElemT*, DataElemT*>> ret;
+	//Uset<std::pair<DataElT*, DataElT*>> intersect() const {
+	//	Uset<std::pair<DataElT*, DataElT*>> ret;
 
 	//	//GridIndVec2 pos;
 	//	//for (

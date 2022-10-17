@@ -1291,6 +1291,20 @@ concept CanRect2IntersectFancy
 	{ r2.intersect_fancy(arg, arg_padding) }
 		-> std::convertible_to<Hit2<T>>;
 };
+
+template<typename T, typename PhysElTarg>
+concept HasRect2ConGetter
+= requires(const T& obj) {
+	{ obj.rect() } -> std::same_as<const Rect2<PhysElTarg>&>;
+};
+//template<typename T, typename PhysElTarg>
+//concept HasRect2Mbr
+//= requires(T obj) {
+//	{ obj.rect } -> std::same_as<Rect2<PhysElTarg>&>; 
+//}
+//template<typename T, typename PhysElTarg>
+//concept HasRect2MbrOrConGetter
+//= (HasRect2Mbr<T, PhysElTarg> || HasRect2ConGetter<T, PhysElTarg>);
 //--------
 //template<typename T>
 //using MultiSweepElem
