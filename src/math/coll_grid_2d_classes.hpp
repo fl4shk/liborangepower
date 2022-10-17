@@ -13,7 +13,7 @@ namespace math {
 // A grid for doing cheaper collision checking in 2D, with constant
 // numerical attributes of the grid
 template<typename PhysElTarg,
-	HasRect2BboxConGetter<PhysElTarg> DataElemTarg,
+	HasRect2BboxConGetter<PhysElTarg> DataElTarg,
 	Vec2<PhysElTarg> GRID_ELEM_SIZE_2D_TARG,
 	Vec2<i32> NUM_GRID_ELEMS_2D_TARG,
 	Vec2<PhysElTarg> ENC_PHYS_EL_RECT2_POS_TARG
@@ -35,18 +35,9 @@ public:		// types
 	using Alloc = AllocTarg<OtherT>;
 
 	// "Dynarr" is short for "Dynamic Array"
-	//using GridIndDynarr = std::vector<GridIndVec2, Alloc<GridIndVec2>>;
-	//using GridIndDyna2d
-	//	= std::vector<GridIndDynarr, Alloc<GridIndDynarr>>;
+	template<typename T>
+	using Dynarr = std::vector<T, Alloc<T>>;
 
-	//using GridIndR2Dynarr = std::vector<GridIndRect2, Alloc<GridIndRect2>>;
-	//using GridIndR2Dyna2d
-	//	= std::vector<GridIndR2Dynarr, Alloc<GridIndR2Dynarr>>;
-
-	//template<typename T>
-	//using R2PtrDynarr = std::vector<Rect2<T>*, Alloc<Rect2<T>*>>;
-	//template<typename T>
-	//using R2PtrDyna2d = std::vector<R2PtrDynarr<T>, Alloc<R2PtrDynarr<T>>>;
 	template<typename T>
 	using Uset = std::unordered_set
 		<T, std::hash<T>, std::equal_to<T>, Alloc<T>>;
@@ -54,15 +45,6 @@ public:		// types
 	using Umap = std::unordered_map
 		<Key, T, std::hash<Key>, std::equal_to<Key>,
 		Alloc<std::pair<const Key, T>>>;
-
-	//using PhysR2Dynarr = std::vector<PhysElRect2, Alloc<PhysElRect2>>;
-	//using PhysR2Dyna2d
-	//	= std::vector<PhysR2Dynarr, Alloc<PhysR2Dynarr>>;
-
-	//template<CanRect2Intersect<T> ShapeT>
-	//using IntersectShapeVec = std::vector<ShapeT, Alloc<ShapeT>>;
-	//template<CanRect2IntersectFancy<T> ShapeT>
-	//using IntersectFancyShapeVec = std::vector<ShapeT, Alloc<ShapeT>>;
 
 public:		// constants
 	static constexpr PhysElVec2
@@ -151,7 +133,7 @@ public:		// constants
 			(to_grid_ind_vec2(ENC_PHYS_EL_RECT2.tl_corner()),
 			to_grid_ind_vec2(ENC_PHYS_EL_RECT2.br_corner()));
 public:		// types
-	using DataElT = DataElemTarg;
+	using DataElT = DataElTarg;
 	using DataElPtrUsetT = Uset<DataElT*>;
 	//using DataRowT
 	//	= std::array<Uset<DataElT*>, ENC_GRID_IND_RECT2.size_2d.x>;
@@ -159,11 +141,6 @@ public:		// types
 	//	= std::array<DataRowT, ENC_GRID_IND_RECT2.size_2d.y>;
 	using DataT = Umap<GridIndVec2, DataElPtrUsetT>;
 protected:		// variables
-	//Vec2<PhysElT>
-	//	elem_size_2d = {PhysElT(0), PhysElT(0)};
-	//GridIndVec2
-	//	grid_size_2d = GridIndVec2(0, 0);
-	//R2PtrVecA2d _data;
 	DataT
 		_data;
 public:		// functions
@@ -171,18 +148,6 @@ public:		// functions
 	CollGridCsz2d() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(CollGridCsz2d);
 	virtual ~CollGridCsz2d() = default;
-	//template<CanRect2Intersect<PhysElT> ShapeT>
-	//static GridIndDyna2d grid_indices(
-	//	const std::vector<ShapeT, Alloc<ShapeT>>& arg_vec
-	//) {
-	//}
-//protected:		// functions
-//	constexpr inline auto& _at(const GridIndVec2& pos) {
-//		return _data.at(pos.y).at(pos.x);
-//	}
-//	constexpr inline const auto& _at(const GridIndVec2& pos) const {
-//		return _data.at(pos.y).at(pos.x);
-//	}
 public:		// functions
 	bool insert(DataElT* data_el) {
 		const GridIndRect2
@@ -217,19 +182,24 @@ public:		// functions
 	//}
 
 	bool erase(
-		DataElT* data_el, const GridIndRect2& search_grid_ind_rect2
+		DataElT* data_el,
+		const std::optional<GridIndRect2>& search_grid_ind_rect2
 	) {
 		bool ret = false;
+		GridIndRect2 temp_grid_ind_rect2
+			= search_grid_ind_rect2
+			? *search_grid_ind_rect2
+			: to_grid_ind_rect2_lim(data_el->bbox());
 
 		GridIndVec2 pos;
 		for (
-			pos.y=search_grid_ind_rect2.top_y();
-			pos.y<=search_grid_ind_rect2.bottom_y();
+			pos.y=temp_grid_ind_rect2.top_y();
+			pos.y<=temp_grid_ind_rect2.bottom_y();
 			++pos.y
 		) {
 			for (
-				pos.x=search_grid_ind_rect2.left_x();
-				pos.x<=search_grid_ind_rect2.right_x();
+				pos.x=temp_grid_ind_rect2.left_x();
+				pos.x<=temp_grid_ind_rect2.right_x();
 				++pos.x
 			) {
 				if (
@@ -285,25 +255,6 @@ public:		// functions
 		}
 		return ret;
 	}
-	//Uset<std::pair<DataElT*, DataElT*>> intersect() const {
-	//	Uset<std::pair<DataElT*, DataElT*>> ret;
-
-	//	//GridIndVec2 pos;
-	//	//for (
-	//	//	pos.y=ENC_GRID_IND_RECT2.top_y();
-	//	//	pos.y<=ENC_GRID_IND_RECT2.bottom_y();
-	//	//	++pos.y
-	//	//) {
-	//	//	for (
-	//	//		pos.x=ENC_GRID_IND_RECT2.left_x();
-	//	//		pos.x<=ENC_GRID_IND_RECT2.right_x();
-	//	//		++pos.x
-	//	//	) {
-	//	//	}
-	//	//}
-	//	//for (const auto& item: _data) {
-	//	//}
-	//}
 
 	//static constexpr inline GridIndRect2 to_grid_ind_rect2(
 	//	const PhysElRect2& phys_el_rect2
@@ -327,24 +278,6 @@ public:		// functions
 			to_grid_ind_vec2(phys_el_rect2.br_corner()),
 			ENC_GRID_IND_RECT2);
 	}
-
-	//template<CanRect2IntersectFancy<PhysElT> ShapeT>
-	//static GridIndDyna2d grid_indices_fancy(
-	//	const IntersectFancyShapeDynarr<ShapeT>& shape_vec,
-	//	const Vec2<PhysElT>& arg_padding=Vec2<PhysElT>()
-	//);
-
-	//static GridIndRect2 grid_indices_fancy(
-	//	const Rect2<PhysElT>& arg,
-	//	const Vec2<PhysElT>& arg_padding=Vec2<PhysElT>()
-	//) {
-	//	GridIndDynarr ret;
-
-	//	if (ENC_PHYS_EL_RECT2.intersect_fancy(arg, arg_padding)) {
-	//	}
-
-	//	return ret;
-	//}
 	//--------
 	GEN_GETTER_BY_CON_REF(data);
 	//--------

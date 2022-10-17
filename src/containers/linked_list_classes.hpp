@@ -381,14 +381,14 @@ namespace containers {
 //	return ret;
 //}
 //--------
-template<std::integral ArgIndexT>
-static constexpr ArgIndexT IND_CLL_NULL_INDEX = -1;
+template<std::integral IndexTarg>
+static constexpr IndexTarg IND_CLL_NULL_INDEX = -1;
 
-template<typename T, std::integral ArgIndexT, typename ArgIndexAllocT,
-	typename ArgNodeAllocT>
+template<typename T, std::integral IndexTarg, typename ArgIndexAllocT,
+	typename NodeAllocTarg>
 class IndCircLinkList;
 
-template<typename T, std::integral ArgIndexT>
+template<typename T, std::integral IndexTarg>
 class IndCllNode final {
 	template<typename, std::integral, typename, typename>
 	friend class IndCircLinkList;
@@ -401,10 +401,10 @@ public:		// types
 	//using MoveConstructEnIf = std::enable_if<std::is_move_assignable
 	//	<OtherT>::value, IndCllNode>;
 public:		// constants
-	static constexpr ArgIndexT
-		NULL_INDEX = IND_CLL_NULL_INDEX<ArgIndexT>;
+	static constexpr IndexTarg
+		NULL_INDEX = IND_CLL_NULL_INDEX<IndexTarg>;
 private:		// variables
-	ArgIndexT _next = NULL_INDEX, _prev = NULL_INDEX;
+	IndexTarg _next = NULL_INDEX, _prev = NULL_INDEX;
 public:		// variables
 	T data;
 public:		// functions
@@ -430,15 +430,15 @@ public:		// functions
 	GEN_GETTER_BY_VAL(prev);
 };
 
-template<typename T, std::integral ArgIndexT=size_t,
-	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
-	typename ArgNodeAllocT=std::allocator<IndCllNode<T, ArgIndexT>>>
+template<typename T, std::integral IndexTarg=size_t,
+	typename ArgIndexAllocT=std::allocator<IndexTarg>,
+	typename NodeAllocTarg=std::allocator<IndCllNode<T, IndexTarg>>>
 class IndCircLinkList {
 public:		// types
 	using ElemT = T;
-	using IndexT = ArgIndexT;
+	using IndexT = IndexTarg;
 	using IndexAllocT = ArgIndexAllocT;
-	using NodeAllocT = ArgNodeAllocT;
+	using NodeAllocT = NodeAllocTarg;
 	using Node = IndCllNode<T, IndexT>;
 public:		// constants
 	static constexpr IndexT
@@ -533,10 +533,10 @@ public:		// functions
 		return at(HEAD_INDEX);
 	}
 
-	inline Node& at(ArgIndexT index) {
+	inline Node& at(IndexTarg index) {
 		return _node_vec.at(index);
 	}
-	inline const Node& at(ArgIndexT index) const {
+	inline const Node& at(IndexTarg index) const {
 		return _node_vec.at(index);
 	}
 
@@ -747,11 +747,11 @@ constexpr inline bool is_ind_circ_link_list() {
 	return concepts::is_specialization<T, IndCircLinkList>();
 }
 
-//template<typename T, std::integral ArgIndexT,
+//template<typename T, std::integral IndexTarg,
 //	template<typename...> typename Alloc,
 //	typename... RemAllocTs>
 //std::ostream& operator << (std::ostream& os,
-//	const IndCircLinkList<T, ArgIndexT, Alloc, RemAllocTs...>& to_print)
+//	const IndCircLinkList<T, IndexTarg, Alloc, RemAllocTs...>& to_print)
 //std::ostream& operator << (std::ostream& os,
 //	const concepts::IsSpecialization<IndCircLinkList> auto& to_print)
 template<concepts::IsSpecialization<IndCircLinkList> ToPrintT>
@@ -776,12 +776,12 @@ constexpr std::ostream& operator << (std::ostream& os,
 	return os;
 }
 
-template<typename T, std::integral ArgIndexT=size_t,
-	typename ArgIndexAllocT=std::allocator<ArgIndexT>,
-	typename ArgNodeAllocT=std::allocator<IndCllNode<T, ArgIndexT>>>
-IndCircLinkList<T, ArgIndexT, ArgIndexAllocT, ArgNodeAllocT>
+template<typename T, std::integral IndexTarg=size_t,
+	typename ArgIndexAllocT=std::allocator<IndexTarg>,
+	typename NodeAllocTarg=std::allocator<IndCllNode<T, IndexTarg>>>
+IndCircLinkList<T, IndexTarg, ArgIndexAllocT, NodeAllocTarg>
 	make_ind_cll(T&& first_arg, std::same_as<T> auto&&... rem_args) {
-	IndCircLinkList<T, ArgIndexT, ArgIndexAllocT, ArgNodeAllocT> ret;
+	IndCircLinkList<T, IndexTarg, ArgIndexAllocT, NodeAllocTarg> ret;
 
 	ret.push_back(std::move(first_arg));
 

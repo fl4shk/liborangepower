@@ -25,6 +25,7 @@ inline auto get_hrc_now() {
 inline auto get_hrc_now_time_t() {
 	return std::chrono::high_resolution_clock::to_time_t(get_hrc_now());
 }
+// For seeding RNGs
 inline auto get_hrc_now_rng_seed() {
 	return get_hrc_now().time_since_epoch().count();
 }

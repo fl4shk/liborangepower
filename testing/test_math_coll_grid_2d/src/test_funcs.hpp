@@ -11,7 +11,7 @@ public:		// types
 	using PhysElRect2 = Rect2<PhysElT>;
 public:		// variables
 	PhysElRect2
-		rect = {.pos=PhysElVec2(), .size_2d=PhysElVec2()};
+		rect{.pos=PhysElVec2(), .size_2d=PhysElVec2()};
 	//int rect;
 public:		// functions
 	constexpr inline PhysElRect2& bbox() {
@@ -21,6 +21,7 @@ public:		// functions
 		return rect;
 	}
 };
+
 //void test_to_grid_ind();
 void test_enc_rect2s_and_coord_conv();
 void test_to_grid_ind_rect2();

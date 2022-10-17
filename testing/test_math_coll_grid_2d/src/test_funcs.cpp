@@ -155,12 +155,14 @@ void test_main() {
 	using PhysElRect2 = Rect2<PhysElT>;
 
 	static constexpr PhysElVec2
-		GRID_ELEM_SIZE_2D{2.0, 2.0};
+		GRID_ELEM_SIZE_2D{2.0, 2.0},
+		ENC_PHYS_EL_RECT2_POS{-1.0, -1.0};
+		//ENC_PHYS_EL_RECT2_POS{0.0, 0.0};
 	static constexpr GridIndVec2
 		NUM_GRID_ELEMS_2D{16, 16};
 	using CollGridT
 		= CollGridCsz2d<PhysElT, MyHasRect2<PhysElT>, GRID_ELEM_SIZE_2D,
-			NUM_GRID_ELEMS_2D>;
+			NUM_GRID_ELEMS_2D, ENC_PHYS_EL_RECT2_POS>;
 	//--------
 	//const auto
 	//	prt0 = PhysElRect2::build_in_grid<PhysElT>
@@ -176,67 +178,193 @@ void test_main() {
 	//--------
 	CollGridT temp;
 
-	std::vector<MyHasRect2<PhysElT>> temp_vec;
+	//std::vector<MyHasRect2<PhysElT>> temp_vec;
 
-	auto append = [&](
+	//auto append = [&](
+	//	const PhysElVec2& tl_corner, const PhysElVec2& br_corner
+	//) -> auto& {
+	//	temp_vec.push_back({PhysElRect2::build_in_grid_lim<PhysElT>
+	//		(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2)});
+	//	return temp_vec.back();
+	//};
+	auto build_temp = [&temp](
 		const PhysElVec2& tl_corner, const PhysElVec2& br_corner
-	) -> auto& {
-		temp_vec.push_back({PhysElRect2::build_in_grid_lim<PhysElT>
-			(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2)});
-		return temp_vec.back();
+	) -> std::shared_ptr<MyHasRect2<PhysElT>> {
+		auto ret_ptr = new MyHasRect2<PhysElT>
+			(PhysElRect2::build_in_grid_lim<PhysElT>
+				(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2));
+		return std::shared_ptr<MyHasRect2<PhysElT>>(ret_ptr);
 	};
 
-	append({0, 0}, {1, 1});
-	append({1, 2}, {3, 3});
-	append({1, 1}, {6, 6});
-	append({5, 5}, {6, 6});
-
-	//std::vector<std::set<size_t>>
-	//	grid_check_vec(temp_vec.size(), std::set<size_t>()),
-	//	raw_check_vec(temp_vec.size(), std::set<size_t>());
+	//std::vector<MyHasRect2<PhysElT>> temp_vec({
+	//});
+	std::vector<std::shared_ptr<MyHasRect2<PhysElT>>> temp_vec({
+		build_temp({0, 0}, {1, 1}),
+		build_temp({1, 2}, {3, 3}),
+		build_temp({1, 1}, {6, 6}),
+		build_temp({5, 5}, {6.1, 6.1}),
+		//build_temp({6, 6}, {6, 6}),
+	});
+	//temp_vec.push_back(build_temp({0, 0}, {2, 2}));
 
 	for (size_t i=0; i<temp_vec.size(); ++i) {
-		temp.insert(&temp_vec.at(i));
+		temp.insert(temp_vec.at(i).get());
 	}
-	for (size_t i=0; i<temp_vec.size(); ++i) {
-		auto& temp_item = temp_vec.at(i);
-		const auto& uset = temp.find_others(&temp_item); 
-
-		printout(i, ": ",
-			"{", temp_item.bbox().tl_corner(), " ",
-				temp_item.bbox().br_corner(), "}:\n");
-		for (auto* uset_item: uset) {
-			//if (&temp_item != uset_item) {
-				if (uset_item->bbox().intersect(temp_item.bbox())) {
-					printout("\t", size_t(uset_item - temp_vec.data()),
-						": ",
-						"{", uset_item->bbox().tl_corner(), " ",
-							uset_item->bbox().br_corner(), "}\n");
-					//grid_check_vec.at(i).insert
-					//	(size_t(uset_item - temp_vec.data()));
-				}
-			//}
-		}
-	}
-	printout("\n");
-	for (size_t i=0; i<temp_vec.size(); ++i) {
-		auto& temp_item = temp_vec.at(i);
-		const auto& uset = temp.find_others(&temp_item); 
-
-		printout(i, ": ",
-			"{", temp_item.bbox().tl_corner(), " ",
-				temp_item.bbox().br_corner(), "}:\n");
+	//--------
+	auto find_index = [&temp_vec](auto* some_item, size_t i)
+	-> std::optional<size_t> {
 		for (size_t j=0; j<temp_vec.size(); ++j) {
-			if (i != j) {
-				auto& inner_item = temp_vec.at(j);
-				if (inner_item.bbox().intersect(temp_item.bbox())) {
-					printout("\t", j,
-						": ",
-						"{", inner_item.bbox().tl_corner(), " ",
-							inner_item.bbox().br_corner(), "}\n");
+			if (i != j && some_item == temp_vec.at(j).get()) {
+				return j;
+			}
+		}
+		return std::nullopt;
+	};
+	using TestResultSet = std::set<size_t>;
+	using TestResultSetVec = std::vector<TestResultSet>;
+	class CmpRet final {
+	public:		// variables
+		TestResultSetVec
+			grid_vec,
+			basic_vec;
+		std::set<size_t> fail_set;
+	public:		// functions
+		inline bool any_fail() const {
+			return (fail_set.size() > 0);
+		}
+	};
+	auto show_all = [&temp, &temp_vec, &find_index]() -> void {
+		for (size_t i=0; i<temp_vec.size(); ++i) {
+			auto& temp_item = temp_vec.at(i);
+			const auto& uset = temp.find_others(temp_item.get()); 
+
+			printout(i, ": ",
+				"{", temp_item->bbox().tl_corner(), " ",
+					temp_item->bbox().br_corner(), "}:\n");
+			for (auto* uset_item: uset) {
+				if (uset_item->bbox().intersect(temp_item->bbox())) {
+					if (auto j=find_index(uset_item, i); j) {
+						printout("\t", *j, ": ",
+							"{", uset_item->bbox().tl_corner(), " ",
+								uset_item->bbox().br_corner(), "}\n");
+					}
 				}
 			}
 		}
+		printout("\n");
+		for (size_t i=0; i<temp_vec.size(); ++i) {
+			auto& temp_item = temp_vec.at(i);
+			const auto& uset = temp.find_others(temp_item.get()); 
+
+			printout(i, ": ",
+				"{", temp_item->bbox().tl_corner(), " ",
+					temp_item->bbox().br_corner(), "}:\n");
+			for (size_t j=0; j<temp_vec.size(); ++j) {
+				if (i != j) {
+					auto& inner_item = temp_vec.at(j);
+					if (inner_item->bbox().intersect(temp_item->bbox())) {
+						printout("\t", j, ": ",
+							"{", inner_item->bbox().tl_corner(), " ",
+								inner_item->bbox().br_corner(), "}\n");
+					}
+				}
+			}
+		}
+	};
+
+	auto compare = [&]() -> CmpRet {
+		CmpRet ret
+			{.grid_vec=TestResultSetVec(temp_vec.size(), TestResultSet()),
+			.basic_vec=TestResultSetVec(temp_vec.size(), TestResultSet())};
+
+		for (size_t i=0; i<temp_vec.size(); ++i) {
+			auto& temp_item = temp_vec.at(i);
+			const auto& uset = temp.find_others(temp_item.get()); 
+			for (size_t j=0; j<temp_vec.size(); ++j) {
+				if (i != j) {
+					auto& inner_item = temp_vec.at(j);
+					if (inner_item->bbox().intersect(temp_item->bbox())) {
+						if (uset.contains(inner_item.get())) {
+							ret.grid_vec.at(i).insert(j);
+						}
+						ret.basic_vec.at(i).insert(j);
+					}
+				}
+			}
+			if (ret.grid_vec.at(i) != ret.basic_vec.at(i)) {
+				ret.fail_set.insert(i);
+			}
+		}
+
+		return ret;
+	};
+	auto show_if_fail = [&](const CmpRet& cmp_ret) -> bool {
+		if (cmp_ret.any_fail()) {
+			printout("Compare failure found!\n");
+			for (const auto& fail: cmp_ret.fail_set) {
+				auto& temp_item = temp_vec.at(fail);
+				printout("fail:", fail, ": ",
+					"{", temp_item->bbox().tl_corner(), " ",
+						temp_item->bbox().br_corner(), "}:\n");
+
+				printout("\tgrid_vec:\n");
+				for (const auto& grid_ind: cmp_ret.grid_vec.at(fail)) {
+					printout("\t\tgrid_ind etc: ",
+						grid_ind, " ", temp_vec.size(),
+						"\n");
+					//auto* grid_item = &temp_vec.at(grid_ind);
+					//printout("\t\t", grid_item - temp_vec.data(), ": ",
+					//	"{", grid_item->bbox().tl_corner(), " ",
+					//		grid_item->bbox().br_corner(), "}\n");
+				}
+				printout("\tbasic_vec:\n");
+				for (const auto& basic_ind: cmp_ret.basic_vec.at(fail)) {
+					printout("\t\tbasic_ind etc: ",
+						basic_ind, " ", temp_vec.size(),
+						"\n");
+					//auto* basic_item = &temp_vec.at(basic_ind);
+					//printout("\t\t", basic_item - temp_vec.data(), ": ",
+					//	"{", basic_item->bbox().tl_corner(), " ",
+					//		basic_item->bbox().br_corner(), "}\n");
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	};
+	auto show_fail_or_all = [&](const CmpRet& cmp_ret) -> bool {
+		if (show_if_fail(cmp_ret)) {
+			return true;
+		} else {
+			printout("No compare failure found!\n");
+			show_all();
+			return false;
+		}
+	};
+
+	//show_all();
+
+	//if (auto iter=temp_vec.begin() + 1; true) {
+	//	//temp.erase(&(*(temp_vec.begin() + 1)));
+	//	//temp_vec.erase(temp_vec.begin() + 1);
+	//	temp.erase(&(*iter), std::nullopt);
+	//	temp_vec.erase(iter);
+	//}
+	//if (auto iter=temp_vec.begin(); true) {
+	//	//temp.erase(&(*(temp_vec.begin() + 1)));
+	//	//temp_vec.erase(temp_vec.begin() + 1);
+	//	temp.erase(iter->get(), std::nullopt);
+	//	temp_vec.erase(iter);
+	//}
+	//printout("sizes etc: ",
+	//	temp_vec.size(), " ",
+	//	temp.data().size(),
+	//	"\n");
+	//printout("temp_vec.size(): ", temp_vec.size(), "\n");
+
+	if (auto cmp_ret=compare(); true) {
+		show_fail_or_all(cmp_ret);
 	}
 	//--------
 }
