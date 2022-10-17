@@ -351,18 +351,23 @@ void test_main() {
 	//	temp.erase(&(*iter), std::nullopt);
 	//	temp_vec.erase(iter);
 	//}
-	//if (auto iter=temp_vec.begin(); true) {
-	//	//temp.erase(&(*(temp_vec.begin() + 1)));
-	//	//temp_vec.erase(temp_vec.begin() + 1);
-	//	temp.erase(iter->get(), std::nullopt);
-	//	temp_vec.erase(iter);
-	//}
+	printout("Testing before `erase()`\n");
+	if (auto cmp_ret=compare(); true) {
+		show_fail_or_all(cmp_ret);
+	}
+	if (auto iter=temp_vec.begin(); true) {
+		//temp.erase(&(*(temp_vec.begin() + 1)));
+		//temp_vec.erase(temp_vec.begin() + 1);
+		temp.erase(iter->get(), std::nullopt);
+		temp_vec.erase(iter);
+	}
 	//printout("sizes etc: ",
 	//	temp_vec.size(), " ",
 	//	temp.data().size(),
 	//	"\n");
 	//printout("temp_vec.size(): ", temp_vec.size(), "\n");
 
+	printout("Testing after `erase()`\n");
 	if (auto cmp_ret=compare(); true) {
 		show_fail_or_all(cmp_ret);
 	}

@@ -148,6 +148,7 @@ public:		// functions
 	CollGridCsz2d() = default;
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(CollGridCsz2d);
 	virtual ~CollGridCsz2d() = default;
+	//--------
 public:		// functions
 	bool insert(DataElT* data_el) {
 		const GridIndRect2
