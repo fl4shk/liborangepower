@@ -12,7 +12,7 @@ namespace math {
 //--------
 // A grid for doing cheaper collision checking in 2D, with constant sizes
 template<typename PhysElTarg,
-	HasRect2ConGetter<PhysElTarg> DataElemTarg,
+	//HasRect2ConGetter<PhysElTarg> DataElemTarg,
 	Vec2<PhysElTarg> GRID_ELEM_SIZE_2D_TARG,
 	Vec2<i32> NUM_GRID_ELEMS_2D_TARG,
 	Vec2<PhysElTarg> ENC_PHYS_EL_RECT2_POS_TARG
@@ -146,7 +146,8 @@ public:		// constants
 			(to_grid_ind_vec2(ENC_PHYS_EL_RECT2.tl_corner()),
 			to_grid_ind_vec2(ENC_PHYS_EL_RECT2.br_corner()));
 public:		// types
-	using DataElT = DataElemTarg;
+	//using DataElT = DataElemTarg;
+	using DataElT = PhysElRect2;
 	using DataMapElT = Uset<DataElT*>;
 	//using DataRowT
 	//	= std::array<Uset<DataElT*>, ENC_GRID_IND_RECT2.size_2d.x>;
@@ -184,7 +185,9 @@ public:		// functions
 public:		// functions
 	bool insert(DataElT* data_el) {
 		const GridIndRect2
-			grid_ind_rect2 = to_grid_ind_rect2_lim(data_el->rect());
+			grid_ind_rect2
+				//= to_grid_ind_rect2_lim(data_el->rect());
+				= to_grid_ind_rect2_lim(*data_el);
 
 		bool ret = false;
 
@@ -256,7 +259,9 @@ public:		// functions
 		DataMapElT ret;
 
 		const GridIndRect2
-			grid_ind_rect2 = to_grid_ind_rect2_lim(data_el->rect());
+			grid_ind_rect2
+				//= to_grid_ind_rect2_lim(data_el->rect());
+				= to_grid_ind_rect2_lim(*data_el);
 
 		GridIndVec2 pos;
 		for (
