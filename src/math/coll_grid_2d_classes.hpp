@@ -38,19 +38,13 @@ public:		// types
 	template<typename T>
 	using Dynarr = std::vector<T, Alloc<T>>;
 
-	//template<typename Key>
-	//using Uset = std::unordered_set
-	//	<Key, std::hash<Key>, std::equal_to<Key>, Alloc<Key>>;
-	//template<typename Key, typename T>
-	//using Umap = std::unordered_map
-	//	<Key, T, std::hash<Key>, std::equal_to<Key>,
-	//	Alloc<std::pair<const Key, T>>>;
-	template<typename Key>
-	using Set = std::set
-		<Key, std::less<Key>, Alloc<Key>>;
+	template<typename T>
+	using Uset = std::unordered_set
+		<T, std::hash<T>, std::equal_to<T>, Alloc<T>>;
 	template<typename Key, typename T>
-	using Map = std::map
-		<Key, T, std::less<Key>, Alloc<std::pair<const Key, T>>>;
+	using Umap = std::unordered_map
+		<Key, T, std::hash<Key>, std::equal_to<Key>,
+		Alloc<std::pair<const Key, T>>>;
 
 public:		// constants
 	static constexpr PhysElVec2
@@ -140,12 +134,12 @@ public:		// constants
 			to_grid_ind_vec2(ENC_PHYS_EL_RECT2.br_corner()));
 public:		// types
 	using DataElT = DataElTarg;
-	using DataElPtrSetT = Set<DataElT*>;
+	using DataElPtrUsetT = Uset<DataElT*>;
 	//using DataRowT
-	//	= std::array<Set<DataElT*>, ENC_GRID_IND_RECT2.size_2d.x>;
+	//	= std::array<Uset<DataElT*>, ENC_GRID_IND_RECT2.size_2d.x>;
 	//using DataT
 	//	= std::array<DataRowT, ENC_GRID_IND_RECT2.size_2d.y>;
-	using DataT = Map<GridIndVec2, DataElPtrSetT>;
+	using DataT = Umap<GridIndVec2, DataElPtrUsetT>;
 protected:		// variables
 	DataT
 		_data;
@@ -175,15 +169,15 @@ public:		// functions
 			) {
 				ret = true;
 				//_at(pos).insert(data_el);
-				_data.insert(std::pair(pos, DataElPtrSetT()));
+				_data.insert(std::pair(pos, DataElPtrUsetT()));
 				_data.at(pos).insert(data_el);
 			}
 		}
 
 		return ret;
 	}
-	//void insert(const Set<DataElT*>& to_insert_set) {
-	//	for (const auto& item: to_insert_set) {
+	//void insert(const Uset<DataElT*>& to_insert_uset) {
+	//	for (const auto& item: to_insert_uset) {
 	//		insert(item);
 	//	}
 	//}
@@ -231,8 +225,8 @@ public:		// functions
 		_data.clear();
 	}
 	// This finds others that are located in the same grid elements
-	DataElPtrSetT find_others(DataElT* data_el) const {
-		DataElPtrSetT ret;
+	DataElPtrUsetT neighbors(DataElT* data_el) const {
+		DataElPtrUsetT ret;
 
 		const GridIndRect2
 			grid_ind_rect2 = to_grid_ind_rect2_lim(data_el->bbox());
@@ -261,6 +255,16 @@ public:		// functions
 			ret.erase(data_el);
 		}
 		return ret;
+	}
+
+	bool raw_intersect(DataElT* data_el) const {
+		const auto& the_neighbors = neighbors(data_el);
+		for (auto* item: the_neighbors) {
+			if (item->bbox().intersect(data_el->bbox())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//static constexpr inline GridIndRect2 to_grid_ind_rect2(

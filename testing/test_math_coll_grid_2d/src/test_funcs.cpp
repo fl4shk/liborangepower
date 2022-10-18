@@ -236,7 +236,7 @@ void test_main() {
 	auto show_all = [&temp, &temp_vec, &find_index]() -> void {
 		for (size_t i=0; i<temp_vec.size(); ++i) {
 			auto& temp_item = temp_vec.at(i);
-			const auto& uset = temp.find_others(temp_item.get()); 
+			const auto& uset = temp.neighbors(temp_item.get()); 
 
 			printout(i, ": ",
 				"{", temp_item->bbox().tl_corner(), " ",
@@ -254,7 +254,7 @@ void test_main() {
 		printout("\n");
 		for (size_t i=0; i<temp_vec.size(); ++i) {
 			auto& temp_item = temp_vec.at(i);
-			const auto& uset = temp.find_others(temp_item.get()); 
+			const auto& uset = temp.neighbors(temp_item.get()); 
 
 			printout(i, ": ",
 				"{", temp_item->bbox().tl_corner(), " ",
@@ -279,7 +279,7 @@ void test_main() {
 
 		for (size_t i=0; i<temp_vec.size(); ++i) {
 			auto& temp_item = temp_vec.at(i);
-			const auto& uset = temp.find_others(temp_item.get()); 
+			const auto& uset = temp.neighbors(temp_item.get()); 
 			for (size_t j=0; j<temp_vec.size(); ++j) {
 				if (i != j) {
 					auto& inner_item = temp_vec.at(j);

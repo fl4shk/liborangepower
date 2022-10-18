@@ -14,6 +14,7 @@
 #include "liborangepower_src/math/coll_grid_2d_classes.hpp"
 #include "liborangepower_src/math/vec3_classes.hpp"
 #include "liborangepower_src/metaprog_defines.hpp"
+#include "liborangepower_src/time/time_stuff.hpp"
 
 using namespace liborangepower::misc_output;
 using namespace liborangepower::integer_types;
@@ -22,6 +23,8 @@ using namespace liborangepower::bitwise;
 using namespace liborangepower::strings;
 //namespace math = liborangepower::math;
 using namespace liborangepower::math;
+
+#include <pcg_random.hpp>
 
 
 #endif		// src_misc_includes_hpp
