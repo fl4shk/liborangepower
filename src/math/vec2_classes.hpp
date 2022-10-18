@@ -86,6 +86,12 @@ public:		// functions
 		//#define X(name, dummy_arg) ret.name = std::remove_cvref_t<decltype(ret.name)>(name);
 		//MEMB_LIST_VEC2(X);
 		//#undef X
+		//for (size_t i=0; i<size(); ++i) {
+		//	ret.at(i) = OtherElemT(at(i));
+		//}
+		for (size_t i=0; i<size(); ++i) {
+			ret.at(i) = std::remove_cvref_t<decltype(ret.at(i))>(at(i));
+		}
 
 		return ret;
 	}
