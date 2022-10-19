@@ -16,6 +16,7 @@
 
 #include "misc_funcs.hpp"
 #include "vec2_classes.hpp"
+#include "vec3_classes.hpp"
 
 #include <cmath>
 #include <cstdint>
@@ -294,6 +295,13 @@ public:		// variables
 		p1,
 		p2;
 public:		// functions
+	template<std::convertible_to<T> OtherElemT>
+	constexpr inline auto operator <=> (
+		const Tri2<OtherElemT>& to_cmp
+	) const {
+		return Vec3<Vec2<T>>(p0, p1, p2)
+			<=> Vec3<Vec2<OtherElemT>>(to_cmp.p0, to_cmp.p1, to_cmp.p2);
+	}
 	static constexpr inline size_t size() {
 		return SIZE;
 	}
@@ -332,6 +340,32 @@ public:		// functions
 		}
 	}
 };
+template<typename T>
+constexpr inline std::ostream& operator << (
+	std::ostream& os, const Tri2<T>& arg
+) {
+	return misc_output::osprintout(
+		os,
+		"{",
+			//arg.p0, " ",
+			//arg.p1, " ",
+			//arg.p2,
+
+			//#define X(memb, dummy_arg) strings::sconcat( #memb , "{", arg . memb , "}" ),
+			#define X(memb, dummy_arg) \
+				strings::sconcat( #memb , arg . memb ),
+
+			strings::strjoin2(
+				std::string(" "),
+				std::vector({
+					MEMB_LIST_SHAPE_TRI2(X)
+				})
+			),
+
+			#undef X
+		"}"
+	);
+}
 //--------
 template<typename T>
 class Rect2 {

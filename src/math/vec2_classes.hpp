@@ -477,6 +477,9 @@ template<typename T>
 constexpr inline bool is_vec2() {
 	return concepts::is_specialization<T, Vec2>();
 }
+template<typename PosElT=int32_t,
+	template<typename> typename Alloc=std::allocator>
+using Vec2Dynarr = std::vector<Vec2<PosElT>, Alloc<Vec2<PosElT>>>;
 
 } // namespace math
 } // namespace liborangepower
