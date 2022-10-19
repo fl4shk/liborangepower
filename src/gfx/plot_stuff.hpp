@@ -168,118 +168,118 @@ inline void bresenham_line(
 	bresenham_line(LineSeg2<GridElT>{.p0=p0, .p1=p1}, plot_func);
 }
 
-template<typename GridElT=int32_t,
-	typename PhysElT=float>
-void flood_fill(
-	const Tri2<GridElT>& tri2,
-	const PlotFunc<GridElT>& plot_func
-) {
-	// This is based on
-	// http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
-	//--------
-	//const LineSeg2<GridElT>
-	//	lseg_0_1(tri2.p0, tri2.p1),
-	//	lseg_1_2(tri2.p1, tri2.p2),
-	//	lseg_2_0(tri2.p2, tri2.p0);
-	using GridElVec2 = Vec2<GridElT>;
-	using GridElTri2 = Tri2<GridElT>;
-	//using PhysElVec2 = Vec2<PhysElT>;
-	//--------
-	//// Insertion sort in ascending order by y
-	GridElTri2 sorted = tri2;
-	for (int i=1; i<int(tri2.size()); ++i) {
-		int j = i - 1;
-		const GridElVec2& key = tri2.at(i);
-		while (j >= 0 && sorted.at(j).y > key.y) {
-			sorted.at(j + 1) = sorted.at(j);
-			--j;
-		}
-		sorted.at(j + 1) = key;
-	}
-	std::cout
-		<< sorted.p0 << " "
-		<< sorted.p1 << " "
-		<< sorted.p2
-		<< std::endl;
-	//--------
-	auto fill_bottom_flat = [&plot_func](
-		const GridElVec2& p0, const GridElVec2& p1, const GridElVec2& p2
-	) -> void {
-		const PhysElT
-			inv_slope_0_raw_scale = PhysElT(p1.y - p0.y),
-			inv_slope_0
-				= ((inv_slope_0_raw_scale != PhysElT(0))
-				? (PhysElT(p1.x - p0.x) / inv_slope_0_raw_scale)
-				: PhysElT(0)),
-			inv_slope_1_raw_scale = PhysElT(p2.y - p0.y),
-			inv_slope_1
-				= ((inv_slope_1_raw_scale != PhysElT(0))
-				? (PhysElT(p2.x - p0.x) / inv_slope_1_raw_scale)
-				: PhysElT(0));
-
-		PhysElT
-			curr_x_0 = p0.x,
-			curr_x_1 = p0.x;
-
-		for (GridElT scanline_y=p0.y; scanline_y<=p1.y; ++scanline_y) {
-			bresenham_line
-				(GridElVec2(curr_x_0, scanline_y),
-				GridElVec2(curr_x_1, scanline_y), 
-				plot_func);
-			curr_x_0 += inv_slope_0;
-			curr_x_1 += inv_slope_1;
-		}
-	};
-	auto fill_top_flat = [&plot_func](
-		const GridElVec2& p0, const GridElVec2& p1, const GridElVec2& p2
-	) -> void {
-		const PhysElT
-			inv_slope_0_raw_scale = PhysElT(p2.y - p0.y),
-			inv_slope_0
-				= ((inv_slope_0_raw_scale != PhysElT(0))
-				? PhysElT(p2.x - p0.x) / inv_slope_0_raw_scale
-				: PhysElT(0)),
-			inv_slope_1_raw_scale = PhysElT(p2.y - p1.y),
-			inv_slope_1
-				= ((inv_slope_1_raw_scale != PhysElT(0))
-				? PhysElT(p2.x - p1.x) / inv_slope_1_raw_scale
-				: PhysElT(0));
-
-		PhysElT
-			curr_x_0 = p2.x,
-			curr_x_1 = p2.x;
-
-		for (GridElT scanline_y=p2.y; scanline_y>p0.y; --scanline_y) {
-			bresenham_line
-				(GridElVec2(curr_x_0, scanline_y),
-				GridElVec2(curr_x_1, scanline_y), 
-				plot_func);
-			curr_x_0 -= inv_slope_0;
-			curr_x_1 -= inv_slope_1;
-		}
-	};
-	//--------
-	const auto
-		& p0 = sorted.p0,
-		& p1 = sorted.p1,
-		& p2 = sorted.p2;
-	if (p1.y == p2.y) {
-		fill_bottom_flat(p0, p1, p2);
-	} else if (p0.y == p1.y) {
-		fill_top_flat(p0, p1, p2);
-	} else {
-		const GridElVec2 p3
-			(p0.x
-				+ (
-					(PhysElT(p1.y - p0.y) / PhysElT(p2.y - p0.y)) 
-					* (p2.x - p0.x)
-				),
-			p1.y);
-		fill_bottom_flat(p0, p1, p3);
-		fill_top_flat(p1, p3, p2);
-	}
-	//--------
-}
+//template<typename GridElT=int32_t,
+//	typename PhysElT=long double>
+//void flood_fill_old(
+//	const Tri2<GridElT>& tri2,
+//	const PlotFunc<GridElT>& plot_func
+//) {
+//	// This is based on
+//	// http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
+//	//--------
+//	//const LineSeg2<GridElT>
+//	//	lseg_0_1(tri2.p0, tri2.p1),
+//	//	lseg_1_2(tri2.p1, tri2.p2),
+//	//	lseg_2_0(tri2.p2, tri2.p0);
+//	using GridElVec2 = Vec2<GridElT>;
+//	using GridElTri2 = Tri2<GridElT>;
+//	//using PhysElVec2 = Vec2<PhysElT>;
+//	//--------
+//	//// Insertion sort in ascending order by y
+//	GridElTri2 sorted = tri2;
+//	for (int i=1; i<int(tri2.size()); ++i) {
+//		int j = i - 1;
+//		const GridElVec2& key = tri2.at(i);
+//		while (j >= 0 && sorted.at(j).y > key.y) {
+//			sorted.at(j + 1) = sorted.at(j);
+//			--j;
+//		}
+//		sorted.at(j + 1) = key;
+//	}
+//	//std::cout
+//	//	<< sorted.p0 << " "
+//	//	<< sorted.p1 << " "
+//	//	<< sorted.p2
+//	//	<< std::endl;
+//	//--------
+//	auto fill_bottom_flat = [&plot_func](
+//		const GridElVec2& p0, const GridElVec2& p1, const GridElVec2& p2
+//	) -> void {
+//		const PhysElT
+//			inv_slope_0_raw_scale = PhysElT(p1.y - p0.y),
+//			inv_slope_0
+//				= ((inv_slope_0_raw_scale != PhysElT(0))
+//				? (PhysElT(p1.x - p0.x) / inv_slope_0_raw_scale)
+//				: PhysElT(0)),
+//			inv_slope_1_raw_scale = PhysElT(p2.y - p0.y),
+//			inv_slope_1
+//				= ((inv_slope_1_raw_scale != PhysElT(0))
+//				? (PhysElT(p2.x - p0.x) / inv_slope_1_raw_scale)
+//				: PhysElT(0));
+//
+//		PhysElT
+//			curr_x_0 = p0.x,
+//			curr_x_1 = p0.x;
+//
+//		for (GridElT scanline_y=p0.y; scanline_y<=p1.y; ++scanline_y) {
+//			bresenham_line
+//				(GridElVec2(curr_x_0, scanline_y),
+//				GridElVec2(curr_x_1, scanline_y), 
+//				plot_func);
+//			curr_x_0 += inv_slope_0;
+//			curr_x_1 += inv_slope_1;
+//		}
+//	};
+//	auto fill_top_flat = [&plot_func](
+//		const GridElVec2& p0, const GridElVec2& p1, const GridElVec2& p2
+//	) -> void {
+//		const PhysElT
+//			inv_slope_0_raw_scale = PhysElT(p2.y - p0.y),
+//			inv_slope_0
+//				= ((inv_slope_0_raw_scale != PhysElT(0))
+//				? PhysElT(p2.x - p0.x) / inv_slope_0_raw_scale
+//				: PhysElT(0)),
+//			inv_slope_1_raw_scale = PhysElT(p2.y - p1.y),
+//			inv_slope_1
+//				= ((inv_slope_1_raw_scale != PhysElT(0))
+//				? PhysElT(p2.x - p1.x) / inv_slope_1_raw_scale
+//				: PhysElT(0));
+//
+//		PhysElT
+//			curr_x_0 = p2.x,
+//			curr_x_1 = p2.x;
+//
+//		for (GridElT scanline_y=p2.y; scanline_y>p0.y; --scanline_y) {
+//			bresenham_line
+//				(GridElVec2(curr_x_0, scanline_y),
+//				GridElVec2(curr_x_1, scanline_y), 
+//				plot_func);
+//			curr_x_0 -= inv_slope_0;
+//			curr_x_1 -= inv_slope_1;
+//		}
+//	};
+//	//--------
+//	const auto
+//		& p0 = sorted.p0,
+//		& p1 = sorted.p1,
+//		& p2 = sorted.p2;
+//	if (p1.y == p2.y) {
+//		fill_bottom_flat(p0, p1, p2);
+//	} else if (p0.y == p1.y) {
+//		fill_top_flat(p0, p1, p2);
+//	} else {
+//		const GridElVec2 p3
+//			(p0.x
+//				+ (
+//					(PhysElT(p1.y - p0.y) / PhysElT(p2.y - p0.y)) 
+//					* (p2.x - p0.x)
+//				),
+//			p1.y);
+//		fill_bottom_flat(p0, p1, p3);
+//		fill_top_flat(p1, p3, p2);
+//	}
+//	//--------
+//}
 //template<typename GridElT=int32_t>
 //void flood_fill(
 //	const Rect2<GridElT>& rect2,

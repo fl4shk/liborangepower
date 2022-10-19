@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
 		exit(1);
 	}
 	//--------
-	test_line(rng);
-	//test_tri2(rng);
+	//test_line(rng);
+	test_tri2(rng);
 	//--------
 	return 0;
 }
