@@ -8,7 +8,7 @@
 
 #include <functional>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <concepts>
 
 #include <SDL.h>
@@ -107,17 +107,17 @@ public:		// functions
 	GEN_GETTER_AND_SETTER_BY_CON_REF(kmp);
 };
 
-using KeyStatusMap = std::map<SDL_Keycode, KeyStatus>;
+using KeyStatusUmap = std::unordered_map<SDL_Keycode, KeyStatus>;
 
 template<typename KeyKind>
-using EngineKeycMap = std::map<KeyKind, SDL_Keycode>;
+using EngineKeycUmap = std::unordered_map<KeyKind, SDL_Keycode>;
 //using KeycVec = std::vector<SDL_Keycode>;
 
 
 // Set `perf_total_back_up` to `true` before the loop that polls SDL
 // events.
 inline bool handle_key_events(
-	SDL_Event& e, KeyStatusMap& key_status_map, bool& perf_total_back_up
+	SDL_Event& e, KeyStatusUmap& key_status_map, bool& perf_total_back_up
 ) {
 	if (perf_total_back_up) {
 		for (const auto& item: key_status_map) {
