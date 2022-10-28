@@ -351,8 +351,10 @@ void Engine::force_singleton_all_fn(
 	}
 }
 void Engine::destroy_fn(EntId id, FileNum file_num) {
-	comp_umap_fn(id, file_num).clear();
+	// why was this not inside the `if` statement?
+	//comp_umap_fn(id, file_num).clear();
 	if (to_destroy_uset_fn(file_num).contains(id)) {
+		comp_umap_fn(id, file_num).clear();
 		to_destroy_uset_fn(file_num).erase(id);
 	}
 }
