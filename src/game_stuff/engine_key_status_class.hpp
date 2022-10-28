@@ -60,13 +60,13 @@ public:		// functions
 public:		// types
 	//--------
 	template<typename T, typename... RemTs>
-	using KeySet = std::set<T, RemTs...>;
+	using KeyUset = std::unordered_set<T, RemTs...>;
 	//--------
 public:		// functions
 	//--------
 	template<typename T, typename... RemTs>
 	static inline bool generic_key_set_func(
-		const KeySet<T, RemTs...>& key_set,
+		const KeyUset<T, RemTs...>& key_set,
 		const std::function<bool(const T&)>& func
 	) {
 		for (const auto& key_kind: key_set) {
@@ -77,24 +77,24 @@ public:		// functions
 		return true;
 	}
 	template<typename T, typename... RemTs>
-	inline bool key_set_up_prev(const KeySet<T, RemTs...>& key_set) const {
+	inline bool key_set_up_prev(const KeyUset<T, RemTs...>& key_set) const {
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_up_prev<T>, this));
 	}
 	template<typename T, typename... RemTs>
-	inline bool key_set_down_prev(const KeySet<T, RemTs...>& key_set)
+	inline bool key_set_down_prev(const KeyUset<T, RemTs...>& key_set)
 	const {
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_down_prev<T>, this));
 	}
 
 	template<typename T, typename... RemTs>
-	inline bool key_set_up_now(const KeySet<T, RemTs...>& key_set) const {
+	inline bool key_set_up_now(const KeyUset<T, RemTs...>& key_set) const {
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_up_now<T>, this));
 	}
 	template<typename T, typename... RemTs>
-	inline bool key_set_down_now(const KeySet<T, RemTs...>& key_set)
+	inline bool key_set_down_now(const KeyUset<T, RemTs...>& key_set)
 	const {
 		return generic_key_set_func(key_set,
 			std::bind(&EngineKeyStatus::key_down_now<T>, this));
@@ -102,16 +102,16 @@ public:		// functions
 
 	//template<typename T, typename... RemTs>
 	//inline bool key_set_jw_down_and_up_now(
-	//	const KeySet<T, RemTs...>& key_down_set,
-	//	const KeySet<T, RemTs...>& key_up_set
+	//	const KeyUset<T, RemTs...>& key_down_set,
+	//	const KeyUset<T, RemTs...>& key_up_set
 	//) const {
 	//	return (key_set_just_went_down(key_down_set)
 	//		&& key_set_up_now(key_up_set));
 	//}
 	//template<typename T, typename... RemTs>
 	//inline bool key_set_jw_up_and_down_now(
-	//	const KeySet<T, RemTs...>& key_down_set,
-	//	const KeySet<T, RemTs...>& key_up_set
+	//	const KeyUset<T, RemTs...>& key_down_set,
+	//	const KeyUset<T, RemTs...>& key_up_set
 	//) const {
 	//	return (key_set_down_now(key_down_set)
 	//		&& key_set_just_went_up(key_up_set));
@@ -119,7 +119,7 @@ public:		// functions
 
 	template<typename T, typename... RemTs>
 	inline bool key_set_just_went_up(
-		const KeySet<T, RemTs...>& key_set
+		const KeyUset<T, RemTs...>& key_set
 	) const {
 		//for (const auto& key_kind: key_set) {
 		//	if (!(at(key_kind).prev() && (!at(key_kind)()))) {
@@ -133,7 +133,7 @@ public:		// functions
 	}
 	template<typename T, typename... RemTs>
 	inline bool key_set_just_went_down(
-		const KeySet<T, RemTs...>& key_set
+		const KeyUset<T, RemTs...>& key_set
 	) const {
 		//for (const auto& key_kind: grp) {
 		//	if (!((!at(key_kind).prev()) && at(key_kind)())) {
@@ -175,18 +175,18 @@ public:		// functions
 	// mainly intended for use with SDL
 	template<typename KeyKind, typename KeycT, typename KeyStatusT>
 	inline void update(
-		const std::map<KeycT, KeyStatusT>& key_status_map,
-		const std::map<KeyKind, KeycT>& keyc_map
+		const std::unordered_map<KeycT, KeyStatusT>& key_status_umap,
+		const std::unordered_map<KeyKind, KeycT>& keyc_umap
 	) {
-		for (const auto& pair: keyc_map) {
+		for (const auto& pair: keyc_umap) {
 			const auto& key_kind = pair.first;
 			const auto& sym = pair.second;
 
 			//const auto& sym = keyc_vec.at(key_kind);
 
-			if (key_status_map.contains(sym)) {
+			if (key_status_umap.contains(sym)) {
 				at(key_kind).back_up_and_update
-					(key_status_map.at(sym).down());
+					(key_status_umap.at(sym).down());
 			}
 		}
 	}
