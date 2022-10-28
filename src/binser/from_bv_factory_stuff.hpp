@@ -33,7 +33,7 @@ public:		// functions
 		FuncUmap ret;
 
 		if constexpr (sizeof...(RemDerivedTs) > 0) {
-			ret = gen_func_map<RemDerivedTs...>();
+			ret = gen_func_umap<RemDerivedTs...>();
 		}
 
 		//ret[FirstDerivedT::KIND_STR] = Func(FirstDerivedT::from_bv);
