@@ -13,14 +13,14 @@ inline void val_from_bv(T& ret, const Value& bv,
 
 template<typename T, typename BaseT>
 inline void get_bv_memb(T& ret, const Value& bv,
-	const std::string& name, FromBvFactoryFuncMap<BaseT>* func_map);
+	const std::string& name, FromBvFactoryFuncUmap<BaseT>* func_umap);
 template<typename T>
 inline void get_bv_memb(T& ret, const Value& bv,
 	const std::string& name, const std::nullopt_t& some_nullopt);
 
 template<typename TempT, typename RetT, typename BaseT>
 inline void get_bv_memb_w_stat_cast(RetT& ret, const Value& bv,
-	const std::string& name, FromBvFactoryFuncMap<BaseT>* func_map);
+	const std::string& name, FromBvFactoryFuncUmap<BaseT>* func_umap);
 template<typename TempT, typename RetT>
 inline void get_bv_memb_w_stat_cast(RetT& ret, const Value& bv,
 	const std::string& name, const std::nullopt_t& some_nullopt);

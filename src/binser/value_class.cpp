@@ -127,18 +127,18 @@ void Value::_inner_init(const std::vector<char>& to_cast, u64& i) {
 		*this = std::move(n_data);
 	}
 		break;
-	case Tag::Map: {
-		const u64 map_size = _inner_init_do_memcpy<u64>(to_cast, i, tag);
+	case Tag::Umap: {
+		const u64 umap_size = _inner_init_do_memcpy<u64>(to_cast, i, tag);
 
-		ValueMap n_data;
+		ValueUmap n_data;
 
-		for (u64 j=0; j<map_size; ++j) {
+		for (u64 j=0; j<umap_size; ++j) {
 			const std::string& temp_str = get_str();
 
 			Value to_insert;
 			to_insert._inner_init(to_cast, i);
 
-			n_data.insert(typename ValueMap::value_type(
+			n_data.insert(typename ValueUmap::value_type(
 				temp_str, ValueSptr(new Value(std::move(to_insert)))
 			));
 		}
@@ -235,10 +235,10 @@ Value::operator std::vector<char> () const {
 				= static_cast<std::vector<char>>(*item);
 			ret.insert(ret.end(), temp_vec.cbegin(), temp_vec.cend());
 		}
-	} else { // if (holds_alternative<ValueMap>())
-		ret.push_back(static_cast<char>(Tag::Map));
+	} else { // if (holds_alternative<ValueUmap>())
+		ret.push_back(static_cast<char>(Tag::Umap));
 
-		const auto& map = get<ValueMap>();
+		const auto& map = get<ValueUmap>();
 
 		if (u64 size=map.size(); true) {
 			do_memcpy(size);
@@ -268,12 +268,12 @@ Value::operator std::vector<char> () const {
 size_t Value::size() const {
 	if (holds_alternative<ValueVec>()) {
 		return get<ValueVec>().size();
-	} else if (holds_alternative<ValueMap>()) {
-		return get<ValueMap>().size();
+	} else if (holds_alternative<ValueUmap>()) {
+		return get<ValueUmap>().size();
 	} else {
 		throw std::runtime_error(sconcat(
 			"Wrong type held by the `binser::Value`. ",
-			"It must be `binser::ValueVec` or `binser::ValueMap`."
+			"It must be `binser::ValueVec` or `binser::ValueUmap`."
 		));
 	}
 }

@@ -32,7 +32,7 @@ concept IsValidFromBvFactoryT
 //	std::function<std::unique_ptr<BaseT>(const Value&)>>;
 
 //template<typename T, typename BaseT>
-//concept IsFromBvFactoryFuncMap = std::same_as
+//concept IsFromBvFactoryFuncUmap = std::same_as
 //--------
 } // namespace binser
 } // namespace liborangepower

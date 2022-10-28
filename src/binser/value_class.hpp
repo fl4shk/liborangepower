@@ -22,12 +22,12 @@ class Value;
 //--------
 using ValueSptr = std::shared_ptr<Value>;
 using ValueVec = std::vector<ValueSptr>;
-using ValueMap = std::unordered_map<std::string, ValueSptr>;
-using ValueMapInsertRet = std::pair<typename ValueMap::iterator, bool>;
+using ValueUmap = std::unordered_map<std::string, ValueSptr>;
+using ValueUmapInsertRet = std::pair<typename ValueUmap::iterator, bool>;
 //--------
 //// `_holds_mbrs` is short for "holds members"
 //template<bool _holds_mbrs>
-//class ValueMap final {
+//class ValueUmap final {
 //public:		// constants
 //	static constexpr inline bool HOLDS_MBRS = _holds_mbrs;
 //public:		// variables
@@ -40,9 +40,9 @@ using ValueData
 		u8, i8, u16, i16, u32, i32, u64, i64, float, double, bool,
 		std::string,
 		ValueVec,
-		//ValueMap<true>,
-		//ValueMap<false>
-		ValueMap
+		//ValueUmap<true>,
+		//ValueUmap<false>
+		ValueUmap
 	>;
 //--------
 template<typename T>
@@ -67,15 +67,15 @@ concept IsValueData
 	= std::same_as<T, std::monostate>
 	|| IsValueDataNumOrStr<T>
 	|| std::same_as<T, ValueVec>
-	//|| std::same_as<T, ValueMap<true>>
-	//|| std::same_as<T, ValueMap<false>>;
-	|| std::same_as<T, ValueMap>;
+	//|| std::same_as<T, ValueUmap<true>>
+	//|| std::same_as<T, ValueUmap<false>>;
+	|| std::same_as<T, ValueUmap>;
 
 template<typename T>
 concept IsValueDataNonNum
 	= std::same_as<T, std::string>
 	|| std::same_as<T, ValueVec>
-	|| std::same_as<T, ValueMap>;
+	|| std::same_as<T, ValueUmap>;
 //--------
 class Value final {
 public:		// types
@@ -98,7 +98,7 @@ public:		// types
 
 		Str,		// 0xc
 		Vec,		// 0xd
-		Map,		// 0xe
+		Umap,		// 0xe
 	};
 private:		// variables
 	ValueData _data = static_cast<u8>(0u);
@@ -237,11 +237,11 @@ public:		// functions
 	inline const ValueVec& as_vec() const {
 		return get<ValueVec>();
 	}
-	inline ValueMap& as_map() {
-		return get<ValueMap>();
+	inline ValueUmap& as_umap() {
+		return get<ValueUmap>();
 	}
-	inline const ValueMap& as_map() const {
-		return get<ValueMap>();
+	inline const ValueUmap& as_umap() const {
+		return get<ValueUmap>();
 	}
 	//--------
 	size_t size() const;
@@ -269,30 +269,30 @@ public:		// functions
 	}
 	//--------
 	inline Value& at(const std::string& where) {
-		return *as_map().at(where);
+		return *as_umap().at(where);
 	}
 	inline const Value& at(const std::string& where) const {
-		return *as_map().at(where);
+		return *as_umap().at(where);
 	}
 
 	//inline Value& operator [] (const std::string& where) {
-	//	return *get<ValueMap>()[where];
+	//	return *get<ValueUmap>()[where];
 	//}
 	//inline const Value& operator [] (const std::string& where) const {
-	//	return *get<ValueMap>()[where];
+	//	return *get<ValueUmap>()[where];
 	//}
-	inline ValueMapInsertRet insert(
+	inline ValueUmapInsertRet insert(
 		const std::string& where, const Value& to_insert
 	) {
-		set_type_if_not_ha<ValueMap>();
-		return as_map().insert
-			(typename ValueMap::value_type(where, to_sptr(to_insert)));
+		set_type_if_not_ha<ValueUmap>();
+		return as_umap().insert
+			(typename ValueUmap::value_type(where, to_sptr(to_insert)));
 	}
-	inline ValueMapInsertRet insert(
+	inline ValueUmapInsertRet insert(
 		const std::string& where, Value&& to_insert
 	) {
-		set_type_if_not_ha<ValueMap>();
-		return as_map().insert(typename ValueMap::value_type
+		set_type_if_not_ha<ValueUmap>();
+		return as_umap().insert(typename ValueUmap::value_type
 			(where, ValueSptr(new Value(std::move(to_insert)))));
 	}
 	//--------

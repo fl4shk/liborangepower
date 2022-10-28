@@ -5,12 +5,12 @@
 // members of a class to serialize or deserialize
 #define BINSER_MEMB_SERIALIZE(name, ...) \
 	liborangepower::binser::set_bv_memb(ret, #name, name);
-#define BINSER_MEMB_DESERIALIZE(name, func_map, ...) \
-	liborangepower::binser::get_bv_memb(name, bv, #name, func_map);
-#define BINSER_MEMB_FROM_BV_DESERIALIZE(name, func_map, ...) \
-	liborangepower::binser::get_bv_memb(ret.name, bv, #name, func_map);
+#define BINSER_MEMB_DESERIALIZE(name, func_umap, ...) \
+	liborangepower::binser::get_bv_memb(name, bv, #name, func_umap);
+#define BINSER_MEMB_FROM_BV_DESERIALIZE(name, func_umap, ...) \
+	liborangepower::binser::get_bv_memb(ret.name, bv, #name, func_umap);
 
-#define BINSER_MEMB_DESERIALIZE_EX_CS(name, func_map, temp_type, temp_name, cs_arg, cs_is_max_arg, min_size_arg) \
+#define BINSER_MEMB_DESERIALIZE_EX_CS(name, func_umap, temp_type, temp_name, cs_arg, cs_is_max_arg, min_size_arg) \
 	do { \
 		if (temp_type temp_name; true) { \
 			temp_name.checked_size = cs_arg; \
@@ -23,7 +23,7 @@
 		} \
 	} while (0)
 
-#define BINSER_MEMB_FROM_BV_DESERIALIZE_EX_CS(name, func_map, temp_type, temp_name, cs_arg, cs_is_max_arg, min_size_arg) \
+#define BINSER_MEMB_FROM_BV_DESERIALIZE_EX_CS(name, func_umap, temp_type, temp_name, cs_arg, cs_is_max_arg, min_size_arg) \
 	do { \
 		if (temp_type temp_name; true) { \
 			temp_name.checked_size = cs_arg; \
@@ -36,24 +36,24 @@
 		} \
 	} while (0)
 
-#define BINSER_MEMB_DESERIALIZE_EX_MM(name, func_map, temp_type, temp_name, max_arg, min_arg) \
+#define BINSER_MEMB_DESERIALIZE_EX_MM(name, func_umap, temp_type, temp_name, max_arg, min_arg) \
 	do { \
 		if (temp_type temp_name; true) { \
 			temp_name.max = max_arg; \
 			temp_name.min = min_arg; \
 			liborangepower::binser::get_bv_memb( \
-				temp_name, bv, #name, func_map \
+				temp_name, bv, #name, func_umap \
 			); \
 			name = std::move(temp_name.data); \
 		} \
 	} while (0)
-#define BINSER_MEMB_FROM_BV_DESERIALIZE_EX_MM(name, func_map, temp_type, temp_name, max_arg, min_arg) \
+#define BINSER_MEMB_FROM_BV_DESERIALIZE_EX_MM(name, func_umap, temp_type, temp_name, max_arg, min_arg) \
 	do { \
 		if (temp_type temp_name; true) { \
 			temp_name.max = max_arg; \
 			temp_name.min = min_arg; \
 			liborangepower::binser::get_bv_memb( \
-				temp_name, bv, #name, func_map \
+				temp_name, bv, #name, func_umap \
 			); \
 			ret.name = std::move(temp_name.data); \
 		} \

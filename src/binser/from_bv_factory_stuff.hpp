@@ -15,22 +15,22 @@ using FromBvFactoryFunc
 	= std::function<std::unique_ptr<BaseT>(const Value&)>;
 
 template<typename BaseT>
-using FromBvFactoryFuncMap
+using FromBvFactoryFuncUmap
 	= std::unordered_map<std::string, FromBvFactoryFunc<BaseT>>;
 
 template<typename BaseT>
 class FromBvFactory final {
 public:		// types
 	using Func = FromBvFactoryFunc<BaseT>;
-	using FuncMap = FromBvFactoryFuncMap<BaseT>;
+	using FuncUmap = FromBvFactoryFuncUmap<BaseT>;
 public:		// functions
-	// Create a `FuncMap` that maps each derived type's `KIND_STR` to a
+	// Create a `FuncUmap` that maps each derived type's `KIND_STR` to a
 	// lambda function that generates an `std::unique_ptr<BaseT>` that
 	// points to a `new FirstDerivedT(bv)`.
 	template<IsValidFromBvFactoryT<BaseT> FirstDerivedT,
 		IsValidFromBvFactoryT<BaseT>... RemDerivedTs>
-	static FuncMap gen_func_map() {
-		FuncMap ret;
+	static FuncUmap gen_func_umap() {
+		FuncUmap ret;
 
 		if constexpr (sizeof...(RemDerivedTs) > 0) {
 			ret = gen_func_map<RemDerivedTs...>();
