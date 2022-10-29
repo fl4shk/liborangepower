@@ -357,7 +357,7 @@ public:		// functions
 	//	destroy_scheduled_fn(id, curr_file_num);
 	//}
 	inline void destroy_scheduled() {
-		destroy_now_fn(curr_file_num);
+		destroy_scheduled_fn(curr_file_num);
 	}
 	//inline void destroy_scheduled() {
 	//	destroy_scheduled_fn(curr_file_num);
