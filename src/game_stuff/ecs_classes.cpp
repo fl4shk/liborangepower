@@ -145,7 +145,7 @@ Engine::operator binser::Value () const {
 
 		binser::Value bv_ecmap;
 
-		binser::set_bv_umap_like_std_container(bv_ecmap,
+		binser::set_bv_map_like_std_container(bv_ecmap,
 			_engine_comp_umap_vec.data.at(i),
 			[](
 				const typename EngineCompUmap::value_type& ent_pair
