@@ -350,15 +350,27 @@ void Engine::force_singleton_all_fn(
 		throw std::runtime_error(err_msg);
 	}
 }
-void Engine::destroy_fn(EntId id, FileNum file_num) {
-	// why was this not inside the `if` statement?
-	//comp_umap_fn(id, file_num).clear();
+
+
+void Engine::destroy_now_fn(EntId id, FileNum file_num) {
+	comp_umap_fn(id, file_num).clear();
 	if (to_destroy_uset_fn(file_num).contains(id)) {
-		comp_umap_fn(id, file_num).clear();
 		to_destroy_uset_fn(file_num).erase(id);
 	}
 }
-void Engine::destroy_fn(FileNum file_num) {
+//void Engine::destroy_now_fn(FileNum file_num) {
+//	for (auto id: to_destroy_uset_fn(file_num)) {
+//		to_destroy_uset_fn();
+//	}
+//}
+
+//void Engine::destroy_scheduled_fn(EntId id, FileNum file_num) {
+//	if (to_destroy_uset_fn(file_num).contains(id)) {
+//		comp_umap_fn(id, file_num).clear();
+//		to_destroy_uset_fn(file_num).erase(id);
+//	}
+//}
+void Engine::destroy_scheduled_fn(FileNum file_num) {
 	for (auto id: to_destroy_uset_fn(file_num)) {
 		comp_umap_fn(id, file_num).clear();
 	}

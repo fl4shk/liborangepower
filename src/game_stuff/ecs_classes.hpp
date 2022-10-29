@@ -341,16 +341,27 @@ public:		// functions
 		sched_destroy_fn(id, curr_file_num);
 	}
 
-	// Destroy now
-	void destroy_fn(EntId id, FileNum file_num);
-	void destroy_fn(FileNum file_num);
+	void destroy_now_fn(EntId id, FileNum file_num);
+	//void destroy_now_fn(FileNum file_num);
+	inline void destroy_now(EntId id) {
+		destroy_now_fn(id, curr_file_num);
+	}
+	//inline void destroy_now() {
+	//	destroy_now_fn(curr_file_num);
+	//}
 
-	inline void destroy(EntId id) {
-		destroy_fn(id, curr_file_num);
+	//void destroy_scheduled_fn(EntId id, FileNum file_num);
+	void destroy_scheduled_fn(FileNum file_num);
+
+	//inline void destroy_scheduled(EntId id) {
+	//	destroy_scheduled_fn(id, curr_file_num);
+	//}
+	inline void destroy_scheduled() {
+		destroy_now_fn(curr_file_num);
 	}
-	inline void destroy() {
-		destroy_fn(curr_file_num);
-	}
+	//inline void destroy_scheduled() {
+	//	destroy_scheduled_fn(curr_file_num);
+	//}
 
 	void destroy_all_fn(FileNum file_num);
 	inline void destroy_all() {
