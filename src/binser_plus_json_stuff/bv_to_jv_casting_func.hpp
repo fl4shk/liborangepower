@@ -6,14 +6,12 @@
 // jsoncpp headers
 #include <json/value.h>
 
-namespace liborangepower
-{
-namespace binser
-{
-
+namespace liborangepower {
+namespace binser {
+//--------
 Json::Value bv_to_jv(const binser::Value& bv);
 //Value jv_to_bv(const Json::Value& jv);
-
+//--------
 } // namespace binser
 } // namespace liborangepower
 
