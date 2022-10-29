@@ -46,17 +46,20 @@ public:		// functions
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(PrevCurrPair);
 	~PrevCurrPair() = default;
 
-	inline void back_up() {
+	inline PrevCurrPair& back_up() {
 		_prev = _curr;
+		return *this;
 	}
 
-	inline void back_up_and_update(const T& n_curr) {
+	inline PrevCurrPair& back_up_and_update(const T& n_curr) {
 		_prev = std::move(_curr);
 		_curr = n_curr;
+		return *this;
 	}
-	inline void back_up_and_update(T&& n_curr) {
+	inline PrevCurrPair& back_up_and_update(T&& n_curr) {
 		_prev = std::move(_curr);
 		_curr = std::move(n_curr);
+		return *this;
 	}
 
 	inline bool has_changed() const {
@@ -159,14 +162,16 @@ public:		// functions
 	GEN_MOVE_ONLY_CONSTRUCTORS_AND_ASSIGN(MoveOnlyPrevCurrPair);
 	~MoveOnlyPrevCurrPair() = default;
 
-	inline void back_up() {
+	inline MoveOnlyPrevCurrPair& back_up() {
 		_prev = std::move(_curr);
 		_curr = T();
+		return *this;
 	}
 
-	inline void back_up_and_update(T&& n_curr) {
+	inline MoveOnlyPrevCurrPair& back_up_and_update(T&& n_curr) {
 		_prev = std::move(_curr);
 		_curr = std::move(n_curr);
+		return *this;
 	}
 
 	inline bool has_changed() const {
