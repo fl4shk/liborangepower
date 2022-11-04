@@ -1,7 +1,7 @@
 #include "misc_includes.hpp"
 
 int main(int argc, char** argv) {
-	ArgParse ap;
+	ArgParser ap;
 	ap.add("--compile", std::nullopt, HasArg::None);
 	ap.add("--debug", "-d", HasArg::None);
 	ap.add("--flags", "-f", HasArg::Req);

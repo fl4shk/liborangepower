@@ -1,5 +1,5 @@
-#ifndef liborangepower_arg_parse_class_hpp
-#define liborangepower_arg_parse_class_hpp
+#ifndef liborangepower_arg_parser_class_hpp
+#define liborangepower_arg_parser_class_hpp
 
 #include "misc/misc_types.hpp"
 #include "misc/misc_includes.hpp"
@@ -121,7 +121,7 @@ public:		// functions
 	//}
 };
 
-class ArgParse final {
+class ArgParser final {
 private:		// variables
 	//int _argc = 0;
 	//char** _argv = nullptr;
@@ -132,20 +132,20 @@ private:		// variables
 	// This maps short names to long names
 	std::unordered_map<std::string, std::string> _alt_name_to_name_umap;
 public:		// functions
-	ArgParse();
-	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ArgParse);
-	~ArgParse();
+	ArgParser();
+	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ArgParser);
+	~ArgParser();
 
-	//ArgParse& add(Option&& to_add);
-	ArgParse& add(
+	//ArgParser& add(Option&& to_add);
+	ArgParser& add(
 		std::string&& s_name,
 		std::optional<std::string>&& s_alt_name,
 		HasArg s_has_arg
 	);
-	//inline ArgParse& add(const std::string& s_name, HasArg s_has_arg) {
+	//inline ArgParser& add(const std::string& s_name, HasArg s_has_arg) {
 	//	return add(s_name, std::string(), s_has_arg);
 	//}
-	//ArgParse& add(std::vector<Option>&& to_add_vec);
+	//ArgParser& add(std::vector<Option>&& to_add_vec);
 
 public:		// types
 	enum class FailKind: u8 {
@@ -171,7 +171,7 @@ private:		// functions
 			return _option_umap.at(alt_name_or_name);
 		} else {
 			throw std::invalid_argument(sconcat
-				("liborangepower::arg_parse::ArgParse::_raw_at(): ",
+				("liborangepower::arg_parse::ArgParser::_raw_at(): ",
 				"Error: invalid `alt_name_or_name` of ",
 				alt_name_or_name));
 		}
@@ -185,7 +185,7 @@ public:		// functions
 			return _option_umap.at(alt_name_or_name);
 		} else {
 			throw std::invalid_argument(sconcat
-				("liborangepower::arg_parse::ArgParse::at(): ",
+				("liborangepower::arg_parse::ArgParser::at(): ",
 				"Error: invalid `alt_name_or_name` of ",
 				alt_name_or_name));
 		}
@@ -202,4 +202,4 @@ public:		// functions
 } // namespace arg_parse
 } // namespace liborangepower
 
-#endif		// liborangepower_arg_parse_class_hpp
+#endif		// liborangepower_arg_parser_class_hpp

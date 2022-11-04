@@ -18,7 +18,7 @@
 #include "liborangepower_src/concepts/std_container_concepts.hpp"
 #include "liborangepower_src/concepts/std_stream_concepts.hpp"
 #include "liborangepower_src/concepts/is_specialization_concepts.hpp"
-#include "liborangepower_src/arg_parse_class.hpp"
+#include "liborangepower_src/arg_parser_class.hpp"
 
 using namespace liborangepower::misc_output;
 using namespace liborangepower::integer_types;
