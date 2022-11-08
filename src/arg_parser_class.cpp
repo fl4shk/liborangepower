@@ -12,7 +12,7 @@ ArgParser::~ArgParser() {}
 //ArgParser& ArgParser::add(Option&& to_add)
 ArgParser& ArgParser::add(
 	std::string&& s_name, std::optional<std::string>&& s_alt_name,
-	HasArg s_has_arg
+	HasArg s_has_arg, bool s_req_opt
 ) {
 	switch (s_has_arg) {
 	//--------
@@ -30,7 +30,8 @@ ArgParser& ArgParser::add(
 	Option to_insert
 		{.name=std::move(s_name),
 		.alt_name=std::move(s_alt_name),
-		.has_arg=s_has_arg};
+		.has_arg=s_has_arg,
+		.req_opt=s_req_opt};
 
 	if (to_insert.alt_name) {
 		if (_alt_name_to_name_umap.contains(*to_insert.alt_name)) {
@@ -64,7 +65,7 @@ auto ArgParser::parse(int argc, char** argv) -> std::optional<Fail> {
 			switch (option.has_arg) {
 			//--------
 			case HasArg::None:
-				//option.val = std::string();
+				option.val = std::string();
 				break;
 			case HasArg::Req:
 				{
@@ -101,6 +102,17 @@ auto ArgParser::parse(int argc, char** argv) -> std::optional<Fail> {
 			return Fail
 				{.index=i,
 				.kind=FailKind::NoOption};
+		}
+	}
+	if (Fail fail; true) { 
+		fail.kind = FailKind::MissingReqOpt;
+		for (const auto& item: option_umap()) {
+			if (item.second.req_opt && !item.second.val) {
+				fail.missing_req_uset.insert(item.second.name);
+			}
+		}
+		if (fail.missing_req_uset.size() > 0) {
+			return fail;
 		}
 	}
 	return std::nullopt;

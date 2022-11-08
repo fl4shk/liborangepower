@@ -2,10 +2,10 @@
 
 int main(int argc, char** argv) {
 	ArgParser ap;
-	ap.add("--compile", std::nullopt, HasArg::None);
-	ap.add("--debug", "-d", HasArg::None);
-	ap.add("--flags", "-f", HasArg::Req);
-	ap.add("--build", "-b", HasArg::Opt);
+	ap.add("--compile", std::nullopt, HasArg::None, false);
+	ap.add("--debug", "-d", HasArg::None, false);
+	ap.add("--flags", "-f", HasArg::Req, false);
+	ap.add("--build", "-b", HasArg::Opt, false);
 
 	if (const auto& fail=ap.parse(argc, argv); fail) {
 		printerr("Bad argument ", fail->index, " ",

@@ -93,6 +93,7 @@ public:		// variables
 	std::string name;
 	std::optional<std::string> alt_name;
 	HasArg has_arg = HasArg::None;
+	bool req_opt = false;
 
 	// This has a value of `std::nullopt` when the option was not
 	// triggered, or an `std::string` when the option *was* triggered.
@@ -138,9 +139,8 @@ public:		// functions
 
 	//ArgParser& add(Option&& to_add);
 	ArgParser& add(
-		std::string&& s_name,
-		std::optional<std::string>&& s_alt_name,
-		HasArg s_has_arg
+		std::string&& s_name, std::optional<std::string>&& s_alt_name,
+		HasArg s_has_arg, bool s_req_opt
 	);
 	//inline ArgParser& add(const std::string& s_name, HasArg s_has_arg) {
 	//	return add(s_name, std::string(), s_has_arg);
@@ -152,6 +152,7 @@ public:		// types
 		NoOption, // if an `Option` was *NOT* found at `argv[index]`
 		MissingArg, // if we arg missing an argument to the `Option`
 		ArgIsOption, // if the argument was an `Option`
+		MissingReqOpt, // if the `Option` was missing, but we don't have it
 	};
 	class Fail final {
 	public:		// variables
@@ -159,6 +160,7 @@ public:		// types
 		int index = 0;
 
 		FailKind kind;
+		std::unordered_set<std::string> missing_req_uset;
 	};
 public:		// functions
 	std::optional<Fail> parse(int argc, char** argv);
@@ -219,6 +221,9 @@ public:		// functions
 		}
 		return ret;
 	}
+	//inline std::optional<std::string> err_msg_when_missing_args(
+	//) const {
+	//}
 
 	GEN_GETTER_BY_CON_REF(option_umap);
 };
