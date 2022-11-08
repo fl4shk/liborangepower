@@ -195,6 +195,30 @@ public:		// functions
 			(_alt_name_to_name_umap.contains(alt_name_or_name)
 			|| _option_umap.contains(alt_name_or_name));
 	}
+	inline bool has_opts(
+		const std::same_as<std::string> auto&... names
+	) const {
+		if constexpr (sizeof...(names) == 0) {
+			return false;
+		}
+
+		bool ret = true;
+		((ret = ret && static_cast<bool>(at(names).val)), ...);
+		return ret;
+	}
+	inline bool has_opts(
+		const std::vector<std::string>& name_vec
+	) const {
+		if (name_vec.size() == 0) {
+			return false;
+		}
+
+		bool ret = true;
+		for (const auto& item: name_vec) {
+			ret = ret && has_opts(item);
+		}
+		return ret;
+	}
 
 	GEN_GETTER_BY_CON_REF(option_umap);
 };
