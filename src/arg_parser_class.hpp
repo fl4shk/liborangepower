@@ -94,6 +94,7 @@ public:		// variables
 	std::optional<std::string> alt_name;
 	HasArg has_arg = HasArg::None;
 	bool req_opt = false;
+	//size_t num_args = 0; 
 
 	// This has a value of `std::nullopt` when the option was not
 	// triggered, or an `std::string` when the option *was* triggered.
