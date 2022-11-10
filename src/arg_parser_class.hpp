@@ -205,21 +205,20 @@ public:		// functions
 		return false;
 	}
 
-	template<typename T, typename... RemTs>
+	template<typename... RemTs>
 	inline bool has_opts(
-		const T& first_name,
+		const std::string& first_name,
 		const RemTs&... rem_names
-	) const 
-	requires (
-		std::same_as<T, std::string>
-		|| std::same_as<T, const char*>
-	) {
+	) const {
 		//if constexpr (sizeof...(names) == 0) {
 		//	return false;
 		//}
 
 		bool ret = at(first_name).is_active();
-		((ret = ret && at(rem_names).is_active()), ...);
+		//((ret = ret && at(rem_names).is_active()), ...);
+		if constexpr (sizeof...(rem_names) > 0) {
+			ret = ret && has_opts(rem_names...);
+		}
 		return ret;
 	}
 
