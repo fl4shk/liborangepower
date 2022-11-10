@@ -94,7 +94,6 @@ public:		// variables
 	std::optional<std::string> alt_name;
 	HasArg has_arg = HasArg::None;
 	bool req_opt = false;
-	//size_t num_args = 0; 
 
 	// This has a value of `std::nullopt` when the option was not
 	// triggered, or an `std::string` when the option *was* triggered.
@@ -113,6 +112,9 @@ public:		// functions
 	constexpr inline auto operator <=> (
 		const Option& to_cmp
 	) const = default;
+	constexpr inline bool is_active() const {
+		return static_cast<bool>(val);
+	}
 
 	//constexpr inline bool has_alt_name() const {
 	//	return (alt_name.size() > 0);
@@ -206,7 +208,7 @@ public:		// functions
 		}
 
 		bool ret = true;
-		((ret = ret && static_cast<bool>(at(names).val)), ...);
+		((ret = ret && at(names).is_active()), ...);
 		return ret;
 	}
 	inline bool has_opts(
@@ -218,7 +220,7 @@ public:		// functions
 
 		bool ret = true;
 		for (const auto& item: name_vec) {
-			ret = ret && has_opts(item);
+			ret = ret && at(item).is_active();
 		}
 		return ret;
 	}
