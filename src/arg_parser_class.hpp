@@ -200,17 +200,29 @@ public:		// functions
 			(_alt_name_to_name_umap.contains(alt_name_or_name)
 			|| _option_umap.contains(alt_name_or_name));
 	}
-	inline bool has_opts(
-		const std::same_as<std::string> auto&... names
-	) const {
-		if constexpr (sizeof...(names) == 0) {
-			return false;
-		}
 
-		bool ret = true;
-		((ret = ret && at(names).is_active()), ...);
+	constexpr inline bool has_opts() {
+		return false;
+	}
+
+	template<typename T, typename... RemTs>
+	inline bool has_opts(
+		const T& first_name,
+		const RemTs&... rem_names
+	) const 
+	requires (
+		std::same_as<T, std::string>
+		|| std::same_as<T, const char*>
+	) {
+		//if constexpr (sizeof...(names) == 0) {
+		//	return false;
+		//}
+
+		bool ret = first_name.is_active();
+		((ret = ret && at(rem_names).is_active()), ...);
 		return ret;
 	}
+
 	inline bool has_opts(
 		const std::vector<std::string>& name_vec
 	) const {
