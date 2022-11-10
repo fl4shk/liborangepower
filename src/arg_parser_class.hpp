@@ -218,7 +218,7 @@ public:		// functions
 		//	return false;
 		//}
 
-		bool ret = first_name.is_active();
+		bool ret = at(first_name).is_active();
 		((ret = ret && at(rem_names).is_active()), ...);
 		return ret;
 	}
