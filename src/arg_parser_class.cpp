@@ -27,14 +27,14 @@ ArgParser& ArgParser::add(
 		break;
 	//--------
 	}
-	Option to_insert
+	OptionKey to_insert
 		{.name=std::move(s_name),
 		.alt_name=std::move(s_alt_name),
 		.has_arg=s_has_arg,
 		.req_opt=s_req_opt};
 
 	if (to_insert.alt_name) {
-		if (_alt_name_to_name_umap.contains(*to_insert.alt_name)) {
+		if (alt_name_to_name_umap().contains(*to_insert.alt_name)) {
 			throw std::invalid_argument(sconcat
 				("liborangepower::arg_parse::ArgParser::add(): ",
 				"Error: already have `alt_name` of ",
@@ -47,7 +47,7 @@ ArgParser& ArgParser::add(
 	std::string temp_name(to_insert.name);
 
 	//_option_umap.insert(std::pair(std::move(name), std::move(to_add)));
-	_option_umap.insert(std::pair
+	_option_key_umap.insert(std::pair
 		(std::move(temp_name), std::move(to_insert)));
 	return *this;
 }
@@ -60,11 +60,18 @@ ArgParser& ArgParser::add(
 ArgParseRet ArgParser::parse(
 	int argc, char** argv
 ) {
+	_option_darr.clear();
 	for (int i=1; i<argc; ++i) {
 		if (contains(argv[i])) {
-			auto& option = _raw_at(argv[i]);
+			auto& key = _raw_key_at(argv[i]);
+			Option option;
+			if (alt_name_to_name_umap().contains(key.name)) {
+				option.name = alt_name_to_name_umap().at(key.name);
+			} else {
+				option.name = key.name;
+			}
 
-			switch (option.has_arg) {
+			switch (key.has_arg) {
 			//--------
 			case HasArg::None:
 				option.val = std::string();
@@ -100,6 +107,8 @@ ArgParseRet ArgParser::parse(
 				break;
 			//--------
 			}
+			key.ind_darr.push_back(option_darr().size());
+			_option_darr.push_back(std::move(option));
 		} else {
 			//return ArgParseRet
 			//	{.index=i,
@@ -109,19 +118,62 @@ ArgParseRet ArgParser::parse(
 				.kind=ArgParseRet::Kind::NoFail};
 		}
 	}
-	if (ArgParseRet fail; true) { 
-		fail.kind = ArgParseRet::Kind::MissingReqOpt;
-		for (const auto& item: option_umap()) {
-			if (item.second.req_opt && !item.second.val) {
-				fail.missing_req_uset.insert(item.second.name);
+	if (ArgParseRet ret; true) { 
+		ret.kind = ArgParseRet::Kind::MissingReqOpt;
+		for (const auto& item: option_key_umap()) {
+			if (item.second.req_opt && !item.second.is_active()) {
+				ret.missing_req_uset.insert(item.second.name);
 			}
 		}
-		if (fail.missing_req_uset.size() > 0) {
-			return fail;
+		if (ret.missing_req_uset.size() > 0) {
+			return ret;
 		}
 	}
 	return ArgParseRet
-		{.index=argc};
+		{.index=argc,
+		.kind=ArgParseRet::Kind::NoFail};
+}
+
+std::string ArgParser::help_msg(int argc, char** argv) const {
+	std::string ret;
+	ret += sconcat(argv[0], " valid options:\n");
+
+	for (const auto& item: option_key_umap()) {
+		const auto& key = item.second;
+		ret += key.name;
+		if (key.alt_name) {
+			ret += sconcat(" (short name ", *key.alt_name, ")");
+		}
+		ret += ": ";
+
+		switch (key.has_arg) {
+		//--------
+		case HasArg::None:
+			ret += "takes no arguments";
+			break;
+		case HasArg::Req:
+			ret += "requires an argument";
+			break;
+		case HasArg::Opt:
+			ret += "optionaly takes an argument";
+			break;
+		default:
+			throw std::runtime_error(sconcat
+				("liborangepower::arg_parse::ArgParser::help_msg(): ",
+				"Error: ",
+				"Unknown `key.has_arg` (", size_t(key.has_arg), ")"));
+			break;
+		//--------
+		}
+		if (key.req_opt) {
+			ret += ", but is a required option.";
+		} else {
+			ret += ".";
+		}
+		ret += "\n";
+	}
+
+	return ret;
 }
 //--------
 } // namespace arg_parse
