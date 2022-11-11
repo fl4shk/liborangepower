@@ -99,7 +99,7 @@ public:		// variables
 	std::vector<size_t> ind_darr;
 	bool
 		req_opt: 1 = false,
-		singleton: 1 = false;
+		singleton: 1 = true;
 public:		// functions
 	constexpr inline auto operator <=> (
 		const OptionKey& to_cmp
@@ -240,6 +240,15 @@ public:		// functions
 		std::string&& s_name, std::optional<std::string>&& s_alt_name,
 		HasArg s_has_arg, bool s_req_opt, bool s_singleton
 	);
+	inline ArgParser& add_singleton(
+		std::string&& s_name, std::optional<std::string>&& s_alt_name,
+		HasArg s_has_arg, bool s_req_opt
+	) {
+		return add
+			(std::move(s_name), std::move(s_alt_name),
+			s_has_arg,
+			s_req_opt, true);
+	}
 	//inline ArgParser& add(const std::string& s_name, HasArg s_has_arg) {
 	//	return add(s_name, std::string(), s_has_arg);
 	//}
@@ -267,11 +276,11 @@ private:		// functions
 				alt_name_or_name));
 		}
 	}
-	inline const Option& _raw_at(
-		const OptionKey& key, size_t index=0
-	) const {
+	inline Option& _raw_at(
+		const OptionKey& key, size_t index
+	) {
 		if (index < key.ind_darr.size() - size_t(1)) {
-			return option_darr().at(key.ind_darr.at(index));
+			return _option_darr.at(key.ind_darr.at(index));
 		} else {
 			throw std::out_of_range(sconcat
 				("liborangepower::arg_parse::ArgParser::_raw_at(): ",
@@ -279,6 +288,11 @@ private:		// functions
 				"`index` (", index, ") out of range for `key.ind_darr`. ",
 				"`key.ind_darr.size() == ", key.ind_darr.size(), "`."));
 		}
+	}
+	inline Option& _raw_at(
+		const std::string& alt_name_or_name, size_t index
+	) {
+		return _raw_at(key_at(alt_name_or_name), index);
 	}
 public:		// functions
 	inline const OptionKey& key_at(
@@ -300,7 +314,7 @@ public:		// functions
 		}
 	}
 	inline const Option& at(
-		const OptionKey& key, size_t index=0
+		const OptionKey& key, size_t index
 	) const {
 		if (index < key.ind_darr.size() - size_t(1)) {
 			return option_darr().at(key.ind_darr.at(index));
@@ -310,6 +324,11 @@ public:		// functions
 				"`index` (", index, ") out of range for `key.ind_darr`. ",
 				"`key.ind_darr.size() == ", key.ind_darr.size(), "`."));
 		}
+	}
+	inline const Option& at(
+		const std::string& alt_name_or_name, size_t index
+	) const {
+		return at(key_at(alt_name_or_name), index);
 	}
 	inline bool contains(const std::string& alt_name_or_name) const {
 		return
