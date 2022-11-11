@@ -162,7 +162,7 @@ std::string ArgParser::help_msg(int argc, char** argv) const {
 			ret += "requires an argument; ";
 			break;
 		case HasArg::Opt:
-			ret += "optionaly takes an argument; ";
+			ret += "optionally takes an argument; ";
 			break;
 		default:
 			throw std::runtime_error(sconcat
