@@ -7,10 +7,10 @@ int main(int argc, char** argv) {
 	ap.add("--flags", "-f", HasArg::Req, false);
 	ap.add("--build", "-b", HasArg::Opt, false);
 
-	if (const auto& fail=ap.parse(argc, argv); fail) {
-		printerr("Bad argument ", fail->index, " ",
-			"\"", argv[fail->index], "\" ",
-			static_cast<i32>(fail->kind),
+	if (const auto& ap_ret=ap.parse(argc, argv); ap_ret.fail()) {
+		printerr("Bad argument ", ap_ret.index, " ",
+			"\"", argv[ap_ret.index], "\" ",
+			static_cast<i32>(ap_ret.kind),
 			"\n");
 	}
 

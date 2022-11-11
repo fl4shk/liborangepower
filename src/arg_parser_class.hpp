@@ -93,7 +93,8 @@ public:		// variables
 	std::string name;
 	std::optional<std::string> alt_name;
 	HasArg has_arg = HasArg::None;
-	bool req_opt = false;
+	bool
+		req_opt = false;
 
 	// This has a value of `std::nullopt` when the option was not
 	// triggered, or an `std::string` when the option *was* triggered.
@@ -125,6 +126,32 @@ public:		// functions
 	//}
 };
 
+class ArgParseRet final {
+public:		// types
+	enum class Kind: u8 {
+		NoFail, // No fail
+		//NoOption, // if an `Option` was *NOT* found at `argv[index]`
+		MissingArg, // if we arg missing an argument to the `Option`
+		ArgIsOption, // if the argument was an `Option`
+		MissingReqOpt, // if the `Option` was missing, but we don't have it
+	};
+public:		// variables
+	// Index into `argv`.
+	// For `!(*this)`, it's the index of the first element of `argv` that
+	// was 
+	int index = 0;
+
+	Kind kind = Kind::NoFail;
+	std::unordered_set<std::string> missing_req_uset;
+public:		// functions
+	constexpr inline bool fail() const {
+		return (kind != Kind::NoFail);
+	}
+	//inline operator bool () const {
+	//	return (kind != Kind::NoFail);
+	//}
+};
+
 class ArgParser final {
 private:		// variables
 	//int _argc = 0;
@@ -151,22 +178,8 @@ public:		// functions
 	//ArgParser& add(std::vector<Option>&& to_add_vec);
 
 public:		// types
-	enum class FailKind: u8 {
-		NoOption, // if an `Option` was *NOT* found at `argv[index]`
-		MissingArg, // if we arg missing an argument to the `Option`
-		ArgIsOption, // if the argument was an `Option`
-		MissingReqOpt, // if the `Option` was missing, but we don't have it
-	};
-	class Fail final {
-	public:		// variables
-		// index of the argument that failed to be parsed
-		int index = 0;
-
-		FailKind kind;
-		std::unordered_set<std::string> missing_req_uset;
-	};
 public:		// functions
-	std::optional<Fail> parse(int argc, char** argv);
+	ArgParseRet parse(int argc, char** argv);
 private:		// functions
 	inline Option& _raw_at(const std::string& alt_name_or_name) {
 		if (_alt_name_to_name_umap.contains(alt_name_or_name)) {

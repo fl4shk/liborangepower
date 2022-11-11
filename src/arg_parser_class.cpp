@@ -57,7 +57,9 @@ ArgParser& ArgParser::add(
 //	}
 //	return *this;
 //}
-auto ArgParser::parse(int argc, char** argv) -> std::optional<Fail> {
+ArgParseRet ArgParser::parse(
+	int argc, char** argv
+) {
 	for (int i=1; i<argc; ++i) {
 		if (contains(argv[i])) {
 			auto& option = _raw_at(argv[i]);
@@ -70,13 +72,13 @@ auto ArgParser::parse(int argc, char** argv) -> std::optional<Fail> {
 			case HasArg::Req:
 				{
 					if (i + 1 == argc) {
-						return Fail
+						return ArgParseRet
 							{.index=i,
-							.kind=FailKind::MissingArg};
+							.kind=ArgParseRet::Kind::MissingArg};
 					} else if (contains(argv[i + 1])) {
-						return Fail
+						return ArgParseRet
 							{.index=i,
-							.kind=FailKind::ArgIsOption};
+							.kind=ArgParseRet::Kind::ArgIsOption};
 					} else {
 						option.val = argv[i + 1];
 						++i;
@@ -99,13 +101,16 @@ auto ArgParser::parse(int argc, char** argv) -> std::optional<Fail> {
 			//--------
 			}
 		} else {
-			return Fail
+			//return ArgParseRet
+			//	{.index=i,
+			//	.kind=ArgParseRet::Kind::NoOption};
+			return ArgParseRet
 				{.index=i,
-				.kind=FailKind::NoOption};
+				.kind=ArgParseRet::Kind::NoFail};
 		}
 	}
-	if (Fail fail; true) { 
-		fail.kind = FailKind::MissingReqOpt;
+	if (ArgParseRet fail; true) { 
+		fail.kind = ArgParseRet::Kind::MissingReqOpt;
 		for (const auto& item: option_umap()) {
 			if (item.second.req_opt && !item.second.val) {
 				fail.missing_req_uset.insert(item.second.name);
@@ -115,7 +120,8 @@ auto ArgParser::parse(int argc, char** argv) -> std::optional<Fail> {
 			return fail;
 		}
 	}
-	return std::nullopt;
+	return ArgParseRet
+		{.index=argc};
 }
 //--------
 } // namespace arg_parse
