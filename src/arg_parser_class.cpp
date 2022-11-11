@@ -189,7 +189,7 @@ std::string ArgParser::help_msg(int argc, char** argv) const {
 				//}
 			}
 			if (key.singleton) {
-				ret += "this argument can only appear once; ";
+				ret += "can only appear once; ";
 			}
 			//ret += ")";
 		}
