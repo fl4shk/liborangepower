@@ -12,6 +12,9 @@
 namespace liborangepower {
 //--------
 using integer_types::u8;
+using integer_types::u16;
+using integer_types::u32;
+using integer_types::u64;
 using strings::sconcat;
 //--------
 namespace arg_parse {
@@ -93,9 +96,10 @@ public:		// variables
 	std::string name;
 	std::optional<std::string> alt_name;
 	HasArg has_arg = HasArg::None;
-	bool
-		req_opt = false;
 	std::vector<size_t> ind_darr;
+	bool
+		req_opt: 1 = false,
+		singleton: 1 = false;
 public:		// functions
 	constexpr inline auto operator <=> (
 		const OptionKey& to_cmp
@@ -177,11 +181,13 @@ namespace arg_parse {
 class ArgParseRet final {
 public:		// types
 	enum class Kind: u8 {
-		NoFail, // there is no fail, so `index` indicate
-		//NoOption, // if an `Option` was *NOT* found at `argv[index]`
-		MissingArg, // if we arg missing an argument to the `Option`
-		ArgIsOption, // if the argument was an `Option`
-		MissingReqOpt, // if the `Option` was missing, but we don't have it
+		NoFail,			// there is no fail, so `index` indicate
+		//NoOption,		// if an option was *NOT* found at `argv[index]`
+		MissingArg,		// if we arg missing an argument to the option
+		ArgIsOption,	// if the argument was an option
+		MissingReqOpt,	// if the option was required, but we don't have it
+		TooManyInsts,	// if the option is a singleton, but it was
+						// triggered more than once
 	};
 public:		// variables
 	// Index into `argv`.
@@ -232,7 +238,7 @@ public:		// functions
 	//ArgParser& add(Option&& to_add);
 	ArgParser& add(
 		std::string&& s_name, std::optional<std::string>&& s_alt_name,
-		HasArg s_has_arg, bool s_req_opt
+		HasArg s_has_arg, bool s_req_opt, bool s_singleton
 	);
 	//inline ArgParser& add(const std::string& s_name, HasArg s_has_arg) {
 	//	return add(s_name, std::string(), s_has_arg);
@@ -261,9 +267,22 @@ private:		// functions
 				alt_name_or_name));
 		}
 	}
+	inline const Option& _raw_at(
+		const OptionKey& key, size_t index=0
+	) const {
+		if (index < key.ind_darr.size() - size_t(1)) {
+			return option_darr().at(key.ind_darr.at(index));
+		} else {
+			throw std::out_of_range(sconcat
+				("liborangepower::arg_parse::ArgParser::_raw_at(): ",
+				"Error: ",
+				"`index` (", index, ") out of range for `key.ind_darr`. ",
+				"`key.ind_darr.size() == ", key.ind_darr.size(), "`."));
+		}
+	}
 public:		// functions
 	inline const OptionKey& key_at(
-		const std::string& alt_name_or_name, size_t index=0
+		const std::string& alt_name_or_name
 	) const {
 		if (alt_name_to_name_umap().contains(alt_name_or_name)) {
 			//return _option_umap.at(_alt_name_to_name_umap
@@ -278,6 +297,18 @@ public:		// functions
 				("liborangepower::arg_parse::ArgParser::key_at(): ",
 				"Error: invalid `alt_name_or_name` of ",
 				alt_name_or_name));
+		}
+	}
+	inline const Option& at(
+		const OptionKey& key, size_t index=0
+	) const {
+		if (index < key.ind_darr.size() - size_t(1)) {
+			return option_darr().at(key.ind_darr.at(index));
+		} else {
+			throw std::out_of_range(sconcat
+				("liborangepower::arg_parse::ArgParser::at(): Error: ",
+				"`index` (", index, ") out of range for `key.ind_darr`. ",
+				"`key.ind_darr.size() == ", key.ind_darr.size(), "`."));
 		}
 	}
 	inline bool contains(const std::string& alt_name_or_name) const {

@@ -2,11 +2,11 @@
 
 int main(int argc, char** argv) {
 	ArgParser ap;
-	ap.add("--compile", std::nullopt, HasArg::None, false);
-	ap.add("--debug", "-d", HasArg::None, false);
-	ap.add("--flags", "-f", HasArg::Req, false);
-	//ap.add("--build", "-b", HasArg::Opt, false);
-	ap.add("--build", "-b", HasArg::Req, false);
+	ap.add("--compile", std::nullopt, HasArg::None, false, true);
+	ap.add("--debug", "-d", HasArg::None, false, true);
+	ap.add("--flags", "-f", HasArg::Req, false, true);
+	//ap.add("--build", "-b", HasArg::Opt, false, true);
+	ap.add("--build", "-b", HasArg::Req, false, true);
 
 	const auto& ap_ret=ap.parse(argc, argv);
 	if (ap_ret.fail()) {
