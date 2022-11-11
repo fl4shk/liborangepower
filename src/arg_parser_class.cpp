@@ -183,7 +183,7 @@ std::string ArgParser::help_msg(int argc, char** argv) const {
 		if (key.req_opt || key.singleton) {
 			//ret += "(Notes: ";
 			if (key.req_opt) {
-				ret += "required argument; ";
+				ret += "required option; ";
 				//if (key.singleton) {
 				//	ret += "; "
 				//}
