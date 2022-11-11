@@ -16,6 +16,9 @@ int main(int argc, char** argv) {
 		//	"\n");
 		printerr(ap.help_msg(argc, argv), "\n");
 	}
+	if (ap.has_opts("-b")) {
+		printout(ap.at("-b", 0).val, "\n");
+	}
 
 	return 0;
 }

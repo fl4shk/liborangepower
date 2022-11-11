@@ -279,7 +279,7 @@ private:		// functions
 	inline Option& _raw_at(
 		const OptionKey& key, size_t index
 	) {
-		if (index < key.ind_darr.size() - size_t(1)) {
+		if (index < key.ind_darr.size()) {
 			return _option_darr.at(key.ind_darr.at(index));
 		} else {
 			throw std::out_of_range(sconcat
@@ -321,11 +321,12 @@ public:		// functions
 	inline const Option& at(
 		const OptionKey& key, size_t index
 	) const {
-		if (index < key.ind_darr.size() - size_t(1)) {
+		if (index < key.ind_darr.size()) {
 			return option_darr().at(key.ind_darr.at(index));
 		} else {
 			throw std::out_of_range(sconcat
 				("liborangepower::arg_parse::ArgParser::at(): Error: ",
+				"`key.name` (", key.name, "): ",
 				"`index` (", index, ") out of range for `key.ind_darr`. ",
 				"`key.ind_darr.size() == ", key.ind_darr.size(), "`."));
 		}
