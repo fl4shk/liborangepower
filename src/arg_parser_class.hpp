@@ -294,6 +294,11 @@ private:		// functions
 	) {
 		return _raw_at(key_at(alt_name_or_name), index);
 	}
+	inline Option& _raw_at_singleton(
+		const std::string& alt_name_or_name
+	) {
+		return _raw_at(alt_name_or_name, 0);
+	}
 public:		// functions
 	inline const OptionKey& key_at(
 		const std::string& alt_name_or_name
@@ -329,6 +334,11 @@ public:		// functions
 		const std::string& alt_name_or_name, size_t index
 	) const {
 		return at(key_at(alt_name_or_name), index);
+	}
+	inline const Option& at_singleton(
+		const std::string& alt_name_or_name
+	) const {
+		return at(alt_name_or_name, 0);
 	}
 	inline bool contains(const std::string& alt_name_or_name) const {
 		return
