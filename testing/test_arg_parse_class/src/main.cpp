@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 		.add_singleton("--flags", "-f", HasArg::Req, false, "")
 		//.add_singleton("--build", "-b", HasArg::Opt, false, "")
 		.add_singleton("--build", "-b", HasArg::Req, false,
-			"Build the program.");
+			"Build the program. ");
 
 	const auto& ap_ret=ap.parse(argc, argv);
 	if (ap_ret.fail() || ap_ret.index != argc || argc == 1) {

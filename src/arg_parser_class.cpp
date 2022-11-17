@@ -154,9 +154,9 @@ std::string ArgParser::help_msg(int argc, char** argv) const {
 			ret += sconcat(" (short name ", *key.alt_name, ")");
 		}
 		ret += sconcat(": ", key.help_msg_prefix);
-		if (key.help_msg_prefix.size() > 0) {
-			ret += " ";
-		}
+		//if (key.help_msg_prefix.size() > 0) {
+		//	ret += " ";
+		//}
 		ret += "This option: ";
 
 		switch (key.has_arg) {
