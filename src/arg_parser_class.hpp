@@ -96,10 +96,13 @@ public:		// variables
 	std::string name;
 	std::optional<std::string> alt_name;
 	HasArg has_arg = HasArg::None;
+
+	// indices within the std::vector of `Option`s
 	std::vector<size_t> ind_darr;
 	bool
 		req_opt: 1 = false,
 		singleton: 1 = true;
+	std::string help_msg_prefix;
 public:		// functions
 	constexpr inline auto operator <=> (
 		const OptionKey& to_cmp
@@ -238,16 +241,18 @@ public:		// functions
 	//ArgParser& add(Option&& to_add);
 	ArgParser& add(
 		std::string&& s_name, std::optional<std::string>&& s_alt_name,
-		HasArg s_has_arg, bool s_req_opt, bool s_singleton
+		HasArg s_has_arg, bool s_req_opt, bool s_singleton,
+		std::string&& s_help_msg_prefix
 	);
 	inline ArgParser& add_singleton(
 		std::string&& s_name, std::optional<std::string>&& s_alt_name,
-		HasArg s_has_arg, bool s_req_opt
+		HasArg s_has_arg, bool s_req_opt, std::string&& s_help_msg_prefix
 	) {
 		return add
 			(std::move(s_name), std::move(s_alt_name),
 			s_has_arg,
-			s_req_opt, true);
+			s_req_opt, true,
+			std::move(s_help_msg_prefix));
 	}
 	//inline ArgParser& add(const std::string& s_name, HasArg s_has_arg) {
 	//	return add(s_name, std::string(), s_has_arg);

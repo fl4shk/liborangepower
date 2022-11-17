@@ -12,7 +12,8 @@ ArgParser::~ArgParser() {}
 //ArgParser& ArgParser::add(Option&& to_add)
 ArgParser& ArgParser::add(
 	std::string&& s_name, std::optional<std::string>&& s_alt_name,
-	HasArg s_has_arg, bool s_req_opt, bool s_singleton
+	HasArg s_has_arg, bool s_req_opt, bool s_singleton,
+	std::string&& s_help_msg_prefix
 ) {
 	switch (s_has_arg) {
 	//--------
@@ -32,7 +33,8 @@ ArgParser& ArgParser::add(
 		.alt_name=std::move(s_alt_name),
 		.has_arg=s_has_arg,
 		.req_opt=s_req_opt,
-		.singleton=s_singleton};
+		.singleton=s_singleton,
+		.help_msg_prefix=std::move(s_help_msg_prefix)};
 
 	if (to_insert.alt_name) {
 		if (alt_name_to_name_umap().contains(*to_insert.alt_name)) {
@@ -151,7 +153,11 @@ std::string ArgParser::help_msg(int argc, char** argv) const {
 		if (key.alt_name) {
 			ret += sconcat(" (short name ", *key.alt_name, ")");
 		}
-		ret += ": ";
+		ret += sconcat(": ", key.help_msg_prefix);
+		if (key.help_msg_prefix.size() > 0) {
+			ret += " ";
+		}
+		ret += "This option: ";
 
 		switch (key.has_arg) {
 		//--------
@@ -183,7 +189,7 @@ std::string ArgParser::help_msg(int argc, char** argv) const {
 		if (key.req_opt || key.singleton) {
 			//ret += "(Notes: ";
 			if (key.req_opt) {
-				ret += "required option; ";
+				ret += "is a required option; ";
 				//if (key.singleton) {
 				//	ret += "; "
 				//}
@@ -193,6 +199,8 @@ std::string ArgParser::help_msg(int argc, char** argv) const {
 			}
 			//ret += ")";
 		}
+		ret = ret.substr(0, ret.size() - 2);
+		ret += ".";
 		ret += "\n";
 	}
 
