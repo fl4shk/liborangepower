@@ -488,7 +488,7 @@ inline void val_from_bv(
 				[&](const ElemT& some_temp) -> void
 					{ ret.reset(new ElemT(some_temp)); },
 				[&](ElemT&& some_temp) -> void
-					{ ret.reset(std::move(some_temp)); });
+					{ ret.reset(new ElemT(std::move(some_temp))); });
 		}
 		//else // if (bv.isMember("kind_str"))
 		else { // if (std::is_same<ElemT, BaseT>()) 
@@ -763,11 +763,10 @@ inline void set_bv_map_like_std_container(
 
 template<MapLikeStdContnr T>
 inline void set_bv_map_like_std_container(Value& bv, const T& val) {
-	set_bv_map_like_std_container(
-		bv, val,
+	set_bv_map_like_std_container
+		(bv, val,
 		[](const typename T::value_type& pair) -> bool
-			{ return false; }
-	);
+			{ return false; });
 }
 
 //template<containers::MapLikeStdContnr T>
