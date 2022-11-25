@@ -503,7 +503,7 @@ inline void val_from_bv(
 			val_from_bv(kind_str, bv.at("kind_str"), func_umap);
 
 			//ret.reset(func_umap->at(kind_str)(obj));
-			//ret = func_umap->at(kind_str)(obj);
+			ret = func_umap->at(kind_str)(obj);
 		}
 	} else if constexpr (is_std_array<NonCvrefT>()) {
 		//ret = NonCvrefT();
