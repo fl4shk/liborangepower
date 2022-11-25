@@ -81,24 +81,36 @@ public:		// functions
 	}
 	template<typename T>
 	inline bool key_uset_up_prev(const KeyUset<T>& key_uset) const {
-		return generic_key_uset_func(key_uset,
-			std::bind(&EngineKeyStatus::key_up_prev<T>, this));
+		return generic_key_uset_func<T>(key_uset,
+			//std::bind(&EngineKeyStatus::key_up_prev<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_up_prev<T>(key_kind);
+			});
 	}
 	template<typename T>
 	inline bool key_uset_down_prev(const KeyUset<T>& key_uset) const {
-		return generic_key_uset_func(key_uset,
-			std::bind(&EngineKeyStatus::key_down_prev<T>, this));
+		return generic_key_uset_func<T>(key_uset,
+			//std::bind(&EngineKeyStatus::key_down_prev<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_down_prev<T>(key_kind);
+			});
 	}
 
 	template<typename T>
 	inline bool key_uset_up_now(const KeyUset<T>& key_uset) const {
-		return generic_key_uset_func(key_uset,
-			std::bind(&EngineKeyStatus::key_up_now<T>, this));
+		return generic_key_uset_func<T>(key_uset,
+			//std::bind(&EngineKeyStatus::key_up_now<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_up_now<T>(key_kind);
+			});
 	}
 	template<typename T>
 	inline bool key_uset_down_now(const KeyUset<T>& key_uset) const {
-		return generic_key_uset_func(key_uset,
-			std::bind(&EngineKeyStatus::key_down_now<T>, this));
+		return generic_key_uset_func<T>(key_uset,
+			//std::bind(&EngineKeyStatus::key_down_now<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_down_now<T>(key_kind);
+			});
 	}
 
 	//template<typename T, typename... RemTs>
@@ -129,8 +141,11 @@ public:		// functions
 		//}
 		//return true;
 		return generic_key_uset_func(key_uset,
-			std::bind(&EngineKeyStatus::key_just_went_up<T>,
-				this));
+			//std::bind(&EngineKeyStatus::key_just_went_up<T>,
+			//	this)
+			[this](const T& key_kind) -> bool {
+				return key_just_went_up<T>(key_kind);
+			});
 	}
 	template<typename T>
 	inline bool key_uset_just_went_down(
@@ -143,8 +158,10 @@ public:		// functions
 		//}
 		//return true;
 		return generic_key_uset_func(key_uset,
-			std::bind(&EngineKeyStatus::key_just_went_down<T>,
-				this));
+			//std::bind(&EngineKeyStatus::key_just_went_down<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_just_went_down<T>(key_kind);
+			});
 	}
 
 
@@ -165,14 +182,20 @@ public:		// functions
 		const KeyUsetR<T, RemTs...>& key_uset_r
 	) const {
 		return generic_key_uset_r_func(key_uset_r,
-			std::bind(&EngineKeyStatus::key_up_prev<T>, this));
+			//std::bind(&EngineKeyStatus::key_up_prev<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_up_prev<T>(key_kind);
+			});
 	}
 	template<typename T, typename... RemTs>
 	inline bool key_uset_r_down_prev(
 		const KeyUsetR<T, RemTs...>& key_uset_r
 	) const {
 		return generic_key_uset_r_func(key_uset_r,
-			std::bind(&EngineKeyStatus::key_down_prev<T>, this));
+			//std::bind(&EngineKeyStatus::key_down_prev<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_down_prev<T>(key_kind);
+			});
 	}
 
 	template<typename T, typename... RemTs>
@@ -180,14 +203,20 @@ public:		// functions
 		const KeyUsetR<T, RemTs...>& key_uset_r
 	) const {
 		return generic_key_uset_r_func(key_uset_r,
-			std::bind(&EngineKeyStatus::key_up_now<T>, this));
+			//std::bind(&EngineKeyStatus::key_up_now<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_up_now<T>(key_kind);
+			});
 	}
 	template<typename T, typename... RemTs>
 	inline bool key_uset_r_down_now(
 		const KeyUsetR<T, RemTs...>& key_uset_r
 	) const {
 		return generic_key_uset_r_func(key_uset_r,
-			std::bind(&EngineKeyStatus::key_down_now<T>, this));
+			//std::bind(&EngineKeyStatus::key_down_now<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_down_now<T>(key_kind);
+			});
 	}
 	template<typename T, typename... RemTs>
 	inline bool key_uset_r_just_went_up(
@@ -200,8 +229,10 @@ public:		// functions
 		//}
 		//return true;
 		return generic_key_uset_r_func(key_uset_r,
-			std::bind(&EngineKeyStatus::key_just_went_up<T>,
-				this));
+			//std::bind(&EngineKeyStatus::key_just_went_up<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_just_went_up<T>(key_kind);
+			});
 	}
 	template<typename T, typename... RemTs>
 	inline bool key_uset_r_just_went_down(
@@ -214,8 +245,10 @@ public:		// functions
 		//}
 		//return true;
 		return generic_key_uset_r_func(key_uset_r,
-			std::bind(&EngineKeyStatus::key_just_went_down<T>,
-				this));
+			//std::bind(&EngineKeyStatus::key_just_went_down<T>, this)
+			[this](const T& key_kind) -> bool {
+				return key_just_went_down<T>(key_kind);
+			});
 	}
 	//--------
 	inline bool generic_any_key_func(
