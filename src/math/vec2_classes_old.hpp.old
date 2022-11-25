@@ -359,23 +359,23 @@ public:		/* functions */ \
 	/* Approximately Equal, using a Tolerance */ \
 	template<typename OtherT> \
 	inline bool almost_equal(const Vec2<OtherT>& to_cmp, \
-		const Vec2& tolerance_vec) const \
+		const Vec2& tolerance_darr) const \
 	{ \
 		return ((misc_util::custom_abs<specific_type>(x - to_cmp.x) \
-			< misc_util::custom_abs<specific_type>(tolerance_vec.x)) \
+			< misc_util::custom_abs<specific_type>(tolerance_darr.x)) \
 			&& (misc_util::custom_abs<specific_type>(y - to_cmp.y) \
-			< misc_util::custom_abs<specific_type>(tolerance_vec.y))); \
+			< misc_util::custom_abs<specific_type>(tolerance_darr.y))); \
 	} \
 	\
 	/* Approximately Not Equal, using a Tolerance */ \
 	template<typename OtherT> \
 	inline bool almost_not_equal(const Vec2<OtherT>& to_cmp, \
-		const Vec2& tolerance_vec) const \
+		const Vec2& tolerance_darr) const \
 	{ \
 		return ((misc_util::custom_abs<specific_type>(x - to_cmp.x) \
-			>= misc_util::custom_abs<specific_type>(tolerance_vec.x)) \
+			>= misc_util::custom_abs<specific_type>(tolerance_darr.x)) \
 			|| (misc_util::custom_abs<specific_type>(y - to_cmp.y) \
-			>= misc_util::custom_abs<specific_type>(tolerance_vec.y))); \
+			>= misc_util::custom_abs<specific_type>(tolerance_darr.y))); \
 	} \
 	/* Magnitude of the vector */ \
 	inline specific_type mag() const \

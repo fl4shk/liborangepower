@@ -17,23 +17,23 @@ constexpr inline std::size_t hash_merge(size_t h, size_t next) {
 
 template<typename Alloc=std::allocator<size_t>>
 constexpr inline std::size_t hash_merge(
-	const std::vector<size_t, Alloc>& to_merge_vec
+	const std::vector<size_t, Alloc>& to_merge_darr
 ) {
-	if (to_merge_vec.size() == 0) {
+	if (to_merge_darr.size() == 0) {
 		throw std::invalid_argument(strings::sconcat(
 			"liborangepower::containers::hash_merge(",
 				"const std::vector<size_t, Alloc>&",
 			"): Error: ",
-			"to_merge_vec.size() == 0"
+			"to_merge_darr.size() == 0"
 			)
 		);
 	}
 
 	size_t i = 0;
-	size_t h = to_merge_vec.at(i++);
+	size_t h = to_merge_darr.at(i++);
 
-	for (; i<to_merge_vec.size(); ++i) {
-		h = hash_merge(h, to_merge_vec.at(i));
+	for (; i<to_merge_darr.size(); ++i) {
+		h = hash_merge(h, to_merge_darr.at(i));
 	}
 
 	return h;

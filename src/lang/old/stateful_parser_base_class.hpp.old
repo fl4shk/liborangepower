@@ -185,8 +185,8 @@ public:		// types
 
 	public:		// functions
 		SeqParse() = default;
-		SeqParse(DerivedT* s_self, Vec&& s_vec, bool s_optional=false)
-			: _self(s_self), _vec(std::move(s_vec)), _optional(s_optional)
+		SeqParse(DerivedT* s_self, Vec&& s_darr, bool s_optional=false)
+			: _self(s_self), _vec(std::move(s_darr)), _optional(s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(SeqParse);
@@ -405,8 +405,8 @@ public:		// types
 		using Vec = typename Base::Vec;
 
 	public:		// functions
-		OrParse(DerivedT* s_self, Vec&& s_vec, bool s_optional=false)
-			: Base(s_self, std::move(s_vec), s_optional)
+		OrParse(DerivedT* s_self, Vec&& s_darr, bool s_optional=false)
+			: Base(s_self, std::move(s_darr), s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OrParse);
@@ -455,9 +455,9 @@ public:		// types
 		using Vec = typename Base::Vec;
 
 	public:		// functions
-		ListParse(DerivedT* s_self, Vec&& s_vec,
+		ListParse(DerivedT* s_self, Vec&& s_darr,
 			bool s_optional=false)
-			: Base(s_self, std::move(s_vec), s_optional)
+			: Base(s_self, std::move(s_darr), s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ListParse);
@@ -611,55 +611,55 @@ public:		// types
 		static inline TheSeqParse _opt_seq_parse(DerivedT* s_self,
 			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			typename TheSeqParse::Vec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			typename TheSeqParse::Vec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return TheSeqParse(s_self, std::move(s_vec), true);
+			return TheSeqParse(s_self, std::move(s_darr), true);
 		}
 		template<typename FirstArgT, typename... RemArgTs>
 		static inline TheSeqParse _req_seq_parse(DerivedT* s_self,
 			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			typename TheSeqParse::Vec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			typename TheSeqParse::Vec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return TheSeqParse(s_self, std::move(s_vec), false);
+			return TheSeqParse(s_self, std::move(s_darr), false);
 		}
 		template<typename FirstArgT, typename... RemArgTs>
 		static inline TheOrParse _opt_or_parse(DerivedT* s_self,
 			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			typename TheOrParse::Vec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			typename TheOrParse::Vec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return TheOrParse(s_self, std::move(s_vec), true);
+			return TheOrParse(s_self, std::move(s_darr), true);
 		}
 		template<typename FirstArgT, typename... RemArgTs>
 		static inline TheOrParse _req_or_parse(DerivedT* s_self,
 			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			typename TheOrParse::Vec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			typename TheOrParse::Vec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return TheOrParse(s_self, std::move(s_vec), false);
+			return TheOrParse(s_self, std::move(s_darr), false);
 		}
 		template<typename FirstArgT, typename... RemArgTs>
 		static inline TheListParse _opt_list_parse(DerivedT* s_self,
 			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			typename TheListParse::Vec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			typename TheListParse::Vec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return TheListParse(s_self, std::move(s_vec), true);
+			return TheListParse(s_self, std::move(s_darr), true);
 		}
 		template<typename FirstArgT, typename... RemArgTs>
 		static inline TheListParse _req_list_parse(DerivedT* s_self,
 			const FirstArgT& first_arg, RemArgTs&&... rem_args)
 		{
-			typename TheListParse::Vec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			typename TheListParse::Vec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return TheListParse(s_self, std::move(s_vec), false);
+			return TheListParse(s_self, std::move(s_darr), false);
 		}
 	};
 
@@ -668,25 +668,25 @@ protected:		// variables
 	LexStateSets _lss;
 	bool _just_test = false, _just_parse = false;
 	size_t _curr_file_index = 0;
-	std::vector<std::string> _filename_vec;
-	std::vector<std::unique_ptr<std::string>> _text_vec;
-	std::vector<LexerT> _lexer_vec;
+	std::vector<std::string> _filename_darr;
+	std::vector<std::unique_ptr<std::string>> _text_darr;
+	std::vector<LexerT> _lexer_darr;
 
 public:		// functions
-	StatefulParserBase(std::vector<std::string>&& s_filename_vec)
-		: _filename_vec(std::move(s_filename_vec))
+	StatefulParserBase(std::vector<std::string>&& s_filename_darr)
+		: _filename_darr(std::move(s_filename_darr))
 	{
-		for (const auto& filename : _filename_vec)
+		for (const auto& filename : _filename_darr)
 		{
 			if (auto&& f = std::ifstream(filename); true)
 			{
-				_text_vec.push_back(std::unique_ptr<std::string>(new
+				_text_darr.push_back(std::unique_ptr<std::string>(new
 					std::string(liborangepower::misc_input
 						::get_istream_as_str(f))));
 			}
-			_lexer_vec.push_back(LexerT(filename,
-				_text_vec.back().get()));
-			_next_tok(&_lexer_vec.back());
+			_lexer_darr.push_back(LexerT(filename,
+				_text_darr.back().get()));
+			_next_tok(&_lexer_darr.back());
 		}
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(StatefulParserBase)
@@ -756,11 +756,11 @@ public:		// functions
 protected:		// functions
 	const LexerT& _lexer() const
 	{
-		return _lexer_vec.at(curr_file_index());
+		return _lexer_darr.at(curr_file_index());
 	}
 	LexerT& _lexer()
 	{
-		return _lexer_vec.at(curr_file_index());
+		return _lexer_darr.at(curr_file_index());
 	}
 	const LexerState& _lex_state() const
 	{
@@ -883,9 +883,9 @@ protected:		// functions
 	}
 	template<typename DerivedT, typename FuncT>
 	static auto _check_parse(DerivedT* self,
-		const std::vector<FuncT>& func_vec)
+		const std::vector<FuncT>& func_darr)
 	{
-		for (const auto& iter : func_vec)
+		for (const auto& iter : func_darr)
 		{
 			self->_just_test = true;
 			if ((self->*iter)())
@@ -917,9 +917,9 @@ protected:		// functions
 	}
 	template<typename DerivedT, typename FuncT>
 	static bool _opt_parse(DerivedT* self,
-		const std::vector<FuncT>& func_vec)
+		const std::vector<FuncT>& func_darr)
 	{
-		for (const auto& iter : func_vec)
+		for (const auto& iter : func_darr)
 		{
 			self->_just_test = true;
 			if ((self->*iter)())
@@ -946,10 +946,10 @@ protected:		// functions
 	}
 	template<typename DerivedT, typename FuncT>
 	static bool _opt_parse_loop(DerivedT* self,
-		const std::vector<FuncT>& func_vec)
+		const std::vector<FuncT>& func_darr)
 	{
 		bool found = false;
-		while (_opt_parse(self, func_vec))
+		while (_opt_parse(self, func_darr))
 		{
 			found = true;
 		}
@@ -968,9 +968,9 @@ protected:		// functions
 	}
 	template<typename DerivedT, typename FuncT>
 	static void _req_parse(DerivedT* self,
-		const std::vector<FuncT>& func_vec)
+		const std::vector<FuncT>& func_darr)
 	{
-		if (!_opt_parse(self, func_vec))
+		if (!_opt_parse(self, func_darr))
 		{
 			self->_unexpected();
 		}
@@ -993,10 +993,10 @@ protected:		// functions
 	}
 	template<typename DerivedT, typename FuncT>
 	static void _req_parse_loop(DerivedT* self,
-		const std::vector<FuncT>& func_vec)
+		const std::vector<FuncT>& func_darr)
 	{
 		bool found = false;
-		while (_opt_parse(self, func_vec))
+		while (_opt_parse(self, func_darr))
 		{
 			found = true;
 		}

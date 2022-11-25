@@ -257,7 +257,7 @@ public:		// functions
 	//inline ArgParser& add(const std::string& s_name, HasArg s_has_arg) {
 	//	return add(s_name, std::string(), s_has_arg);
 	//}
-	//ArgParser& add(std::vector<Option>&& to_add_vec);
+	//ArgParser& add(std::vector<Option>&& to_add_darr);
 
 public:		// types
 public:		// functions
@@ -374,14 +374,14 @@ public:		// functions
 	}
 
 	inline bool has_opts(
-		const std::vector<std::string>& name_vec
+		const std::vector<std::string>& name_darr
 	) const {
-		if (name_vec.size() == 0) {
+		if (name_darr.size() == 0) {
 			return false;
 		}
 
 		bool ret = true;
-		for (const auto& item: name_vec) {
+		for (const auto& item: name_darr) {
 			ret = ret && key_at(item).is_active();
 		}
 		return ret;

@@ -75,13 +75,13 @@ public:		// constants
 	static const std::string KIND_STR;
 public:		// variables
 	#define MEMB_LIST_DERIVED_C(X) \
-		X(c_vec, std::nullopt)
+		X(c_darr, std::nullopt)
 
-	std::vector<char> c_vec;
+	std::vector<char> c_darr;
 public:		// functions
 	DerivedC() = default;
-	inline DerivedC(const std::vector<char>& s_c_vec)
-		: c_vec(s_c_vec)
+	inline DerivedC(const std::vector<char>& s_c_darr)
+		: c_darr(s_c_darr)
 	{
 	}
 	DerivedC(const binser::Value& bv);

@@ -514,10 +514,10 @@ public:		// constants
 		HEAD_INDEX = 0;
 private:		// variables
 	std::vector<IndexT, IndexAllocT> _avail_index_stack;
-	std::vector<Node, NodeAllocT> _node_vec;
+	std::vector<Node, NodeAllocT> _node_darr;
 public:		// functions
 	inline IndCircLinkList() {
-		_node_vec.push_back(Node());
+		_node_darr.push_back(Node());
 		head()._next = HEAD_INDEX;
 		head()._prev = HEAD_INDEX;
 	}
@@ -534,10 +534,10 @@ public:		// functions
 	}
 
 	inline Node& at(IndexTarg index) {
-		return _node_vec.at(index);
+		return _node_darr.at(index);
 	}
 	inline const Node& at(IndexTarg index) const {
-		return _node_vec.at(index);
+		return _node_darr.at(index);
 	}
 
 	inline bool empty() const {
@@ -730,13 +730,13 @@ private:		// functions
 
 	inline IndexT _alloc_what_index(Node&& what) {
 		if (_avail_index_stack.empty()) {
-			const auto ret = _node_vec.size();
-			_node_vec.push_back(std::move(what));
+			const auto ret = _node_darr.size();
+			_node_darr.push_back(std::move(what));
 			return ret;
 		} else { // if (!_avail_index_stack.empty())
 			const auto ret = _avail_index_stack.back();
 			_avail_index_stack.pop_back();
-			_node_vec.at(ret) = std::move(what);
+			_node_darr.at(ret) = std::move(what);
 			return ret;
 		}
 	}

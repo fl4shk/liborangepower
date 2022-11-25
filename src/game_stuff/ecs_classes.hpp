@@ -31,9 +31,9 @@ static constexpr EntId
 	//ENT_NULL_ID = EntId(i64(-1));
 	ENT_NULL_ID = -1;
 
-using EntIdVec = std::vector<EntId>;
-using EntIdVec2d = std::vector<EntIdVec>;
-using EntIdUmap = std::unordered_map<std::string, EntIdVec2d>;
+using EntIdDarr = std::vector<EntId>;
+using EntIdDa2d = std::vector<EntIdDarr>;
+using EntIdUmap = std::unordered_map<std::string, EntIdDa2d>;
 using EntIdUmapFullIndex = std::pair<std::string, math::Vec2<size_t>>;
 using EntIdUset = std::unordered_set<EntId>;
 
@@ -198,17 +198,17 @@ public:		// constants
 		USE_COPY_DST_FILE_NUM = -3;
 protected:		// serialized variables
 	#define MEMB_AUTOSER_LIST_ECS_ENGINE(X) \
-		X(_next_ent_id_vec, std::nullopt) \
-		X(_to_destroy_uset_vec, std::nullopt) \
+		X(_next_ent_id_darr, std::nullopt) \
+		X(_to_destroy_uset_darr, std::nullopt) \
 		X(_num_files, std::nullopt) \
-		/* X(_engine_comp_umap_vec, &_comp_deser_func_umap) */ \
+		/* X(_engine_comp_umap_darr, &_comp_deser_func_umap) */ \
 
-	binser::VectorEx<EntId> _next_ent_id_vec;
-	binser::VectorEx<EntIdUset> _to_destroy_uset_vec;
+	binser::VectorEx<EntId> _next_ent_id_darr;
+	binser::VectorEx<EntIdUset> _to_destroy_uset_darr;
 	FileNum _num_files = DEFAULT_NUM_FILES;
 	// All `EntId` are stored as just the keys of each `EngineCompUmap`,
 	// with no other storage for them.
-	binser::VectorEx<EngineCompUmap> _engine_comp_umap_vec;
+	binser::VectorEx<EngineCompUmap> _engine_comp_umap_darr;
 protected:		// non-serialized variables
 	SysUmap _sys_umap;
 private:		// non-serialized variables
@@ -370,25 +370,25 @@ public:		// functions
 	void destroy_all_every_fn();
 	//--------
 	// Search for entities with *any* of the keys in `key_uset`
-	EntIdVec ent_id_vec_from_keys_any_fn(
+	EntIdDarr ent_id_darr_from_keys_any_fn(
 		const StrKeyUset& key_uset, FileNum file_num
 	);
-	inline EntIdVec ent_id_vec_from_keys_any_fn_v(
+	inline EntIdDarr ent_id_darr_from_keys_any_fn_v(
 		FileNum file_num, const concepts::HasStdOstmOpLshift auto&... args
 	) {
 		StrKeyUset key_uset;
 
 		(key_uset.insert(strings::sconcat(args)), ...);
 
-		return ent_id_vec_from_keys_any_fn(key_uset, file_num);
+		return ent_id_darr_from_keys_any_fn(key_uset, file_num);
 	}
-	inline EntIdVec ent_id_vec_from_keys_any(const StrKeyUset& key_uset) {
-		return ent_id_vec_from_keys_any_fn(key_uset, curr_file_num);
+	inline EntIdDarr ent_id_darr_from_keys_any(const StrKeyUset& key_uset) {
+		return ent_id_darr_from_keys_any_fn(key_uset, curr_file_num);
 	}
-	inline EntIdVec ent_id_vec_from_keys_any_v(
+	inline EntIdDarr ent_id_darr_from_keys_any_v(
 		const concepts::HasStdOstmOpLshift auto&... args
 	) {
-		return ent_id_vec_from_keys_any_fn_v(curr_file_num, args...);
+		return ent_id_darr_from_keys_any_fn_v(curr_file_num, args...);
 	}
 	//--------
 	// Search for entities with *any* of the keys in `key_uset`
@@ -416,25 +416,25 @@ public:		// functions
 	}
 	//--------
 	// Search for entities with *all* of the keys in `key_uset`
-	EntIdVec ent_id_vec_from_keys_all_fn(
+	EntIdDarr ent_id_darr_from_keys_all_fn(
 		const StrKeyUset& key_uset, FileNum file_num
 	);
-	inline EntIdVec ent_id_vec_from_keys_all_fn_v(
+	inline EntIdDarr ent_id_darr_from_keys_all_fn_v(
 		FileNum file_num, const concepts::HasStdOstmOpLshift auto&... args
 	) {
 		StrKeyUset key_uset;
 
 		(key_uset.insert(strings::sconcat(args)), ...);
 
-		return ent_id_vec_from_keys_all_fn(key_uset, file_num);
+		return ent_id_darr_from_keys_all_fn(key_uset, file_num);
 	}
-	EntIdVec ent_id_vec_from_keys_all(const StrKeyUset& key_uset) {
-		return ent_id_vec_from_keys_all_fn(key_uset, curr_file_num);
+	EntIdDarr ent_id_darr_from_keys_all(const StrKeyUset& key_uset) {
+		return ent_id_darr_from_keys_all_fn(key_uset, curr_file_num);
 	}
-	inline EntIdVec ent_id_vec_from_keys_all_v(
+	inline EntIdDarr ent_id_darr_from_keys_all_v(
 		const concepts::HasStdOstmOpLshift auto&... args
 	) {
-		return ent_id_vec_from_keys_all_fn_v(curr_file_num, args...);
+		return ent_id_darr_from_keys_all_fn_v(curr_file_num, args...);
 	}
 	//--------
 	// Search for entities with *all* of the keys in `key_uset`
@@ -681,10 +681,10 @@ public:		// functions
 	void tick();
 	//--------
 	inline EntId& next_ent_id_fn(FileNum file_num) {
-		return _next_ent_id_vec.data.at(sel_file_num(file_num));
+		return _next_ent_id_darr.data.at(sel_file_num(file_num));
 	}
 	inline const EntId& next_ent_id_fn(FileNum file_num) const {
-		return _next_ent_id_vec.data.at(sel_file_num(file_num));
+		return _next_ent_id_darr.data.at(sel_file_num(file_num));
 	}
 
 	inline EntId& next_ent_id() {
@@ -695,10 +695,10 @@ public:		// functions
 	}
 	//--------
 	inline EntIdUset& to_destroy_uset_fn(FileNum file_num) {
-		return _to_destroy_uset_vec.data.at(sel_file_num(file_num));
+		return _to_destroy_uset_darr.data.at(sel_file_num(file_num));
 	}
 	inline const EntIdUset& to_destroy_uset_fn(FileNum file_num) const {
-		return _to_destroy_uset_vec.data.at(sel_file_num(file_num));
+		return _to_destroy_uset_darr.data.at(sel_file_num(file_num));
 	}
 
 	inline EntIdUset& to_destroy_uset() {
@@ -709,12 +709,12 @@ public:		// functions
 	}
 	//--------
 	inline EngineCompUmap& engine_comp_umap_fn(FileNum file_num) {
-		return _engine_comp_umap_vec.data.at(sel_file_num(file_num));
+		return _engine_comp_umap_darr.data.at(sel_file_num(file_num));
 	}
 	inline const EngineCompUmap& engine_comp_umap_fn(
 		FileNum file_num
 	) const {
-		return _engine_comp_umap_vec.data.at(sel_file_num(file_num));
+		return _engine_comp_umap_darr.data.at(sel_file_num(file_num));
 	}
 
 	inline EngineCompUmap& engine_comp_umap() {
@@ -745,10 +745,10 @@ public:		// functions
 		}
 	}
 	//--------
-	GEN_GETTER_BY_VAL(next_ent_id_vec);
-	GEN_GETTER_BY_CON_REF(to_destroy_uset_vec);
+	GEN_GETTER_BY_VAL(next_ent_id_darr);
+	GEN_GETTER_BY_CON_REF(to_destroy_uset_darr);
 	GEN_GETTER_BY_VAL(num_files);
-	GEN_GETTER_BY_CON_REF(engine_comp_umap_vec);
+	GEN_GETTER_BY_CON_REF(engine_comp_umap_darr);
 	GEN_GETTER_BY_CON_REF(sys_umap);
 	//--------
 //pubic:		// functions

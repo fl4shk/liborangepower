@@ -945,38 +945,38 @@ public:		// functions
 			sign
 				{.x=cstm_sign(scale.x),
 				.y=cstm_sign(scale.y)},
-			partial_time_vec
+			partial_time_darr
 				{.x=sign.x * (temp_hsize.x + arg_padding.x),
 				.y=sign.y * (temp_hsize.y + arg_padding.y)},
-			near_time_vec{
-				.x=(temp_cpos.x - partial_time_vec.x - arg.p0.x)
+			near_time_darr{
+				.x=(temp_cpos.x - partial_time_darr.x - arg.p0.x)
 					* scale.x,
-				.y=(temp_cpos.y - partial_time_vec.y - arg.p0.y)
+				.y=(temp_cpos.y - partial_time_darr.y - arg.p0.y)
 					* scale.y,
 			},
-			far_time_vec{
-				.x=(temp_cpos.x + partial_time_vec.x - arg.p0.x)
+			far_time_darr{
+				.x=(temp_cpos.x + partial_time_darr.x - arg.p0.x)
 					* scale.x,
-				.y=(temp_cpos.y + partial_time_vec.y - arg.p0.y)
+				.y=(temp_cpos.y + partial_time_darr.y - arg.p0.y)
 					* scale.y,
 			};
 			//--------
 		//--------
-		//printout("ntv ftv: ", near_time_vec, " ", far_time_vec, "\n");
-		if (near_time_vec.x > far_time_vec.y
-			|| near_time_vec.y > far_time_vec.x) {
+		//printout("ntv ftv: ", near_time_darr, " ", far_time_darr, "\n");
+		if (near_time_darr.x > far_time_darr.y
+			|| near_time_darr.y > far_time_darr.x) {
 			//printout("!hit\n");
 			return std::nullopt;
 		}
 		//--------
 		const T near_time
-			= near_time_vec.x > near_time_vec.y
-			? near_time_vec.x
-			: near_time_vec.y;
+			= near_time_darr.x > near_time_darr.y
+			? near_time_darr.x
+			: near_time_darr.y;
 		const T far_time
-			= far_time_vec.x > far_time_vec.y
-			? far_time_vec.x
-			: far_time_vec.y;
+			= far_time_darr.x > far_time_darr.y
+			? far_time_darr.x
+			: far_time_darr.y;
 
 		//printout("nt ft: ", near_time, " ", far_time, "\n");
 
@@ -994,7 +994,7 @@ public:		// functions
 		//ret.tm = near_time;
 		//ret.tm = far_time;
 
-		if (near_time_vec.x > near_time_vec.y) {
+		if (near_time_darr.x > near_time_darr.y) {
 			ret.normal.x = -sign.x;
 			ret.normal.y = T(0);
 		} else {

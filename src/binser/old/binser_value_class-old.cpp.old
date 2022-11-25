@@ -103,7 +103,7 @@ void Value::construct(const std::vector<char>& to_cast, i64& i)
 	{
 		const u64 size = do_memcpy<u64>();
 
-		ValueVec n_data;
+		ValueDarr n_data;
 
 		for (u64 j=0; j<size; ++j)
 		{
@@ -213,11 +213,11 @@ Value::operator std::vector<char> () const
 			ret.push_back(c);
 		}
 	}
-	else // if (std::holds_alternative<ValueVec>())
+	else // if (std::holds_alternative<ValueDarr>())
 	{
 		ret.push_back(static_cast<char>(Tag::Vec));
 
-		auto& vec = get<ValueVec>();
+		auto& vec = get<ValueDarr>();
 
 		if (u64 size = vec.size(); true)
 		{

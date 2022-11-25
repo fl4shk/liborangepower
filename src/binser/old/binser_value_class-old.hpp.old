@@ -18,7 +18,7 @@ namespace binser
 {
 //--------
 class Value;
-using ValueVec = std::vector<Value>;
+using ValueDarr = std::vector<Value>;
 //--------
 using ValueDataStr = std::basic_string<char>;
 using ValueData
@@ -26,7 +26,7 @@ using ValueData
 	<
 		u8, i8, u16, i16, u32, i32, u64, i64, float, double, bool,
 		ValueDataStr,
-		ValueVec
+		ValueDarr
 	>;
 //--------
 template<typename T>
@@ -48,11 +48,11 @@ concept IsValueDataNonVec
 
 template<typename T>
 concept IsValueData
-	= IsValueDataNonVec || std::same_as<ValueVec>;
+	= IsValueDataNonVec || std::same_as<ValueDarr>;
 
 template<typename T>
 concept IsValueDataNonNumeric
-	= std::same_as<ValueDataStr> || std::same_as<ValueVec>;
+	= std::same_as<ValueDataStr> || std::same_as<ValueDarr>;
 //--------
 class Value final
 {
@@ -91,7 +91,7 @@ public:		// functions
 	{
 		*this = std::move(s_data);
 	}
-	inline Value(ValueVec&& s_data)
+	inline Value(ValueDarr&& s_data)
 	{
 		*this = std::move(s_data);
 	}
@@ -126,7 +126,7 @@ public:		// functions
 		_data = std::move(n_data);
 		return *this;
 	}
-	inline Value& operator = (ValueVec&& n_data) noexcept
+	inline Value& operator = (ValueDarr&& n_data) noexcept
 	{
 		_data = std::move(n_data);
 		return *this;

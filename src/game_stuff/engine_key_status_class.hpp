@@ -14,24 +14,24 @@ namespace game {
 class EngineKeyStatus final {
 public:		// types
 	using State = PrevCurrPair<bool>;
-	using StateVec = std::vector<State>;
-	using StateVecSizeT = typename StateVec::size_type;
+	using StateDarr = std::vector<State>;
+	using StateDarrSizeT = typename StateDarr::size_type;
 private:		// variables
 	//std::map<KeyKind, State> state_map;
-	StateVec _state_vec;
+	StateDarr _state_darr;
 public:		// functions
 	inline EngineKeyStatus() = default;
-	inline EngineKeyStatus(StateVecSizeT state_vec_size)
-		: _state_vec(state_vec_size, State(false, false)) {
+	inline EngineKeyStatus(StateDarrSizeT state_vec_size)
+		: _state_darr(state_vec_size, State(false, false)) {
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(EngineKeyStatus);
 	inline ~EngineKeyStatus() = default;
 
 	inline State& at(const auto& key_kind) {
-		return _state_vec.at(static_cast<StateVecSizeT>(key_kind));
+		return _state_darr.at(static_cast<StateDarrSizeT>(key_kind));
 	}
 	inline const State& at(const auto& key_kind) const {
-		return _state_vec.at(static_cast<StateVecSizeT>(key_kind));
+		return _state_darr.at(static_cast<StateDarrSizeT>(key_kind));
 	}
 	//--------
 	inline bool key_up_prev(const auto& key_kind) const {
@@ -149,7 +149,7 @@ public:		// functions
 	inline bool generic_any_key_func(
 		const std::function<bool(const State&)> func
 	) const {
-		for (const auto& item: _state_vec) {
+		for (const auto& item: _state_darr) {
 			if (func(item)) {
 				return true;
 			}
@@ -182,7 +182,7 @@ public:		// functions
 			const auto& key_kind = pair.first;
 			const auto& sym = pair.second;
 
-			//const auto& sym = keyc_vec.at(key_kind);
+			//const auto& sym = keyc_darr.at(key_kind);
 
 			if (key_status_umap.contains(sym)) {
 				at(key_kind).back_up_and_update
@@ -191,7 +191,7 @@ public:		// functions
 		}
 	}
 	//--------
-	GEN_GETTER_BY_CON_REF(state_vec);
+	GEN_GETTER_BY_CON_REF(state_darr);
 	//--------
 }; 
 

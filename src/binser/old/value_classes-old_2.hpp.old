@@ -18,31 +18,31 @@ using strings::sconcat;
 namespace binser
 {
 //--------
-using ValueVec = std::vector<char>;
+using ValueDarr = std::vector<char>;
 //--------
 // This class is intended to be used for serialization
 class ValueGen final
 {
 private:		// variables
-	ValueVec _vec;
+	ValueDarr _vec;
 
 	// Short for "index". This member variable is intended to be used as
 	// the index of the next member being serialized. 
 	u64 _idx = 0;
 public:		// functions
 	inline ValueGen() = default;
-	inline ValueGen(const ValueVec& s_vec, u64 s_idx=0)
-		: _vec(s_vec), _idx(s_idx)
+	inline ValueGen(const ValueDarr& s_darr, u64 s_idx=0)
+		: _vec(s_darr), _idx(s_idx)
 	{
 	}
-	inline ValueGen(ValueVec&& s_vec, u64 s_idx=0)
-		: _vec(std::move(s_vec)), _idx(s_idx)
+	inline ValueGen(ValueDarr&& s_darr, u64 s_idx=0)
+		: _vec(std::move(s_darr)), _idx(s_idx)
 	{
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ValueGen);
 	inline  ~ValueGen() = default;
 
-	inline void append(const ValueVec& to_append)
+	inline void append(const ValueDarr& to_append)
 	{
 		_vec.insert(_vec.end(), to_append.cbegin(), to_append.cend());
 	}
@@ -62,7 +62,7 @@ public:		// functions
 class ValueRef final
 {
 private:		// variables
-	ValueVec _vec;
+	ValueDarr _vec;
 
 	// Short for "index". This member variable is intended to be used as an
 	// index into `_vec`, or alternatively for pointer arithmetic via
@@ -70,12 +70,12 @@ private:		// variables
 	u64 _idx = 0;
 public:		// functions
 	inline ValueRef() = default;
-	inline ValueRef(const ValueVec& s_vec, u64 s_idx=0)
-		: _vec(s_vec), _idx(s_idx)
+	inline ValueRef(const ValueDarr& s_darr, u64 s_idx=0)
+		: _vec(s_darr), _idx(s_idx)
 	{
 	}
-	inline ValueRef(ValueVec&& s_vec, u64 s_idx=0)
-		: _vec(std::move(s_vec)), _idx(s_idx)
+	inline ValueRef(ValueDarr&& s_darr, u64 s_idx=0)
+		: _vec(std::move(s_darr)), _idx(s_idx)
 	{
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ValueRef);

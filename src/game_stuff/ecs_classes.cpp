@@ -97,22 +97,22 @@ bool Sys::_tick_helper(Engine* ecs_engine, bool cond) {
 }
 //--------
 Engine::Engine(u64 s_num_files)
-	: _next_ent_id_vec
+	: _next_ent_id_darr
 	({
 		.data=std::vector<EntId>(s_num_files, 0),
 		.checked_size=s_num_files
 	}),
-	_to_destroy_uset_vec
+	_to_destroy_uset_darr
 	({
 		.data=std::vector<EntIdUset>(s_num_files, EntIdUset()),
 		.checked_size=s_num_files
 	}),
 	_num_files(s_num_files)
-	//_engine_comp_umap_vec(s_num_files, EngineCompUmap())
+	//_engine_comp_umap_darr(s_num_files, EngineCompUmap())
 {
-	_engine_comp_umap_vec.checked_size = s_num_files;
+	_engine_comp_umap_darr.checked_size = s_num_files;
 	for (FileNum i=0; i<_num_files; ++i) {
-		_engine_comp_umap_vec.data.push_back(EngineCompUmap());
+		_engine_comp_umap_darr.data.push_back(EngineCompUmap());
 	}
 }
 Engine::~Engine() {}
@@ -127,9 +127,9 @@ Engine::operator binser::Value () const {
 	//	++i)
 	binser::ValueVec vec;
 	for (FileNum i=0; i<_num_files; ++i) {
-		//Json::Value& jv_ecmap = ret["_engine_comp_umap_vec"][i];
+		//Json::Value& jv_ecmap = ret["_engine_comp_umap_darr"][i];
 
-		//for (const auto& ent_pair: _engine_comp_umap_vec.at(i)) {
+		//for (const auto& ent_pair: _engine_comp_umap_darr.at(i)) {
 		//	//Json::Value& ent_jv = ret["_engine_comp_umap"]
 		//	//	[sconcat(ent_pair.first)];
 
@@ -146,7 +146,7 @@ Engine::operator binser::Value () const {
 		binser::Value bv_ecmap;
 
 		binser::set_bv_map_like_std_container(bv_ecmap,
-			_engine_comp_umap_vec.data.at(i),
+			_engine_comp_umap_darr.data.at(i),
 			[](
 				const typename EngineCompUmap::value_type& ent_pair
 			) -> bool {
@@ -155,7 +155,7 @@ Engine::operator binser::Value () const {
 		vec.push_back(binser::ValueSptr(new binser::Value
 			(std::move(bv_ecmap))));
 	}
-	ret.insert("_engine_comp_umap_vec", std::move(vec));
+	ret.insert("_engine_comp_umap_darr", std::move(vec));
 	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	return ret;
@@ -174,12 +174,12 @@ void Engine::copy_file() {
 			"Invalid `copy_dst_file_num`: ",
 			copy_dst_file_num, " ", _num_files));
 	}
-	_next_ent_id_vec.data.at(copy_dst_file_num)
-		= _next_ent_id_vec.data.at(src_file_num);
-	_to_destroy_uset_vec.data.at(copy_dst_file_num)
-		= _to_destroy_uset_vec.data.at(src_file_num);
-	_engine_comp_umap_vec.data.at(copy_dst_file_num)
-		= _engine_comp_umap_vec.data.at(src_file_num);
+	_next_ent_id_darr.data.at(copy_dst_file_num)
+		= _next_ent_id_darr.data.at(src_file_num);
+	_to_destroy_uset_darr.data.at(copy_dst_file_num)
+		= _to_destroy_uset_darr.data.at(src_file_num);
+	_engine_comp_umap_darr.data.at(copy_dst_file_num)
+		= _engine_comp_umap_darr.data.at(src_file_num);
 }
 void Engine::erase_file() {
 	if (src_file_num < 0 || src_file_num >= _num_files) {
@@ -188,9 +188,9 @@ void Engine::erase_file() {
 			"Invalid `src_file_num`: ",
 			src_file_num, " ", _num_files));
 	}
-	_next_ent_id_vec.data.at(src_file_num) = EntId();
-	_to_destroy_uset_vec.data.at(src_file_num) = EntIdUset();
-	_engine_comp_umap_vec.data.at(src_file_num) = EngineCompUmap();
+	_next_ent_id_darr.data.at(src_file_num) = EntId();
+	_to_destroy_uset_darr.data.at(src_file_num) = EntIdUset();
+	_engine_comp_umap_darr.data.at(src_file_num) = EngineCompUmap();
 }
 //--------
 //void Engine::deserialize(const Json::Value& jv) {
@@ -204,19 +204,19 @@ void Engine::erase_file() {
 //void Engine::_ent_deserialize(const Json::Value& jv)
 void Engine::deserialize(const binser::Value& bv) {
 	MEMB_AUTOSER_LIST_ECS_ENGINE(BINSER_MEMB_DESERIALIZE);
-	get_bv_memb(_engine_comp_umap_vec, bv, "_engine_comp_umap_vec",
+	get_bv_memb(_engine_comp_umap_darr, bv, "_engine_comp_umap_darr",
 		&_comp_deser_func_umap);
 
 	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_DESERIALIZE);
 
-	//get_jv_memb(_next_ent_id_vec, jv, "_next_ent_id_vec", std::nullopt);
-	//get_jv_memb(_to_destroy_uset_vec, jv, "_to_destroy_uset_vec",
+	//get_jv_memb(_next_ent_id_darr, jv, "_next_ent_id_darr", std::nullopt);
+	//get_jv_memb(_to_destroy_uset_darr, jv, "_to_destroy_uset_darr",
 	//	std::nullopt);
 	//get_jv_memb(_num_files, jv, "_num_files", std::nullopt);
-	////get_jv_memb<decltype(_engine_comp_umap_vec), Comp>
-	////	(_engine_comp_umap_vec, jv, "_engine_comp_umap_vec",
+	////get_jv_memb<decltype(_engine_comp_umap_darr), Comp>
+	////	(_engine_comp_umap_darr, jv, "_engine_comp_umap_darr",
 	////	&_comp_deser_func_umap);
-	//get_jv_memb(_engine_comp_umap_vec, jv, "_engine_comp_umap_vec",
+	//get_jv_memb(_engine_comp_umap_darr, jv, "_engine_comp_umap_darr",
 	//	&_comp_deser_func_umap);
 
 }
@@ -225,8 +225,8 @@ void Engine::deserialize(const binser::Value& bv) {
 //void Engine::_sys_deserialize(const Json::Value& jv) {
 //	_sys_umap.clear();
 //
-//	const auto& sys_name_vec = jv["_sys_umap"].getMemberNames();
-//	for (const auto& sys_name: sys_name_vec) {
+//	const auto& sys_name_darr = jv["_sys_umap"].getMemberNames();
+//	for (const auto& sys_name: sys_name_darr) {
 //		const Json::Value& sys_jv = jv["_sys_umap"][sys_name];
 //
 //		//_inner_sys_deserialize<FirstSysT, RemSysTs...>
@@ -303,10 +303,10 @@ void Engine::force_singleton_any_fn(
 	const StrKeyUset& key_uset, const std::string& func_name,
 	FileNum file_num
 ) {
-	const auto& ent_id_vec = ent_id_vec_from_keys_any_fn(key_uset,
+	const auto& ent_id_darr = ent_id_darr_from_keys_any_fn(key_uset,
 		file_num);
 
-	if (ent_id_vec.size() > 0) {
+	if (ent_id_darr.size() > 0) {
 		std::string err_msg(sconcat
 			("liborangepower::game::ecs::Engine"
 				"::force_singleton_any_fn(): ",
@@ -315,8 +315,8 @@ void Engine::force_singleton_any_fn(
 			"Found existing entities: {"));
 
 		if (std::stringstream sstm; true) {
-			misc_output::osprint_arr(sstm, ent_id_vec.data(),
-				ent_id_vec.size());
+			misc_output::osprint_arr(sstm, ent_id_darr.data(),
+				ent_id_darr.size());
 			err_msg += sstm.str();
 		}
 		err_msg += "}";
@@ -329,10 +329,10 @@ void Engine::force_singleton_all_fn(
 	const StrKeyUset& key_uset, const std::string& func_name,
 	FileNum file_num
 ) {
-	const auto& ent_id_vec = ent_id_vec_from_keys_all_fn(key_uset,
+	const auto& ent_id_darr = ent_id_darr_from_keys_all_fn(key_uset,
 		file_num);
 
-	if (ent_id_vec.size() > 0) {
+	if (ent_id_darr.size() > 0) {
 		std::string err_msg(sconcat
 			("liborangepower::game::ecs::Engine"
 				"::force_singleton_all_fn(): ",
@@ -341,8 +341,8 @@ void Engine::force_singleton_all_fn(
 			"Found existing entities: {"));
 
 		if (std::stringstream sstm; true) {
-			misc_output::osprint_arr(sstm, ent_id_vec.data(),
-				ent_id_vec.size());
+			misc_output::osprint_arr(sstm, ent_id_darr.data(),
+				ent_id_darr.size());
 			err_msg += sstm.str();
 		}
 		err_msg += "}";
@@ -389,10 +389,10 @@ void Engine::destroy_all_every_fn() {
 }
 
 //--------
-EntIdVec Engine::ent_id_vec_from_keys_any_fn(
+EntIdDarr Engine::ent_id_darr_from_keys_any_fn(
 	const StrKeyUset& key_uset, FileNum file_num
 ) {
-	EntIdVec ret;
+	EntIdDarr ret;
 
 	auto& ecm = engine_comp_umap_fn(file_num);
 	for (auto&& pair: ecm) {
@@ -412,7 +412,7 @@ EntIdVec Engine::ent_id_vec_from_keys_any_fn(
 EntIdUset Engine::ent_id_uset_from_keys_any_fn(
 	const StrKeyUset& key_uset, FileNum file_num
 ) {
-	//const EntIdVec vec(ent_id_vec_from_keys_any_fn(key_uset, file_num));
+	//const EntIdDarr vec(ent_id_darr_from_keys_any_fn(key_uset, file_num));
 
 	//EntIdUset ret;
 
@@ -439,10 +439,10 @@ EntIdUset Engine::ent_id_uset_from_keys_any_fn(
 	return ret;
 }
 
-EntIdVec Engine::ent_id_vec_from_keys_all_fn(
+EntIdDarr Engine::ent_id_darr_from_keys_all_fn(
 	const StrKeyUset& key_uset, FileNum file_num
 ) {
-	EntIdVec ret;
+	EntIdDarr ret;
 
 	auto& ecm = engine_comp_umap_fn(file_num);
 	for (auto&& pair: ecm) {
@@ -466,7 +466,7 @@ EntIdVec Engine::ent_id_vec_from_keys_all_fn(
 EntIdUset Engine::ent_id_uset_from_keys_all_fn(
 	const StrKeyUset& key_uset, FileNum file_num
 ) {
-	//const EntIdVec vec(ent_id_vec_from_keys_all_fn(key_uset, file_num));
+	//const EntIdDarr vec(ent_id_darr_from_keys_all_fn(key_uset, file_num));
 
 	//EntIdUset ret;
 

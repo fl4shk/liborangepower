@@ -745,7 +745,7 @@ inline void set_bv_map_like_std_container(
 	const std::function<bool(const typename T::value_type&)>& skip_func
 ) {
 	//--------
-	bv = ValueVec();
+	bv = ValueDarr();
 	//--------
 	for (const auto& pair: val) {
 		if (!skip_func(pair)) {
@@ -859,7 +859,7 @@ inline void set_bv(Value& bv, const T& val) {
 		is_arr_like_std_container<NonCvrefT>()
 		|| is_ind_circ_link_list<NonCvrefT>()
 	) {
-		ValueVec vec;
+		ValueDarr vec;
 
 		for (const auto& item: val) {
 			Value inner_bv;
@@ -868,7 +868,7 @@ inline void set_bv(Value& bv, const T& val) {
 		}
 		bv = std::move(vec);
 	} else if constexpr (is_set_like_std_container<NonCvrefT>()) {
-		ValueVec vec;
+		ValueDarr vec;
 
 		for (const auto& key: val) {
 			Value inner_bv = ValueUmap();
@@ -937,8 +937,8 @@ inline bool parse_binser(
 }
 
 inline void write_binser(std::ostream& os, const binser::Value& root) {
-	const auto& ser_vec = std::vector<char>(root);
-	for (const auto& c: ser_vec) {
+	const auto& ser_darr = std::vector<char>(root);
+	for (const auto& c: ser_darr) {
 		os.put(c);
 	}
 }

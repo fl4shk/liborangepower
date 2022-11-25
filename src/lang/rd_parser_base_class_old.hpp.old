@@ -135,15 +135,15 @@ public:		// types
 
 	protected:		// variables
 		DerivedT* _self = nullptr;
-		InstVec _inst_vec;
+		InstVec _inst_darr;
 		bool _optional = false;
 		std::set<TokT> _valid_next_token_set;
 
 	public:		// functions
 		inline SeqParse() = default;
-		inline SeqParse(DerivedT* s_self, InstVec&& s_inst_vec,
+		inline SeqParse(DerivedT* s_self, InstVec&& s_inst_darr,
 			bool s_optional=false)
-			: _self(s_self), _inst_vec(std::move(s_inst_vec)),
+			: _self(s_self), _inst_darr(std::move(s_inst_darr)),
 			_optional(s_optional)
 		{
 		}
@@ -161,7 +161,7 @@ public:		// types
 		{
 			DeferRestoreLexState drls(_self->_lexer);
 
-			for (const auto& iter: inst_vec())
+			for (const auto& iter: inst_darr())
 			{
 				if (!_check_one(iter))
 				{
@@ -182,7 +182,7 @@ public:		// types
 			Inst ret;
 			DeferRestoreLexState drls(_self->_lexer);
 
-			for (const auto& iter: inst_vec())
+			for (const auto& iter: inst_darr())
 			{
 				if (_check_one(iter))
 				{
@@ -199,14 +199,14 @@ public:		// types
 		//inline std::string fv_parse_act_str() const
 		//{
 		//	return std::get<UnitParse>(std::get<SeqParseSptr>
-		//		(fv_inst())->inst_vec().front()).parse_act_str();
+		//		(fv_inst())->inst_darr().front()).parse_act_str();
 		//}
 		inline FirstValidInvalidInst first_invalid_inst() const
 		{
 			FirstValidInvalidInst ret;
 			DeferRestoreLexState drls(_self->_lexer);
 
-			for (const auto& iter: inst_vec())
+			for (const auto& iter: inst_darr())
 			{
 				if (!_check_one(iter))
 				{
@@ -237,13 +237,13 @@ public:		// types
 		}
 		virtual void exec() const
 		{
-			for (const auto& iter: inst_vec())
+			for (const auto& iter: inst_darr())
 			{
 				_exec_one(iter);
 			}
 		}
 
-		GEN_GETTER_BY_CON_REF(inst_vec);
+		GEN_GETTER_BY_CON_REF(inst_darr);
 		GEN_GETTER_BY_VAL(optional);
 
 	protected:		// functions
@@ -362,9 +362,9 @@ public:		// types
 		using InstVec = SeqParse::InstVec;
 
 	public:		// functions
-		inline OrParse(DerivedT* s_self, InstVec&& s_inst_vec,
+		inline OrParse(DerivedT* s_self, InstVec&& s_inst_darr,
 			bool s_optional=false)
-			: SeqParse(s_self, std::move(s_inst_vec), s_optional)
+			: SeqParse(s_self, std::move(s_inst_darr), s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(OrParse);
@@ -373,7 +373,7 @@ public:		// types
 		virtual bool check() const
 		{
 			// Any one found gets used
-			for (const auto& iter: inst_vec())
+			for (const auto& iter: inst_darr())
 			{
 				if (_check_one(iter))
 				{
@@ -384,7 +384,7 @@ public:		// types
 		}
 		virtual void exec() const
 		{
-			for (const auto& iter: inst_vec())
+			for (const auto& iter: inst_darr())
 			{
 				// First one found gets executed
 				if (_check_one(iter))
@@ -409,9 +409,9 @@ public:		// types
 		size_t _num_execs = 0;
 
 	public:		// functions
-		inline ListParse(DerivedT* s_self, InstVec&& s_inst_vec,
+		inline ListParse(DerivedT* s_self, InstVec&& s_inst_darr,
 			bool s_optional=false)
-			: SeqParse(s_self, std::move(s_inst_vec), s_optional)
+			: SeqParse(s_self, std::move(s_inst_darr), s_optional)
 		{
 		}
 		GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(ListParse);
@@ -428,7 +428,7 @@ public:		// types
 			{
 				//found = true;
 
-				for (const auto& iter: inst_vec())
+				for (const auto& iter: inst_darr())
 				{
 					if (!_check_one(iter))
 					{
@@ -554,30 +554,30 @@ public:		// types
 			bool s_optional, const FirstArgT& first_arg,
 			RemArgTs&&... rem_args)
 		{
-			SeqParse::InstVec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			SeqParse::InstVec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return SeqParse(s_self, std::move(s_vec), s_optional);
+			return SeqParse(s_self, std::move(s_darr), s_optional);
 		}
 		template<typename FirstArgT, typename... RemArgTs>
 		static inline SeqParse or_parse(DerivedT* s_self,
 			bool s_optional, const FirstArgT& first_arg,
 			RemArgTs&&... rem_args)
 		{
-			SeqParse::InstVec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			SeqParse::InstVec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return OrParse(s_self, std::move(s_vec), s_optional);
+			return OrParse(s_self, std::move(s_darr), s_optional);
 		}
 		template<typename FirstArgT, typename... RemArgTs>
 		static inline SeqParse list_parse(DerivedT* s_self,
 			bool s_optional, const FirstArgT& first_arg,
 			RemArgTs&&... rem_args)
 		{
-			SeqParse::InstVec s_vec;
-			_inner_seq_parse(s_vec, first_arg, rem_args...);
+			SeqParse::InstVec s_darr;
+			_inner_seq_parse(s_darr, first_arg, rem_args...);
 
-			return ListParse(s_self, std::move(s_vec), s_optional);
+			return ListParse(s_self, std::move(s_darr), s_optional);
 		}
 	};
 	//--------

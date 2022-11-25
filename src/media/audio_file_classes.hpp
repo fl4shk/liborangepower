@@ -36,7 +36,7 @@ protected:		// variables
 
 	// 8 or 16
 	bool _sixteen_bits_per_sample;
-	SampleVec _sample_vec;
+	SampleVec _sample_darr;
 
 public:		// functions
 	inline Wav(bool s_stereo, u32 s_sample_rate,
@@ -46,17 +46,17 @@ public:		// functions
 	{
 	}
 	inline Wav(bool s_stereo, u32 s_sample_rate, 
-		bool s_sixteen_bits_per_sample, const SampleVec& s_sample_vec)
+		bool s_sixteen_bits_per_sample, const SampleVec& s_sample_darr)
 		: _stereo(s_stereo), _sample_rate(s_sample_rate),
 		_sixteen_bits_per_sample(s_sixteen_bits_per_sample),
-		_sample_vec(s_sample_vec)
+		_sample_darr(s_sample_darr)
 	{
 	}
 	inline Wav(bool s_stereo, u32 s_sample_rate, 
-		bool s_sixteen_bits_per_sample, SampleVec&& s_sample_vec)
+		bool s_sixteen_bits_per_sample, SampleVec&& s_sample_darr)
 		: _stereo(s_stereo), _sample_rate(s_sample_rate),
 		_sixteen_bits_per_sample(s_sixteen_bits_per_sample),
-		_sample_vec(std::move(s_sample_vec))
+		_sample_darr(std::move(s_sample_darr))
 	{
 	}
 	GEN_CM_BOTH_CONSTRUCTORS_AND_ASSIGN(Wav);
@@ -64,7 +64,7 @@ public:		// functions
 
 	inline u32 file_length_minus_8() const
 	{
-		return ((HEADER_LENGTH + sample_vec().size()) - 8);
+		return ((HEADER_LENGTH + sample_darr().size()) - 8);
 	}
 
 	inline u16 channels() const
@@ -86,51 +86,51 @@ public:		// functions
 
 	inline u8 mono_u8_sample(size_t index) const
 	{
-		return _sample_vec.at(index);
+		return _sample_darr.at(index);
 	}
 	inline void set_mono_u8_sample(size_t index, u8 n_sample)
 	{
-		_sample_vec.at(index) = n_sample;
+		_sample_darr.at(index) = n_sample;
 	}
 	inline void push_back_mono_u8_sample(u8 n_sample)
 	{
-		_sample_vec.push_back(n_sample);
+		_sample_darr.push_back(n_sample);
 	}
 
 	inline i16 mono_i16_sample(size_t index) const
 	{
 		// WAV files encode data as little endian
-		return get_i16_le(_sample_vec, index);
+		return get_i16_le(_sample_darr, index);
 	}
 	inline void set_mono_i16_sample(size_t index, i16 n_sample)
 	{
 		// Little endian
-		set_i16_le(_sample_vec, index, n_sample);
+		set_i16_le(_sample_darr, index, n_sample);
 	}
 	inline void push_back_mono_i16_sample(i16 n_sample)
 	{
-		push_back_i16_le(_sample_vec, n_sample);
+		push_back_i16_le(_sample_darr, n_sample);
 	}
 
 	inline u8 stereo_u8_sample(size_t index, bool channel) const
 	{
-		return _sample_vec.at((index * 2) + (channel ? 1 : 0));
+		return _sample_darr.at((index * 2) + (channel ? 1 : 0));
 	}
 	inline void set_stereo_u8_sample(size_t index, bool channel,
 		u8 n_sample)
 	{
-		_sample_vec.at((index * 2) + (channel ? 1 : 0)) = n_sample;
+		_sample_darr.at((index * 2) + (channel ? 1 : 0)) = n_sample;
 	}
 	inline void push_back_stereo_u8_sample_pair(u8 n_sample_0,
 		u8 n_sample_1)
 	{
-		_sample_vec.push_back(n_sample_0);
-		_sample_vec.push_back(n_sample_1);
+		_sample_darr.push_back(n_sample_0);
+		_sample_darr.push_back(n_sample_1);
 	}
 
 	inline i16 stereo_i16_sample(size_t index, bool channel) const
 	{
-		//return _sample_vec.at((index * 2) + (channel ? 1 : 0));
+		//return _sample_darr.at((index * 2) + (channel ? 1 : 0));
 		return mono_i16_sample((index * 2) + (channel ? 1 : 0));
 	}
 	inline void set_stereo_i16_sampe(size_t index, bool channel,
@@ -141,11 +141,11 @@ public:		// functions
 	inline void push_back_stereo_i16_sample_pair(i16 n_sample_0,
 		i16 n_sample_1)
 	{
-		push_back_i16_le(_sample_vec, n_sample_0);
-		push_back_i16_le(_sample_vec, n_sample_1);
+		push_back_i16_le(_sample_darr, n_sample_0);
+		push_back_i16_le(_sample_darr, n_sample_1);
 	}
 
-	inline std::vector<u8> as_u8_vec() const
+	inline std::vector<u8> as_u8_darr() const
 	{
 		std::vector<u8> ret;
 
@@ -190,9 +190,9 @@ public:		// functions
 		// The `data` chunk
 		push_back_string(ret, "data", false);
 
-		push_back_u32_le(ret, (sample_vec().size() * sizeof(u8)));
+		push_back_u32_le(ret, (sample_darr().size() * sizeof(u8)));
 
-		for (const auto& item: sample_vec())
+		for (const auto& item: sample_darr())
 		{
 			ret.push_back(item);
 		}
@@ -210,7 +210,7 @@ public:		// functions
 				| std::ios_base::trunc));
 			file.is_open())
 		{
-			auto vec = as_u8_vec();
+			auto vec = as_u8_darr();
 
 			for (const auto& item: vec)
 			{
@@ -229,9 +229,9 @@ public:		// functions
 	}
 
 	GEN_GETTER_BY_VAL(sample_rate);
-	GEN_GETTER_BY_CON_REF(sample_vec);
-	GEN_SETTER_BY_CON_REF(sample_vec);
-	GEN_SETTER_BY_RVAL_REF(sample_vec);
+	GEN_GETTER_BY_CON_REF(sample_darr);
+	GEN_SETTER_BY_CON_REF(sample_darr);
+	GEN_SETTER_BY_RVAL_REF(sample_darr);
 };
 
 } // namespace media

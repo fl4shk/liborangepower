@@ -178,14 +178,14 @@ void test_main() {
 	//--------
 	CollGridT temp;
 
-	//std::vector<MyHasRect2<PhysElT>> temp_vec;
+	//std::vector<MyHasRect2<PhysElT>> temp_darr;
 
 	//auto append = [&](
 	//	const PhysElVec2& tl_corner, const PhysElVec2& br_corner
 	//) -> auto& {
-	//	temp_vec.push_back({PhysElRect2::build_in_grid_lim<PhysElT>
+	//	temp_darr.push_back({PhysElRect2::build_in_grid_lim<PhysElT>
 	//		(tl_corner, br_corner, temp.ENC_PHYS_EL_RECT2)});
-	//	return temp_vec.back();
+	//	return temp_darr.back();
 	//};
 	auto build_temp = [&temp](
 		const PhysElVec2& tl_corner, const PhysElVec2& br_corner
@@ -196,25 +196,25 @@ void test_main() {
 		return std::shared_ptr<MyHasRect2<PhysElT>>(ret_ptr);
 	};
 
-	//std::vector<MyHasRect2<PhysElT>> temp_vec({
+	//std::vector<MyHasRect2<PhysElT>> temp_darr({
 	//});
-	std::vector<std::shared_ptr<MyHasRect2<PhysElT>>> temp_vec({
+	std::vector<std::shared_ptr<MyHasRect2<PhysElT>>> temp_darr({
 		build_temp({0, 0}, {1, 1}),
 		build_temp({1, 2}, {3, 3}),
 		build_temp({1, 1}, {6, 6}),
 		build_temp({5, 5}, {6.1, 6.1}),
 		//build_temp({6, 6}, {6, 6}),
 	});
-	//temp_vec.push_back(build_temp({0, 0}, {2, 2}));
+	//temp_darr.push_back(build_temp({0, 0}, {2, 2}));
 
-	for (size_t i=0; i<temp_vec.size(); ++i) {
-		temp.insert(temp_vec.at(i).get());
+	for (size_t i=0; i<temp_darr.size(); ++i) {
+		temp.insert(temp_darr.at(i).get());
 	}
 	//--------
-	auto find_index = [&temp_vec](auto* some_item, size_t i)
+	auto find_index = [&temp_darr](auto* some_item, size_t i)
 	-> std::optional<size_t> {
-		for (size_t j=0; j<temp_vec.size(); ++j) {
-			if (i != j && some_item == temp_vec.at(j).get()) {
+		for (size_t j=0; j<temp_darr.size(); ++j) {
+			if (i != j && some_item == temp_darr.at(j).get()) {
 				return j;
 			}
 		}
@@ -225,17 +225,17 @@ void test_main() {
 	class CmpRet final {
 	public:		// variables
 		TestResultSetVec
-			grid_vec,
-			basic_vec;
+			grid_darr,
+			basic_darr;
 		std::set<size_t> fail_set;
 	public:		// functions
 		inline bool any_fail() const {
 			return (fail_set.size() > 0);
 		}
 	};
-	auto show_all = [&temp, &temp_vec, &find_index]() -> void {
-		for (size_t i=0; i<temp_vec.size(); ++i) {
-			auto& temp_item = temp_vec.at(i);
+	auto show_all = [&temp, &temp_darr, &find_index]() -> void {
+		for (size_t i=0; i<temp_darr.size(); ++i) {
+			auto& temp_item = temp_darr.at(i);
 			const auto& uset = temp.neighbors(temp_item.get()); 
 
 			printout(i, ": ",
@@ -252,16 +252,16 @@ void test_main() {
 			}
 		}
 		printout("\n");
-		for (size_t i=0; i<temp_vec.size(); ++i) {
-			auto& temp_item = temp_vec.at(i);
+		for (size_t i=0; i<temp_darr.size(); ++i) {
+			auto& temp_item = temp_darr.at(i);
 			const auto& uset = temp.neighbors(temp_item.get()); 
 
 			printout(i, ": ",
 				"{", temp_item->bbox().tl_corner(), " ",
 					temp_item->bbox().br_corner(), "}:\n");
-			for (size_t j=0; j<temp_vec.size(); ++j) {
+			for (size_t j=0; j<temp_darr.size(); ++j) {
 				if (i != j) {
-					auto& inner_item = temp_vec.at(j);
+					auto& inner_item = temp_darr.at(j);
 					if (inner_item->bbox().intersect(temp_item->bbox())) {
 						printout("\t", j, ": ",
 							"{", inner_item->bbox().tl_corner(), " ",
@@ -274,24 +274,24 @@ void test_main() {
 
 	auto compare = [&]() -> CmpRet {
 		CmpRet ret
-			{.grid_vec=TestResultSetVec(temp_vec.size(), TestResultSet()),
-			.basic_vec=TestResultSetVec(temp_vec.size(), TestResultSet())};
+			{.grid_darr=TestResultSetVec(temp_darr.size(), TestResultSet()),
+			.basic_darr=TestResultSetVec(temp_darr.size(), TestResultSet())};
 
-		for (size_t i=0; i<temp_vec.size(); ++i) {
-			auto& temp_item = temp_vec.at(i);
+		for (size_t i=0; i<temp_darr.size(); ++i) {
+			auto& temp_item = temp_darr.at(i);
 			const auto& uset = temp.neighbors(temp_item.get()); 
-			for (size_t j=0; j<temp_vec.size(); ++j) {
+			for (size_t j=0; j<temp_darr.size(); ++j) {
 				if (i != j) {
-					auto& inner_item = temp_vec.at(j);
+					auto& inner_item = temp_darr.at(j);
 					if (inner_item->bbox().intersect(temp_item->bbox())) {
 						if (uset.contains(inner_item.get())) {
-							ret.grid_vec.at(i).insert(j);
+							ret.grid_darr.at(i).insert(j);
 						}
-						ret.basic_vec.at(i).insert(j);
+						ret.basic_darr.at(i).insert(j);
 					}
 				}
 			}
-			if (ret.grid_vec.at(i) != ret.basic_vec.at(i)) {
+			if (ret.grid_darr.at(i) != ret.basic_darr.at(i)) {
 				ret.fail_set.insert(i);
 			}
 		}
@@ -302,28 +302,28 @@ void test_main() {
 		if (cmp_ret.any_fail()) {
 			printout("Compare failure found!\n");
 			for (const auto& fail: cmp_ret.fail_set) {
-				auto& temp_item = temp_vec.at(fail);
+				auto& temp_item = temp_darr.at(fail);
 				printout("fail:", fail, ": ",
 					"{", temp_item->bbox().tl_corner(), " ",
 						temp_item->bbox().br_corner(), "}:\n");
 
-				printout("\tgrid_vec:\n");
-				for (const auto& grid_ind: cmp_ret.grid_vec.at(fail)) {
+				printout("\tgrid_darr:\n");
+				for (const auto& grid_ind: cmp_ret.grid_darr.at(fail)) {
 					printout("\t\tgrid_ind etc: ",
-						grid_ind, " ", temp_vec.size(),
+						grid_ind, " ", temp_darr.size(),
 						"\n");
-					//auto* grid_item = &temp_vec.at(grid_ind);
-					//printout("\t\t", grid_item - temp_vec.data(), ": ",
+					//auto* grid_item = &temp_darr.at(grid_ind);
+					//printout("\t\t", grid_item - temp_darr.data(), ": ",
 					//	"{", grid_item->bbox().tl_corner(), " ",
 					//		grid_item->bbox().br_corner(), "}\n");
 				}
-				printout("\tbasic_vec:\n");
-				for (const auto& basic_ind: cmp_ret.basic_vec.at(fail)) {
+				printout("\tbasic_darr:\n");
+				for (const auto& basic_ind: cmp_ret.basic_darr.at(fail)) {
 					printout("\t\tbasic_ind etc: ",
-						basic_ind, " ", temp_vec.size(),
+						basic_ind, " ", temp_darr.size(),
 						"\n");
-					//auto* basic_item = &temp_vec.at(basic_ind);
-					//printout("\t\t", basic_item - temp_vec.data(), ": ",
+					//auto* basic_item = &temp_darr.at(basic_ind);
+					//printout("\t\t", basic_item - temp_darr.data(), ": ",
 					//	"{", basic_item->bbox().tl_corner(), " ",
 					//		basic_item->bbox().br_corner(), "}\n");
 				}
@@ -345,27 +345,27 @@ void test_main() {
 
 	//show_all();
 
-	//if (auto iter=temp_vec.begin() + 1; true) {
-	//	//temp.erase(&(*(temp_vec.begin() + 1)));
-	//	//temp_vec.erase(temp_vec.begin() + 1);
+	//if (auto iter=temp_darr.begin() + 1; true) {
+	//	//temp.erase(&(*(temp_darr.begin() + 1)));
+	//	//temp_darr.erase(temp_darr.begin() + 1);
 	//	temp.erase(&(*iter), std::nullopt);
-	//	temp_vec.erase(iter);
+	//	temp_darr.erase(iter);
 	//}
 	printout("Testing before `erase()`\n");
 	if (auto cmp_ret=compare(); true) {
 		show_fail_or_all(cmp_ret);
 	}
-	if (auto iter=temp_vec.begin(); true) {
-		//temp.erase(&(*(temp_vec.begin() + 1)));
-		//temp_vec.erase(temp_vec.begin() + 1);
+	if (auto iter=temp_darr.begin(); true) {
+		//temp.erase(&(*(temp_darr.begin() + 1)));
+		//temp_darr.erase(temp_darr.begin() + 1);
 		temp.erase(iter->get(), std::nullopt);
-		temp_vec.erase(iter);
+		temp_darr.erase(iter);
 	}
 	//printout("sizes etc: ",
-	//	temp_vec.size(), " ",
+	//	temp_darr.size(), " ",
 	//	temp.data().size(),
 	//	"\n");
-	//printout("temp_vec.size(): ", temp_vec.size(), "\n");
+	//printout("temp_darr.size(): ", temp_darr.size(), "\n");
 
 	printout("Testing after `erase()`\n");
 	if (auto cmp_ret=compare(); true) {

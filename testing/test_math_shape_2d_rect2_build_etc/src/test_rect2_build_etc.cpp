@@ -4,7 +4,7 @@ void test_r2_fit_into_grid_lim()
 {
 	printout("test_r2_fit_into_grid_lim():\n");
 
-	const std::vector<TestTupleAndRect2<int>> test_vec
+	const std::vector<TestTupleAndRect2<int>> test_darr
 	({
 		{{.name="a", .p0{2, 2}, .p1{3, 3}},
 			Rect2<int>{.pos{0, 0}, .size_2d{1, 1}}},
@@ -16,7 +16,7 @@ void test_r2_fit_into_grid_lim()
 			Rect2<int>::build_in_grid(Vec2{2, 2}, Vec2{3, -3})},
 	});
 
-	for (const auto& item: test_vec)
+	for (const auto& item: test_darr)
 	{
 		const Rect2<int>
 			uut = Rect2<int>::build_in_grid(item.first.p0, item.first.p1)
@@ -36,7 +36,7 @@ void test_r2_build_in_grid()
 {
 	printout("test_r2_build_in_grid():\n");
 
-	const std::vector<TestTuple<int>> test_vec
+	const std::vector<TestTuple<int>> test_darr
 	({
 		{.name="a", .p0{0, 0}, .p1{2, 2}, .tlc{0, 0}, .brc{2, 2}},
 		{.name="b", .p0{0, 1}, .p1{3, 3}, .tlc{0, 1}, .brc{3, 3}},
@@ -44,7 +44,7 @@ void test_r2_build_in_grid()
 		{.name="d", .p0{-1, -2}, .p1{-1, -2}, .tlc{-1, -2}, .brc{-1, -2}},
 	});
 
-	for (const auto& item: test_vec)
+	for (const auto& item: test_darr)
 	{
 		const Rect2<int> uut
 			= Rect2<int>::build_in_grid(item.p0, item.p1);
@@ -61,7 +61,7 @@ void test_r2_build_in_grid_lim()
 	//const Rect2<int>
 	//	lim{.pos={-1, -1}, .size_2d={20, 20}};
 
-	const std::vector<TestTupleAndRect2<int>> test_vec
+	const std::vector<TestTupleAndRect2<int>> test_darr
 	({
 		//{{.name="a", .p0{-1, -1}, .p1{21, 21}, .tlc{-1, -1}, .brc{18, 18}},
 		//	{.pos{-1, -1}, .size_2d{20, 20}}},
@@ -73,7 +73,7 @@ void test_r2_build_in_grid_lim()
 			Rect2<int>{.pos{-1, -1}, .size_2d{2, 2}}},
 	});
 
-	for (const auto& item: test_vec)
+	for (const auto& item: test_darr)
 	{
 		const Rect2<int>
 			uut = Rect2<int>::build_in_grid_lim

@@ -80,53 +80,53 @@ int main(int argc, char** argv)
 	//	json::write_json(jv_file, &jv_root);
 	//}
 	//--------
-	binser::VectorEx<IcllTest> oracle_vec;
-	oracle_vec.data.push_back({.x=42, .str="The answer to everything"});
-	oracle_vec.data.push_back({.x=9001, .str="It's over nine thousand!"});
-	oracle_vec.data.push_back({.x=420, .str="smoave"});
+	binser::VectorEx<IcllTest> oracle_darr;
+	oracle_darr.data.push_back({.x=42, .str="The answer to everything"});
+	oracle_darr.data.push_back({.x=9001, .str="It's over nine thousand!"});
+	oracle_darr.data.push_back({.x=420, .str="smoave"});
 
-	binser::VectorEx<IcllTest> test_vec;
-	test_vec.checked_size = 3;
-	test_vec.cs_is_max = false;
-	test_vec.min_size = 3;
+	binser::VectorEx<IcllTest> test_darr;
+	test_darr.checked_size = 3;
+	test_darr.cs_is_max = false;
+	test_darr.min_size = 3;
 
 	//for (size_t i=0; i<vec.data.size(); ++i)
 	//{
 	//	printout(item, ", ");
 	//}
 	//for (const auto& item: vec)
-	//if (std::vector<std::string> temp_str_vec; true)
+	//if (std::vector<std::string> temp_str_darr; true)
 	//{
 	//	for (const auto& item: vec.data)
 	//	{
-	//		temp_str_vec.push_back(sconcat(item));
+	//		temp_str_darr.push_back(sconcat(item));
 	//	}
 
-	//	printout("{\n\t", strjoin2("\n\t", temp_str_vec), "\n}\n");
+	//	printout("{\n\t", strjoin2("\n\t", temp_str_darr), "\n}\n");
 	//}
 
 	//binser::Value bv;
 	//binser::set_bv(bv, vec);
 
-	//test_write_binser_file("test_vec.binser.ignore", bv);
-	//test_write_json_file("test_vec.json.ignore", bv);
+	//test_write_binser_file("test_darr.binser.ignore", bv);
+	//test_write_json_file("test_darr.json.ignore", bv);
 
-	if (auto bv_file=std::fstream("test_vec.binser.ignore",
+	if (auto bv_file=std::fstream("test_darr.binser.ignore",
 		std::ios_base::in | std::ios_base::binary); true)
 	{
 		binser::Value bv;
 		binser::parse_binser(bv_file, bv);
-		binser::val_from_bv(test_vec, bv, std::nullopt);
+		binser::val_from_bv(test_darr, bv, std::nullopt);
 	}
 	//--------
-	//std::vector<std::string> test_vec;
-	//test_vec.push_back("asdf");
-	//test_vec.push_back("jkl;");
+	//std::vector<std::string> test_darr;
+	//test_darr.push_back("asdf");
+	//test_darr.push_back("jkl;");
 
 	//binser::Value bv;
-	//binser::set_bv(bv, test_vec);
+	//binser::set_bv(bv, test_darr);
 
-	//if (auto jv_file=std::fstream("test_vec.json.ignore",
+	//if (auto jv_file=std::fstream("test_darr.json.ignore",
 	//	std::ios_base::out); true)
 	//{
 	//	Json::Value jv_root = binser::bv_to_jv(bv);
@@ -172,7 +172,7 @@ int main(int argc, char** argv)
 	//			bv1.push_back(std::monostate());
 	//			bv.insert("c", std::move(bv1));
 	//		}
-	//		//c.c_vec = std::vector<char>(bv);
+	//		//c.c_darr = std::vector<char>(bv);
 	//		test_arr.at(0).data[DerivedC::KIND_STR]
 	//			= std::unique_ptr<Base>(new DerivedC
 	//				(std::vector<char>(bv)));
@@ -186,8 +186,8 @@ int main(int argc, char** argv)
 	//	binser::Value bv_root = test_arr.at(0);
 	//	//osprint_hexdump(std::cout, root, 20);
 
-	//	//const auto& ser_vec = static_cast<std::vector<char>>(bv_root);
-	//	//for (const auto& c: ser_vec)
+	//	//const auto& ser_darr = static_cast<std::vector<char>>(bv_root);
+	//	//for (const auto& c: ser_darr)
 	//	//{
 	//	//	file.put(c);
 	//	//}
@@ -259,14 +259,14 @@ int main(int argc, char** argv)
 	//		{
 	//			printout("\n");
 	//			auto c = static_cast<DerivedC*>(p2.get());
-	//			osprint_hexdump(std::cout, c->c_vec, 20);
+	//			osprint_hexdump(std::cout, c->c_darr, 20);
 
 	//			if (auto jv_file=std::fstream("test_2.json.ignore",
 	//				std::ios_base::out);
 	//				true)
 	//			{
 	//				Json::Value jv_root = binser::bv_to_jv
-	//					(binser::Value(c->c_vec));
+	//					(binser::Value(c->c_darr));
 	//				json::write_json(jv_file, &jv_root);
 	//			}
 	//		}

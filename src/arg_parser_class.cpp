@@ -54,8 +54,8 @@ ArgParser& ArgParser::add(
 		(std::move(temp_name), std::move(to_insert)));
 	return *this;
 }
-//ArgParser& ArgParser::add(std::vector<Option>&& to_add_vec) {
-//	for (auto& to_add: to_add_vec) {
+//ArgParser& ArgParser::add(std::vector<Option>&& to_add_darr) {
+//	for (auto& to_add: to_add_darr) {
 //		add(std::move(to_add));
 //	}
 //	return *this;

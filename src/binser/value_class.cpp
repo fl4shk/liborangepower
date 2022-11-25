@@ -110,7 +110,7 @@ void Value::_inner_init(const std::vector<char>& to_cast, u64& i) {
 	case Tag::Vec: {
 		const u64 vec_size = _inner_init_do_memcpy<u64>(to_cast, i, tag);
 
-		ValueVec n_data;
+		ValueDarr n_data;
 
 		for (u64 j=0; j<vec_size; ++j) {
 			//Value temp;
@@ -220,20 +220,20 @@ Value::operator std::vector<char> () const {
 		for (const auto& c: str) {
 			ret.push_back(c);
 		}
-	} else if (holds_alternative<ValueVec>()) {
+	} else if (holds_alternative<ValueDarr>()) {
 		ret.push_back(static_cast<char>(Tag::Vec));
 
-		const auto& vec = get<ValueVec>();
+		const auto& darr = get<ValueDarr>();
 
-		if (u64 vec_size=vec.size(); true) {
+		if (u64 vec_size=darr.size(); true) {
 			do_memcpy(vec_size);
 		}
 
-		for (auto& item: vec) {
+		for (auto& item: darr) {
 			//ret.push_back(static_cast<std::vector<char>>(item));
-			const std::vector<char>& temp_vec
+			const std::vector<char>& temp_darr
 				= static_cast<std::vector<char>>(*item);
-			ret.insert(ret.end(), temp_vec.cbegin(), temp_vec.cend());
+			ret.insert(ret.end(), temp_darr.cbegin(), temp_darr.cend());
 		}
 	} else { // if (holds_alternative<ValueUmap>())
 		ret.push_back(static_cast<char>(Tag::Umap));
@@ -255,10 +255,10 @@ Value::operator std::vector<char> () const {
 
 			// Then copy the casted-to-`std::vector<char>` form of the
 			// contained `binser::Value`.
-			const std::vector<char> temp_vec(
+			const std::vector<char> temp_darr(
 				static_cast<std::vector<char>>(*item.second)
 			);
-			ret.insert(ret.end(), temp_vec.cbegin(), temp_vec.cend());
+			ret.insert(ret.end(), temp_darr.cbegin(), temp_darr.cend());
 		}
 	}
 
@@ -266,14 +266,14 @@ Value::operator std::vector<char> () const {
 }
 
 size_t Value::size() const {
-	if (holds_alternative<ValueVec>()) {
-		return get<ValueVec>().size();
+	if (holds_alternative<ValueDarr>()) {
+		return get<ValueDarr>().size();
 	} else if (holds_alternative<ValueUmap>()) {
 		return get<ValueUmap>().size();
 	} else {
 		throw std::runtime_error(sconcat(
 			"Wrong type held by the `binser::Value`. ",
-			"It must be `binser::ValueVec` or `binser::ValueUmap`."
+			"It must be `binser::ValueDarr` or `binser::ValueUmap`."
 		));
 	}
 }

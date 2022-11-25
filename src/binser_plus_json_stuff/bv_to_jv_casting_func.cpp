@@ -34,11 +34,11 @@ Json::Value bv_to_jv(const binser::Value& bv) {
 		ret = bv.get<bool>();
 	} else if (bv.holds_alternative<std::string>()) {
 		ret = bv.as_str();
-	} else if (bv.holds_alternative<ValueVec>()) {
-		const auto& vec = bv.as_vec();
+	} else if (bv.holds_alternative<ValueDarr>()) {
+		const auto& darr = bv.as_darr();
 
-		for (Json::ArrayIndex i=0; i<vec.size(); ++i) {
-			ret[i] = bv_to_jv(*vec.at(i));
+		for (Json::ArrayIndex i=0; i<darr.size(); ++i) {
+			ret[i] = bv_to_jv(*darr.at(i));
 		}
 	} else { // if (bv.holds_alternative<ValueMap>())
 		const auto& umap = bv.as_umap();

@@ -21,7 +21,7 @@ namespace binser {
 class Value;
 //--------
 using ValueSptr = std::shared_ptr<Value>;
-using ValueVec = std::vector<ValueSptr>;
+using ValueDarr = std::vector<ValueSptr>;
 using ValueUmap = std::unordered_map<std::string, ValueSptr>;
 using ValueUmapInsertRet = std::pair<typename ValueUmap::iterator, bool>;
 //--------
@@ -39,7 +39,7 @@ using ValueData
 		std::monostate,
 		u8, i8, u16, i16, u32, i32, u64, i64, float, double, bool,
 		std::string,
-		ValueVec,
+		ValueDarr,
 		//ValueUmap<true>,
 		//ValueUmap<false>
 		ValueUmap
@@ -66,7 +66,7 @@ template<typename T>
 concept IsValueData
 	= std::same_as<T, std::monostate>
 	|| IsValueDataNumOrStr<T>
-	|| std::same_as<T, ValueVec>
+	|| std::same_as<T, ValueDarr>
 	//|| std::same_as<T, ValueUmap<true>>
 	//|| std::same_as<T, ValueUmap<false>>;
 	|| std::same_as<T, ValueUmap>;
@@ -74,7 +74,7 @@ concept IsValueData
 template<typename T>
 concept IsValueDataNonNum
 	= std::same_as<T, std::string>
-	|| std::same_as<T, ValueVec>
+	|| std::same_as<T, ValueDarr>
 	|| std::same_as<T, ValueUmap>;
 //--------
 class Value final {
@@ -231,11 +231,11 @@ public:		// functions
 	inline const std::string& as_str() const {
 		return get<std::string>();
 	}
-	inline ValueVec& as_vec() {
-		return get<ValueVec>();
+	inline ValueDarr& as_darr() {
+		return get<ValueDarr>();
 	}
-	inline const ValueVec& as_vec() const {
-		return get<ValueVec>();
+	inline const ValueDarr& as_darr() const {
+		return get<ValueDarr>();
 	}
 	inline ValueUmap& as_umap() {
 		return get<ValueUmap>();
@@ -247,25 +247,25 @@ public:		// functions
 	size_t size() const;
 	//--------
 	inline Value& at(u64 where) {
-		return *as_vec().at(where);
+		return *as_darr().at(where);
 	}
 	inline const Value& at(u64 where) const {
-		return *as_vec().at(where);
+		return *as_darr().at(where);
 	}
 
 	//inline Value& operator [] (u64 where) {
-	//	return *as_vec()[where];
+	//	return *as_darr()[where];
 	//}
 	//inline const Value& operator [] (u64 where) const {
-	//	return *as_vec()[where];
+	//	return *as_darr()[where];
 	//}
 	inline void push_back(const Value& to_push) {
-		set_type_if_not_ha<ValueVec>();
-		as_vec().push_back(to_sptr(to_push));
+		set_type_if_not_ha<ValueDarr>();
+		as_darr().push_back(to_sptr(to_push));
 	}
 	inline void push_back(Value&& to_push) {
-		set_type_if_not_ha<ValueVec>();
-		as_vec().push_back(to_sptr(std::move(to_push)));
+		set_type_if_not_ha<ValueDarr>();
+		as_darr().push_back(to_sptr(std::move(to_push)));
 	}
 	//--------
 	inline Value& at(const std::string& where) {

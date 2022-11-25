@@ -17,11 +17,11 @@ public:		// variables
 };
 
 template<template<typename> typename UnconShapeT, typename T>
-void test_intersect(const std::vector<TestTuple<UnconShapeT, T>>& test_vec)
+void test_intersect(const std::vector<TestTuple<UnconShapeT, T>>& test_darr)
 {
-	for (size_t i=0; i<test_vec.size(); ++i)
+	for (size_t i=0; i<test_darr.size(); ++i)
 	{
-		const auto& item = test_vec.at(i);
+		const auto& item = test_darr.at(i);
 		printout(i, ": ");
 
 		const auto& hit = item.rect.intersect
@@ -41,11 +41,11 @@ void test_intersect(const std::vector<TestTuple<UnconShapeT, T>>& test_vec)
 }
 template<template<typename> typename UnconShapeT, typename T>
 void test_intersect_fancy
-	(const std::vector<TestTuple<UnconShapeT, T>>& test_vec)
+	(const std::vector<TestTuple<UnconShapeT, T>>& test_darr)
 {
-	for (size_t i=0; i<test_vec.size(); ++i)
+	for (size_t i=0; i<test_darr.size(); ++i)
 	{
-		const auto& item = test_vec.at(i);
+		const auto& item = test_darr.at(i);
 		printout(i, ": ");
 
 		const auto& hit = item.rect.intersect_fancy
@@ -77,7 +77,7 @@ void test_intersect_fancy
 			#undef X
 		}
 
-		//if (i + 1 < test_vec.size())
+		//if (i + 1 < test_darr.size())
 		//{
 		//	printout("\n");
 		//}

@@ -108,7 +108,7 @@ constexpr inline std::ostream& osprint_hexdump(std::ostream& os,
 {
 	constexpr char BLANK_TEXT_C = '.';
 
-	//for (const auto& c: ser_vec)
+	//for (const auto& c: ser_darr)
 	std::vector<char, Alloc> text;
 	size_t i;
 

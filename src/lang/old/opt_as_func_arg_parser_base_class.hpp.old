@@ -27,7 +27,7 @@ public:		// types
 	{
 	private:		// variables
 		bool _valid = true;
-		std::vector<TwoStates> _lex_two_states_vec;
+		std::vector<TwoStates> _lex_two_states_darr;
 		std::set<TokT> _tok_set;
 	public:		// functions
 		inline ParseRet() = default;
@@ -39,7 +39,7 @@ public:		// types
 
 		inline void append_lex_two_states(const TwoStates& to_append)
 		{
-			_lex_two_states_vec.push_back(to_append);
+			_lex_two_states_darr.push_back(to_append);
 		}
 		inline void append_tok(TokT tok)
 		{
@@ -58,9 +58,9 @@ public:		// types
 			{
 				_valid = false;
 			}
-			for (const auto& iter : to_append.lex_two_states_vec())
+			for (const auto& iter : to_append.lex_two_states_darr())
 			{
-				_lex_two_states_vec.push_back(iter);
+				_lex_two_states_darr.push_back(iter);
 			}
 			for (const auto& iter : to_append.tok_set())
 			{
@@ -69,7 +69,7 @@ public:		// types
 		}
 
 		GEN_GETTER_AND_SETTER_BY_VAL(valid)
-		GEN_GETTER_BY_CON_REF(lex_two_states_vec)
+		GEN_GETTER_BY_CON_REF(lex_two_states_darr)
 		GEN_GETTER_BY_CON_REF(tok_set)
 	};
 
@@ -91,13 +91,13 @@ public:		// types
 	//	Vec _vec;
 	//	bool _optional = false;
 	//public:		// functions
-	//	SeqParse(DerivedT* s_self, Vec&& s_vec, bool s_optional=false)
-	//		: _self(s_self), _ident(""), _vec(s_vec), _optional(s_optional)
+	//	SeqParse(DerivedT* s_self, Vec&& s_darr, bool s_optional=false)
+	//		: _self(s_self), _ident(""), _vec(s_darr), _optional(s_optional)
 	//	{
 	//	}
 	//	SeqParse(DerivedT* s_self, const std::string& s_ident,
-	//		Vec&& s_vec, bool s_optional=false)
-	//		: _self(s_self), _ident(s_ident), _vec(s_vec),
+	//		Vec&& s_darr, bool s_optional=false)
+	//		: _self(s_self), _ident(s_ident), _vec(s_darr),
 	//		_optional(s_optional)
 	//	{
 	//	}

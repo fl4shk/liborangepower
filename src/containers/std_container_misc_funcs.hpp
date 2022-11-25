@@ -40,7 +40,7 @@ namespace containers {
 template<typename Tuple,
 	typename T=std::decay_t<std::tuple_element_t<0, std::decay_t<Tuple>>>,
 	typename Alloc=std::allocator<T>>
-inline std::vector<T, Alloc> tup_to_vec(Tuple&& tup) {
+inline std::vector<T, Alloc> tup_to_darr(Tuple&& tup) {
 	// Both of these are from this web page:
 	// https://stackoverflow.com/questions/42494715/c-transform-a-stdtuplea-a-a-to-a-stdvector-or-stddeque
 
