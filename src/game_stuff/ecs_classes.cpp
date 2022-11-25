@@ -125,7 +125,7 @@ Engine::operator binser::Value () const {
 	//for (Json::ArrayIndex i=0;
 	//	i<static_cast<Json::ArrayIndex>(_num_files);
 	//	++i)
-	binser::ValueVec vec;
+	binser::ValueDarr darr;
 	for (FileNum i=0; i<_num_files; ++i) {
 		//Json::Value& jv_ecmap = ret["_engine_comp_umap_darr"][i];
 
@@ -152,10 +152,10 @@ Engine::operator binser::Value () const {
 			) -> bool {
 				return ent_pair.second.contains(NonSerializable::KIND_STR);
 			});
-		vec.push_back(binser::ValueSptr(new binser::Value
+		darr.push_back(binser::ValueSptr(new binser::Value
 			(std::move(bv_ecmap))));
 	}
-	ret.insert("_engine_comp_umap_darr", std::move(vec));
+	ret.insert("_engine_comp_umap_darr", std::move(darr));
 	//MEMB_SER_LIST_ECS_ENGINE(JSON_MEMB_SERIALIZE);
 
 	return ret;
@@ -412,11 +412,11 @@ EntIdDarr Engine::ent_id_darr_from_keys_any_fn(
 EntIdUset Engine::ent_id_uset_from_keys_any_fn(
 	const StrKeyUset& key_uset, FileNum file_num
 ) {
-	//const EntIdDarr vec(ent_id_darr_from_keys_any_fn(key_uset, file_num));
+	//const EntIdDarr darr(ent_id_darr_from_keys_any_fn(key_uset, file_num));
 
 	//EntIdUset ret;
 
-	//for (const auto& ent_id: vec) {
+	//for (const auto& ent_id: darr) {
 	//	ret.insert(ent_id);
 	//}
 
@@ -466,11 +466,11 @@ EntIdDarr Engine::ent_id_darr_from_keys_all_fn(
 EntIdUset Engine::ent_id_uset_from_keys_all_fn(
 	const StrKeyUset& key_uset, FileNum file_num
 ) {
-	//const EntIdDarr vec(ent_id_darr_from_keys_all_fn(key_uset, file_num));
+	//const EntIdDarr darr(ent_id_darr_from_keys_all_fn(key_uset, file_num));
 
 	//EntIdUset ret;
 
-	//for (const auto& ent_id: vec) {
+	//for (const auto& ent_id: darr) {
 	//	ret.insert(ent_id);
 	//}
 
