@@ -661,9 +661,28 @@ EngineInsertSearchMultiRet Engine::has_ent_w_comp_fn(
 
 	return ret;
 }
-void Engine::tick() {
+void Engine::tick(
+	const std::optional<std::string>& start_sys_key,
+	const std::optional<std::string>& end_sys_key
+) {
+	if (start_sys_key) {
+		_sys_umap.at(*start_sys_key).tick(this);
+	}
 	for (auto&& pair: _sys_umap) {
-		pair.second->tick(this);
+		if (
+			(
+				!start_sys_key
+				|| pair.first != *start_sys_key
+			) && (
+				!end_sys_key
+				|| pair.first != *end_sys_key
+			)
+		) {
+			pair.second->tick(this);
+		}
+	}
+	if (end_sys_key) {
+		_sys_umap.at(*end_sys_key).tick(this);
 	}
 }
 //--------

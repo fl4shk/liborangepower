@@ -678,7 +678,10 @@ public:		// functions
 	//	return has_ent_w_comp_fn<Ts...>(id, curr_file_num);
 	//}
 	//--------
-	void tick();
+	void tick(
+		const std::optional<std::string>& start_sys_key,
+		const std::optional<std::string>& end_sys_key
+	);
 	//--------
 	inline EntId& next_ent_id_fn(FileNum file_num) {
 		return _next_ent_id_darr.data.at(sel_file_num(file_num));
