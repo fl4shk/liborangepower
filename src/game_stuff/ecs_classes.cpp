@@ -666,7 +666,7 @@ void Engine::tick(
 	const std::optional<std::string>& end_sys_key
 ) {
 	if (start_sys_key) {
-		_sys_umap.at(*start_sys_key).tick(this);
+		_sys_umap.at(*start_sys_key)->tick(this);
 	}
 	for (auto&& pair: _sys_umap) {
 		if (
@@ -682,7 +682,7 @@ void Engine::tick(
 		}
 	}
 	if (end_sys_key) {
-		_sys_umap.at(*end_sys_key).tick(this);
+		_sys_umap.at(*end_sys_key)->tick(this);
 	}
 }
 //--------
