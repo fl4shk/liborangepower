@@ -680,7 +680,8 @@ public:		// functions
 	//--------
 	void tick(
 		const std::optional<std::string>& start_sys_key,
-		const std::optional<std::string>& end_sys_key
+		const std::optional<std::string>& end_sys_key,
+		bool do_destroy_scheduled=false
 	);
 	//--------
 	inline EntId& next_ent_id_fn(FileNum file_num) {
