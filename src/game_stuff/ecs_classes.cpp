@@ -666,6 +666,9 @@ void Engine::tick(
 	const std::optional<std::string>& end_sys_key,
 	bool do_destroy_scheduled
 ) {
+	if (do_destroy_scheduled) {
+		destroy_scheduled();
+	}
 	if (start_sys_key) {
 		_sys_umap.at(*start_sys_key)->tick(this);
 	}
@@ -681,9 +684,6 @@ void Engine::tick(
 		) {
 			pair.second->tick(this);
 		}
-	}
-	if (do_destroy_scheduled) {
-		destroy_scheduled();
 	}
 	if (end_sys_key) {
 		_sys_umap.at(*end_sys_key)->tick(this);
