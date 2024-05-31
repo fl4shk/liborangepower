@@ -14,6 +14,7 @@ namespace liborangepower
 
 namespace media
 {
+struct Testificate;
 
 using namespace integer_types;
 using namespace misc_util;
@@ -230,7 +231,7 @@ public:		// functions
 
 	GEN_GETTER_BY_VAL(sample_rate);
 	GEN_GETTER_BY_CON_REF(sample_darr);
-	GEN_SETTER_BY_CON_REF(sample_darr);
+	//GEN_SETTER_BY_CON_REF(sample_darr);
 	GEN_SETTER_BY_RVAL_REF(sample_darr);
 };
 

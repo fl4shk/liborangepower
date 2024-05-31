@@ -131,7 +131,7 @@ public:		// functions
 	}
 	constexpr inline CxFixedPt& operator += (
 		const CxFixedPt& other
-	) const {
+	) {
 		*this = *this + other;
 		return *this;
 	}
@@ -141,7 +141,7 @@ public:		// functions
 	}
 	constexpr inline CxFixedPt& operator -= (
 		const CxFixedPt& other
-	) const {
+	) {
 		*this = *this - other;
 		return *this;
 	}
@@ -152,7 +152,7 @@ public:		// functions
 	}
 	constexpr inline CxFixedPt& operator *= (
 		const CxFixedPt& other
-	) const {
+	) {
 		*this = *this * other;
 		return *this;
 	}
@@ -163,7 +163,7 @@ public:		// functions
 	}
 	constexpr inline CxFixedPt& operator /= (
 		const CxFixedPt& other
-	) const {
+	) {
 		*this = *this / other;
 		return *this;
 	}
@@ -171,7 +171,7 @@ public:		// functions
 	constexpr inline long double recip_ldbl() const {
 		const long double
 			DATA_DBL = data;
-		return 1.0d 
+		return 1.0l
 			/ (DATA_DBL / (MaxIntT(1) << FRAC_WIDTH));
 	}
 	constexpr inline long double sqrt_ldbl() const {
