@@ -147,6 +147,9 @@ public:		// functions
 		*this = *this - other;
 		return *this;
 	}
+	constexpr inline CxFixedPt operator - () const {
+		return CxFixedPt(-data);
+	}
 
 	constexpr inline CxFixedPt operator * (const CxFixedPt& other) const {
 		return CxFixedPt((MaxIntT(data) * MaxIntT(other.data))
