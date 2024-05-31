@@ -111,7 +111,10 @@ public:		// functions
 	}
 	template<std::floating_point CastFloatT>
 	explicit constexpr inline operator CastFloatT () const {
-		return (long double)(whole_part<MaxIntT>())
+		return (long double)(
+			//whole_part<MaxIntT>()
+			data
+		)
 			/ (MaxIntT(1) << FRAC_WIDTH);
 	}
 	//--------
