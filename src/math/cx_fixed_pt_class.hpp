@@ -102,6 +102,8 @@ public:		// functions
 	constexpr inline CxFixedPt& operator = (const CxFixedPt&) = default;
 	constexpr inline ~CxFixedPt() = default;
 	//--------
+	constexpr inline auto operator <=> (const CxFixedPt&) const = default;
+	//--------
 	template<std::integral CastIntT>
 	explicit constexpr inline operator CastIntT () const {
 		return MaxIntT(data) >> FRAC_WIDTH;
@@ -194,6 +196,8 @@ using CxFixedI16p16 = CxFixedPt<i32, 16>;
 using CxFixedU16p16 = CxFixedPt<u32, 16>;
 using CxFixedI24p8 = CxFixedPt<i32, 8>;
 using CxFixedU24p8 = CxFixedPt<u32, 8>;
+using CxFixedI20p12 = CxFixedPt<i32, 12>;
+using CxFixedU20p12 = CxFixedPt<u32, 12>;
 
 // 64
 using CxFixedI32p32 = CxFixedPt<i64, 32>;
