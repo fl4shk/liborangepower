@@ -132,7 +132,7 @@ public:		// functions
 	}
 	//--------
 	constexpr inline CxFixedPt operator + (const CxFixedPt& other) const {
-		return CxFixedPt(data + other.data);
+		return CxFixedPt({.data=data + other.data});
 	}
 	constexpr inline CxFixedPt& operator += (
 		const CxFixedPt& other
@@ -142,7 +142,7 @@ public:		// functions
 	}
 
 	constexpr inline CxFixedPt operator - (const CxFixedPt& other) const {
-		return CxFixedPt(data - other.data);
+		return CxFixedPt({.data=data - other.data});
 	}
 	constexpr inline CxFixedPt& operator -= (
 		const CxFixedPt& other
@@ -151,12 +151,13 @@ public:		// functions
 		return *this;
 	}
 	constexpr inline CxFixedPt operator - () const {
-		return CxFixedPt(-data);
+		return CxFixedPt({.data=-data});
 	}
 
 	constexpr inline CxFixedPt operator * (const CxFixedPt& other) const {
-		return CxFixedPt((MaxIntT(data) * MaxIntT(other.data))
-			>> FRAC_WIDTH);
+		return CxFixedPt(CtorArgs{.data=(
+			(MaxIntT(data) * MaxIntT(other.data)) >> FRAC_WIDTH
+		)});
 	}
 	constexpr inline CxFixedPt& operator *= (
 		const CxFixedPt& other
@@ -166,8 +167,9 @@ public:		// functions
 	}
 
 	constexpr inline CxFixedPt operator / (const CxFixedPt& other) const {
-		return CxFixedPt((MaxIntT(data) << FRAC_WIDTH)
-			/ MaxIntT(other.data));
+		return CxFixedPt({.data=(
+			(MaxIntT(data) << FRAC_WIDTH) / MaxIntT(other.data)
+		)});
 	}
 	constexpr inline CxFixedPt& operator /= (
 		const CxFixedPt& other
@@ -186,7 +188,7 @@ public:		// functions
 		return std::sqrt((long double)(*this));
 	}
 	constexpr inline CxFixedPt div_2() const {
-		return CxFixedPt(data >> IntT(1));
+		return CxFixedPt({.data=(data >> IntT(1))});
 	}
 	//--------
 };
