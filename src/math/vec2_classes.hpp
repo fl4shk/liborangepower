@@ -299,7 +299,7 @@ public:		// functions
 		//return T((x * other.x) + (y * other.y));
 		//const T ret = (x * other.x) + (y * other.y);
 
-		const T ret = T();
+		T ret = T();
 		//#define X(name, dummy_arg) ret += name * other.name;
 		//MEMB_MAIN_LIST_VEC2(X);
 		//#undef X

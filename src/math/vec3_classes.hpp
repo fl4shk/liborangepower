@@ -307,7 +307,7 @@ public:		// functions
 		//const T ret = (x * other.x) + (y * other.y) + (z * other.z);
 		//return ret;
 
-		const T ret = T();
+		T ret = T();
 		//#define X(name, dummy_arg) ret += name * other.name;
 		//MEMB_MAIN_LIST_VEC3(X);
 		//#undef X
