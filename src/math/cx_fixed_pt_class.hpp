@@ -202,7 +202,7 @@ public:		// functions
 	constexpr inline long double sqrt_ldbl() const {
 		return std::sqrt((long double)(*this));
 	}
-	constexpr inline CxFixedPt cstm_sqrt() const {
+	constexpr inline CxFixedPt sqrt() const {
 		return CxFixedPt(std::sqrt(double(*this)));
 	}
 	constexpr inline CxFixedPt div_2() const {
