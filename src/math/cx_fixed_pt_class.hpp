@@ -66,7 +66,7 @@ public:		// functions
 		: data(ctor_args.data) {
 	}
 	//--------
-	/*explicit*/ constexpr inline CxFixedPt(std::integral auto to_conv)
+	explicit constexpr inline CxFixedPt(std::integral auto to_conv)
 		: data(to_conv << FRAC_WIDTH) {
 	}
 	/*explicit*/ constexpr inline CxFixedPt(std::floating_point auto to_conv)
@@ -105,7 +105,7 @@ public:		// functions
 	constexpr inline auto operator <=> (const CxFixedPt&) const = default;
 	//--------
 	template<std::integral CastIntT>
-	/*explicit*/ constexpr inline operator CastIntT () const {
+	explicit constexpr inline operator CastIntT () const {
 		return MaxIntT(data) >> FRAC_WIDTH;
 		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
 	}
