@@ -69,7 +69,9 @@ public:		// functions
 	explicit constexpr inline CxFixedPt(std::integral auto to_conv)
 		: data(to_conv << FRAC_WIDTH) {
 	}
-	/*explicit*/ constexpr inline CxFixedPt(std::floating_point auto to_conv)
+	/*explicit*/ constexpr inline CxFixedPt(
+		std::floating_point auto to_conv
+	)
 		: data((long double)(to_conv) * (MaxIntT(1) << FRAC_WIDTH)) {
 	}
 
@@ -100,6 +102,18 @@ public:		// functions
 	//--------
 	constexpr inline CxFixedPt(const CxFixedPt&) = default;
 	constexpr inline CxFixedPt& operator = (const CxFixedPt&) = default;
+	constexpr inline CxFixedPt& operator = (float to_assign) {
+		*this = CxFixedPt(to_assign);
+		return *this;
+	}
+	constexpr inline CxFixedPt& operator = (double to_assign) {
+		*this = CxFixedPt(to_assign);
+		return *this;
+	}
+	constexpr inline CxFixedPt& operator = (long double to_assign) {
+		*this = CxFixedPt(to_assign);
+		return *this;
+	}
 	constexpr inline ~CxFixedPt() = default;
 	//--------
 	constexpr inline auto operator <=> (const CxFixedPt&) const = default;
@@ -109,13 +123,26 @@ public:		// functions
 		return MaxIntT(data) >> FRAC_WIDTH;
 		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
 	}
-	template<std::floating_point CastFloatT>
-	/*explicit*/ constexpr inline operator CastFloatT () const {
+	//template<std::floating_point CastFloatT>
+	/*explicit*/ constexpr inline operator float () const {
+		return float(
+			(double)(data)
+			/ (double)(MaxIntT(1) << FRAC_WIDTH)
+		);
+	}
+	/*explicit*/ constexpr inline operator double () const {
+		return (double)(
+			//whole_part<MaxIntT>()
+			data
+		)
+			/ (double)(MaxIntT(1) << FRAC_WIDTH);
+	}
+	/*explicit*/ constexpr inline operator long double () const {
 		return (long double)(
 			//whole_part<MaxIntT>()
 			data
 		)
-			/ (MaxIntT(1) << FRAC_WIDTH);
+			/ (long double)(MaxIntT(1) << FRAC_WIDTH);
 	}
 	//--------
 	template<std::integral CastIntT=IntT>
@@ -143,6 +170,19 @@ public:		// functions
 		*this = *this + other;
 		return *this;
 	}
+	constexpr inline CxFixedPt operator + (double other) const {
+		return CxFixedPt(double(*this) + other);
+	}
+	constexpr inline CxFixedPt& operator += (double other) const {
+		*this = *this + other;
+		return other;
+	}
+	constexpr inline CxFixedPt operator + () const {
+		//return CxFixedPt({.data=-data});
+		CxFixedPt ret;
+		ret.data = +data;
+		return ret;
+	}
 
 	constexpr inline CxFixedPt operator - (const CxFixedPt& other) const {
 		//return CxFixedPt({.data=data - other.data});
@@ -155,6 +195,13 @@ public:		// functions
 	) {
 		*this = *this - other;
 		return *this;
+	}
+	constexpr inline CxFixedPt operator - (double other) const {
+		return CxFixedPt(double(*this) - other);
+	}
+	constexpr inline CxFixedPt& operator -= (double other) const {
+		*this = *this - other;
+		return other;
 	}
 	constexpr inline CxFixedPt operator - () const {
 		//return CxFixedPt({.data=-data});
@@ -177,6 +224,13 @@ public:		// functions
 		*this = *this * other;
 		return *this;
 	}
+	constexpr inline CxFixedPt operator * (double other) const {
+		return CxFixedPt(double(*this) * other);
+	}
+	constexpr inline CxFixedPt& operator *= (double other) const {
+		*this = *this * other;
+		return other;
+	}
 
 	constexpr inline CxFixedPt operator / (const CxFixedPt& other) const {
 		//return CxFixedPt({.data=(
@@ -191,6 +245,13 @@ public:		// functions
 	) {
 		*this = *this / other;
 		return *this;
+	}
+	constexpr inline CxFixedPt operator / (double other) const {
+		return CxFixedPt(double(*this) / other);
+	}
+	constexpr inline CxFixedPt& operator /= (double other) const {
+		*this = *this / other;
+		return other;
 	}
 	//--------
 	constexpr inline long double recip_ldbl() const {
