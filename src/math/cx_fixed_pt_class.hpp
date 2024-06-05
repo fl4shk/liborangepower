@@ -102,6 +102,7 @@ public:		// functions
 	//--------
 	constexpr inline CxFixedPt(const CxFixedPt&) = default;
 	constexpr inline CxFixedPt& operator = (const CxFixedPt&) = default;
+
 	constexpr inline CxFixedPt& operator = (float to_assign) {
 		*this = CxFixedPt(to_assign);
 		return *this;
@@ -114,6 +115,7 @@ public:		// functions
 		*this = CxFixedPt(to_assign);
 		return *this;
 	}
+
 	constexpr inline ~CxFixedPt() = default;
 	//--------
 	constexpr inline auto operator <=> (const CxFixedPt&) const = default;
@@ -124,20 +126,20 @@ public:		// functions
 		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
 	}
 	//template<std::floating_point CastFloatT>
-	/*explicit*/ constexpr inline operator float () const {
+	explicit constexpr inline operator float () const {
 		return float(
 			(double)(data)
 			/ (double)(MaxIntT(1) << FRAC_WIDTH)
 		);
 	}
-	/*explicit*/ constexpr inline operator double () const {
+	explicit constexpr inline operator double () const {
 		return (double)(
 			//whole_part<MaxIntT>()
 			data
 		)
 			/ (double)(MaxIntT(1) << FRAC_WIDTH);
 	}
-	/*explicit*/ constexpr inline operator long double () const {
+	explicit constexpr inline operator long double () const {
 		return (long double)(
 			//whole_part<MaxIntT>()
 			data
