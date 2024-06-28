@@ -1,48 +1,47 @@
 #ifndef liborangepower_misc_misc_bitwise_funcs_hpp
 #define liborangepower_misc_misc_bitwise_funcs_hpp
 
+#include "misc_includes.hpp"
 #include "misc_types.hpp"
 #include "misc_defines.hpp"
 
 #include <limits.h>
 
 
-namespace liborangepower
-{
-namespace bitwise
-{
+namespace liborangepower {
+namespace bitwise {
 
 template<typename T>
-constexpr inline size_t width_of_type()
-{
-	static_assert(CHAR_BIT == 8,
-		"This software requires CHAR_BIT == 8");
+constexpr inline size_t width_of_type() {
+	static_assert(
+		CHAR_BIT == 8, "This software requires CHAR_BIT == 8"
+	);
 	return (sizeof(T) * 8);
 }
 
 // This uses the ability of the compiler to deduce what "T" is from the
 // type of "to_check".
 template<typename T>
-constexpr inline size_t width_of_type(const T& to_check)
-{
+constexpr inline size_t width_of_type(const T& to_check) {
 	return width_of_type<T>();
 }
 
 template<typename T>
-constexpr inline bool bprange_is_all(size_t bit_pos_range_hi,
-	size_t bit_pos_range_lo)
-{
-	return ((bit_pos_range_hi 
-		== WIDTH2MP(width_of_type<T>()))
-			&& (bit_pos_range_lo == 0));
+constexpr inline bool bprange_is_all(
+	size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
+	return (
+		(bit_pos_range_hi == WIDTH2MP(width_of_type<T>()))
+		&& (bit_pos_range_lo == 0)
+	);
 }
 
 // This also uses the ability of the compiler to deduce what "T" is from
 // the type of "to_check".
 template<typename T>
-constexpr inline bool bprange_is_all(const T& to_check, 
-	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
-{
+constexpr inline bool bprange_is_all(
+	const T& to_check, size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
 	return bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo);
 }
 
@@ -54,56 +53,73 @@ constexpr inline void clear_bits(T& to_clear, const auto& mask)
 }
 
 template<typename T>
-constexpr inline void clear_bits_with_range(T& to_clear,
-	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
-{
+constexpr inline void clear_bits_with_range(
+	T& to_clear, size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
 	clear_bits(to_clear, (BPRANGE2MASK(bit_pos_range_hi,
 		bit_pos_range_lo) << bit_pos_range_lo));
 }
+template<typename T>
+constexpr inline void clear_bits_r(
+	T& to_clear, size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
+	clear_bits_with_range(to_clear, bit_pos_range_hi, bit_pos_range_lo);
+}
 
 template<typename T>
-constexpr inline void set_bits(T& to_set, const auto& mask)
-{
+constexpr inline void set_bits(T& to_set, const auto& mask) {
 	to_set |= mask;
 }
 
 template<typename T>
-constexpr inline void set_bits_with_range(T& to_set, const auto& val,
-	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
-{
+constexpr inline void set_bits_with_range(
+	T& to_set, const auto& val,
+	size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
 	set_bits(to_set, ((val & BPRANGE2MASK(bit_pos_range_hi,
 		bit_pos_range_lo)) << bit_pos_range_lo));
 }
+template<typename T>
+constexpr inline void set_bits_r(
+	T& to_set, const auto& val,
+	size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
+	set_bits_with_range(to_set, val, bit_pos_range_hi, bit_pos_range_lo);
+}
 
 template<typename T>
-constexpr inline T get_bits(const T& to_get_from, const auto& mask, 
-	size_t shift=0)
+constexpr inline T get_bits(
+	const T& to_get_from, const auto& mask, size_t shift=0
+)
 {
 	return ((to_get_from & mask) >> shift);
 }
 
 template<typename T>
-constexpr inline T get_bits_with_range(const T& to_get_from, 
-	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
-{
+constexpr inline T get_bits_with_range(
+	const T& to_get_from, size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
 	// "BPRANGE2SHIFTED_MASK" didn't work for this case.
-	if (bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo))
-	{
+	if (bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo)) {
 		return to_get_from;
-	}
-	else
-	{
+	} else {
 		return get_bits(to_get_from, 
 			BPRANGE2SHIFTED_MASK(bit_pos_range_hi, bit_pos_range_lo),
 			bit_pos_range_lo);
 	}
 }
+template<typename T>
+constexpr inline T get_bits_r(
+	const T& to_get_from, size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
+	return get_bits_with_range(to_get_from, bit_pos_range_hi, bit_pos_range_lo);
+}
 
 
 template<typename T>
-constexpr inline void clear_and_set_bits(T& to_change,
-	const auto& clear_mask, const auto& set_mask)
-{
+constexpr inline void clear_and_set_bits(
+	T& to_change, const auto& clear_mask, const auto& set_mask
+) {
 	// I don't remember the reason why this doesn't just call
 	// "clear_bits()" followed by "get_bits()", but I do recall it causing
 	// *some* kind of problem.  Oh well.  It doesn't really do any harm to
@@ -113,16 +129,14 @@ constexpr inline void clear_and_set_bits(T& to_change,
 }
 
 template<typename T>
-constexpr inline void clear_and_set_bits(T& to_change, const auto& val,
-	size_t bit_pos_range_hi, size_t bit_pos_range_lo)
-{
+constexpr inline void clear_and_set_bits(
+	T& to_change, const auto& val,
+	size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
 	// "BPRANGE2SHIFTED_MASK" didn't work for this case.
-	if (bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo))
-	{
+	if (bprange_is_all<T>(bit_pos_range_hi, bit_pos_range_lo)) {
 		to_change = val;
-	}
-	else
-	{
+	} else {
 		clear_and_set_bits(to_change, 
 			BPRANGE2SHIFTED_MASK(bit_pos_range_hi, bit_pos_range_lo), 
 			((val & BPRANGE2MASK(bit_pos_range_hi, bit_pos_range_lo))
@@ -130,10 +144,18 @@ constexpr inline void clear_and_set_bits(T& to_change, const auto& val,
 	}
 }
 template<typename T>
-constexpr inline void clear_and_set_bits_with_range(T& to_change,
-	const auto& val, size_t bit_pos_range_hi, size_t bit_pos_range_lo)
-{
+constexpr inline void clear_and_set_bits_with_range(
+	T& to_change,
+	const auto& val, size_t bit_pos_range_hi, size_t bit_pos_range_lo
+) {
 	clear_and_set_bits(to_change, val, bit_pos_range_hi, bit_pos_range_lo);
+}
+template<typename T>
+constexpr inline void clear_and_set_bits_r(
+	T& to_change,
+	const auto& val, size_t bit_pos_hi, size_t bit_pos_lo
+) {
+	clear_and_set_bits_with_range(to_change, val, bit_pos_hi, bit_pos_lo);
 }
 
 
@@ -152,8 +174,7 @@ using liborangepower::integer_types::i64;
 
 // Can this be made "constexpr"?
 template<std::integral T>
-constexpr size_t count_leading_zeros(const T& x)
-{
+constexpr size_t count_leading_zeros(const T& x) {
 	//static_assert(std::is_integral<T>());
 	static_assert(CHAR_BIT == 8,
 		"This software requires CHAR_BIT == 8");
@@ -163,16 +184,11 @@ constexpr size_t count_leading_zeros(const T& x)
 	//u64 temp32 = 0, temp16 = 0, temp8 = 0, temp4 = 0, temp2 = 0;
 	u64 s = x;
 
-	if (s == 0)
-	{
+	if (s == 0) {
 		ret = sizeof(T) * 8;
-	}
-
-	else
-	{
-		static_assert(sizeof(T()) <= 8);
-		switch (sizeof(T))
-		{
+	} else {
+		static_assert(sizeof(T) <= 8);
+		switch (sizeof(T)) {
 			case 8:
 				s = get_bits_with_range(s, 63, 32)
 					? get_bits_with_range(s, 63, 32)
@@ -231,6 +247,62 @@ constexpr size_t count_leading_zeros(const T& x)
 
 	return ret;
 }
+template<std::integral T>
+constexpr size_t basic_ilog2(T x)
+{
+	//static_assert(std::is_integral<T>());
+	static_assert(CHAR_BIT == 8);
+
+	return (sizeof(T) * 8 - 1 - count_leading_zeros(x));
+}
+//// sample code, mainly used as a reference for how make a low-area barrel
+//// shifter in HDL/FPGA code
+//template<std::integral T>
+//constexpr T barrel_shift(const T& x, size_t amount, bool is_rshift) {
+//
+//	static_assert(CHAR_BIT == 8);
+//
+//	auto get_modded_i = [](size_t i) -> size_t {
+//		return (1 << (i - 1));
+//	};
+//
+//	static constexpr size_t MY_WIDTH = sizeof(T) * 8ull;
+//	static constexpr size_t MY_MSB_POS = MY_WIDTH - 1ull;
+//
+//	static constexpr size_t TEMP_ARR_SIZE = (
+//		sizeof(T) == 8
+//		? 6ull
+//		: (
+//			sizeof(T) == 4
+//			? 5ull
+//			: (
+//				sizeof(T) == 2
+//				? 4ull
+//				: (
+//					3ull
+//					//sizeof(T) == 1
+//					//? 3
+//					//: 
+//				)
+//			)
+//		)
+//	);
+//	auto set_temp_lsl = [&](size_t i) -> void {
+//		
+//	};
+//
+//	//if constexpr (std::is_signed<T>) {
+//	//} else {
+//	//}
+//
+//	//switch (sizeof(T)) {
+//	//	case 8: 
+//	//	case 4: 
+//	//	case 2: 
+//	//	case 1: 
+//	//	//default:
+//	//}
+//}
 
 //template<std::integral T>
 //constexpr size_t basic_count_leading_zeros(T x)
@@ -264,14 +336,6 @@ constexpr size_t count_leading_zeros(const T& x)
 //	return ret;
 //}
 //
-//template<std::integral T>
-//constexpr size_t basic_ilog2(T x)
-//{
-//	//static_assert(std::is_integral<T>());
-//	static_assert(CHAR_BIT == 8);
-//
-//	return (sizeof(T) * 8 - 1 - basic_count_leading_zeros(x));
-//}
 
 } // namespace bitwise
 } // namespace liborangepower
