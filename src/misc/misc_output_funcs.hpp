@@ -118,7 +118,7 @@ constexpr inline std::ostream& osprint_hexdump(
 	for (i=0; i<to_print.size(); ++i) {
 		//text += to_print.at(i);
 		text.push_back(to_print.at(i));
-		const uint c = to_print.at(i);
+		const unsigned int c = to_print.at(i);
 		//file.put(c);
 
 		if (c < 0x10) {
