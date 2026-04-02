@@ -1,7 +1,7 @@
 #ifndef src_bfloat16_class_hpp
 #define src_bfloat16_class_hpp
 
-// src/bfloat16_class.hpp
+// src/math/bfloat16_class.hpp
 
 //#include "misc_includes.hpp"
 #include "../misc/misc_includes.hpp"
