@@ -107,6 +107,8 @@ constexpr inline auto recip(const T& val)
 requires (!std::integral<T>) {
 	if constexpr (concepts::HasArithRecipMbrFunc<T>) {
 		return val.recip();
+	} else if constexpr (concepts::HasArithRecipNonMbrFunc<T>) {
+	    return non_mbr_recip(val);
 	} else {
 		return
 			1.0l / val;
@@ -131,6 +133,8 @@ template<concepts::HasArithAnySqrtFunc T>
 constexpr inline auto cstm_sqrt(const T& val) {
 	if constexpr (concepts::HasArithSqrtMbrFunc<T>) {
 		return val.sqrt();
+	} else if constexpr (concepts::HasArithSqrtNonMbrFunc<T>) {
+	    return non_mbr_sqrt(val);
 	} else {
 		return std::sqrt(val);
 	}
