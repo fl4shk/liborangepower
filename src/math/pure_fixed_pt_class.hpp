@@ -69,11 +69,11 @@ public:		// functions
 	explicit constexpr inline PureFixedPt(std::integral auto to_conv)
 		: data(to_conv << FRAC_WIDTH) {
 	}
-	///*explicit*/ constexpr inline PureFixedPt(
-	//	std::floating_point auto to_conv
-	//)
-	//	: data((long double)(to_conv) * (MaxIntT(1) << FRAC_WIDTH)) {
-	//}
+	/*explicit*/ consteval inline PureFixedPt(
+		std::floating_point auto to_conv
+	)
+		: data((long double)(to_conv) * (MaxIntT(1) << FRAC_WIDTH)) {
+	}
 
 	template<std::integral OtherIntT, size_t OTHER_FRAC_WIDTH>
 	explicit constexpr inline PureFixedPt(
@@ -105,18 +105,18 @@ public:		// functions
 	    const PureFixedPt&
 	) = default;
 
-	//constexpr inline PureFixedPt& operator = (float to_assign) {
-	//	*this = PureFixedPt(to_assign);
-	//	return *this;
-	//}
-	//constexpr inline PureFixedPt& operator = (double to_assign) {
-	//	*this = PureFixedPt(to_assign);
-	//	return *this;
-	//}
-	//constexpr inline PureFixedPt& operator = (long double to_assign) {
-	//	*this = PureFixedPt(to_assign);
-	//	return *this;
-	//}
+	consteval inline PureFixedPt& operator = (float to_assign) {
+		*this = PureFixedPt(to_assign);
+		return *this;
+	}
+	consteval inline PureFixedPt& operator = (double to_assign) {
+		*this = PureFixedPt(to_assign);
+		return *this;
+	}
+	consteval inline PureFixedPt& operator = (long double to_assign) {
+		*this = PureFixedPt(to_assign);
+		return *this;
+	}
 
 	constexpr inline ~PureFixedPt() = default;
 	//--------
@@ -125,31 +125,30 @@ public:		// functions
 	) const = default;
 	//--------
 	template<std::integral CastIntT>
-	explicit constexpr inline operator CastIntT () const {
+	explicit consteval inline operator CastIntT () const {
 		return MaxIntT(data) >> FRAC_WIDTH;
 		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
 	}
-	//template<std::floating_point CastFloatT>
-	//explicit constexpr inline operator float () const {
-	//	return float(
-	//		(double)(data)
-	//		/ (double)(MaxIntT(1) << FRAC_WIDTH)
-	//	);
-	//}
-	//explicit constexpr inline operator double () const {
-	//	return (double)(
-	//		//whole_part<MaxIntT>()
-	//		data
-	//	)
-	//		/ (double)(MaxIntT(1) << FRAC_WIDTH);
-	//}
-	//explicit constexpr inline operator long double () const {
-	//	return (long double)(
-	//		//whole_part<MaxIntT>()
-	//		data
-	//	)
-	//		/ (long double)(MaxIntT(1) << FRAC_WIDTH);
-	//}
+	explicit consteval inline operator float () const {
+		return float(
+			(double)(data)
+			/ (double)(MaxIntT(1) << FRAC_WIDTH)
+		);
+	}
+	explicit consteval inline operator double () const {
+		return (double)(
+			//whole_part<MaxIntT>()
+			data
+		)
+			/ (double)(MaxIntT(1) << FRAC_WIDTH);
+	}
+	explicit consteval inline operator long double () const {
+		return (long double)(
+			//whole_part<MaxIntT>()
+			data
+		)
+			/ (long double)(MaxIntT(1) << FRAC_WIDTH);
+	}
 	//--------
 	template<std::integral CastIntT=IntT>
 	constexpr inline CastIntT whole_part() const {

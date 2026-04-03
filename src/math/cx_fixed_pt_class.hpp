@@ -125,7 +125,6 @@ public:		// functions
 		return MaxIntT(data) >> FRAC_WIDTH;
 		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
 	}
-	//template<std::floating_point CastFloatT>
 	explicit constexpr inline operator float () const {
 		return float(
 			(double)(data)
