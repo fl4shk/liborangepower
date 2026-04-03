@@ -1,5 +1,5 @@
-#ifndef liborangepower_math_fixed_pt_class_hpp
-#define liborangepower_math_fixed_pt_class_hpp
+#ifndef liborangepower_math_cx_fixed_pt_class_hpp
+#define liborangepower_math_cx_fixed_pt_class_hpp
 
 #include "../misc/misc_includes.hpp"
 #include "../misc/misc_defines.hpp"
@@ -300,4 +300,4 @@ using CxFixedU48p16 = CxFixedPt<u64, 16>;
 } // namespace math
 } // namespace liborangepower
 
-#endif		// liborangepower_math_fixed_pt_class_hpp
+#endif		// liborangepower_math_cx_fixed_pt_class_hpp
