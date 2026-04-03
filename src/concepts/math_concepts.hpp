@@ -120,17 +120,12 @@ concept HasArithRecipMbrFunc = requires(T c) {
 	{ c.recip() } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithRecipNonMbrFunc = requires(T c) {
-	{ non_mbr_recip(c) } -> std::convertible_to<ConvT>;
-};
-template<typename T, typename ConvT=T>
 concept HasArithLongDblRecipOp = requires(T c) {
 	{ 1.0l / c } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
 concept HasArithAnyRecipOp 
 	= HasArithRecipMbrFunc<T, ConvT>
-	|| HasArithRecipNonMbrFunc<T, ConvT>
 	|| HasArithLongDblRecipOp<T, ConvT>;
 //--------
 template<typename T, typename ConvT=T>
@@ -151,17 +146,12 @@ concept HasArithSqrtMbrFunc = requires(T c) {
 	{ c.sqrt() } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
-concept HasArithSqrtNonMbrFunc = requires(T c) {
-    { non_mbr_sqrt(c) } -> std::convertible_to<ConvT>;
-};
-template<typename T, typename ConvT=T>
 concept HasArithStdSqrtFunc = requires(T c) {
 	{ std::sqrt(c) } -> std::convertible_to<ConvT>;
 };
 template<typename T, typename ConvT=T>
 concept HasArithAnySqrtFunc
 	= HasArithSqrtMbrFunc<T, ConvT>
-	|| HasArithSqrtNonMbrFunc<T, ConvT>
 	|| HasArithStdSqrtFunc<T, ConvT>;
 //--------
 } // namespace concepts
