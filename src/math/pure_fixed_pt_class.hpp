@@ -69,7 +69,7 @@ public:		// functions
 	explicit constexpr inline PureFixedPt(std::integral auto to_conv)
 		: data(to_conv << FRAC_WIDTH) {
 	}
-	/*explicit*/ consteval inline PureFixedPt(
+	/*explicit*/ constexpr inline PureFixedPt(
 		std::floating_point auto to_conv
 	)
 		: data((long double)(to_conv) * (MaxIntT(1) << FRAC_WIDTH)) {
@@ -105,15 +105,15 @@ public:		// functions
 	    const PureFixedPt&
 	) = default;
 
-	consteval inline PureFixedPt& operator = (float to_assign) {
+	constexpr inline PureFixedPt& operator = (float to_assign) {
 		*this = PureFixedPt(to_assign);
 		return *this;
 	}
-	consteval inline PureFixedPt& operator = (double to_assign) {
+	constexpr inline PureFixedPt& operator = (double to_assign) {
 		*this = PureFixedPt(to_assign);
 		return *this;
 	}
-	consteval inline PureFixedPt& operator = (long double to_assign) {
+	constexpr inline PureFixedPt& operator = (long double to_assign) {
 		*this = PureFixedPt(to_assign);
 		return *this;
 	}
@@ -125,24 +125,24 @@ public:		// functions
 	) const = default;
 	//--------
 	template<std::integral CastIntT>
-	explicit consteval inline operator CastIntT () const {
+	explicit constexpr inline operator CastIntT () const {
 		return MaxIntT(data) >> FRAC_WIDTH;
 		//return bitwise::get_bits_with_range(data, FRAC_WIDTH - 1, 0);
 	}
-	explicit consteval inline operator float () const {
+	explicit constexpr inline operator float () const {
 		return float(
 			(double)(data)
 			/ (double)(MaxIntT(1) << FRAC_WIDTH)
 		);
 	}
-	explicit consteval inline operator double () const {
+	explicit constexpr inline operator double () const {
 		return (double)(
 			//whole_part<MaxIntT>()
 			data
 		)
 			/ (double)(MaxIntT(1) << FRAC_WIDTH);
 	}
-	explicit consteval inline operator long double () const {
+	explicit constexpr inline operator long double () const {
 		return (long double)(
 			//whole_part<MaxIntT>()
 			data
