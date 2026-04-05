@@ -81,8 +81,8 @@ constexpr inline auto& printerr(
 //template<typename CharT, typename Traits, typename... ArgTs>
 //inline BasOstm<CharT, Traits>& fprintout(BasOstm<CharT, Traits>& out_file,
 //	ArgTs&&... args)
-constexpr inline  std::ostream& fprintout(
-	std::ostream&& out_file, concepts::HasStdOstmOpLshift auto&&... args
+constexpr inline auto& fprintout(
+	std::ostream& out_file, concepts::HasStdOstmOpLshift auto&&... args
 ) {
 	return osprintout(out_file, args...);
 }

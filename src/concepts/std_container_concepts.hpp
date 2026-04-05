@@ -3,15 +3,11 @@
 
 #include "../misc/misc_includes.hpp"
 
-namespace liborangepower
-{
-namespace concepts
-{
+namespace liborangepower {
+namespace concepts {
 //--------
 template<typename T>
-concept HasStdVecBasicIterFuncs
-	= requires()
-{
+concept HasStdVecBasicIterFuncs = requires() {
 	{ std::declval<typename T::reference>() };
 	{ std::declval<typename T::const_reference>() };
 	{ std::declval<typename T::size_type>() };
@@ -25,14 +21,12 @@ concept HasStdVecBasicIterFuncs
 
 template<typename T>
 concept HasStdVecPushBackFuncs
-	= requires()
-{
+	= requires() {
 	{ std::declval<typename T::const_reference>() };
 	{ std::declval<typename T::value_type&&>() };
 }
 	&& requires(T c, typename T::const_reference val_cr,
-		typename T::value_type&& val_rr)
-{
+		typename T::value_type&& val_rr) {
 	{ c.push_back(val_cr) };
 	{ c.push_back(std::move(val_rr)) };
 };
