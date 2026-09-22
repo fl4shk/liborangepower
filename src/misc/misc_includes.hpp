@@ -37,6 +37,14 @@
 #include <cstring>
 #include <cctype>
 
+#include <algorithm>
+#include <concepts>
+#include <optional>
+#include <tuple>
+#include <string>
+#include <string_view>
+#include <ranges>
+#include <vector>
 
 using std::cout;
 using std::cerr;
