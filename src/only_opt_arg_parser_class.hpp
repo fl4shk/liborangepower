@@ -175,7 +175,9 @@ public:     // functions
             if constexpr (
                 std::convertible_to<T, decltype(*arg.val)>
             ) {
-                return T(*arg.val);
+                if (arg.name == name.val) {
+                    return T(*arg.val);
+                }
             }
         }
         return std::nullopt;
