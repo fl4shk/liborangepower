@@ -13,10 +13,15 @@ public:     // variables
     }
 };
 
-template<OnlyOptArgName _name, typename OnlyOptArgT>
+template<
+    OnlyOptArgName _name,
+    typename OnlyOptArgT,
+    bool _takes_val=true
+>
 class OnlyOptArg final {
 public:     // variables and constants
     static constexpr const char* name = _name.val;
+    static constexpr bool takes_val = _takes_val;
     std::optional<OnlyOptArgT> val = std::nullopt;
 };
 
@@ -39,6 +44,7 @@ concept OnlyOptArgConcept = requires(T x) {
     { x.name } -> std::convertible_to<const char*>;
     { static_cast<bool>(x.val) } -> std::convertible_to<bool>;
     { *x.val } -> OnlyOptArgTypeConcept;
+    { x.takes_val } -> std::same_as<bool>;
 };
 
 template<OnlyOptArgConcept... OnlyOptArgTs>
@@ -48,9 +54,7 @@ private:     // variables and constants
 public:     // functions
     OnlyOptArgParser() = default;
     OnlyOptArgParser(int argc, char** argv, size_t shift=1) {
-        if (
-            shift >= argc  
-        ) {
+        if (shift >= argc) {
             return;
         }
         for (int i=shift; i<argc; ++i) {
@@ -90,7 +94,7 @@ public:     // functions
                     using std::operator""sv;
                     if (my_split_vec.front() == name) {
                         found_named_arg = true;
-                        auto handle_arg_final = [&]() -> void {
+                        auto handle_arg_val_final = [&]() -> void {
                             if (bool(arg.val)) {
                                 do_err("duplicate ");
                             }
@@ -119,9 +123,15 @@ public:     // functions
                             }
                         };
 
-                        if (my_split_vec.size() == 2) {
-                            handle_arg_final();
-                        } else if (my_split_vec.size() == 1) {
+                        if (
+                            my_split_vec.size() == 2
+                            && arg.takes_val
+                        ) {
+                            handle_arg_val_final();
+                        } else if (
+                            my_split_vec.size() == 1
+                            && arg.takes_val
+                        ) {
                             if (i + 1 >= argc) {
                                 do_err();
                             }
@@ -129,7 +139,15 @@ public:     // functions
                             my_split_vec.push_back(
                                 std::string(std::string_view(argv[i]))
                             );
-                            handle_arg_final();
+                            handle_arg_val_final();
+                        } else if (
+                            my_split_vec.size() == 1
+                            && !arg.takes_val
+                        ) {
+                            if (bool(arg.val)) {
+                                do_err("duplicate ");
+                            }
+                            arg.val = decltype(*arg.val)();
                         } else {
                             printout(
                                 "my_split_vec.size() "
