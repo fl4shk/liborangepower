@@ -100,7 +100,9 @@ public:     // functions
                                 >
                             ) {
                                 arg.val = (
-                                    size_t(std::atoll(my_split_vec.back()))
+                                    size_t(std::atoll(
+                                        my_split_vec.back().c_str()
+                                    ))
                                 );
                             } else if constexpr (
                                 std::convertible_to<
@@ -108,7 +110,9 @@ public:     // functions
                                 >
                             ) {
                                 arg.val = (
-                                    std::string(my_split_vec.back())
+                                    std::string(
+                                        my_split_vec.back()
+                                    )
                                 );
                             } else {
                                 static_assert(false);
