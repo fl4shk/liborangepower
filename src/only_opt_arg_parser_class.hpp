@@ -16,7 +16,7 @@ public:     // variables
 template<
     OnlyOptArgName _name,
     typename OnlyOptArgT,
-    bool _takes_val=true
+    bool _takes_val
 >
 class OnlyOptArg final {
 public:     // variables and constants
@@ -24,6 +24,18 @@ public:     // variables and constants
     static constexpr bool takes_val = _takes_val;
     std::optional<OnlyOptArgT> val = std::nullopt;
 };
+
+template<
+    OnlyOptArgName _name,
+    typename OnlyOptArgT
+>
+using OnlyOptArgTakesVal = OnlyOptArg<_name, OnlyOptArgT, true>;
+
+template<
+    OnlyOptArgName _name,
+    typename OnlyOptArgT
+>
+using OnlyOptArgNoVal = OnlyOptArg<_name, OnlyOptArgT, false>;
 
 template<typename T>
 concept OnlyOptArgTypeConcept = (
