@@ -56,7 +56,7 @@ concept OnlyOptArgConcept = requires(T x) {
     { x.name } -> std::convertible_to<const char*>;
     { static_cast<bool>(x.val) } -> std::convertible_to<bool>;
     { *x.val } -> OnlyOptArgTypeConcept;
-    { x.takes_val } -> std::same_as<bool>;
+    { x.takes_val } -> std::convertible_to<bool>;
 };
 
 template<OnlyOptArgConcept... OnlyOptArgTs>
@@ -66,7 +66,7 @@ private:     // variables and constants
 public:     // functions
     OnlyOptArgParser() = default;
     OnlyOptArgParser(int argc, char** argv, size_t shift=1) {
-        if (shift >= argc) {
+        if (int(shift) >= argc) {
             return;
         }
         for (int i=shift; i<argc; ++i) {
@@ -159,7 +159,23 @@ public:     // functions
                             if (bool(arg.val)) {
                                 do_err("duplicate ");
                             }
-                            arg.val = decltype(*arg.val)();
+                            //arg.val = decltype(*arg.val)();
+
+                            if constexpr (
+                                std::convertible_to<
+                                    decltype(*arg.val), size_t
+                                >
+                            ) {
+                                arg.val = size_t();
+                            } else if constexpr (
+                                std::convertible_to<
+                                    decltype(*arg.val), std::string
+                                >
+                            ) {
+                                arg.val = std::string();
+                            } else {
+                                static_assert(false);
+                            }
                         } else {
                             printout(
                                 "my_split_vec.size() "
