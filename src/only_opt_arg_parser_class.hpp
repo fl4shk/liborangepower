@@ -99,13 +99,17 @@ public:     // functions
                                     decltype(*arg.val), size_t
                                 >
                             ) {
-                                arg.val = size_t(std::atoll(argv[i]));
+                                arg.val = (
+                                    size_t(std::atoll(my_split_vec.back()))
+                                );
                             } else if constexpr (
                                 std::convertible_to<
                                     decltype(*arg.val), std::string
                                 >
                             ) {
-                                arg.val = std::string(argv[i]);
+                                arg.val = (
+                                    std::string(my_split_vec.back())
+                                );
                             } else {
                                 static_assert(false);
                             }
