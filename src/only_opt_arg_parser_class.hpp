@@ -25,18 +25,6 @@ public:     // variables and constants
     std::optional<OnlyOptArgT> val = std::nullopt;
 };
 
-template<
-    OnlyOptArgName _name,
-    typename OnlyOptArgT
->
-using OnlyOptArgTakesVal = OnlyOptArg<_name, OnlyOptArgT, true>;
-
-template<
-    OnlyOptArgName _name,
-    typename OnlyOptArgT
->
-using OnlyOptArgNoVal = OnlyOptArg<_name, OnlyOptArgT, false>;
-
 template<typename T>
 concept OnlyOptArgTypeConcept = (
     requires(T arg) {
