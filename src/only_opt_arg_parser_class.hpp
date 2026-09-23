@@ -190,16 +190,20 @@ public:     // functions
 
         template for (const auto& arg: _args) {
             ret += sconcat(
-                " ", arg.name, ":"
+                " ", arg.name
             );
             if constexpr (
                 std::convertible_to<decltype(*arg.val), size_t>
             ) {
-                ret += "uint";
+                if constexpr (arg.takes_val) {
+                    ret += ":uint";
+                }
             } else if constexpr (
                 std::convertible_to<decltype(*arg.val), std::string>
             ) {
-                ret += "string";
+                if constexpr (arg.takes_val) {
+                    ret += ":string";
+                }
             } else {
                 static_assert(false);
             }
