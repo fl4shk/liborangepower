@@ -196,7 +196,7 @@ public:     // functions
                 std::convertible_to<decltype(*arg.val), size_t>
             ) {
                 if constexpr (arg.takes_val) {
-                    ret += ":uint";
+                    ret += ":ulong";
                 }
             } else if constexpr (
                 std::convertible_to<decltype(*arg.val), std::string>
