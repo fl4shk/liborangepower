@@ -2,19 +2,20 @@
 #include "strings/sconcat_etc.hpp"
 
 namespace liborangepower {
+namespace arg_parse {
 
 template<size_t n>
-class OnlyOptArgName final {
+class ComptimeStr final {
 public:     // variables
     static constexpr size_t size = n;
     char val[n];
-    consteval OnlyOptArgName(const char (&str)[n]) {
+    consteval ComptimeStr(const char (&str)[n]) {
         std::copy_n(str, n, val);
     }
 };
 
 template<
-    OnlyOptArgName _name,
+    ComptimeStr _name,
     typename OnlyOptArgT,
     bool _takes_val
 >
@@ -22,6 +23,9 @@ class OnlyOptArg final {
 public:     // variables and constants
     static constexpr const char* name = _name.val;
     static constexpr bool takes_val = _takes_val;
+    //static constexpr const char* desc = _desc.val;
+
+    std::string desc;
     std::optional<OnlyOptArgT> val = std::nullopt;
 };
 
@@ -32,6 +36,9 @@ concept OnlyOptArgTypeConcept = (
     }
     || requires(T arg) {
         { arg } -> std::convertible_to<const char*>;
+    }
+    || requires(T arg) {
+        { arg } -> std::convertible_to<std::string_view>;
     }
     || requires(T arg) {
         { arg } -> std::convertible_to<std::string>;
@@ -45,6 +52,7 @@ concept OnlyOptArgConcept = requires(T x) {
     { static_cast<bool>(x.val) } -> std::convertible_to<bool>;
     { *x.val } -> OnlyOptArgTypeConcept;
     { x.takes_val } -> std::convertible_to<bool>;
+    { x.desc } -> std::convertible_to<std::string>;
 };
 
 template<OnlyOptArgConcept... OnlyOptArgTs>
@@ -186,12 +194,13 @@ public:     // functions
     ~OnlyOptArgParser() = default;
     constexpr std::string usage_msg() const {
         std::string ret;
-        ret += "Valid arguments are:";
+        ret += "Valid arguments are:\n";
 
         template for (const auto& arg: _args) {
-            ret += sconcat(
-                " ", arg.name
-            );
+            //ret += sconcat(
+            //    "  ", arg.name
+            //);
+            ret += arg.name;
             if constexpr (
                 std::convertible_to<decltype(*arg.val), size_t>
             ) {
@@ -207,6 +216,13 @@ public:     // functions
             } else {
                 static_assert(false);
             }
+            if (arg.desc.size() > 0) {
+                ret += sconcat(
+                    "  ", arg.desc, "\n"
+                );
+            } else {
+                ret += "\n";
+            }
         }
         ret += "\n";
         return ret;
@@ -215,7 +231,7 @@ public:     // functions
         return _args;
     }
 
-    template<OnlyOptArgName name, typename T>
+    template<ComptimeStr name, typename T>
     const std::optional<T> find() const {
         template for (const auto& arg: _args) {
             if constexpr (
@@ -233,4 +249,5 @@ public:     // functions
     }
 };
 
+} // namespace arg_parse
 } // namespace liborangepower
