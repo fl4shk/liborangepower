@@ -17,15 +17,15 @@ public:     // variables
 template<
     ComptimeStr _name,
     typename OnlyOptArgT,
-    bool _takes_val
+    bool _takes_val,
+    ComptimeStr _desc // description
 >
 class OnlyOptArg final {
 public:     // variables and constants
     static constexpr const char* name = _name.val;
     static constexpr bool takes_val = _takes_val;
-    //static constexpr const char* desc = _desc.val;
+    static constexpr const char* desc = _desc.val;
 
-    std::string desc;
     std::optional<OnlyOptArgT> val = std::nullopt;
 };
 
@@ -52,7 +52,7 @@ concept OnlyOptArgConcept = requires(T x) {
     { static_cast<bool>(x.val) } -> std::convertible_to<bool>;
     { *x.val } -> OnlyOptArgTypeConcept;
     { x.takes_val } -> std::convertible_to<bool>;
-    { x.desc } -> std::convertible_to<std::string>;
+    { x.desc } -> std::convertible_to<const char*>;
 };
 
 template<OnlyOptArgConcept... OnlyOptArgTs>
@@ -216,13 +216,9 @@ public:     // functions
             } else {
                 static_assert(false);
             }
-            if (arg.desc.size() > 0) {
-                ret += sconcat(
-                    "  ", arg.desc, "\n"
-                );
-            } else {
-                ret += "\n";
-            }
+            ret += sconcat(
+                "  ", arg.desc, "\n"
+            );
         }
         ret += "\n";
         return ret;
